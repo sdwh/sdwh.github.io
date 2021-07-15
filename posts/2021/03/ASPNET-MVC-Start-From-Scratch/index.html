@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>ASP.NET MVC 從無到有打造一個應用系統 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何有 Database First 的方式，結合 ASP.NET MVC 框架從無到有打造一個應用系統，並將過程中的注意項目加以筆記，用以優化日後的建構系統速度。 持續編輯中 🧙‍♂️">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 從無到有打造一個應用系統">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/03/ASPNET-MVC-Start-From-Scratch/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記如何有 Database First 的方式，結合 ASP.NET MVC 框架從無到有打造一個應用系統，並將過程中的注意項目加以筆記，用以優化日後的建構系統速度。 持續編輯中 🧙‍♂️">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASP-NET-Project-Type-Web-Application.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASP-NET-Project-Options.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Style-Bundle.png">
+<meta property="article:published_time" content="2021-03-02T22:30:05.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:50:29.859Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Start-From-Scratch" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/" class="article-date">
+  <time datetime="2021-03-02T22:30:05.000Z" itemprop="datePublished">2021-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 從無到有打造一個應用系統
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#資料庫設計"><span class="toc-text">資料庫設計</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#專案範本"><span class="toc-text">專案範本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#建立專案"><span class="toc-text">建立專案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nuget-更新套件"><span class="toc-text">Nuget 更新套件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新-Layout"><span class="toc-text">更新 Layout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#關於-Layout"><span class="toc-text">關於 Layout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#選擇-Bootstrap-Theme-amp-Custom-CSS"><span class="toc-text">選擇 Bootstrap Theme &amp; Custom CSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加入-Scaffolding"><span class="toc-text">加入 Scaffolding</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#專案開發"><span class="toc-text">專案開發</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加入-Model"><span class="toc-text">加入 Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Partial-Class"><span class="toc-text">Partial Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Auth-Action-Filter"><span class="toc-text">Auth &#x2F; Action Filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Routing"><span class="toc-text">Routing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#設計-API-支援-CROS"><span class="toc-text">設計 API 支援 CROS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常見的功能"><span class="toc-text">常見的功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#檔案上傳-下載"><span class="toc-text">檔案上傳 &#x2F; 下載</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#啟用-JQuery-Validation"><span class="toc-text">啟用 JQuery.Validation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#檢查瀏覽器是否為-IE"><span class="toc-text">檢查瀏覽器是否為 IE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#處理-Boostrap-在-IE-Browser-跑版的問題"><span class="toc-text">處理 Boostrap 在 IE Browser 跑版的問題</span></a></li></ol></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何有 Database First 的方式，結合 ASP.NET MVC 框架從無到有打造一個應用系統，並將過程中的注意項目加以筆記，用以優化日後的建構系統速度。</p>
+<p>持續編輯中 🧙‍♂️</p>
+<a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="資料庫設計"><a href="#資料庫設計" class="headerlink" title="資料庫設計"></a>資料庫設計</h3><p>因為是使用 Database First 的方式來建構系統，所以第一步就是進行資料庫的設計。</p>
+<p>而在設計資料庫，選擇適當的資料類型(DataType)、主鍵(Primary Key)以及外鍵(Foreign Key)，並設定設定的索引，來加速資料存取。</p>
+<p>正確的資料類型，有助於對應 EntityFramework 正確的型別，沒有設置主鍵的資料表無法使用 EntityFramework 加以轉換為物件模型，外鍵的設置可以在之後享用到 EntityFramework 所帶來以物件方式跨資料表存取的便利性。</p>
+<p><a href="/posts/2021/02/SQL-Server-Data-Type-Note/">SQL Server 設計資料庫資料型別 (Data Type) 筆記</a></p>
+<p>設計的工具直接以 SQL Server Management Studio 來進行。</p>
+<h2 id="專案範本"><a href="#專案範本" class="headerlink" title="專案範本"></a>專案範本</h2><p>專案的範本是集合常用的專案設置設定，並加以打包。不同的應用系統開發需求可以共用此專案範本，不用重複作業，而專案範本的製作則使用 Git 版本控制，日後可以是開發需求優化其設定內容。</p>
+<h3 id="建立專案"><a href="#建立專案" class="headerlink" title="建立專案"></a>建立專案</h3><p>以 .NET Framework 來建立專案，配合 Windows Server 2019 選擇最新的 4.8 以支援更多、更豐富的語法功能。</p>
+<p>專案的類型選擇：<strong>ASP.NET Web Application(.NET Framework)</strong></p>
+<p><img src="/assets/ASP-NET-Project-Type-Web-Application.png" alt=""></p>
+<p>建立的過程勾選 <strong>Place Solution and Project in the sam Directory</strong></p>
+<p>選項選擇 <strong>MVC</strong> ， 驗證方式因為在 AD網域環境使用，所以選擇 <strong>Windows Authentication</strong></p>
+<p><img src="/assets/ASP-NET-Project-Options.png" alt=""></p>
+<h3 id="Nuget-更新套件"><a href="#Nuget-更新套件" class="headerlink" title="Nuget 更新套件"></a>Nuget 更新套件</h3><p>確保下列套件的版本，最可以接受(不造成專案跑版、異常)的範圍下保持最新。</p>
+<ul>
+<li>Bootstrap (4.x)</li>
+<li>jQuery</li>
+<li>Microsoft.AspNet.Mvc (搭配 Microsoft.AspNet.Mvc.zh-Hant 的版本號)</li>
+<li>EntityFramework (搭配 EntityFramework.zh-Hant 的版本號)</li>
+<li>Microsoft.CodeDom.Providers.DotNetCompilerPlatform</li>
+</ul>
+<h3 id="更新-Layout"><a href="#更新-Layout" class="headerlink" title="更新 Layout"></a>更新 Layout</h3><p>因為 ASP.NET MVC 預設的 Bootstrap 版本為 3.x 所以更新 Bootstrap (4.x) 後必須要調整 Layout 以使版面符合。</p>
+<p>參考 <a href="https://getbootstrap.com/docs/4.6/examples/" target="_blank" rel="noopener">Bootstrap - Examples</a> 選擇適合的預設版型來做為基底。</p>
+<p>選擇版型後，取代與更新 Shared/_Layout.cshtml 檔案中的內容為基底的版型。</p>
+<h3 id="關於-Layout"><a href="#關於-Layout" class="headerlink" title="關於 Layout"></a>關於 Layout</h3><pre class="line-numbers language-csharp"><code class="language-csharp">@<span class="token function">RenderBody</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>是指定 View 內容鑲嵌的位置。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp">bundles<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ScriptBundle</span><span class="token punctuation">(</span><span class="token string">"~/bundles/bootstrap"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span>
+                      <span class="token string">"~/Scripts/bootstrap.js"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-csharp"><code class="language-csharp">@Scripts<span class="token punctuation">.</span><span class="token function">Render</span><span class="token punctuation">(</span><span class="token string">"~/bundles/bootstrap"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>是將 App_Start/Bundle.Config.cs 中的 Script 打包、壓縮後加入 Layout，在 Debug Mode 中不會有壓縮的效果，Release 則會有。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp">@<span class="token function">RenderSection</span><span class="token punctuation">(</span><span class="token string">"scripts"</span><span class="token punctuation">,</span> required<span class="token punctuation">:</span> <span class="token keyword">false</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>RenderSection 則是指定這個位置可以被加入 Script ，可以與 JQuery.Validation 的加入做搭配。</p>
+<h3 id="選擇-Bootstrap-Theme-amp-Custom-CSS"><a href="#選擇-Bootstrap-Theme-amp-Custom-CSS" class="headerlink" title="選擇 Bootstrap Theme &amp; Custom CSS"></a>選擇 Bootstrap Theme &amp; Custom CSS</h3><ol>
+<li>從 <a href="https://bootswatch.com/" target="_blank" rel="noopener">BootsWatch</a> 選擇理想的 Theme (Cosmo, Flatly 都不錯)</li>
+<li>從網站上下載 <strong>bootstrap-themeName.css</strong> </li>
+<li>將 css file 加入 Content 資料夾</li>
+<li>調整 App_Start/BundleConfig 中的 <strong>“~/Content/css”</strong> 為指定的 themeName</li>
+<li>任何客製的 CSS 需求加入到 Content/Site.css 作為固定的 Convention</li>
+<li>Rebuild &amp; Test</li>
+</ol>
+<p><img src="/assets/ASPNET-MVC-Style-Bundle.png" alt=""></p>
+<p>使用 BootsWatch 需要注意檔案上傳顯示的 bug</p>
+<p>在 input 的 view 加入下列程式碼以處理</p>
+<pre class="line-numbers language-js"><code class="language-js">@section Scripts <span class="token punctuation">{</span>
+<span class="token operator">&lt;</span>script<span class="token operator">></span>
+    document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'.custom-file-input'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> fileName <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"file"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>files<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>name<span class="token punctuation">;</span>
+        <span class="token keyword">var</span> nextSibling <span class="token operator">=</span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>nextElementSibling
+        nextSibling<span class="token punctuation">.</span>innerText <span class="token operator">=</span> fileName
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="加入-Scaffolding"><a href="#加入-Scaffolding" class="headerlink" title="加入 Scaffolding"></a>加入 Scaffolding</h3><p>根據個人的喜好方式，讓版面呈現更符合個人需求，而藉由 Scaffolding 的客製，可以使加入 Controller 的時候， View 自動帶出預期的呈現方式，而不必再逐一修正，有效的減少開發時間。</p>
+<p>客製的項目包括：</p>
+<ul>
+<li>版面縮排</li>
+<li>按鈕位置</li>
+<li>CRUD 的 Template</li>
+</ul>
+<p><a href="/posts/2020/08/Custom-MVC-Scaffold/">客製化 MVC Scaffold</a></p>
+<h2 id="專案開發"><a href="#專案開發" class="headerlink" title="專案開發"></a>專案開發</h2><h3 id="加入-Model"><a href="#加入-Model" class="headerlink" title="加入 Model"></a>加入 Model</h3><p><a href="/posts/2021/03/ASPNET-MVC-EntityFramework-Model/">ASP.NET MVC EntityFramework Model</a></p>
+<h3 id="Partial-Class"><a href="#Partial-Class" class="headerlink" title="Partial Class"></a>Partial Class</h3><p><a href="/posts/2021/03/ASPNET-MVC-PartialClass-DataAnnotations/">ASP.NET MVC 如何加入 PartialCLass &amp; DataAnnotations</a></p>
+<h3 id="Auth-Action-Filter"><a href="#Auth-Action-Filter" class="headerlink" title="Auth / Action Filter"></a>Auth / Action Filter</h3><h3 id="Routing"><a href="#Routing" class="headerlink" title="Routing"></a>Routing</h3><p><a href="https://kevintsengtw.blogspot.com/2013/12/aspnet-mvc-attribute-routing.html" target="_blank" rel="noopener">ASP.NET MVC - 使用 Attribute Routing</a></p>
+<h3 id="設計-API-支援-CROS"><a href="#設計-API-支援-CROS" class="headerlink" title="設計 API 支援 CROS"></a>設計 API 支援 CROS</h3><p><a href="/posts/2020/06/ASPNET-MVC-Troubleshooting">ASP.NET MVC 5 實務開發問題蒐羅</a></p>
+<h2 id="常見的功能"><a href="#常見的功能" class="headerlink" title="常見的功能"></a>常見的功能</h2><h3 id="檔案上傳-下載"><a href="#檔案上傳-下載" class="headerlink" title="檔案上傳 / 下載"></a>檔案上傳 / 下載</h3><p><a href="/posts/2021/02/ASPNET-MVC-Safer-File-Upload/">ASP.NET MVC 5 實作更安全的檔案上傳功能 (ASP.NET MVC Safer File Upload Implements)</a></p>
+<p><a href="/posts/2020/09/ASPNET-MVC-Safer-Download/">ASP.NET MVC 5 實作更安全的檔案下載功能 (ASP.NET MVC Safer Downloads Implements)</a></p>
+<h3 id="啟用-JQuery-Validation"><a href="#啟用-JQuery-Validation" class="headerlink" title="啟用 JQuery.Validation"></a>啟用 JQuery.Validation</h3><p>啟用之後 Model 中設定的 Data Annotation 可以自動在前端加入驗證，如果想要客製警示效果，可以透過修改 <strong>input-validation-error</strong> 來設定 CSS。</p>
+<pre class="line-numbers language-js"><code class="language-js">@section Scripts <span class="token punctuation">{</span>
+    @Scripts<span class="token punctuation">.</span><span class="token function">Render</span><span class="token punctuation">(</span><span class="token string">"~/bundles/jqueryval"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>Site.css</strong></p>
+<pre class="line-numbers language-css"><code class="language-css"><span class="token selector"><span class="token class">.input-validation-error</span> </span><span class="token punctuation">{</span>
+    <span class="token property">border-color</span><span class="token punctuation">:</span> <span class="token hexcode">#ff0039</span><span class="token punctuation">;</span>
+    <span class="token property">padding-right</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span><span class="token number">1.5</span>em + <span class="token number">0.75</span>rem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">background-repeat</span><span class="token punctuation">:</span> no-repeat<span class="token punctuation">;</span>
+    <span class="token property">background-position</span><span class="token punctuation">:</span> right <span class="token function">calc</span><span class="token punctuation">(</span><span class="token number">0.375</span>em + <span class="token number">0.1875</span>rem<span class="token punctuation">)</span> center<span class="token punctuation">;</span>
+    <span class="token property">background-size</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span><span class="token number">0.75</span>em + <span class="token number">0.375</span>rem<span class="token punctuation">)</span> <span class="token function">calc</span><span class="token punctuation">(</span><span class="token number">0.75</span>em + <span class="token number">0.375</span>rem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="檢查瀏覽器是否為-IE"><a href="#檢查瀏覽器是否為-IE" class="headerlink" title="檢查瀏覽器是否為 IE"></a>檢查瀏覽器是否為 IE</h3><p><strong>_Layout.cshtml</strong></p>
+<p>藉由判斷 UserAgent 是否包含 MSIE 以及 Trident 來判斷使用者的瀏覽器，如果符合就出現提示。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp">@<span class="token keyword">if</span> <span class="token punctuation">(</span>Context<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>UserAgent<span class="token punctuation">.</span><span class="token function">Contains</span><span class="token punctuation">(</span><span class="token string">"MSIE"</span><span class="token punctuation">)</span> <span class="token operator">||</span>
+     Context<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>UserAgent<span class="token punctuation">.</span><span class="token function">Contains</span><span class="token punctuation">(</span><span class="token string">"Trident"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+<span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"bs-component text-justify"</span> style<span class="token operator">=</span><span class="token string">"font-size:64px"</span><span class="token operator">></span>
+  <span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"alert alert-dismissible alert-danger"</span><span class="token operator">></span>
+    本網站僅支援 Edge 瀏覽器，請點選「瀏覽」按鈕以 Edge 瀏覽器開啟。
+    <span class="token operator">&lt;</span>a href<span class="token operator">=</span><span class="token string">"microsoft-edge:@(HttpContext.Current.Request.Url)"</span><span class="token operator">></span> 
+      <span class="token operator">&lt;</span>span <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"btn btn-outline-danger"</span> style<span class="token operator">=</span><span class="token string">"font-size:64px"</span><span class="token operator">></span>瀏覽<span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>a<span class="token operator">></span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="處理-Boostrap-在-IE-Browser-跑版的問題"><a href="#處理-Boostrap-在-IE-Browser-跑版的問題" class="headerlink" title="處理 Boostrap 在 IE Browser 跑版的問題"></a>處理 Boostrap 在 IE Browser 跑版的問題</h4><p><strong>_Layout.cshtml</strong> 加入下列 meta</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">http-equiv</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-UA-Compatible<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>IE<span class="token punctuation">=</span>edge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/03/ASPNET-MVC-Start-From-Scratch/" data-id="ckr4we2ih002cmkuvg3oydl2w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/03/Visual-Studio-Debugging-Tools/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">Visual Studio Debugging Tools (活用除錯工具)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/ASPNET-MVC-EntityFramework-Model/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET MVC EntityFramework Model
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

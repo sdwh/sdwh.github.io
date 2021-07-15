@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>ASP.NET MVC 5 使用 DateTimePicker (Bootstrap) | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記介紹 Bootstrap CSS Framework 下如何使用 DateTimePicker 的各種方式 🌞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 5 使用 DateTimePicker (Bootstrap)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/08/MVC-Bootstrap4-DatetimePicker/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記介紹 Bootstrap CSS Framework 下如何使用 DateTimePicker 的各種方式 🌞">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/bootstrap-four.png">
+<meta property="og:image" content="https://sdwh.dev/assets/tempusdominus-datetimepicker.png">
+<meta property="article:published_time" content="2020-08-12T02:43:31.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:57:08.240Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Bootstrap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/bootstrap-four.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-MVC-Bootstrap4-DatetimePicker" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/08/MVC-Bootstrap4-DatetimePicker/" class="article-date">
+  <time datetime="2020-08-12T02:43:31.000Z" itemprop="datePublished">2020-08-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 5 使用 DateTimePicker (Bootstrap)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#實作方式"><span class="toc-text">實作方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jquery-datetimepicker"><span class="toc-text">jquery.datetimepicker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tempus-Dominus-bootstrap-4"><span class="toc-text">Tempus Dominus (bootstrap 4)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Html-5-DateTimePicker-Chrome-Support"><span class="toc-text">Html 5 DateTimePicker (Chrome Support)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bootstrap-v3-Datetimepicker-bootstrap-3"><span class="toc-text">Bootstrap.v3.Datetimepicker (bootstrap 3)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AIR-DATEPICKER"><span class="toc-text">AIR DATEPICKER</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記介紹 Bootstrap CSS Framework 下如何使用 DateTimePicker 的各種方式 🌞</p>
+<a href="/posts/2020/08/MVC-Bootstrap4-DatetimePicker/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/bootstrap-four.png" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="實作方式"><a href="#實作方式" class="headerlink" title="實作方式"></a>實作方式</h2><h3 id="jquery-datetimepicker"><a href="#jquery-datetimepicker" class="headerlink" title="jquery.datetimepicker"></a>jquery.datetimepicker</h3><ol>
+<li>Nuget install jquery.datetimepicker</li>
+<li>bundleConfig.cs 加入 /scripts/jquery.datetimepicker.js</li>
+<li>修正 jquery.datetimepicker.js lang: ‘zh-TW’</li>
+</ol>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>form-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>ml-4 badge-info p-1<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>日期時間選擇器 jquery.datetimepicker<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  @Html.LabelFor(model => model.DateTimeCol, htmlAttributes: new { @class =
+  "control-label col-md-2" })
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    @Html.EditorFor(model => model.DateTimeCol, new { htmlAttributes = new {
+    @class = "form-control w-25" } }) @Html.ValidationMessageFor(model =>
+    model.DateTimeCol, "", new { @class = "text-danger" })
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Tempus-Dominus-bootstrap-4"><a href="#Tempus-Dominus-bootstrap-4" class="headerlink" title="Tempus Dominus (bootstrap 4)"></a>Tempus Dominus (bootstrap 4)</h3><ol>
+<li>Nuget install moment.js</li>
+<li>Npm install tempusdominus-bootstrap-4</li>
+<li>複製 tempusdominus-bootstrap-4/build 中的 tempusdominus-bootstrap-4.css 及 tempusdominus-bootstrap-4.js</li>
+<li>將複製的檔案加入 Asp.net MVC 專案，分別存於 Content 及 Scripts</li>
+<li>bundleConfig.cs 加入</li>
+</ol>
+<pre class="line-numbers language-csharp"><code class="language-csharp">bundles<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ScriptBundle</span><span class="token punctuation">(</span><span class="token string">"~/bundles/datetimepicker"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span>
+            <span class="token string">"~/Scripts/moment.js"</span><span class="token punctuation">,</span>
+            <span class="token string">"~/Scripts/moment-with-locales.js"</span><span class="token punctuation">,</span>
+            <span class="token string">"~/Scripts/tempusdominus-bootstrap-4.js"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="6">
+<li>bundleConfig.cs 加入 “~/Content/tempusdominus-bootstrap-4.css”</li>
+</ol>
+<p><strong>新增資料端</strong></p>
+<p>日期 input 調整為</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp">@Html<span class="token punctuation">.</span><span class="token function">EditorFor</span><span class="token punctuation">(</span>
+  model <span class="token operator">=</span><span class="token operator">></span> model<span class="token punctuation">.</span>WorkDate<span class="token punctuation">,</span>
+  <span class="token keyword">new</span>
+  <span class="token punctuation">{</span>
+    htmlAttributes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token punctuation">{</span>
+      @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"form-control datetimepicker-input"</span><span class="token punctuation">,</span>
+      data_toggle <span class="token operator">=</span> <span class="token string">"datetimepicker"</span><span class="token punctuation">,</span>
+      data_target <span class="token operator">=</span><span class="token string">"#WorkDate"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>View 加入 Scripts</p>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#WorkDate'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">datetimepicker</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        format<span class="token punctuation">:</span> <span class="token string">'L'</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">// Only Date</span>
+        locale<span class="token punctuation">:</span> <span class="token string">'zh-tw'</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>編輯資料端</strong></p>
+<p>Input 不使用 HtmlHelper 改使用 Custom Html Tag</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>form-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    @Html.LabelFor(model => model.WorkDate, htmlAttributes: new { @class = "control-label col-md-10" })
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>form-control datetimepicker-input text-box single-line<span class="token punctuation">"</span></span>
+                <span class="token attr-name">data-target</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#WorkDate<span class="token punctuation">"</span></span>
+                <span class="token attr-name">data-toggle</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>datetimepicker<span class="token punctuation">"</span></span>
+                <span class="token attr-name">data-val-date</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>欄位必須是日期。<span class="token punctuation">"</span></span> 
+                <span class="token attr-name">data-val-required</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>欄位是必要項。<span class="token punctuation">"</span></span> 
+                <span class="token attr-name">data-val</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>WorkDate<span class="token punctuation">"</span></span>
+                <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>WorkDate<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>datetime<span class="token punctuation">"</span></span>
+                <span class="token punctuation">></span></span>
+        @Html.ValidationMessageFor(model => model.WorkDate, "", new { @class = "text-danger" })
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Scripts 代入預設值 (<strong>defaultDate</strong>)</p>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#WorkDate'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">datetimepicker</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    defaultDate<span class="token punctuation">:</span> <span class="token string">"@HttpUtility.HtmlEncode(Model.WorkDate).Split(' ').First()"</span><span class="token punctuation">,</span>
+    format<span class="token punctuation">:</span> <span class="token string">'L'</span><span class="token punctuation">,</span>
+    locale<span class="token punctuation">:</span> <span class="token string">'zh-tw'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/assets/tempusdominus-datetimepicker.png" alt="實作結果"></p>
+<p><a href="https://tempusdominus.github.io/bootstrap-4/" target="_blank" rel="noopener">tempusdominus 參考</a></p>
+<h3 id="Html-5-DateTimePicker-Chrome-Support"><a href="#Html-5-DateTimePicker-Chrome-Support" class="headerlink" title="Html 5 DateTimePicker (Chrome Support)"></a>Html 5 DateTimePicker (Chrome Support)</h3><ol>
+<li>加入 Views/Shared/EditorTemplates</li>
+<li>上述資料夾加入 DateTimePicker.cshtml</li>
+</ol>
+<pre class="line-numbers language-csharp"><code class="language-csharp">@model DateTime<span class="token operator">?</span>
+@<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> shortDate <span class="token operator">=</span> DateTime<span class="token punctuation">.</span><span class="token function">Parse</span><span class="token punctuation">(</span>Model<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+@Html<span class="token punctuation">.</span><span class="token function">TextBoxFor</span><span class="token punctuation">(</span>m <span class="token operator">=</span><span class="token operator">></span> m<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">{</span> @<span class="token keyword">class</span><span class="token operator">=</span> <span class="token string">"form-control"</span><span class="token punctuation">,</span> @type<span class="token operator">=</span><span class="token string">"date"</span><span class="token punctuation">,</span> @Value<span class="token operator">=</span> shortDate <span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="3">
+<li>EditorFor 指定使用 Templates</li>
+</ol>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>form-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    @Html.LabelFor(model => model.WorkDate, htmlAttributes: new { @class = "control-label col-md-2" })
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        @Html.EditorFor(model => model.WorkDate, "DateTimePicker")
+        @Html.ValidationMessageFor(model => model.WorkDate, "", new { @class = "text-danger" })
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Bootstrap-v3-Datetimepicker-bootstrap-3"><a href="#Bootstrap-v3-Datetimepicker-bootstrap-3" class="headerlink" title="Bootstrap.v3.Datetimepicker (bootstrap 3)"></a>Bootstrap.v3.Datetimepicker (bootstrap 3)</h3><ol>
+<li>Nuget install Bootstrap.v3.Datetimepicker.CSS</li>
+<li>Nuget install Bootstrap.v3.Datetimepicker</li>
+</ol>
+<p>待實作</p>
+<h3 id="AIR-DATEPICKER"><a href="#AIR-DATEPICKER" class="headerlink" title="AIR DATEPICKER"></a>AIR DATEPICKER</h3><p><a href="https://github.com/t1m0n/air-datepicker" target="_blank" rel="noopener">Air Datepicker</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/08/MVC-Bootstrap4-DatetimePicker/" data-id="ckr4we2ki00b8mkuvb8l46sxc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bootstrap/" rel="tag">Bootstrap</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/08/MVC-Dependent-Dropdownlist/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">ASP.NET MVC 5 相依關聯的下拉式選單(Dependent Dropdownlist)實作方式</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/08/Azure-104/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Azure Administrator (AZ-104) 證照心得
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>重溫《深入淺出設計模式》命令模式 (Book Review of Head First Design Pattern, Command Pattern) | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="命令模式、外觀模式，乍看之下有些相似，但從模式的意義上的分別兩者就可以感受到不同。命令模式是將命令(要求、需求)封裝成物件，並且讓接受命令者與命令的執行職責拆分，類似餐廳點餐從老闆邊接受客人點餐、邊準備料理分為餐廳前台與餐廳後台，同時命令模式可以將命令與執行時間分隔，延後或者指定執行命令的時間；外觀模式則是將繁雜的類別方法，透過一個簡化的控制類別封裝複雜的演算邏輯，對使用者而言僅需要一個方法就能完">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重溫《深入淺出設計模式》命令模式 (Book Review of Head First Design Pattern, Command Pattern)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/Design-Pattern-Command/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="命令模式、外觀模式，乍看之下有些相似，但從模式的意義上的分別兩者就可以感受到不同。命令模式是將命令(要求、需求)封裝成物件，並且讓接受命令者與命令的執行職責拆分，類似餐廳點餐從老闆邊接受客人點餐、邊準備料理分為餐廳前台與餐廳後台，同時命令模式可以將命令與執行時間分隔，延後或者指定執行命令的時間；外觀模式則是將繁雜的類別方法，透過一個簡化的控制類別封裝複雜的演算邏輯，對使用者而言僅需要一個方法就能完">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/UML-Command.svg">
+<meta property="article:published_time" content="2020-07-02T03:40:00.000Z">
+<meta property="article:modified_time" content="2020-11-30T11:17:27.122Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="DesignPattern">
+<meta property="article:tag" content="Example">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Design-Pattern-Command" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/Design-Pattern-Command/" class="article-date">
+  <time datetime="2020-07-02T03:40:00.000Z" itemprop="datePublished">2020-07-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      重溫《深入淺出設計模式》命令模式 (Book Review of Head First Design Pattern, Command Pattern)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#命令模式"><span class="toc-text">命令模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#After-Pattern"><span class="toc-text">After Pattern</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小結"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>命令模式、外觀模式，乍看之下有些相似，但從模式的意義上的分別兩者就可以感受到不同。命令模式是將命令(要求、需求)封裝成物件，並且讓接受命令者與命令的執行職責拆分，類似餐廳點餐從老闆邊接受客人點餐、邊準備料理分為餐廳前台與餐廳後台，同時命令模式可以將命令與執行時間分隔，延後或者指定執行命令的時間；外觀模式則是將繁雜的類別方法，透過一個簡化的控制類別封裝複雜的演算邏輯，對使用者而言僅需要一個方法就能完成所有關聯的步驟。</p>
+<a href="https://www.tenlong.com.tw/products/9789867794529" target="_blank" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/HeadFirst-DesignPattern.jpg" alt="logo" width="150px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p><em>Encapsulate a request as an object, thereby letting you parametrize clients with different requests, queue or log requests, and support undoable operations.</em></p>
+<p><img src="/assets/UML-Command.svg" alt="命令模式的 UML"></p>
+<h3 id="After-Pattern"><a href="#After-Pattern" class="headerlink" title="After Pattern"></a>After Pattern</h3><p>Command 為 Interface 表示將命令的行為封裝為類別，並由衍生類別去實作 Execute。</p>
+<p>Command.cs<br>NoCommand.cs</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ICommand</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">void</span> <span class="token function">Execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">NoCommand</span> <span class="token punctuation">:</span> ICommand
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">System<span class="token punctuation">.</span>NotImplementedException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>CeilingFan 為 <strong>Receiver</strong> 實際的演算邏輯負責者；CeilingFanOffCommand, CeilingFanOnCommand 為實作 ICommand 的 <strong>Concrete Command</strong> 用來將命令的行為封裝，並且會擁有 <strong>Receiver</strong> 參考，用以呼叫 <strong>Receiver</strong> 的方向。</p>
+<p>CeilingFan.cs<br>CeilingFanOffCommand.cs<br>CeilingFanOnCommand.cs</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">CeilingFan</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">string</span> _location <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> level<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> HIGH <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> MEDIUM <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> LOW <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">CeilingFan</span><span class="token punctuation">(</span><span class="token keyword">string</span> location<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>_location <span class="token operator">=</span> location<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">High</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// turns the ceiling fan on to high</span>
+        level <span class="token operator">=</span> HIGH<span class="token punctuation">;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_location <span class="token operator">+</span> <span class="token string">" ceiling fan is on high"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Medium</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// turns the ceiling fan on to medium</span>
+        level <span class="token operator">=</span> MEDIUM<span class="token punctuation">;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_location <span class="token operator">+</span> <span class="token string">" ceiling fan is on medium"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Low</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// turns the ceiling fan on to low</span>
+        level <span class="token operator">=</span> LOW<span class="token punctuation">;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_location <span class="token operator">+</span> <span class="token string">" ceiling fan is on low"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Off</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// turns the ceiling fan off</span>
+        level <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_location <span class="token operator">+</span> <span class="token string">" ceiling fan is off"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">GetSpeed</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> level<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">CeilingFanOnCommand</span> <span class="token punctuation">:</span> ICommand
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> CeilingFan _ceilingFan<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">CeilingFanOnCommand</span><span class="token punctuation">(</span>CeilingFan ceilingFan<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>_ceilingFan <span class="token operator">=</span> ceilingFan<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>_ceilingFan<span class="token punctuation">.</span><span class="token function">High</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">CeilingFanOffCommand</span> <span class="token punctuation">:</span> ICommand
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> CeilingFan _ceilingFan<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">CeilingFanOffCommand</span><span class="token punctuation">(</span>CeilingFan ceilingFan<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>_ceilingFan <span class="token operator">=</span> ceilingFan<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _ceilingFan<span class="token punctuation">.</span><span class="token function">Off</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以下都是相關的 <strong>Receiver</strong> 及 <strong>Concrete Command</strong></p>
+<p>GarageDoor.cs<br>GarageDoorDownCommand.cs<br>GarageDoorUpCommand.cs</p>
+<p>Hottub.cs<br>HottubOffCommand.cs<br>HottubOnCommand.cs</p>
+<p>Light.cs<br>LightOffCommand.cs<br>LightOnCommand.cs<br>LivingroomLightOffCommand.cs<br>LivingroomLightOnCommand.cs</p>
+<p>Stereo.cs<br>StereoOffCommand.cs<br>StereoOnWithCDCommand.cs</p>
+<p>TV.cs</p>
+<hr>
+<p>RemoteControl 為 <strong>Invoker</strong> ，負責命令的設定、佇列命令及依序執行。</p>
+<p>RemoteControl.cs</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RemoteControl</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> Dictionary<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token punctuation">,</span> ICommand<span class="token operator">></span> _onCommands<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Dictionary<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token punctuation">,</span> ICommand<span class="token operator">></span> _offCommands<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">RemoteControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _onCommands <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Dictionary</span><span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token punctuation">,</span> ICommand<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        _offCommands <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Dictionary</span><span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token punctuation">,</span> ICommand<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        ICommand noCommand <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NoCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">7</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            _onCommands<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> noCommand<span class="token punctuation">;</span>
+            _offCommands<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> noCommand<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">SetCommand</span><span class="token punctuation">(</span><span class="token keyword">int</span> slot<span class="token punctuation">,</span> ICommand onCommand<span class="token punctuation">,</span> ICommand offCommand<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _onCommands<span class="token punctuation">[</span>slot<span class="token punctuation">]</span> <span class="token operator">=</span> onCommand<span class="token punctuation">;</span>
+        _offCommands<span class="token punctuation">[</span>slot<span class="token punctuation">]</span> <span class="token operator">=</span> offCommand<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">OnButtonWasPushed</span><span class="token punctuation">(</span><span class="token keyword">int</span> slot<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _onCommands<span class="token punctuation">[</span>slot<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">Execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">OffButtonWasPushed</span><span class="token punctuation">(</span><span class="token keyword">int</span> slot<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _offCommands<span class="token punctuation">[</span>slot<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">Execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>RemoteLoader 為 Client ，但意義上不是客戶端，更像是命令模式的環境管理，最主要的責任就是建立 Concrete Command 以及組裝 Receiver。</strong></p>
+<p>RemoteLoader.cs</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+
+  <span class="token comment" spellcheck="true">// Client 所負責</span>
+  CeilingFan ceilingFan <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CeilingFan</span><span class="token punctuation">(</span><span class="token string">"Living Room"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  CeilingFanOnCommand ceilingFanOn <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CeilingFanOnCommand</span><span class="token punctuation">(</span>ceilingFan<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  CeilingFanOffCommand ceilingFanOff <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CeilingFanOffCommand</span><span class="token punctuation">(</span>ceilingFan<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">// Invoker 所負責</span>
+  RemoteControl remoteControl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RemoteControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  remoteControl<span class="token punctuation">.</span><span class="token function">SetCommand</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> ceilingFanOn<span class="token punctuation">,</span> ceilingFanOff<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>remoteControl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">// 使用者的呼叫命令行為</span>
+  remoteControl<span class="token punctuation">.</span><span class="token function">OnButtonWasPushed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  remoteControl<span class="token punctuation">.</span><span class="token function">OffButtonWasPushed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>✔️將變動的部分封裝起來<br>✔️讓需要互動的物件之間的關係鬆綁<br>✔️類別應該對需求保持開放；應該對既有的程式碼修改保持關閉<br>命令、接受命令、執行命令都封裝起來，碰到改變互不影響</p>
+<p>✔️多用合成，少用繼承<br>Invoker 合成了 Receiver 與 Concrete Command</p>
+<p>✔️針對介面撰寫，而非針對實踐方式撰寫。<br>Concrete Command 是針對 Command Interface 撰寫，實踐方式則是封裝在 Receiver</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a href="https://notfalse.net/4/command-pattern#i-4" target="_blank" rel="noopener">NotFalse 技術客 - 命令模式</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/Design-Pattern-Command/" data-id="ckr4we2jh006gmkuvceuq9tvc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Example/" rel="tag">Example</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/07/VisualStudio-QuickAction/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">使用 Visual Studio 開發，你不能錯過的 Quick Action 及 Code Snippet</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/07/LinkedIn-Free-Learning-Path/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          因應新冠肺炎，微軟推出 Linkedin 十種免費的專業學習路徑及減免 Azure 證照測驗費用 (Microsoft Launches Initiative to Help 25 Million People Worldwide Acquire the Digital Skills Needed in a COVID-19 Economy)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

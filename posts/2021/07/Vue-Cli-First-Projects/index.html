@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="以往要寫玩具都是用 Python 來寫，週末在玩雙點醫院的過程中，突然想要寫一個訓練色彩辨別的互動玩具（可能是雙點醫院褪色症的啟發）。同時不想再用 jQuery DOM 操作的方式來寫，但想到對於前端各種工具的熟悉度非常有限，如果要從環境開始準備，並且規劃整個開發流程可能會讓整個專案裹足不前 😑 此時想到 Visual Studio IDE 所帶來的良好開發體驗，何不嘗試以 Vue CLI 的方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/Vue-Cli-First-Projects/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="以往要寫玩具都是用 Python 來寫，週末在玩雙點醫院的過程中，突然想要寫一個訓練色彩辨別的互動玩具（可能是雙點醫院褪色症的啟發）。同時不想再用 jQuery DOM 操作的方式來寫，但想到對於前端各種工具的熟悉度非常有限，如果要從環境開始準備，並且規劃整個開發流程可能會讓整個專案裹足不前 😑 此時想到 Visual Studio IDE 所帶來的良好開發體驗，何不嘗試以 Vue CLI 的方">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Vue-Cli-First-Projects-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Vue-Cli-First-Projects-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Vue-Cli-First-Projects-Components.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Vue-Cli-First-Projects-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Vue-Cli-First-Projects-Props-In-Event-Out.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Github-Pages-Setup-1.png">
+<meta property="article:published_time" content="2021-07-15T11:09:00.000Z">
+<meta property="article:modified_time" content="2021-07-15T12:32:21.369Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Vue">
+<meta property="article:tag" content="Toys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue-Cli-First-Projects" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/Vue-Cli-First-Projects/" class="article-date">
+  <time datetime="2021-07-15T11:09:00.000Z" itemprop="datePublished">2021-07-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue/">Vue</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#環境準備"><span class="toc-text">環境準備</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#專案架構"><span class="toc-text">專案架構</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#動手改寫-Components"><span class="toc-text">動手改寫 Components</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#v-for-amp-v-on-key"><span class="toc-text">v-for &amp; v-on:key</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#element-focus-amp-Watch"><span class="toc-text">element focus &amp; Watch</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#元件之間的溝通"><span class="toc-text">元件之間的溝通</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Router-組織頁面"><span class="toc-text">使用 Router 組織頁面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Hash-mode-vs-Html5-mode"><span class="toc-text">Hash mode vs Html5 mode</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#專案發布"><span class="toc-text">專案發布</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#成果"><span class="toc-text">成果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小結"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>以往要寫玩具都是用 Python 來寫，週末在玩雙點醫院的過程中，突然想要寫一個訓練色彩辨別的互動玩具（可能是雙點醫院褪色症的啟發）。同時不想再用 jQuery DOM 操作的方式來寫，但想到對於前端各種工具的熟悉度非常有限，如果要從環境開始準備，並且規劃整個開發流程可能會讓整個專案裹足不前 😑</p>
+<p>此時想到 Visual Studio IDE 所帶來的良好開發體驗，何不嘗試以 Vue CLI 的方式建構整個專案，而不要從開發環境開始琢磨，讓時間集中在功能的實踐，忽略環境的細節並且在需要的時候才去搜尋，於是就開始了打造第一個 Vue App 的過程 ✈️</p>
+<a href="/posts/2021/07/Vue-Cli-First-Projects/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="100%">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>本次使用的是 Vue CLI 4.5.13，開發過程無包袱也無懸念的選擇 Vue 3.x，但選擇之後才發現 3.x 不再支援印象中好用的功能 filter，但影響不大有非常多的替代方式。而用關鍵字 Vue CLI 可以找到 <strong>Kuro Hsu</strong>大大的 <a href="https://book.vue.tw/CH3/3-1-vue-cli-introduction.html" target="_blank" rel="noopener">重新認識 Vue.js</a>，對於曾經隨興翻讀 Vue.js 文件並且參加過 Vue.js 線下課程卻沒有實際動手過的作者而言，確實是重新認識 Vue.js 😅</p>
+<p>這本電子書是實體書 <a href="https://www.tenlong.com.tw/products/9789864345687" target="_blank" rel="noopener">重新認識 Vue.js：008天絕對看不完的 Vue.js 3 指南</a> 的電子版，提供了實體書前四個章節，包含 Vue.js基礎入門、元件系統、單一元件檔與 Vue CLI 以及 Vue Router。Vuex 以及 Vue Composition API 的部分必須要購買實體書才能夠閱讀。但電子版的內容就豐富到，簡直是佛心來的，同時前四章的內容對於要打造本次的專案已經是綽綽有餘的參考內容。</p>
+<h3 id="環境準備"><a href="#環境準備" class="headerlink" title="環境準備"></a>環境準備</h3><p>再決定要使用 Vue CLI 進行開發後，只要確認已經安裝 Node.js，本次開發的環境使用的是 node.js v12.2.0，另有安裝 nvm 可以視情況安裝其他 node.js 版本。</p>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">node</span> <span class="token parameter attr-name">-v</span></span>
+<span class="token comment" spellcheck="true">rem v12.2.0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>接著就可以使用 npm 下列指令進行安裝 Vue CLI</p>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">npm</span> install <span class="token parameter attr-name">-g</span> @vue<span class="token parameter attr-name">/cli</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>完成後接著使用開始建立專案，過程中會引導環境設置，這邊也不深入各功能的用途，選擇必要的功能即可，查詢後有發現事後要再增減環境配置相當容易。</p>
+<p><img src="/assets/Vue-Cli-First-Projects-1.png" alt=""><br><img src="/assets/Vue-Cli-First-Projects-2.png" alt=""></p>
+<p>完成專案建置後，首先執行確認服務有正常啟動，並且開啟 Visual Studio Code 作為開發過程使用的 Editor。</p>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">npm</span> run serve</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>確認 server 有正常運作後，就可以開始 Coding，而 Coding 的過程會同步反映到瀏覽器中，不需要額外的中斷編譯或者重新整理瀏覽器，開發體驗非常好。</p>
+<h3 id="專案架構"><a href="#專案架構" class="headerlink" title="專案架構"></a>專案架構</h3><p>首先映入眼簾的是 Vue CLI 所協助建立的專案架構，初步瞄了一下可以斷定開發的工作只要是集中在 src 資料夾下進行，並且編輯的重點就是 Vue extension 的檔案。稍微閱讀一下電子書，確認這種檔案格式稱為 Single File Components, SFC，結構上包含： Template、Script、Style。設計的方式就是設計各式 SFC Vue Components 並且組合再一起構成應用程式。</p>
+<p><img src="/assets/Vue-Cli-First-Projects-Components.png" alt="圖片來源：https://v3.vuejs.org/"></p>
+<hr>
+<p><img src="/assets/Vue-Cli-First-Projects-3.png" alt=""></p>
+<p>package.json、package-lock.json 是 node.js 管理依賴模組以及定義執行 Script 的設定檔案</p>
+<p>main.js 是整個 App 的程式邏輯進入點</p>
+<p>public/index.html 則是網頁瀏覽器的所需要的靜態頁面檔</p>
+<p>router.js 是 Vue-Router 的設定檔</p>
+<p>.eslintrc.js 用於設定 eslint 的規則，專案是使用 airbnb 的設定</p>
+<h3 id="動手改寫-Components"><a href="#動手改寫-Components" class="headerlink" title="動手改寫 Components"></a>動手改寫 Components</h3><p>一開始先嘗試調整 Template 及 Style，可以發現 Style 有 Scoped 所以元件之間的樣式不會互相影響，同時 Scoped 可以指定要使用的 CSS preprocessor 語言，例如 scss, less, stylus 等等。</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span> <span class="token attr-name">scoped</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>scss<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token style language-css">
+<span class="token selector"><span class="token class">.section-question</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> skyblue<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+  <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">0</span> auto<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token property">font-size</span><span class="token punctuation">:</span> <span class="token number">1.5</span>rem<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>但目前對 scss 不太熟悉，所以還是習慣寫一般的 css 只有特定如<a href="https://sass-lang.com/guide#topic-3" target="_blank" rel="noopener">巢狀關係</a>會使用上。</p>
+<p>而對於 template 因為有使用過 handlebars.js 以及使用 razor 等經驗，很容易理解 template 的使用方式，同樣地 template 與可以使用 lang 例如 pug，但因為沒有特別的需求所以本次的專案暫無使用。</p>
+<p>接著在實作畫面的過程中，可以往回翻電子書，看一下 Vue Directive 的介紹，隨著畫面的實作，逐步理解從 v-text, v-bind, v-model 到 v-on 的使用時機，<strong>不同於以往對於 DOM 的操作，Vue 看到的是元件之間的資料狀態變化關係</strong>。</p>
+<h4 id="v-for-amp-v-on-key"><a href="#v-for-amp-v-on-key" class="headerlink" title="v-for &amp; v-on:key"></a>v-for &amp; v-on:key</h4><p>v-for with Key binding</p>
+<p>使用 v-for 時要搭配 Key bind 才能夠渲染物件，而 v-for 會為了減少 Virtaul DOM 的資源，而重複使用物件，如果 Key 的綁定不正確會出現 Bug 。</p>
+<p>專案中的 AnswerButton 需要重新渲染，但在物件狀態的使用方式下，變成調整 Key 綁定來產生新的物件，而為了避免 Key 值重複，每一次的更新都遞增 round 值作為 Key 的一部分。</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>AnswerButton</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>(color, index) in jamming<span class="token punctuation">"</span></span> 
+    <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>round+color+index<span class="token punctuation">"</span></span> 
+    <span class="token attr-name">:color</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>color<span class="token punctuation">"</span></span> <span class="token attr-name">@updatemsg</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>updatemsg<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">"AnswerOptions"</span><span class="token punctuation">,</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      round<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  methods<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>round <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="element-focus-amp-Watch"><a href="#element-focus-amp-Watch" class="headerlink" title="element focus &amp; Watch"></a>element focus &amp; Watch</h4><p>處理 Input Element 的時候想要使用者能夠輕易地連續輸入資料。所以目標自動 Foucs 在 Input Element 上，藉由 HTML 原生的 autofocus 即可以達到效果。</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+    <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>input-answer<span class="token punctuation">"</span></span>
+    <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>number<span class="token punctuation">"</span></span>
+    <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>inputAnswer<span class="token punctuation">"</span></span>
+    <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>\d*<span class="token punctuation">"</span></span>
+    <span class="token attr-name">v-model.number</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>userAnswer<span class="token punctuation">"</span></span>
+    <span class="token attr-name"><span class="token namespace">v-on:</span>keyup.enter</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>updateQuestion()<span class="token punctuation">"</span></span>
+    <span class="token attr-name">autofocus</span>
+<span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>而一開始是想藉由 Mobile Device Numpad 來連續執行，但發現 iOS Numpad 沒有 Submit Button，後來決定採 Watch 監測的方式當使用者的輸入內容改變時，就進行檢查並將重新聚焦的動作寫在檢查內容的函式，Watch 扮演結合的角色。</p>
+<p>設定上 template 需要設定 ref 名稱，才可以由 methods 中透過 refs 去進行 focus。</p>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token string">'Home'</span><span class="token punctuation">,</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      userAnswer<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  watch<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token function">userAnswer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">updateQuestion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  methods<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token function">updateQuestion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>answer <span class="token operator">===</span> <span class="token keyword">this</span><span class="token punctuation">.</span>userAnswer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// logic about update question</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$refs<span class="token punctuation">.</span>inputAnswer<span class="token punctuation">.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="元件之間的溝通"><a href="#元件之間的溝通" class="headerlink" title="元件之間的溝通"></a>元件之間的溝通</h3><p>關鍵心法就是 <strong>Props In, Events Out</strong>，在想要控制子元件的時候，常會想起 jQuery 控制 DOM 的好，但千萬要忍耐住，並且改以物件狀態的觀點來重新進行設計上的思考。翻閱電子書可以提供靈感與相法，而撐過使用 DOM 的渴望，就能夠逐漸適應 Vue.js Components 式的開發方式。</p>
+<p>而在做元件之間的溝通，由父元件以傳入子元件的 Props，而子元件則是以 Events 的方式呼叫父元件的方法來進行狀態更新、資料操作。設計概念上是各元件的資料由元件本身進行管理，才不會造成 Debug 追蹤上的困難。</p>
+<p><a href="/assets/Vue-Cli-First-Projects-Props-In-Event-Out.png" title="圖片來源：https://v3.vuejs.org/" class="fancybox" rel="article0"><img src="/assets/Vue-Cli-First-Projects-Props-In-Event-Out.png" style="width:360px;" alt="圖片來源：https://v3.vuejs.org/"></a><span class="caption">圖片來源：https://v3.vuejs.org/</span></p>
+
+<p>父元件 Template</p>
+<p>將 updatemsg methods 傳入子元件。</p>
+<pre class="line-numbers language-html"><code class="language-html">  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>AnswerButton</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>(color, index) in jamming<span class="token punctuation">"</span></span> 
+    <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>round+color+index<span class="token punctuation">"</span></span> 
+    <span class="token attr-name">:color</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>color<span class="token punctuation">"</span></span> <span class="token attr-name">@update</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>updatemsg<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>父元件 Script</p>
+<p>定義 updatemsg 的用途。</p>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  methods<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token function">updatemsg</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token operator">==</span> <span class="token keyword">this</span><span class="token punctuation">.</span>option<span class="token punctuation">)</span>
+      <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>message <span class="token operator">=</span> <span class="token template-string"><span class="token string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>e<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> 🎨`</span></span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>correct <span class="token operator">=</span> <span class="token boolean">true</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">else</span>
+      <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>message <span class="token operator">=</span> <span class="token string">''</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>correct <span class="token operator">=</span> <span class="token boolean">false</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>子元件 Template</p>
+<p>綁定 button 與子元件字型的 changeColor method。</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">:</span><span class="token style-attr language-css"><span class="token attr-name"><span class="token attr-name">style</span></span><span class="token punctuation">="</span><span class="token attr-value">style</span><span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">v-on:</span>click</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>changeColor(color)<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>{{ color }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>子元件 Script</p>
+<p>藉由 $emiit 的方式呼叫父元件的 updatemsg</p>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  emits<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'update'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  methods<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token function">changeColor</span><span class="token punctuation">(</span>color<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>changeBackground <span class="token operator">=</span> <span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>changeBackground
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$emit</span><span class="token punctuation">(</span><span class="token string">'update'</span><span class="token punctuation">,</span> color<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<hr>
+<p>在第二個專案則是改採 Big Components 的方式進行設計，省略了 Props、Events 的設計，當然這會使得檔案過於龐大，日後的擴充勢必要在拆分檔案內容。</p>
+<h3 id="使用-Router-組織頁面"><a href="#使用-Router-組織頁面" class="headerlink" title="使用 Router 組織頁面"></a>使用 Router 組織頁面</h3><h4 id="Hash-mode-vs-Html5-mode"><a href="#Hash-mode-vs-Html5-mode" class="headerlink" title="Hash mode vs Html5 mode"></a>Hash mode vs Html5 mode</h4><p>原先是使用 Html5 mode 發現藉由 Router 導向的頁面如果 Refresh Page 就會在 Github Page 出現 HttpStatus 404。經查後才發現必須要搭配網頁伺服器的 Redirect 至 public/index.html 才不會出現這個問題。然而對於 Github Page 沒有辦法進行網頁伺服器的調整，因此最後改以 Hash mode 的方式，缺點是 URL 會出現 /#/ ，且也不利於 SEO。然而這點對於本次專案 Vue App 的情境而言不需要 SEO，所以部會造成任何問題。</p>
+<p>瀏覽器就可以直接連結 Vue Router 導向的葉面，例如 <a href="https://color.sdwh.dev/#/full/teal" target="_blank" rel="noopener">色彩的沉浸模式 | https://color.sdwh.dev/#/full/teal</a></p>
+<p><a href="https://next.router.vuejs.org/guide/essentials/history-mode.html#hash-mode" target="_blank" rel="noopener">Vue Router - Different History modes</a></p>
+<h2 id="專案發布"><a href="#專案發布" class="headerlink" title="專案發布"></a>專案發布</h2><p><a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">⭐ 專案發布的詳細步驟說明 | sdwh.dev</a></p>
+<p><img src="/assets/Github-Pages-Setup-1.png" alt=""></p>
+<h2 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h2><p><a href="https://color.sdwh.dev/" target="_blank" rel="noopener">🎮 灰色と青</a> <span style="margin-left:20px;margin-right:20px">|</span> <a href="https://github.com/sdwh/ColorMaster" target="_blank" rel="noopener">🐱‍💻 灰色と青 | Github Repo</a></p>
+<p><a href="https://subayaku.sdwh.dev" target="_blank" rel="noopener">🎮 す早く | Mental Excersice</a> <span style="margin-left:20px;margin-right:20px">|</span> <a href="https://github.com/sdwh/Subayaku" target="_blank" rel="noopener">🐱‍💻 す早く | Github Repo</a></p>
+<style>
+.iframe-mobile{
+    width: 49%;
+}
+
+@media (max-width: 768px){
+    .iframe-mobile{
+        width: 100%;
+    }
+}
+</style>
+
+<iframe class="iframe-mobile" width="420" height="600" src="https://www.youtube.com/embed/TMK1jip9BW4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe class="iframe-mobile" width="420" height="600" src="https://www.youtube.com/embed/-How2eHQyJE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>使用 Vue CLI 並使用 Visual Studio Code 進行開發，享受流暢的開發體驗，應用前端框架為提供了開發複雜應用程式的可能性。</p>
+<p>精進方向結合 Firebase 資料保存、讀取的功能，探索 Vuex 儲存狀態，讓元件之間可以共用資料，探索 axios，呼叫 API 載入資料 💎</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://book.vue.tw/CH3/3-1-vue-cli-introduction.html" target="_blank" rel="noopener">重新認識 Vue.js</a></p>
+<p><a href="https://www.tenlong.com.tw/products/9789864345687" target="_blank" rel="noopener">重新認識 Vue.js：008天絕對看不完的 Vue.js 3 指南</a></p>
+<hr>
+<svg height="100%" width="100%" style="height:300px;">
+  <defs>
+    <pattern id="doodad" width="70.44" height="122" viewBox="0 0 34.64101615137755 60" patternUnits="userSpaceOnUse" patternTransform="rotate(178)">
+      <rect width="100%" height="100%" fill="rgba(203, 213, 224,1)"/>
+      <path d="M51.96 30L51.96 50L34.64 60L34.64 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 30L17.32 50L0 60L0 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 0L34.64 20L17.32 30L17.32 10z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 60L34.64 80L17.32 90L17.32 70z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 60L17.32 50L17.32 30L34.64 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M0 60L-17.32 50L-17.32 30L0 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 30L0 20L0 0L17.32 10z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 90L0 80L0 60L17.32 70z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M23.38 46.5L23.38 33.5L34.64 27L34.64 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M-11.26 46.5L-11.26 33.5L0 27L0 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M6.06 16.5L6.06 3.5L17.32-3L17.32 10z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M6.06 76.5L6.06 63.5L17.32 57L17.32 70z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 27L45.9 33.5L45.9 46.5L34.64 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M0 27L11.26 33.5L11.26 46.5L0 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32-3L28.58 3.5L28.58 16.5L17.32 10z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 57L28.58 63.5L28.58 76.5L17.32 70z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M45.9 46.5L34.64 53L23.38 46.5L34.64 40z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M11.26 46.5L0 53L-11.26 46.5L0 40z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M28.58 16.5L17.32 23L6.06 16.5L17.32 10z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M28.58 76.5L17.32 83L6.06 76.5L17.32 70z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 40L34.64 40L34.64 40L34.64 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M0 40L0 40L0 40L0 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 10L17.32 10L17.32 10L17.32 10z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 70L17.32 70L17.32 70L17.32 70z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M34.64 40L34.64 40L34.64 40L34.64 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M0 40L0 40L0 40L0 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 10L17.32 10L17.32 10L17.32 10z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 70L17.32 70L17.32 70L17.32 70z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 40L34.64 40L34.64 40L34.64 40z" stroke-linejoin="miter" background="true" fill="rgba(229, 62, 62,1)"/>
+      <path d="M0 40L0 40L0 40L0 40z" stroke-linejoin="miter" background="true" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 10L17.32 10L17.32 10L17.32 10z" stroke-linejoin="miter" background="true" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 70L17.32 70L17.32 70L17.32 70z" stroke-linejoin="miter" background="true" fill="rgba(229, 62, 62,1)"/>
+      <path d="M34.64 40L34.64 40L34.64 40L34.64 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M0 40L0 40L0 40L0 40z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 10L17.32 10L17.32 10L17.32 10z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 70L17.32 70L17.32 70L17.32 70z" stroke-linejoin="miter" fill="rgba(247, 250, 252,1)"/>
+      <path d="M34.64 40L34.64 40L34.64 40L34.64 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M0 40L0 40L0 40L0 40z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 10L17.32 10L17.32 10L17.32 10z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M17.32 70L17.32 70L17.32 70L17.32 70z" stroke-linejoin="miter" fill="rgba(229, 62, 62,1)"/>
+      <path d="M34.64 40L34.64 40L34.64 40L34.64 40z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M0 40L0 40L0 40L0 40z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 10L17.32 10L17.32 10L17.32 10z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+      <path d="M17.32 70L17.32 70L17.32 70L17.32 70z" stroke-linejoin="miter" background="true" fill="rgba(247, 250, 252,1)"/>
+    </pattern>
+  </defs>
+  <rect fill="url(#doodad)" height="200%" width="200%"/>
+</svg>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/Vue-Cli-First-Projects/" data-id="ckr4we2n000n1mkuv2wjk3jdj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Github Pages 使用教學 ⭐ 發布網頁設計成果
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

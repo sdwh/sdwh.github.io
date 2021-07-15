@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="External Brain, Note About IT Worklife and Tech Toys. 紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，為未來的自己與社會服務。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="External Brain">
+<meta property="og:url" content="https://sdwh.dev/page/17/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="External Brain, Note About IT Worklife and Tech Toys. 紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，為未來的自己與社會服務。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="資訊處理">
+<meta property="article:tag" content="自我成長">
+<meta property="article:tag" content="軟體工程">
+<meta property="article:tag" content="系統管理">
+<meta property="article:tag" content="資料庫管理">
+<meta property="article:tag" content="資料分析">
+<meta property="article:tag" content="資訊安全">
+<meta property="article:tag" content="程式設計">
+<meta property="article:tag" content="DBA">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="asp">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-SQL-Server-DailyLife" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/11/SQL-Server-DailyLife/" class="article-date">
+  <time datetime="2020-11-07T04:29:53.000Z" itemprop="datePublished">2020-11-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/11/SQL-Server-DailyLife/">資料庫管理的日常工作內容 (SQL Server Routinely Maintenance)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>本次筆記從 <a href="https://app.pluralsight.com/library/courses/getting-started-sql-server-maintenance/table-of-contents" target="_blank" rel="noopener">PluralSight</a> 課程學習到的資料庫日常工作維護內容，並與目前的資料庫管理工作相比較綜合整理 📚</p>
+<a href="/posts/2020/11/SQL-Server-DailyLife/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/11/SQL-Server-DailyLife/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/11/SQL-Server-DailyLife/" data-id="ckr4we2lj00g4mkuve1uq2npr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SQL-Server-Instructor-Led-Course" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/" class="article-date">
+  <time datetime="2020-11-05T12:52:56.000Z" itemprop="datePublished">2020-11-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>蒐集各式關於 SQL Server 資料庫學習的資源。</p>
+<a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/11/SQL-Server-Instructor-Led-Course/" data-id="ckr4we2lq00h9mkuvg3fi2yro" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-NIST-NVD-CVE-CPE" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/NIST-NVD-CVE-CPE/" class="article-date">
+  <time datetime="2020-10-30T14:08:23.000Z" itemprop="datePublished">2020-10-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/NIST-NVD-CVE-CPE/">如何識別與確認第三方軟體是否存在弱點 🛡️ (NIST NVC / CVE / CPE)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>資安領域的發展將資安弱點以 CWE 的方式做分類，其中 OWASP TOP 10 則是精選最常見的弱點種類。而具體資安弱點則是以 CVE 的方式進行標準編號，並且以 CVSS 的方式對弱點進行評分其嚴重程度。而 NIST NVD 則另外提出 CPE 的觀念，將資訊資產項目予以編號標準化，別且連結 CPE 與 CVE 之間的關係，使安全工具自動化驗證弱點成為可能。</p>
+<p>本篇主要說明資安領域如何以標準化的方式表示資安弱點，並嘗試蒐羅各種自助式的弱點檢測方案。</p>
+<a href="/posts/2020/10/NIST-NVD-CVE-CPE/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/NIST-NVD-CVE-CPE/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/NIST-NVD-CVE-CPE/" data-id="ckr4we2kn00c2mkuv2yi14gfc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web/" rel="tag">Web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android-Migration-To-iOS14" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/Android-Migration-To-iOS14/" class="article-date">
+  <time datetime="2020-10-30T11:30:00.000Z" itemprop="datePublished">2020-10-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mobile/">Mobile</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/Android-Migration-To-iOS14/">由 Zenfone 5 / Android 9 轉換至 iPhone 12 / iOS 14 的心得筆記</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記由 Android 至 iOS 行動裝置平台轉換的心得，以及為了保持既有習慣所做的調整設定。</p>
+<div style="max-height:350px;overflow: hidden;margin-top: 15px;">
+  <a href="/posts/2020/10/Android-Migration-To-iOS14/" title="logo" >
+    <img src="/assets/iphone-12-photo.jpg" alt="logo" width="75%"" style="border-radius:10px;"/>
+  </a>
+</div>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/Android-Migration-To-iOS14/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/Android-Migration-To-iOS14/" data-id="ckr4we2iw003lmkuv7s5idu7h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mobile/" rel="tag">Mobile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-GovOwned-Exam-Trends-2020" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/GovOwned-Exam-Trends-2020/" class="article-date">
+  <time datetime="2020-10-24T00:34:40.000Z" itemprop="datePublished">2020-10-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PowerBI/">PowerBI</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/GovOwned-Exam-Trends-2020/">109年「經濟部所屬事業機構新進職員甄試」報名趨勢分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>練習以 Power BI 分析 109 年「經濟部所屬事業機構新進職員甄試」報名人數的變化趨勢，作為使用 Power BI 的練習。</p>
+<a href="/posts/2020/10/GovOwned-Exam-Trends-2020/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/POWER-BI-LOGO.png" alt="logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/GovOwned-Exam-Trends-2020/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/GovOwned-Exam-Trends-2020/" data-id="ckr4we2k0008xmkuvfjv2cx5x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DataAnalysis/" rel="tag">DataAnalysis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DataVisualization/" rel="tag">DataVisualization</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerBI/" rel="tag">PowerBI</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Windows-Hideen-Files" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/Windows-Hideen-Files/" class="article-date">
+  <time datetime="2020-10-21T11:30:00.000Z" itemprop="datePublished">2020-10-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/Windows-Hideen-Files/">如何在 Windows 10 下檢視隱藏的檔案、資料夾、系統資料夾</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p> 筆記如何顯示作業系統中隱藏的檔案、資料夾、系統資料夾，要特別注意解除隱藏後不要誤刪重要的系統檔案，否則會造成無法正常開機。</p>
+<a href="/posts/2020/10/Windows-Hideen-Files/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Windows-10-Logo.svg" alt="logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/Windows-Hideen-Files/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/Windows-Hideen-Files/" data-id="ckr4we2n800numkuvgruwf0jt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Windows-10-Path-Gallery" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/Windows-10-Path-Gallery/" class="article-date">
+  <time datetime="2020-10-15T11:30:09.000Z" itemprop="datePublished">2020-10-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/Windows-10-Path-Gallery/">Windows 10 資料夾路徑大全</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>廣蒐 Windows 10 作業系統中各式重要目錄路徑方便查閱 🔍</p>
+<a href="/posts/2020/10/Windows-10-Path-Gallery/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Windows-10-Logo.svg" alt="logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/Windows-10-Path-Gallery/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/Windows-10-Path-Gallery/" data-id="ckr4we2n600njmkuvbjfjax9q" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ASPNET-MVC-Extensions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/ASPNET-MVC-Extensions/" class="article-date">
+  <time datetime="2020-10-14T08:52:45.000Z" itemprop="datePublished">2020-10-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/ASPNET-MVC-Extensions/">ASP.NET MVC 如何藉由彈性的擴充實作豐富應用系統開發 (ASP.NET MVC How to Customly Implements Extensions)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>萃取於 <a href="https://app.pluralsight.com/library/courses/mvc-applications-10-extension-points-improving/table-of-contents" target="_blank" rel="noopener">pluralsight - Improving Your MVC Applications with 10 Extension Points</a> 所學習到的觀念以及能夠應用在未來開發上的實務技能。</p>
+<p>ASP.NET MVC 是高擴充性的框架，能夠按照需求擴充。而在擴充時按照 Conention Over Configuration 的方式，不用自定義新的設置方式，更易於面對不斷變的需求下的維護情境 🎃</p>
+<a href="/posts/2020/10/ASPNET-MVC-Extensions/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/ASPNET-MVC-Extensions/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/ASPNET-MVC-Extensions/" data-id="ckr4we2i7001gmkuv49bp4k77" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Microsoft-License" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/Microsoft-License/" class="article-date">
+  <time datetime="2020-10-14T08:26:02.000Z" itemprop="datePublished">2020-10-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/Microsoft-License/">微軟產品授權條款查閱方式 (How to Check Microsoft&#39;s Products License)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記查詢微軟產品的授權方式，讓數位應用的歷程不僅用得聰明也用得合規 😎</p>
+<a href="https://www.microsoft.com/zh-tw/Licensing/product-licensing/products?rtc=1" target="_blank" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/Microsoft-Logo.svg" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/Microsoft-License/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/Microsoft-License/" data-id="ckr4we2km00brmkuv5ud609gt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-IIS-Security-Configuration" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/IIS-Security-Configuration/" class="article-date">
+  <time datetime="2020-10-10T02:04:02.000Z" itemprop="datePublished">2020-10-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>本次的筆記源自 <a href="https://www.pluralsight.com/courses/securing-iis-websites" target="_blank" rel="noopener">Pluralsight - Securing IIS Websites</a> 及<a href="https://app.pluralsight.com/library/courses/auditing-iis-web-servers-security-best-practices/table-of-contents" target="_blank" rel="noopener">Pluralsight - Auditing IIS Web Servers for Security and Best Practices</a>課程心得以及其他文章的綜合整理：關於 IIS 安全實務設定建議。</p>
+<p>良好的 IIS 安全設定可以和 Application Security 互相輝映，同時也可以補充不足，本次筆記綜合課程的內容，並反思個人在 IIS 設定上的心得 😄</p>
+<a href="/posts/2020/10/IIS-Security-Configuration/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2020/10/IIS-Security-Configuration/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/IIS-Security-Configuration/" data-id="ckr4we2kc00admkuv5rc51x7y" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/16/">↖ 上一頁</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" href="/page/18/">下一頁 ↘</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>SQL Server Always on Availability Group 可用性群組安裝筆記 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 如何設定 Always On Availability Group (可用性群組)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Always on Availability Group 可用性群組安裝筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/SQL-Server-Availability-Group-Deploy-Guide/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記 SQL Server 如何設定 Always On Availability Group (可用性群組)">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Service-Account-Setup-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Service-Account-Setup-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Service-Account-Setup-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Failover-Cluster-Artibration-Migration-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Failover-Cluster-Artibration-Migration-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Deploy-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Listener-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Listener-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Listener-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Failover.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Failover-Cluster-Artibration-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Failover-Cluster-Artibration-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Failover-Cluster-Artibration-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Failover-Cluster-Artibration-4.png">
+<meta property="article:published_time" content="2021-07-05T12:30:00.000Z">
+<meta property="article:modified_time" content="2021-07-05T13:03:34.181Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Availability-Group-Deploy-Guide" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/SQL-Server-Availability-Group-Deploy-Guide/" class="article-date">
+  <time datetime="2021-07-05T12:30:00.000Z" itemprop="datePublished">2021-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Always on Availability Group 可用性群組安裝筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前置作業"><span class="toc-text">前置作業</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#準備資料庫伺服器"><span class="toc-text">準備資料庫伺服器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#啟用服務的-Always-On-可用性群組"><span class="toc-text">啟用服務的 Always On 可用性群組</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建置容錯叢集-Build-Windows-Server-Failover-Cluster"><span class="toc-text">建置容錯叢集 (Build Windows Server Failover Cluster)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#叢集切換"><span class="toc-text">叢集切換</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建置可用性群組"><span class="toc-text">建置可用性群組</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#選擇可用性資料庫"><span class="toc-text">選擇可用性資料庫</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建置可用性群組-Listener"><span class="toc-text">建置可用性群組 Listener</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#驗證可用性群組容錯移轉"><span class="toc-text">驗證可用性群組容錯移轉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步-SQL-Server-Agent-的作業排程"><span class="toc-text">同步 SQL Server Agent 的作業排程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#叢集的仲裁設定"><span class="toc-text">叢集的仲裁設定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相關連結"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 如何設定 Always On Availability Group (可用性群組)</p>
+<a href="/posts/2021/07/SQL-Server-Availability-Group-Deploy-Guide/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="前置作業"><a href="#前置作業" class="headerlink" title="前置作業"></a>前置作業</h3><ol>
+<li>需要準備兩台資料庫伺服器 (SQL Server 2012+，版號相同)</li>
+<li>需要一組網域帳戶作為 Service Account</li>
+<li>需要 Active Directory 網域環境</li>
+<li>兩台資料庫伺服器需要建置為同 Windows Cluster (容錯叢集) 環境</li>
+<li>作業過程中會需要網域管理者的權限新增電腦物件（建立叢集 Cluster, 建立 Availability Group Listener</li>
+</ol>
+<h3 id="準備資料庫伺服器"><a href="#準備資料庫伺服器" class="headerlink" title="準備資料庫伺服器"></a>準備資料庫伺服器</h3><p><a href="/posts/2020/12/SQL-Server-Installation/">安裝 SQL Server 的步驟</a></p>
+<p>另需要使用 <strong>SQL Server 組態管理員</strong> 將 SQL Server 及 SQL Server Agent 的登入帳號調整為所準備的網域帳戶，第二台資料庫伺服器亦須使用同樣的網域帳戶做相同的設定。</p>
+<p><img src="/assets/SQL-Server-Service-Account-Setup-1.png" alt=""><br><img src="/assets/SQL-Server-Service-Account-Setup-2.png" alt=""></p>
+<h3 id="啟用服務的-Always-On-可用性群組"><a href="#啟用服務的-Always-On-可用性群組" class="headerlink" title="啟用服務的 Always On 可用性群組"></a>啟用服務的 Always On 可用性群組</h3><p>⚠️ 需調整為網域帳戶登入身分，才能夠正常啟用。</p>
+<p><img src="/assets/SQL-Server-Service-Account-Setup-3.png" alt=""></p>
+<h3 id="建置容錯叢集-Build-Windows-Server-Failover-Cluster"><a href="#建置容錯叢集-Build-Windows-Server-Failover-Cluster" class="headerlink" title="建置容錯叢集 (Build Windows Server Failover Cluster)"></a>建置容錯叢集 (Build Windows Server Failover Cluster)</h3><p>略，另以專篇筆記說明 😋</p>
+<h4 id="叢集切換"><a href="#叢集切換" class="headerlink" title="叢集切換"></a>叢集切換</h4><p>確認目前使用的叢集所使用的資料庫伺服器以及如何由叢集進行切換。</p>
+<p><img src="/assets/Windows-Server-Failover-Cluster-Artibration-Migration-1.png" alt=""><br><img src="/assets/Windows-Server-Failover-Cluster-Artibration-Migration-2.png" alt=""></p>
+<h3 id="建置可用性群組"><a href="#建置可用性群組" class="headerlink" title="建置可用性群組"></a>建置可用性群組</h3><h4 id="選擇可用性資料庫"><a href="#選擇可用性資料庫" class="headerlink" title="選擇可用性資料庫"></a>選擇可用性資料庫</h4><p><img src="/assets/SQL-Server-AG-Deploy-1.png" alt=""></p>
+<p>資料庫的<strong>復原模式必須為完整復原模式</strong>，才能夠作為可用性群組所使用的資料庫。</p>
+<p><img src="/assets/SQL-Server-AG-Deploy-2.png" alt=""><br><img src="/assets/SQL-Server-AG-Deploy-3.png" alt=""></p>
+<p>端點預設使用 5022 port，要注意伺服器之間的防火牆是否允許。</p>
+<p><img src="/assets/SQL-Server-AG-Deploy-4.png" alt=""></p>
+<p>UNC 路徑被需要讓 SQL Server Service 所使用的登入身分能夠有權限存取，才能作為自動備份與還原資料庫的中介資料夾。</p>
+<p><img src="/assets/SQL-Server-AG-Deploy-5.png" alt=""><br><img src="/assets/SQL-Server-AG-Deploy-6.png" alt=""><br><img src="/assets/SQL-Server-AG-Deploy-7.png" alt=""></p>
+<h3 id="建置可用性群組-Listener"><a href="#建置可用性群組-Listener" class="headerlink" title="建置可用性群組 Listener"></a>建置可用性群組 Listener</h3><p>需要為 Listener 指定一組 IP，此 Listener 所代表的就是該可用性群組。因此在應用程式的連線字串，應使用 Listener 的名稱作為資料庫伺服器名稱連線，當 Availability Group 的 Failover 發生時，應用程式才能對應連結到目前 Active 的資料庫伺服器。</p>
+<p><img src="/assets/SQL-Server-AG-Listener-1.png" alt=""><br><img src="/assets/SQL-Server-AG-Listener-2.png" alt=""><br><img src="/assets/SQL-Server-AG-Listener-3.png" alt=""></p>
+<h3 id="驗證可用性群組容錯移轉"><a href="#驗證可用性群組容錯移轉" class="headerlink" title="驗證可用性群組容錯移轉"></a>驗證可用性群組容錯移轉</h3><p>由儀錶板 (Dashboard) 可以看到目前可用性群組使用中的資料庫伺服器(主要執行個體)，並且可以進行容錯移轉，以將主要執行個體做切換。</p>
+<p><img src="/assets/SQL-Server-AG-Failover.png" alt=""></p>
+<h3 id="同步-SQL-Server-Agent-的作業排程"><a href="#同步-SQL-Server-Agent-的作業排程" class="headerlink" title="同步 SQL Server Agent 的作業排程"></a>同步 SQL Server Agent 的作業排程</h3><p>略</p>
+<h3 id="叢集的仲裁設定"><a href="#叢集的仲裁設定" class="headerlink" title="叢集的仲裁設定"></a>叢集的仲裁設定</h3><p><img src="/assets/Windows-Server-Failover-Cluster-Artibration-1.png" alt=""><br><img src="/assets/Windows-Server-Failover-Cluster-Artibration-2.png" alt=""><br><img src="/assets/Windows-Server-Failover-Cluster-Artibration-3.png" alt=""><br><img src="/assets/Windows-Server-Failover-Cluster-Artibration-4.png" alt=""></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://www.cc.ntu.edu.tw/chinese/epaper/0056/20210320_5607.html" target="_blank" rel="noopener">SQL Server 2017與Always on高可用性群組使用心得</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/SQL-Server-Availability-Group-Deploy-Guide/" data-id="ckr4we2lb00f2mkuv4hf5h1eg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Google-Analytics-Exclude-View-From-Localhost/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">Google Analytics 排除來自本機開發的瀏覽紀錄</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/Windows-Remote-Assistance/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Windows 遠端協助的 3 項解決方案 (Windows Remote Assistance Solutions)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>Windows Command Line, CMD, 命令提示字元 使用指南 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記使用 Windows Command Line, 命令提示字元，進行作業系統操作的實用指令與教學，同時逐步在 IT 的生涯基於工作需要，完成 CMD 指令大全，並且搭配 Powershell 與 bat 執行檔，自動執行程式與登入等工作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows Command Line, CMD, 命令提示字元 使用指南">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/Windows-Useful-Cmd/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記使用 Windows Command Line, 命令提示字元，進行作業系統操作的實用指令與教學，同時逐步在 IT 的生涯基於工作需要，完成 CMD 指令大全，並且搭配 Powershell 與 bat 執行檔，自動執行程式與登入等工作。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+<meta property="article:published_time" content="2021-07-09T11:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-09T11:05:50.279Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows-Useful-Cmd" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/Windows-Useful-Cmd/" class="article-date">
+  <time datetime="2021-07-09T11:00:00.000Z" itemprop="datePublished">2021-07-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows Command Line, CMD, 命令提示字元 使用指南
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Directory-Manage-📁"><span class="toc-text">Directory Manage 📁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#刪除資料夾"><span class="toc-text">刪除資料夾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#copy-cmd-必須自行建立不存在的資料夾"><span class="toc-text">copy cmd (必須自行建立不存在的資料夾)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#xcopy-cmd-自動建立不存在的資料夾"><span class="toc-text">xcopy cmd (自動建立不存在的資料夾)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#robocopy"><span class="toc-text">robocopy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#檔名異動"><span class="toc-text">檔名異動</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#資料夾內所有-txt-檔改為-md檔"><span class="toc-text">資料夾內所有 txt 檔改為 md檔</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除所有檔案的副檔名"><span class="toc-text">移除所有檔案的副檔名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#資料呈現"><span class="toc-text">資料呈現</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#按照異動時間排列資料夾內檔案"><span class="toc-text">按照異動時間排列資料夾內檔案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最近60分鐘內異動過的檔案"><span class="toc-text">最近60分鐘內異動過的檔案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Append-File"><span class="toc-text">Append File</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#顯示子檔案與時間-with-精美格式"><span class="toc-text">顯示子檔案與時間 with 精美格式</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記使用 Windows Command Line, 命令提示字元，進行作業系統操作的實用指令與教學，同時逐步在 IT 的生涯基於工作需要，完成 CMD 指令大全，並且搭配 Powershell 與 bat 執行檔，自動執行程式與登入等工作。</p>
+<a href="/posts/2021/07/Windows-Useful-Cmd/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="Directory-Manage-📁"><a href="#Directory-Manage-📁" class="headerlink" title="Directory Manage 📁"></a>Directory Manage 📁</h2><h3 id="刪除資料夾"><a href="#刪除資料夾" class="headerlink" title="刪除資料夾"></a>刪除資料夾</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">rmdir</span> <span class="token parameter attr-name">/q</span> <span class="token parameter attr-name">/s</span> tempdir</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>/q</strong> quiet<br><strong>/s</strong> sub-directory</p>
+<h3 id="copy-cmd-必須自行建立不存在的資料夾"><a href="#copy-cmd-必須自行建立不存在的資料夾" class="headerlink" title="copy cmd (必須自行建立不存在的資料夾)"></a>copy cmd (必須自行建立不存在的資料夾)</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">mkdir</span> tempdir</span>
+<span class="token command"><span class="token keyword">copy</span> .\sharepoints\*.png .\tempdir\ <span class="token parameter attr-name">/q</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="xcopy-cmd-自動建立不存在的資料夾"><a href="#xcopy-cmd-自動建立不存在的資料夾" class="headerlink" title="xcopy cmd (自動建立不存在的資料夾)"></a>xcopy cmd (自動建立不存在的資料夾)</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">xcopy</span> .\sharepoints\b01\*.txt xcopydir\b01\</span>
+<span class="token command"><span class="token keyword">xcopy</span> .\sharepoints\*.txt .\dir\ <span class="token parameter attr-name">/s</span></span>
+<span class="token command"><span class="token keyword">pushd</span> \\sharedFolder</span>
+<span class="token command"><span class="token keyword">xcopy</span> .\*.gif C:\Users\UserName\Desktop\gifCollect\ <span class="token parameter attr-name">/s</span></span>
+<span class="token command"><span class="token keyword">popd</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="robocopy"><a href="#robocopy" class="headerlink" title="robocopy"></a>robocopy</h3><p><strong>/mir</strong> 差異備份，並刪除目的端，源頭端不存在的檔案<br><strong>/xf</strong> <em>.txt 排除特定副檔名<br>*</em>/s** 子複製，但不包括空資料夾<br><strong>/e</strong> 包含空資料夾</p>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">pushd</span> \\sharedFolder</span>
+<span class="token comment" spellcheck="true">REM 複製自 UNC 資料來源 </span>
+<span class="token command"><span class="token keyword">robocopy</span> .\ C:\Users\UserName\Desktop\div\ *.shtml <span class="token parameter attr-name">/s</span></span>
+<span class="token comment" spellcheck="true">REM 複製寫入 UNC 資料來源</span>
+<span class="token command"><span class="token keyword">robocopy</span> C:\Users\UserName\Desktop\div\ .\ *.shtml <span class="token parameter attr-name">/s</span></span>
+<span class="token command"><span class="token keyword">popd</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">robocopy</span> \\sharedFolder C:\Users\UserName\Desktop\div\ *.shtml <span class="token parameter attr-name">/s</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><a href="https://docs.microsoft.com/zh-tw/windows-server/administration/windows-commands/robocopy" target="_blank" rel="noopener">MSDN</a></p>
+<h2 id="檔名異動"><a href="#檔名異動" class="headerlink" title="檔名異動"></a>檔名異動</h2><h3 id="資料夾內所有-txt-檔改為-md檔"><a href="#資料夾內所有-txt-檔改為-md檔" class="headerlink" title="資料夾內所有 txt 檔改為 md檔"></a>資料夾內所有 txt 檔改為 md檔</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">rename</span> *.txt *.md</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="移除所有檔案的副檔名"><a href="#移除所有檔案的副檔名" class="headerlink" title="移除所有檔案的副檔名"></a>移除所有檔案的副檔名</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">rename</span> *.* *.</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="資料呈現"><a href="#資料呈現" class="headerlink" title="資料呈現"></a>資料呈現</h2><h3 id="按照異動時間排列資料夾內檔案"><a href="#按照異動時間排列資料夾內檔案" class="headerlink" title="按照異動時間排列資料夾內檔案"></a>按照異動時間排列資料夾內檔案</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">dir</span> <span class="token parameter attr-name">/o<span class="token punctuation">:</span></span>gd</span>
+<span class="token command"><span class="token keyword">ls</span> -lh -ltr</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><strong>/o:g</strong>  資料夾與檔案分順序排列<br><strong>/o:d</strong>  按照時間排列<br><strong>/o:-d</strong> 按照時間排列, 最舊的的檔案優先<br><strong>/o:s</strong>  按照時間排列, 最大的檔案優先</p>
+<h3 id="最近60分鐘內異動過的檔案"><a href="#最近60分鐘內異動過的檔案" class="headerlink" title="最近60分鐘內異動過的檔案"></a>最近60分鐘內異動過的檔案</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">find2</span> . -cmin <span class="token number">-60</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="Append-File"><a href="#Append-File" class="headerlink" title="Append File"></a>Append File</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">type</span> *.txt > append.txt</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="顯示子檔案與時間-with-精美格式"><a href="#顯示子檔案與時間-with-精美格式" class="headerlink" title="顯示子檔案與時間 with 精美格式"></a>顯示子檔案與時間 with 精美格式</h3><pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">for</span> <span class="token parameter attr-name">/r</span> <span class="token variable">%F</span> <span class="token keyword">in</span> <span class="token punctuation">(</span>*<span class="token punctuation">)</span> <span class="token keyword">do</span></span> <span class="token operator">@</span><span class="token command"><span class="token keyword">echo</span> <span class="token variable">%~tF</span> , <span class="token variable">%F</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">2018</span>/<span class="token number">08</span>/<span class="token number">15</span> 上午 <span class="token number">10</span>:<span class="token number">34</span> , C:\fileName1.docx</span>
+<span class="token command"><span class="token keyword">2018</span>/<span class="token number">08</span>/<span class="token number">15</span> 上午 <span class="token number">10</span>:<span class="token number">35</span> , C:\fileName2.docx</span>
+<span class="token command"><span class="token keyword">2018</span>/<span class="token number">08</span>/<span class="token number">15</span> 上午 <span class="token number">10</span>:<span class="token number">36</span> , C:\fileName3.docx</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/Windows-Useful-Cmd/" data-id="ckr4we2ni00owmkuv21zzhl4h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

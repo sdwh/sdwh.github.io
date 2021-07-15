@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>重溫《深入淺出設計模式》反覆器模式 (Book Review of Head First Design Pattern, Iterator Pattern) | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="反覆器已經被實踐在許多當代的語言之中，作為集合類型的低階類別所使用。以往並沒有特別感受到 Iterator 的美好，只覺得高階的語法 for ... in ...  (python) 方便好用，而有時候得到物件回傳 Iterator 反而不知所措 (例如 Beautiful Soup)。但重溫反覆器模式後，才曉得作為底層的反覆器有多重要，同時理解它也有助於自行實踐整合不同型別的集合類別進行迭代。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重溫《深入淺出設計模式》反覆器模式 (Book Review of Head First Design Pattern, Iterator Pattern)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/Design-Pattern-Iterator/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="反覆器已經被實踐在許多當代的語言之中，作為集合類型的低階類別所使用。以往並沒有特別感受到 Iterator 的美好，只覺得高階的語法 for ... in ...  (python) 方便好用，而有時候得到物件回傳 Iterator 反而不知所措 (例如 Beautiful Soup)。但重溫反覆器模式後，才曉得作為底層的反覆器有多重要，同時理解它也有助於自行實踐整合不同型別的集合類別進行迭代。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/UML-Iterator.svg">
+<meta property="article:published_time" content="2020-07-07T02:00:58.000Z">
+<meta property="article:modified_time" content="2020-11-30T11:17:27.124Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="DesignPattern">
+<meta property="article:tag" content="Example">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Design-Pattern-Iterator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/Design-Pattern-Iterator/" class="article-date">
+  <time datetime="2020-07-07T02:00:58.000Z" itemprop="datePublished">2020-07-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      重溫《深入淺出設計模式》反覆器模式 (Book Review of Head First Design Pattern, Iterator Pattern)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#反覆器模式"><span class="toc-text">反覆器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#After-Pattern"><span class="toc-text">After Pattern</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NET-IEnumerable-IEnumerator-Interface"><span class="toc-text">.NET IEnumerable, IEnumerator Interface</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MSDN-上實作-IEnumerable-的範例"><span class="toc-text">MSDN 上實作 IEnumerable 的範例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小結"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>反覆器已經被實踐在許多當代的語言之中，作為集合類型的低階類別所使用。以往並沒有特別感受到 Iterator 的美好，只覺得高階的語法 <code class="watch">for ... in ... </code> (python) 方便好用，而有時候得到物件回傳 Iterator 反而不知所措 (例如 Beautiful Soup)。但重溫反覆器模式後，才曉得作為底層的反覆器有多重要，同時理解它也有助於自行實踐整合不同型別的集合類別進行迭代。</p>
+<a href="https://www.tenlong.com.tw/products/9789867794529" target="_blank" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/HeadFirst-DesignPattern.jpg" alt="logo" width="150px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="反覆器模式"><a href="#反覆器模式" class="headerlink" title="反覆器模式"></a>反覆器模式</h2><p><em>Provide a way to access the elements of an aggregate object sequentially without exposing its underlying representation.</em></p>
+<p><img src="/assets/UML-Iterator.svg" alt="反覆器模式的 UML"></p>
+<h3 id="After-Pattern"><a href="#After-Pattern" class="headerlink" title="After Pattern"></a>After Pattern</h3><p>用來表示菜單項目的類別。</p>
+<p>MenuItem.cs</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MenuItem</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">string</span> _name<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">string</span> _description<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">bool</span> _vegetarian<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">double</span> _price<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">MenuItem</span><span class="token punctuation">(</span><span class="token keyword">string</span> name<span class="token punctuation">,</span>
+                    <span class="token keyword">string</span> description<span class="token punctuation">,</span>
+                    <span class="token keyword">bool</span> vegetarian<span class="token punctuation">,</span>
+                    <span class="token keyword">double</span> price<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+        _description <span class="token operator">=</span> description<span class="token punctuation">;</span>
+        _vegetarian <span class="token operator">=</span> vegetarian<span class="token punctuation">;</span>
+        _price <span class="token operator">=</span> price<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">string</span> <span class="token function">GetName</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> _name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">string</span> <span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> _description<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">double</span> <span class="token function">GetPrice</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> _price<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> <span class="token function">IsVegetarian</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> _vegetarian<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>IIterator.cs<br>因為在 .NET 中沒有 Iteraotr Interface 可以被實踐，取而代之的是 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.collections.ienumerable?view=netcore-3.1" target="_blank" rel="noopener">IEnumerable</a>，但兩者需要被實踐的方式不同，為貼近書中的範例，於是自己增加一個 IIterator 類別。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IIterator</span><span class="token operator">&lt;</span>T<span class="token operator">></span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">bool</span> <span class="token function">HasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    T <span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">void</span> <span class="token function">Remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Menu.cs<br>&lt;- DinerMenu.cs<br>&lt;- CafeMenu.cs (省略)<br>&lt;- PancakeHouseMenu.cs (省略)</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IMenu</span>
+<span class="token punctuation">{</span>
+    IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> <span class="token function">CreateIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DinerMenu</span> <span class="token punctuation">:</span> IMenu
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">readonly</span> <span class="token keyword">int</span> MAX_ITEMS <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> numberOfItems <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> MenuItem<span class="token punctuation">[</span><span class="token punctuation">]</span> menuItems<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">DinerMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        menuItems <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MenuItem</span><span class="token punctuation">[</span>MAX_ITEMS<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token string">"Vegetarian BLT"</span><span class="token punctuation">,</span>
+            <span class="token string">"(Fakin') Bacon with lettuce &amp; tomato on whole wheat"</span><span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">,</span> <span class="token number">2.99</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token string">"BLT"</span><span class="token punctuation">,</span>
+            <span class="token string">"Bacon with lettuce &amp; tomato on whole wheat"</span><span class="token punctuation">,</span> <span class="token keyword">false</span><span class="token punctuation">,</span> <span class="token number">2.99</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token string">"Soup of the day"</span><span class="token punctuation">,</span>
+            <span class="token string">"Soup of the day, with a side of potato salad"</span><span class="token punctuation">,</span> <span class="token keyword">false</span><span class="token punctuation">,</span> <span class="token number">3.29</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token string">"Hotdog"</span><span class="token punctuation">,</span>
+            <span class="token string">"A hot dog, with saurkraut, relish, onions, topped with cheese"</span><span class="token punctuation">,</span>
+            <span class="token keyword">false</span><span class="token punctuation">,</span> <span class="token number">3.05</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token string">"Steamed Veggies and Brown Rice"</span><span class="token punctuation">,</span>
+            <span class="token string">"A medly of steamed vegetables over brown rice"</span><span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">,</span> <span class="token number">3.99</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token string">"Pasta"</span><span class="token punctuation">,</span>
+            <span class="token string">"Spaghetti with Marinara Sauce, and a slice of sourdough bread"</span><span class="token punctuation">,</span>
+            <span class="token keyword">true</span><span class="token punctuation">,</span> <span class="token number">3.89</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">AddItem</span><span class="token punctuation">(</span><span class="token keyword">string</span> name<span class="token punctuation">,</span> <span class="token keyword">string</span> description<span class="token punctuation">,</span> <span class="token keyword">bool</span> vegetarian<span class="token punctuation">,</span> <span class="token keyword">double</span> price<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        MenuItem menuItem <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MenuItem</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> description<span class="token punctuation">,</span> vegetarian<span class="token punctuation">,</span> price<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>numberOfItems <span class="token operator">>=</span> MAX_ITEMS<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Sorry, menu is full!  Can't add item to menu"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">{</span>
+            menuItems<span class="token punctuation">[</span>numberOfItems<span class="token punctuation">]</span> <span class="token operator">=</span> menuItem<span class="token punctuation">;</span>
+            numberOfItems <span class="token operator">=</span> numberOfItems <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> MenuItem<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">GetMenuItems</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> menuItems<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> <span class="token function">CreateIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 因為 Array 無法提供 Iterator，因此必須自行實作。</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">DinerMenuIterator</span><span class="token punctuation">(</span>menuItems<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>DinerMenuIterator.cs<br>封裝 DinerMenu 的 CreateIterator 方法演算法，也是對於 IIterator 的實作。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DinerMenuIterator</span> <span class="token punctuation">:</span> IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">readonly</span> MenuItem<span class="token punctuation">[</span><span class="token punctuation">]</span> _list<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> position <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">DinerMenuIterator</span><span class="token punctuation">(</span>MenuItem<span class="token punctuation">[</span><span class="token punctuation">]</span> list<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _list <span class="token operator">=</span> list<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> <span class="token function">HasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>position <span class="token operator">>=</span> _list<span class="token punctuation">.</span>Length <span class="token operator">||</span> _list<span class="token punctuation">[</span>position<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> MenuItem <span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        MenuItem menuItem <span class="token operator">=</span> _list<span class="token punctuation">[</span>position<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        position <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> menuItem<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>position <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Exception</span><span class="token punctuation">(</span><span class="token string">"You can't remove an item until you've done at least one next()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>_list<span class="token punctuation">[</span>position <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> position <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token punctuation">(</span>_list<span class="token punctuation">.</span>Length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                _list<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> _list<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            _list<span class="token punctuation">[</span>_list<span class="token punctuation">.</span>Length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Waitress.cs<br>用以整合不同的 Collections (Aggregations) 類別，透過 IIterator 使用多型的方式呈現不同 Collections 的 MenuItem。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Waitress</span>
+<span class="token punctuation">{</span>
+  IMenu _pancakeHouseMenu<span class="token punctuation">;</span>
+  IMenu _dinerMenu<span class="token punctuation">;</span>
+  IMenu _cafeMenu<span class="token punctuation">;</span>
+
+  <span class="token keyword">public</span> <span class="token function">Waitress</span><span class="token punctuation">(</span>IMenu pancakeHouseMenu<span class="token punctuation">,</span> IMenu dinerMenu<span class="token punctuation">,</span> IMenu cafeMenu<span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+    _pancakeHouseMenu <span class="token operator">=</span> pancakeHouseMenu<span class="token punctuation">;</span>
+    _dinerMenu <span class="token operator">=</span> dinerMenu<span class="token punctuation">;</span>
+    _cafeMenu <span class="token operator">=</span> cafeMenu<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">PrintMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+    IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> pancakeIterator <span class="token operator">=</span> _pancakeHouseMenu<span class="token punctuation">.</span><span class="token function">CreateIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> dinerIterator <span class="token operator">=</span> _dinerMenu<span class="token punctuation">.</span><span class="token function">CreateIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> cafeIterator <span class="token operator">=</span> _cafeMenu<span class="token punctuation">.</span><span class="token function">CreateIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"MENU\n----\nBREAKFAST"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">PrintMenu</span><span class="token punctuation">(</span>pancakeIterator<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"\nLUNCH"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">PrintMenu</span><span class="token punctuation">(</span>dinerIterator<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"\nDINNER"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">PrintMenu</span><span class="token punctuation">(</span>cafeIterator<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">PrintMenu</span><span class="token punctuation">(</span>IIterator<span class="token operator">&lt;</span>MenuItem<span class="token operator">></span> iterator<span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>iterator<span class="token punctuation">.</span><span class="token function">HasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+      MenuItem menuItem <span class="token operator">=</span> iterator<span class="token punctuation">.</span><span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>menuItem<span class="token punctuation">.</span><span class="token function">GetName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>menuItem<span class="token punctuation">.</span><span class="token function">GetPrice</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" -- "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>menuItem<span class="token punctuation">.</span><span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="NET-IEnumerable-IEnumerator-Interface"><a href="#NET-IEnumerable-IEnumerator-Interface" class="headerlink" title=".NET IEnumerable, IEnumerator Interface"></a>.NET IEnumerable, IEnumerator Interface</h2><p><strong>IEnumerable</strong> 僅有一個方法需要實作 <strong>GetEnumerator</strong>，此方法會回傳 <strong>IEnumerator</strong> ；而 <strong>IEnumerator</strong> 則有 <strong>Current</strong> Properties 以及 <strong>MoveNext</strong> 、 <strong>Reset</strong> 方法。</p>
+<h3 id="MSDN-上實作-IEnumerable-的範例"><a href="#MSDN-上實作-IEnumerable-的範例" class="headerlink" title="MSDN 上實作 IEnumerable 的範例"></a>MSDN 上實作 IEnumerable 的範例</h3><pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">namespace</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IEnumerable</span><span class="token operator">&lt;</span><span class="token keyword">out</span> T<span class="token operator">></span> <span class="token punctuation">:</span> IEnumerable
+    <span class="token punctuation">{</span>
+        IEnumerator<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">People</span> <span class="token punctuation">:</span> IEnumerable
+<span class="token punctuation">{</span>
+    <span class="token keyword">private</span> Person<span class="token punctuation">[</span><span class="token punctuation">]</span> _people<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token function">People</span><span class="token punctuation">(</span>Person<span class="token punctuation">[</span><span class="token punctuation">]</span> pArray<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _people <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">[</span>pArray<span class="token punctuation">.</span>Length<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pArray<span class="token punctuation">.</span>Length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            _people<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> pArray<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Implementation for the GetEnumerator method.</span>
+    IEnumerator IEnumerable<span class="token punctuation">.</span><span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+       <span class="token keyword">return</span> <span class="token punctuation">(</span>IEnumerator<span class="token punctuation">)</span> <span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> PeopleEnum <span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">PeopleEnum</span><span class="token punctuation">(</span>_people<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PeopleEnum</span> <span class="token punctuation">:</span> IEnumerator
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> Person<span class="token punctuation">[</span><span class="token punctuation">]</span> _people<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Enumerators are positioned before the first element</span>
+    <span class="token comment" spellcheck="true">// until the first MoveNext() call.</span>
+    <span class="token keyword">int</span> position <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">PeopleEnum</span><span class="token punctuation">(</span>Person<span class="token punctuation">[</span><span class="token punctuation">]</span> list<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        _people <span class="token operator">=</span> list<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">bool</span> <span class="token function">MoveNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        position<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>position <span class="token operator">&lt;</span> _people<span class="token punctuation">.</span>Length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        position <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">object</span> IEnumerator<span class="token punctuation">.</span>Current
+    <span class="token punctuation">{</span>
+        <span class="token keyword">get</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> Current<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> Person Current
+    <span class="token punctuation">{</span>
+        <span class="token keyword">get</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">try</span>
+            <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> _people<span class="token punctuation">[</span>position<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IndexOutOfRangeException</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InvalidOperationException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.collections.ienumerable?view=netcore-3.1" target="_blank" rel="noopener">IEnumerable Interface</a></p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>✔️將變動的部分封裝起來<br>✔️類別應該對需求保持開放；應該對既有的程式碼修改保持關閉<br>✔️多用合成，少用繼承<br>✔️讓需要互動的物件之間的關係鬆綁<br>✔️針對介面撰寫，而非針對實踐方式撰寫</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://github.com/bethrobson/Head-First-Design-Patterns" target="_blank" rel="noopener">Github - Head-First-Design-Patterns</a><br><a href="https://sourcemaking.com/design_patterns/iterator" target="_blank" rel="noopener">sourcemaking</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/Design-Pattern-Iterator/" data-id="ckr4we2jk006zmkuv7tee2uf2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Example/" rel="tag">Example</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/07/Windows-Service-Dev-Topshelf/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">如何開發 Windows Service 使用 .Net 及 Topshelf</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/07/Design-Pattern-Composite/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          重溫《深入淺出設計模式》合成模式 (Book Review of Head First Design Pattern, Composite Pattern)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

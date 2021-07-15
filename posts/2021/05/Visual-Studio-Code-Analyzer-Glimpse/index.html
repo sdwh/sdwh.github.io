@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>Visual Studio Code Analyzer | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 Visual Studio Code Analyzer 的使用與相關知識點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Visual Studio Code Analyzer">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/05/Visual-Studio-Code-Analyzer-Glimpse/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記 Visual Studio Code Analyzer 的使用與相關知識點。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-CleanUp-Configure-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-CleanUp-Configure-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Solution-Level-Analyze.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Code-Metrics-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Code-Metrics-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Code-Style.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-EditorConfig.png">
+<meta property="article:published_time" content="2021-05-02T09:40:52.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:50:29.901Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="VisualStudio">
+<meta property="article:tag" content="DevSetup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Visual-Studio-Code-Analyzer-Glimpse" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/05/Visual-Studio-Code-Analyzer-Glimpse/" class="article-date">
+  <time datetime="2021-05-02T09:40:52.000Z" itemprop="datePublished">2021-05-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Visual Studio Code Analyzer
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#設定-CleanUp"><span class="toc-text">設定 CleanUp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code-Metrics"><span class="toc-text">Code Metrics</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code-Style"><span class="toc-text">Code Style</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 Visual Studio Code Analyzer 的使用與相關知識點。</p>
+<a href="/posts/2021/05/Visual-Studio-Code-Analyzer-Glimpse/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Visual Studio Code Analyzer 之所以能夠運作，是仰賴負責 Compile .NET 的 Rosly Compiler 有提供 Analyze API，提供在編譯程式碼的過程中進行程式碼分析。</p>
+<h3 id="設定-CleanUp"><a href="#設定-CleanUp" class="headerlink" title="設定 CleanUp"></a>設定 CleanUp</h3><p>CleanUp 可以快速在 file 上套用相關的程式碼一致性品質的檢查與修正。</p>
+<p><img src="/assets/Visual-Studio-CleanUp-Configure-1.png" alt="啟用設定"><br><img src="/assets/Visual-Studio-CleanUp-Configure-2.png" alt="設定介面"><br><img src="/assets/Visual-Studio-Solution-Level-Analyze.png" alt="解決方案層級的執行"></p>
+<h3 id="Code-Metrics"><a href="#Code-Metrics" class="headerlink" title="Code Metrics"></a>Code Metrics</h3><p>Code Metrics 可以用以評估軟體的品質，可以數值指標的方式評估專案是否過於複雜，不利未來的維護。</p>
+<p>Maintainability Index：介於 0 到 100，數值越高表示可維護性越好。<br>Cyclomatic Complexity：表示程式碼結構的複雜度(Control Flow)<br>Depth of Inheritance：表示類別的繼承深度<br>Class Coupling：表示類別之間的耦合程度<br>Lines of Source code：原始碼的行數</p>
+<p><a href="https://docs.microsoft.com/zh-tw/visualstudio/code-quality/code-metrics-values?view=vs-2019" target="_blank" rel="noopener">Visual Studio - Code metrics values</a></p>
+<p><img src="/assets/Visual-Studio-Code-Metrics-1.png" alt=""><br><img src="/assets/Visual-Studio-Code-Metrics-2.png" alt=""></p>
+<h3 id="Code-Style"><a href="#Code-Style" class="headerlink" title="Code Style"></a>Code Style</h3><p>Code Style 是整個 IDE 層級的設定；另外可以產生 editorconfig 作為解決方案層級或者專案層級的專屬設定，其優先性會高於 IDE 層級的 Code Style 設定，並且易於共同開發者擁有一致的設定。</p>
+<p><img src="/assets/Visual-Studio-Code-Style.png" alt=""><br><img src="/assets/Visual-Studio-EditorConfig.png" alt=""></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://app.pluralsight.com/library/courses/visual-studio-2019-code-analysis/table-of-contents" target="_blank" rel="noopener">Code Analysis in Visual Studio 2019</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/05/Visual-Studio-Code-Analyzer-Glimpse/" data-id="ckr4we2mz00mxmkuvf79h03a9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevSetup/" rel="tag">DevSetup</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/05/TCP-UDP-Ports/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">TCP / UDP 常用的埠號 Ports</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/05/IIS-Winrc-Recycle-AppPools/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          如何遠端回收 IIS 應用程式集區 (Recycle IIS Application Pool With Winrc)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

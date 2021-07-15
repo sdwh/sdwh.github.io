@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>使用 Visual Studio 開發，你不能錯過的 Quick Action 及 Code Snippet | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="不同於以往覺得 Intellisense 就是一切的想法，Quick Action 以及 Code Snippet 重新塑造自己對於 Visual Studio 編輯程式碼過程的方法，原本一直覺得要花錢買 ReSharper 才能得到那種行雲流水的開發體驗，但 Visual Studio 2019 原生所支援的 Quick Action 就已經非常好用，本篇筆記用以紀錄如何以 Quick Acti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Visual Studio 開發，你不能錯過的 Quick Action 及 Code Snippet">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/VisualStudio-QuickAction/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="不同於以往覺得 Intellisense 就是一切的想法，Quick Action 以及 Code Snippet 重新塑造自己對於 Visual Studio 編輯程式碼過程的方法，原本一直覺得要花錢買 ReSharper 才能得到那種行雲流水的開發體驗，但 Visual Studio 2019 原生所支援的 Quick Action 就已經非常好用，本篇筆記用以紀錄如何以 Quick Acti">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/VS-QuickAction-OverrideMethod.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/VS-QuickAction-OverrideMethod-UI.jpg">
+<meta property="article:published_time" content="2020-07-01T05:35:44.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:50:29.860Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="VisualStudio">
+<meta property="article:tag" content="CodingNinja">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-VisualStudio-QuickAction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/VisualStudio-QuickAction/" class="article-date">
+  <time datetime="2020-07-01T05:35:44.000Z" itemprop="datePublished">2020-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 Visual Studio 開發，你不能錯過的 Quick Action 及 Code Snippet
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#快速開發的技巧"><span class="toc-text">快速開發的技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#產生-Static-Void-Main"><span class="toc-text">產生 Static Void Main</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#產生類別-Create-Class"><span class="toc-text">產生類別 (Create Class)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#產生類別中的方法-Create-Method"><span class="toc-text">產生類別中的方法 (Create Method)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#覆寫抽象類別的方法-Override-Abstract-Class-Method"><span class="toc-text">覆寫抽象類別的方法 (Override Abstract Class Method)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修正程式碼的錯誤-Actions-that-fix-errors"><span class="toc-text">修正程式碼的錯誤 (Actions that fix errors)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除不必要的程式碼-Actions-that-remove-unnecessary-code"><span class="toc-text">移除不必要的程式碼 (Actions that remove unnecessary code)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加入缺少的程式碼-Actions-that-add-missing-code"><span class="toc-text">加入缺少的程式碼 (Actions that add missing code)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小結"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>不同於以往覺得 Intellisense 就是一切的想法，Quick Action 以及 Code Snippet 重新塑造自己對於 Visual Studio 編輯程式碼過程的方法，原本一直覺得要花錢買 ReSharper 才能得到那種行雲流水的開發體驗，但 Visual Studio 2019 原生所支援的 Quick Action 就已經非常好用，本篇筆記用以紀錄如何以 Quick Action 以及 Code Snippet 來進行開發。</p>
+<a href="/posts/2020/07/VisualStudio-QuickAction/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="快速開發的技巧"><a href="#快速開發的技巧" class="headerlink" title="快速開發的技巧"></a>快速開發的技巧</h2><h3 id="產生-Static-Void-Main"><a href="#產生-Static-Void-Main" class="headerlink" title="產生 Static Void Main"></a>產生 Static Void Main</h3><p><code class="watch">sim + tab + tab</code></p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="產生類別-Create-Class"><a href="#產生類別-Create-Class" class="headerlink" title="產生類別 (Create Class)"></a>產生類別 (Create Class)</h3><p>原本的開發情境都是因為要使用類別，所以先建立類別，並設定欄位、屬性、方法。但 Quick Action 支援自動產生類別，所以開發流程可以變成先使用在建立類別。例如以下情境需要一個 Person Class 並且有 Age, Name, Gender 三個 Property。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp">Person person <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span> Age <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Ryan"</span><span class="token punctuation">,</span> Gender <span class="token operator">=</span> <span class="token string">"Male"</span> <span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>直接在 new Person 按下 <code class="watch">alt + Enter</code> 選擇 「產生 Class Person」，完成後程式碼會自動加入：</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">Person</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> Age <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">string</span> Name <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">string</span> Gender <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>而如果想要先產生類別的話，可以先輸入存取修飾子 (public, private, interal) 再輸入 <code class="watch">class</code> 接著打三次 <code class="watch">prop</code> 來產生 Property。</p>
+<p>現在的速度完全大增，當然這犧牲了在初始化物件時候 Intellisense 提示的優點，兩者方式各有優缺，但這種新開發方式仍是非常過癮 😍</p>
+<h3 id="產生類別中的方法-Create-Method"><a href="#產生類別中的方法-Create-Method" class="headerlink" title="產生類別中的方法 (Create Method)"></a>產生類別中的方法 (Create Method)</h3><p>同樣地如果想要新增一個新的方法，可以先呼叫方法，再創造。</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp">person<span class="token punctuation">.</span><span class="token function">Program</span><span class="token punctuation">(</span><span class="token string">"C#"</span><span class="token punctuation">,</span> <span class="token number">0x20</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">List</span><span class="token operator">&lt;</span><span class="token keyword">string</span><span class="token operator">></span> <span class="token punctuation">{</span> <span class="token string">"VS"</span><span class="token punctuation">,</span> <span class="token string">"LinqPad"</span><span class="token punctuation">,</span> <span class="token string">"ReSharper"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>直接在 GetFullName 按下 <code class="watch">alt + Enter</code> 選擇 「產生方法 Person.Program」，完成後程式碼會自動加入：</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">internal</span> <span class="token keyword">void</span> <span class="token function">Program</span><span class="token punctuation">(</span><span class="token keyword">string</span> v1<span class="token punctuation">,</span> <span class="token keyword">int</span> v2<span class="token punctuation">,</span> List<span class="token operator">&lt;</span><span class="token keyword">string</span><span class="token operator">></span> list<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NotImplementedException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="覆寫抽象類別的方法-Override-Abstract-Class-Method"><a href="#覆寫抽象類別的方法-Override-Abstract-Class-Method" class="headerlink" title="覆寫抽象類別的方法 (Override Abstract Class Method)"></a>覆寫抽象類別的方法 (Override Abstract Class Method)</h3><p>還在複製貼上或者手動重刻嗎？只要在實作 Abstract Class 的類別大括弧內空白處按下 <code class="watch">Alt + Enter</code>，並選擇<strong>產生覆寫</strong>，即會出現 UI 選單供選擇，於是 Override Method 從此就是一件愜意的事情了。</p>
+<p><img src="/assets/VS-QuickAction-OverrideMethod.jpg" alt="空白處按下 Alt + Enter 並選擇產生覆寫"></p>
+<p><img src="/assets/VS-QuickAction-OverrideMethod-UI.jpg" alt="UI 介面"></p>
+<h3 id="修正程式碼的錯誤-Actions-that-fix-errors"><a href="#修正程式碼的錯誤-Actions-that-fix-errors" class="headerlink" title="修正程式碼的錯誤 (Actions that fix errors)"></a>修正程式碼的錯誤 (Actions that fix errors)</h3><p>可以修正拼錯字 (typo, misspelled symbol or keyword) 以及處理 git merge conflict</p>
+<h3 id="移除不必要的程式碼-Actions-that-remove-unnecessary-code"><a href="#移除不必要的程式碼-Actions-that-remove-unnecessary-code" class="headerlink" title="移除不必要的程式碼 (Actions that remove unnecessary code)"></a>移除不必要的程式碼 (Actions that remove unnecessary code)</h3><p>移除不必要的 usings/Imports (這點和 CodeMaid 相同)，另可以移除不不要的轉型 (cast)</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">int</span> number <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token number">3</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// Remove Unnecessary Cast</span>
+
+<span class="token keyword">int</span> number <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最後則是可以移除沒有使用到的變數。</p>
+<h3 id="加入缺少的程式碼-Actions-that-add-missing-code"><a href="#加入缺少的程式碼-Actions-that-add-missing-code" class="headerlink" title="加入缺少的程式碼 (Actions that add missing code)"></a>加入缺少的程式碼 (Actions that add missing code)</h3><ul>
+<li>加入缺少的 usings/imports, reference assemblies, NuGet packages</li>
+<li>⭐️自動將 enum 轉為 switch 的 case 並補充 default 及 break</li>
+</ul>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">enum</span> MyEnum
+<span class="token punctuation">{</span>
+    Item1<span class="token punctuation">,</span>
+    Item2<span class="token punctuation">,</span>
+    Item3
+<span class="token punctuation">}</span>
+
+<span class="token keyword">switch</span> <span class="token punctuation">(</span>MyEnum<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>直接在 switch 按下 <code class="watch">alt + Enter</code> 選擇 「新增遺漏的案例」，完成後程式碼會自動加入：</p>
+<pre class="line-numbers language-csharp"><code class="language-csharp"><span class="token keyword">switch</span> <span class="token punctuation">(</span>MyEnum<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">case</span> MyEnum<span class="token punctuation">.</span>Item1<span class="token punctuation">:</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> MyEnum<span class="token punctuation">.</span>Item2<span class="token punctuation">:</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> MyEnum<span class="token punctuation">.</span>Item3<span class="token punctuation">:</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>自動對參數檢查 null checks</li>
+<li>替引述加入名稱</li>
+<li>替 single-line if 加入 braces</li>
+<li>加入缺少的 modifiers</li>
+</ul>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>以上僅羅列 Quick Action 及 Code Snippet 一部分的應用情境，總之在開發時 <code class="watch">Alt + Enter</code> 以及 <code class="watch">Tab + Tab</code> 會是你的好幫手。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a href="https://docs.microsoft.com/en-us/visualstudio/ide/common-quick-actions?view=vs-2019" target="_blank" rel="noopener">MSDN - Quick Actions</a></li>
+<li><a href="https://www.benday.com/2019/06/20/code-snippets-for-visual-studio-visual-studio-code-and-visual-studio-for-mac/" target="_blank" rel="noopener">Code Snippets Extend</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/VisualStudio-QuickAction/" data-id="ckr4we2my00mumkuva05zcey5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CodingNinja/" rel="tag">CodingNinja</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/Design-Pattern-Factory/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">重溫《深入淺出設計模式》工廠模式 (Book Review of Head First Design Pattern, Factory Pattern)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/07/Design-Pattern-Command/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          重溫《深入淺出設計模式》命令模式 (Book Review of Head First Design Pattern, Command Pattern)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>使用 VMware 安裝 Windows Server 與 SQL Server | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何使用 VMware 來設定虛擬機，並於虛擬機安裝 Windows Server 作業系統以及安裝 SQL Server，同時讓 Host 能夠以 SSMS 成功登入 Guest 虛擬機中的 SQL Server。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 VMware 安裝 Windows Server 與 SQL Server">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記如何使用 VMware 來設定虛擬機，並於虛擬機安裝 Windows Server 作業系統以及安裝 SQL Server，同時讓 Host 能夠以 SSMS 成功登入 Guest 虛擬機中的 SQL Server。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/VMware-Setup-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/VMware-Setup-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Install-NetFramework.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Language-Setting-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Language-Setting-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Network-Private-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Network-Private-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Network-Private-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Firewall-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Firewall-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Firewall-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Enable-TCP-IP-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Enable-TCP-IP-2.png">
+<meta property="article:published_time" content="2021-04-04T23:05:12.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:52:08.497Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="VMware">
+<meta property="article:tag" content="VirtualMachine">
+<meta property="article:tag" content="OS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Virtual-Machine-VMware-Setup-SQL-Server" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/" class="article-date">
+  <time datetime="2021-04-04T23:05:12.000Z" itemprop="datePublished">2021-04-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 VMware 安裝 Windows Server 與 SQL Server
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#建立虛擬機"><span class="toc-text">建立虛擬機</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#虛擬機參數"><span class="toc-text">虛擬機參數</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安裝-Windows-Server"><span class="toc-text">安裝 Windows Server</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-Server"><span class="toc-text">Windows Server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安裝-Net-Framework-3-5"><span class="toc-text">安裝 .Net Framework 3.5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#設定語言"><span class="toc-text">設定語言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#設定網路探索"><span class="toc-text">設定網路探索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#設定防火牆"><span class="toc-text">設定防火牆</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL-Server"><span class="toc-text">SQL Server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#組態管理員"><span class="toc-text">組態管理員</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何使用 VMware 來設定虛擬機，並於虛擬機安裝 Windows Server 作業系統以及安裝 SQL Server，同時讓 Host 能夠以 SSMS 成功登入 Guest 虛擬機中的 SQL Server。</p>
+<a href="/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="建立虛擬機"><a href="#建立虛擬機" class="headerlink" title="建立虛擬機"></a>建立虛擬機</h2><h3 id="虛擬機參數"><a href="#虛擬機參數" class="headerlink" title="虛擬機參數"></a>虛擬機參數</h3><p>硬體規格的部分，視 Host 的資源而定，本次實作給予的規格如下：</p>
+<pre class="line-numbers language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"Number of processors"</span> <span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+  <span class="token property">"Number of cores per processors"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token property">"Memory"</span><span class="token operator">:</span> <span class="token string">"16384 MB"</span><span class="token punctuation">,</span>
+  <span class="token property">"Storage"</span><span class="token operator">:</span> <span class="token string">"150 GB"</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/assets/VMware-Setup-2.png" alt=""></p>
+<p>網路的部分，使用 <strong>Bridged</strong> ，讓 Host 與 Guest 平行擁有 Router DHCP 分配的 Private IP。</p>
+<p><img src="/assets/VMware-Setup-1.png" alt=""></p>
+<p>要注意的是如果指定 Source，VMware 可能會安裝失敗，建議另外以光碟機掛載 iso 的方式來進行安裝。</p>
+<h3 id="安裝-Windows-Server"><a href="#安裝-Windows-Server" class="headerlink" title="安裝 Windows Server"></a>安裝 Windows Server</h3><p>使用的 Source 為 Windows Server Evaluation，<a href="https://www.microsoft.com/zh-tw/evalcenter/evaluate-windows-server" target="_blank" rel="noopener">下載來源</a>。</p>
+<h2 id="Windows-Server"><a href="#Windows-Server" class="headerlink" title="Windows Server"></a>Windows Server</h2><h3 id="安裝-Net-Framework-3-5"><a href="#安裝-Net-Framework-3-5" class="headerlink" title="安裝 .Net Framework 3.5"></a>安裝 .Net Framework 3.5</h3><p>尚不確定是否為 SQL Server 安裝所依賴的元件，只是習慣會安裝以相容其他應用系統。</p>
+<p>要注意的是使用伺服器管理員安裝的時候，必須指定 source 否則會無法正確安裝。</p>
+<p><img src="/assets/Windows-Server-Install-NetFramework.png" alt=""></p>
+<h3 id="設定語言"><a href="#設定語言" class="headerlink" title="設定語言"></a>設定語言</h3><p>Windows Server Evaluation 只有英文版本，所以必須完成安裝後從系統設定來調整作業系統語言。</p>
+<p><img src="/assets/Windows-Server-Language-Setting-1.png" alt=""><br><img src="/assets/Windows-Server-Language-Setting-2.png" alt=""></p>
+<h3 id="設定網路探索"><a href="#設定網路探索" class="headerlink" title="設定網路探索"></a>設定網路探索</h3><p>必須啟用網路探索，才能夠讓 Host ping 的到 Guest 並且共用檔案及資料夾。</p>
+<p><img src="/assets/Windows-Server-Network-Private-1.png" alt=""><br><img src="/assets/Windows-Server-Network-Private-2.png" alt=""><br><img src="/assets/Windows-Server-Network-Private-3.png" alt=""></p>
+<h3 id="設定防火牆"><a href="#設定防火牆" class="headerlink" title="設定防火牆"></a>設定防火牆</h3><p>需要啟用 TCP 1433 Port 讓 Host 可以經由 1433 Port 連線 Guest SQL Server。</p>
+<p><img src="/assets/Windows-Server-Firewall-1.png" alt=""><br><img src="/assets/Windows-Server-Firewall-2.png" alt=""><br><img src="/assets/Windows-Server-Firewall-3.png" alt=""></p>
+<h2 id="SQL-Server"><a href="#SQL-Server" class="headerlink" title="SQL Server"></a>SQL Server</h2><p>使用的 Source 為 SQL Server Developer Edition，<a href="https://www.microsoft.com/zh-tw/sql-server/sql-server-downloads" target="_blank" rel="noopener">下載來源</a>。</p>
+<p>安裝的時候要注意使用作業系統的語系以及 SQL Server 安裝 Source 的語系必須一致，否則會無法進行安裝。</p>
+<p><a href="/posts/2020/12/SQL-Server-Installation/">SQL Server 2019 Developer 安裝流程</a></p>
+<h3 id="組態管理員"><a href="#組態管理員" class="headerlink" title="組態管理員"></a>組態管理員</h3><p>啟用 TCP/IP 的連線方式</p>
+<p><img src="/assets/SQL-Server-Enable-TCP-IP-1.png" alt=""><br><img src="/assets/SQL-Server-Enable-TCP-IP-2.png" alt=""></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/" data-id="ckr4we2mt00m4mkuvdypq3yem" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/" rel="tag">OS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VMware/" rel="tag">VMware</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VirtualMachine/" rel="tag">VirtualMachine</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">SQL Server Integrated Service 初探</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/04/Windows-Access-Control-List-Glimpse/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Windows Server 安全存取控制筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

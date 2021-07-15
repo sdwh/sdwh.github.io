@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>SQL Server 資料庫稽核設定 (SQL Server Audit Setup) | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何啟用 SQL Server 的資料庫稽核功能，發現異常行為的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 資料庫稽核設定 (SQL Server Audit Setup)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/SQL-Server-Database-Audit/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記如何啟用 SQL Server 的資料庫稽核功能，發現異常行為的方式。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-9.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-10.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-11.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-12.png">
+<meta property="article:published_time" content="2021-06-25T11:30:00.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:53:02.096Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Database-Audit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/SQL-Server-Database-Audit/" class="article-date">
+  <time datetime="2021-06-25T11:30:00.000Z" itemprop="datePublished">2021-06-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 資料庫稽核設定 (SQL Server Audit Setup)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新增稽核"><span class="toc-text">新增稽核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#伺服器層級的稽核設定"><span class="toc-text">伺服器層級的稽核設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#資料庫層級的稽核設定"><span class="toc-text">資料庫層級的稽核設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#檢視稽核紀錄"><span class="toc-text">檢視稽核紀錄</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#範例說明"><span class="toc-text">範例說明</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何啟用 SQL Server 的資料庫稽核功能，發現異常行為的方式。</p>
+<a href="/posts/2021/06/SQL-Server-Database-Audit/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="新增稽核"><a href="#新增稽核" class="headerlink" title="新增稽核"></a>新增稽核</h3><p>首先要由整個伺服器層級的地方新增一個「稽核」，這個稽核是用於定義蒐集到的稽核紀錄如何儲存，選項包含檔案、Windows Security Event / Windows Application Event。</p>
+<p><img src="/assets/SQL-Server-Audit-1.png" alt=""><br><img src="/assets/SQL-Server-Audit-2.png" alt=""></p>
+<p>完成稽核的建立後，必須要啟用才可以紀錄才能夠被保存。</p>
+<p><img src="/assets/SQL-Server-Audit-7.png" alt=""></p>
+<h3 id="伺服器層級的稽核設定"><a href="#伺服器層級的稽核設定" class="headerlink" title="伺服器層級的稽核設定"></a>伺服器層級的稽核設定</h3><p>實際要稽核的內容分為<strong>伺服器層級</strong>與<strong>資料庫層級</strong>，伺服器層級包含資料備份、登入登出等行為，由「安全性」選擇「伺服器稽核規格」進行設定。較需要費神理解的是想要稽核的動作是屬於那一個動作類型。</p>
+<p><img src="/assets/SQL-Server-Audit-3.png" alt=""><br><img src="/assets/SQL-Server-Audit-4.png" alt=""><br><img src="/assets/SQL-Server-Audit-5.png" alt=""></p>
+<p>完成「伺服器稽核規格」設定後，一樣需要啟動才會開始進行稽核。需要注意的是「伺服器稽核規格」與「稽核」都必須要同時啟動，才能夠正確紀錄。</p>
+<p><img src="/assets/SQL-Server-Audit-6.png" alt=""></p>
+<h3 id="資料庫層級的稽核設定"><a href="#資料庫層級的稽核設定" class="headerlink" title="資料庫層級的稽核設定"></a>資料庫層級的稽核設定</h3><p>另外再資料庫層級也有特定的動作類型，差別在於資料庫層級的設定必須明確指明要稽核的物件類別、結構描述及名稱，同時必須明確指定要稽核的主體名稱(Login Name)。而在大量設定的時候 GUI 不太方便，例如要針對所有的 Table 對於 Login1 進行稽核。這個時候可以利用指令碼編輯的方式來完成。過程中可能會搭配 sys.table 來產生指令碼。</p>
+<p><img src="/assets/SQL-Server-Audit-9.png" alt=""><br><img src="/assets/SQL-Server-Audit-10.png" alt=""></p>
+<p>完成「資料庫稽核規格」設定後，一樣需要啟動才會開始進行稽核。需要注意的是「資料庫稽核規格」與「稽核」都必須要同時啟動，才能夠正確紀錄。</p>
+<p><img src="/assets/SQL-Server-Audit-11.png" alt=""></p>
+<h3 id="檢視稽核紀錄"><a href="#檢視稽核紀錄" class="headerlink" title="檢視稽核紀錄"></a>檢視稽核紀錄</h3><p><img src="/assets/SQL-Server-Audit-8.png" alt=""></p>
+<p><img src="/assets/SQL-Server-Audit-12.png" alt=""></p>
+<h2 id="範例說明"><a href="#範例說明" class="headerlink" title="範例說明"></a>範例說明</h2><p>規劃示範說明如何稽核特定主體(Login)在特定資料庫中，所有對資料表的 SELECT 以及 UPDATE 行為。</p>
+<p>規劃示範說明如何稽核所有主體，對於特定資料庫進行 DELETE 行為。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/SQL-Server-Database-Audit/" data-id="ckr4we2lk00gbmkuv2xehdhhg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/IIS-CustomErrors-Error-Pages/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">IIS 錯誤頁面客製設定 (IIS Custom Erros, Error Pages)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/Statistics-Series-Taiwan-Name-Male-Or-Female/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          請問「陳宥均」是男生還是女生的名字？ | 台灣 100 個最難判斷是男生還是女生的姓名
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

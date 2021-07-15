@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>ASP.NET Web.config &amp; Http Headers 安全設定大全 (Guide to Secure Your Web Application by web.config Configuration) | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="不論是程式開發或是資安實務都會提到對於 Web.config 的安全設定，本筆記整理各種無論是隱藏伺服器資訊、保護 Cookie, Session 等設定 Web.config 的方式 💡">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Web.config &amp; Http Headers 安全設定大全 (Guide to Secure Your Web Application by web.config Configuration)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/10/Cyber-Security-Web-Config-Configuration/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="不論是程式開發或是資安實務都會提到對於 Web.config 的安全設定，本筆記整理各種無論是隱藏伺服器資訊、保護 Cookie, Session 等設定 Web.config 的方式 💡">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="article:published_time" content="2020-10-01T02:31:14.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:58:36.325Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Http">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Cyber-Security-Web-Config-Configuration" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/Cyber-Security-Web-Config-Configuration/" class="article-date">
+  <time datetime="2020-10-01T02:31:14.000Z" itemprop="datePublished">2020-10-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Web.config &amp; Http Headers 安全設定大全 (Guide to Secure Your Web Application by web.config Configuration)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#伺服器資訊隱藏"><span class="toc-text">伺服器資訊隱藏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#避免點擊劫持-Clickjacking-Vulnerability"><span class="toc-text">避免點擊劫持 (Clickjacking Vulnerability)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#防護-XSS-Attacks"><span class="toc-text">防護 XSS Attacks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Content-sniffing"><span class="toc-text">Content sniffing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set-Referrer-to-Origin"><span class="toc-text">Set Referrer to Origin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Enable-HTTP-Strict-Transport-Security-HSTS"><span class="toc-text">Enable HTTP Strict Transport Security (HSTS)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#防止-Cookie-被竊取"><span class="toc-text">防止 Cookie 被竊取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#防止-HTTP-Header-惡意注入"><span class="toc-text">防止 HTTP Header 惡意注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Contentt-Security-Policy-CSP"><span class="toc-text">Contentt Security Policy (CSP)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#結論"><span class="toc-text">結論</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>不論是程式開發或是資安實務都會提到對於 Web.config 的安全設定，本筆記整理各種無論是隱藏伺服器資訊、保護 Cookie, Session 等設定 Web.config 的方式 💡</p>
+<a href="/posts/2020/10/Cyber-Security-Web-Config-Configuration/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>首先建議先使用 <a href="https://securityheaders.com/" target="_blank" rel="noopener">securityheaders</a> 來驗證自己網站 Http Headers 的安全性，再根據不足的部分加以設定。</p>
+<h3 id="伺服器資訊隱藏"><a href="#伺服器資訊隱藏" class="headerlink" title="伺服器資訊隱藏"></a>伺服器資訊隱藏</h3><p>用途: 減少被滲透測試時偵查 (reconnaissance) 到的資訊。</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpRuntime</span> <span class="token attr-name">targetFramework</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">enableVersionHeader</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+       <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>remove</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Powered-By<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+       <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>remove</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-AspNetMvc-Version<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="避免點擊劫持-Clickjacking-Vulnerability"><a href="#避免點擊劫持-Clickjacking-Vulnerability" class="headerlink" title="避免點擊劫持 (Clickjacking Vulnerability)"></a>避免點擊劫持 (Clickjacking Vulnerability)</h3><p>關鍵字：Clickjacking: X-Frame-Options header missing</p>
+<p>用途：避免自己的網站被其他釣魚網站藉由 IFrame 的方式鑲嵌誘騙使用者看似點擊自己的網站，實則是被導向惡意的連結。設定後，其他的網頁在瀏覽器的渲染上會無法以 IFrame 的方式加載自己的網站。</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Frame-Options<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>DENY<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其他的選項還有 <strong>SAMEORIGIN</strong> 、<strong>ALLOW-FROM</strong></p>
+<p><a href="https://a42033.gitbooks.io/system/content/security/user/X_Frame_Options.html" target="_blank" rel="noopener">X-Frame-Options</a></p>
+<h3 id="防護-XSS-Attacks"><a href="#防護-XSS-Attacks" class="headerlink" title="防護 XSS Attacks"></a>防護 XSS Attacks</h3><p>用途：藉由 Http Header 的設定，藉由此 Header 當 Browser 偵測到 XSS 時會停止載入網頁。對當代瀏覽器的支援性不高，更適合的替代方式是使用 <strong>Content-Security-Policy</strong> 。</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Xss-Protection<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>1; mode<span class="token punctuation">=</span>block<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/X-XSS-Protection" target="_blank" rel="noopener">MDN - X-XSS-Protection</a></p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy" target="_blank" rel="noopener">MDN - Content-Security-Policy</a></p>
+<h3 id="Content-sniffing"><a href="#Content-sniffing" class="headerlink" title="Content sniffing"></a>Content sniffing</h3><p>用途：要求使用者端 (Client) 要遵照伺服器端 Content-Type MIME 設定，不要由瀏覽器自行判斷 MIME 類型。</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Content-Type-Options<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>nosniff<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options" target="_blank" rel="noopener">X-Content-Type-Options</a></p>
+<h3 id="Set-Referrer-to-Origin"><a href="#Set-Referrer-to-Origin" class="headerlink" title="Set Referrer to Origin"></a>Set Referrer to Origin</h3><p>用途：Referrer Header 會記錄目前的瀏覽是源自的前一個連結，藉由調整 Referrer Policy 可以避免瀏覽紀錄被追蹤。</p>
+<p>Tips: View Referrer by using Chrome Developer Tool <code class="watch">document.referrer</code></p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Referrer-Policy<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>No-referrer-when-downgrade<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>相關的嚴謹與寬鬆的傳送設定如下：</p>
+<p><strong>No-referrer</strong> — No referrer</p>
+<p><strong>No-referrer-when-downgrade</strong> — (Default) Only HTTPS to HTTPS</p>
+<p><strong>Origin</strong> — domain not full path</p>
+<p><strong>Origin-when-cross-origin</strong> — full path : same domain ; domain : another website</p>
+<p><strong>Same-origin</strong> — full path : same domain ; domain : another website</p>
+<p><strong>Strict-origin</strong> — domain for HTTPS to HTTPS and HTTP to HTTP</p>
+<p><strong>Strict-origin-when-cross-origin</strong> — full path : same domain, HTTPS to HTTPS ; domain : HTPPS CORS</p>
+<p><strong>Unsafe-url</strong> — full path</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy" target="_blank" rel="noopener">Referrer-Policy</a></p>
+<p><a href="https://yu-jack.github.io/2017/10/20/secure-header/#referrer-policy" target="_blank" rel="noopener">yu-jack - Referrer-Policy</a></p>
+<h3 id="Enable-HTTP-Strict-Transport-Security-HSTS"><a href="#Enable-HTTP-Strict-Transport-Security-HSTS" class="headerlink" title="Enable HTTP Strict Transport Security (HSTS)"></a>Enable HTTP Strict Transport Security (HSTS)</h3><p>關鍵字：HTTP Strict Transport Security (HSTS) not implemented</p>
+<p>用途：除了 Rewrite URL, Redirect URL 外，直接藉由 Http Header 的方式要求使用者瀏覽器採用 Https 的方式訪問網站。</p>
+<p>需要注意的是 HSTS 必須設定在 HTTPS Header 中，不可以設定在 Http Header，因此設定必須藉由 URL Rewrite 來完成。</p>
+<p><a href="https://www.hanselman.com/blog/how-to-enable-http-strict-transport-security-hsts-in-iis7" target="_blank" rel="noopener">How to enable HTTP Strict Transport Security (HSTS) in IIS7+</a></p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>HTTP to HTTPS redirect<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>(.*)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+                        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>{HTTPS}<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>off<span class="token punctuation">"</span></span> <span class="token attr-name">ignoreCase</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://{HTTP_HOST}/{R:1}<span class="token punctuation">"</span></span>
+                        <span class="token attr-name">redirectType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Permanent<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>outboundRules</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Add Strict-Transport-Security when HTTPS<span class="token punctuation">"</span></span> <span class="token attr-name">enabled</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">serverVariable</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>RESPONSE_Strict_Transport_Security<span class="token punctuation">"</span></span>
+                        <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.*<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+                        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>{HTTPS}<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>on<span class="token punctuation">"</span></span> <span class="token attr-name">ignoreCase</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+                    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Rewrite<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>max-age<span class="token punctuation">=</span>31536000;includeSubDomains;preload<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>outboundRules</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="防止-Cookie-被竊取"><a href="#防止-Cookie-被竊取" class="headerlink" title="防止 Cookie 被竊取"></a>防止 Cookie 被竊取</h3><p>關鍵字：Cookies without HttpOnly flag set、Cookies without Secure flag set</p>
+<p>用途：藉由限制 Cookies 受使用者端的 JS 操作權限，減少 XSS 攻擊以及使用者資料被竊取的可能性。</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpCookies</span> <span class="token attr-name">httpOnlyCookies</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token attr-name">requireSSL</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://blog.elmah.io/the-ultimate-guide-to-secure-cookies-with-web-config-in-net/" target="_blank" rel="noopener">The ultimate guide to secure cookies with web.config in .NET</a></p>
+<h3 id="防止-HTTP-Header-惡意注入"><a href="#防止-HTTP-Header-惡意注入" class="headerlink" title="防止 HTTP Header 惡意注入"></a>防止 HTTP Header 惡意注入</h3><p>用途：藉由檢查 Http Header，避免攻擊者將不當的資訊藉由 Response Header 的方式傳入使用者的瀏覽器環境當中。啟用 Checking 會有效能上的影響，使用上可以評估是否有需要。</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpRuntime</span> <span class="token attr-name">targetFramework</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">enableHeaderChecking</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://www.jardinesoftware.net/2015/11/09/net-enableheaderchecking/" target="_blank" rel="noopener">.Net EnableHeaderChecking</a></p>
+<h3 id="Contentt-Security-Policy-CSP"><a href="#Contentt-Security-Policy-CSP" class="headerlink" title="Contentt Security Policy (CSP)"></a>Contentt Security Policy (CSP)</h3><p><a href="/posts/2021/06/HTTP-Header-Content-Security-Policy/">HTTP Header Content Security Policy (CSP)</a></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" target="_blank" rel="noopener">MDN - CSP</a></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- Hide Server Information --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpRuntime</span> <span class="token attr-name">targetFramework</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">enableVersionHeader</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- Protect Cookie --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpCookies</span> <span class="token attr-name">httpOnlyCookies</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token attr-name">requireSSL</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+     <span class="token comment" spellcheck="true">&lt;!-- Hide Server Information --></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>remove</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Powered-By<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>remove</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-AspNetMvc-Version<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token comment" spellcheck="true">&lt;!-- Referrer Policy --></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Referrer-Policy<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>No-referrer-when-downgrade<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token comment" spellcheck="true">&lt;!-- Anti-Clickjacking--></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Frame-Options<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>DENY<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token comment" spellcheck="true">&lt;!-- Anti-XSS for IE --></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-Xss-Protection<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>1; mode<span class="token punctuation">=</span>block<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token comment" spellcheck="true">&lt;!-- HSTS --></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Strict-Transport-Security<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>max-age<span class="token punctuation">=</span>31536000; includeSubDomains<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a href="https://www.c-sharpcorner.com/article/secure-web-application-via-web-config-file-in-asp-net-mvc/" target="_blank" rel="noopener">Secure Web Application via Web.config File in ASP.NET MVC</a></li>
+<li><a href="https://evshary.github.io/2018/01/03/HTTP-header-%E5%AE%89%E5%85%A8%E8%A8%AD%E5%AE%9A/" target="_blank" rel="noopener">HTTP header 安全設定</a></li>
+<li><a href="https://yu-jack.github.io/2017/10/20/secure-header/" target="_blank" rel="noopener">增加安全性的 HTTP Headers</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/Cyber-Security-Web-Config-Configuration/" data-id="ckr4we2jc005tmkuvbis28kp3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Http/" rel="tag">Http</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/10/QuickMake-Template-String/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">如何用各種方式快速地產生執行批次作業腳本 ⚡ (Create Script File by Coding)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/10/DA-100-Analyzing-Data-with-Microsoft-Power-BI/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Analyzing Data With Microsoft Power BI 證照準備心得 (DA-100)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

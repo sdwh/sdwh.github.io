@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>SQL Server 利用 Sp_who2 來記錄資料庫伺服器的應用程式連線情形 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 如何藉由設定作業排程，定時執行 sp_who2 並保存於資料庫，從而實現自動化記錄資料庫伺服器應用程式連線情形的情境。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 利用 Sp_who2 來記錄資料庫伺服器的應用程式連線情形">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/05/SQL-Server-Exec-SP-Who2/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記 SQL Server 如何藉由設定作業排程，定時執行 sp_who2 並保存於資料庫，從而實現自動化記錄資料庫伺服器應用程式連線情形的情境。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Exec-Sp-who2.png">
+<meta property="article:published_time" content="2021-05-06T06:43:44.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:53:02.098Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Exec-SP-Who2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/05/SQL-Server-Exec-SP-Who2/" class="article-date">
+  <time datetime="2021-05-06T06:43:44.000Z" itemprop="datePublished">2021-05-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 利用 Sp_who2 來記錄資料庫伺服器的應用程式連線情形
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SP-WHO2"><span class="toc-text">SP_WHO2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Temp-Table"><span class="toc-text">Temp Table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Filter-amp-Insert-Into"><span class="toc-text">Filter &amp; Insert Into</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Job-Run-Looply"><span class="toc-text">Job Run Looply</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相關連結"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 如何藉由設定作業排程，定時執行 sp_who2 並保存於資料庫，從而實現自動化記錄資料庫伺服器應用程式連線情形的情境。</p>
+<a href="/posts/2021/05/SQL-Server-Exec-SP-Who2/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="SP-WHO2"><a href="#SP-WHO2" class="headerlink" title="SP_WHO2"></a>SP_WHO2</h3><p>sp_who2 可以顯示出目前資料庫上的所有連線 Session，並包含所使用的登入名稱、連線資料庫、連線的裝置名稱以及所使用的連線方式。</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">exec</span> sp_who2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="/assets/SQL-Server-Exec-Sp-who2.png" alt="sp_who2 回傳的結果"></p>
+<h3 id="Temp-Table"><a href="#Temp-Table" class="headerlink" title="Temp Table"></a>Temp Table</h3><p>而因為 sp_who2 是預存程序，其回應的結果無法直接使用，必須要藉由 T-SQL 建立 temp Table 的方式來使用。</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">DECLARE</span> <span class="token variable">@Table</span> <span class="token keyword">TABLE</span><span class="token punctuation">(</span>
+        SPID <span class="token keyword">INT</span><span class="token punctuation">,</span>
+        <span class="token keyword">Status</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        LOGIN <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        HostName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        BlkBy <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        DBName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        Command <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        CPUTime <span class="token keyword">INT</span><span class="token punctuation">,</span>
+        DiskIO <span class="token keyword">INT</span><span class="token punctuation">,</span>
+        LastBatch <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        ProgramName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        SPID_1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+        REQUESTID <span class="token keyword">INT</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">-- 將 sp_who2 寫入 Temp Table</span>
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token variable">@Table</span> <span class="token keyword">EXEC</span> sp_who2
+
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> <span class="token variable">@Table</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Filter-amp-Insert-Into"><a href="#Filter-amp-Insert-Into" class="headerlink" title="Filter &amp; Insert Into"></a>Filter &amp; Insert Into</h3><p>為了要將 sp_who2 的結果永遠保存，可以建立一個資料庫與資料表，其中資料表的 schema 如下：</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>TB_SpWho2<span class="token punctuation">]</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>SPID<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span><span class="token keyword">Status</span><span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>LOGIN<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>HostName<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>BlkBy<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>Command<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>CPUTime<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>DiskIO<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>LastBatch<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>ProgramName<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span>max<span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>SPID_1<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>REQUESTID<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>InsertDateTime<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">datetime</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span> <span class="token comment" spellcheck="true">-- 這個欄位為紀錄擷取時間所使用</span>
+<span class="token punctuation">)</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span><span class="token keyword">PRIMARY</span><span class="token punctuation">]</span> TEXTIMAGE_ON <span class="token punctuation">[</span><span class="token keyword">PRIMARY</span><span class="token punctuation">]</span>
+GO
+
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>TB_SpWho2<span class="token punctuation">]</span> 
+  <span class="token keyword">ADD</span> <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>DF_TB_SpWho2_InsertDateTime<span class="token punctuation">]</span> 
+  <span class="token keyword">DEFAULT</span> <span class="token punctuation">(</span>getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">FOR</span> <span class="token punctuation">[</span>InsertDateTime<span class="token punctuation">]</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>另外結合原本的 Temp Table 擴充 Script，並存為 Stored Procedures</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">PROCEDURE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>sp_execSpWho2<span class="token punctuation">]</span>
+    <span class="token comment" spellcheck="true">-- Add the parameters for the stored procedure here</span>
+<span class="token keyword">AS</span>
+<span class="token keyword">BEGIN</span>
+    <span class="token comment" spellcheck="true">-- SET NOCOUNT ON added to prevent extra result sets from</span>
+    <span class="token comment" spellcheck="true">-- interfering with SELECT statements.</span>
+    <span class="token keyword">SET</span> NOCOUNT <span class="token keyword">ON</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">DECLARE</span> <span class="token variable">@Table</span> <span class="token keyword">TABLE</span><span class="token punctuation">(</span>
+            SPID <span class="token keyword">INT</span><span class="token punctuation">,</span>
+            <span class="token keyword">Status</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            LOGIN <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            HostName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            BlkBy <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            DBName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            Command <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            CPUTime <span class="token keyword">INT</span><span class="token punctuation">,</span>
+            DiskIO <span class="token keyword">INT</span><span class="token punctuation">,</span>
+            LastBatch <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            ProgramName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            SPID_1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+            REQUESTID <span class="token keyword">INT</span>
+    <span class="token punctuation">)</span>
+
+    <span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token variable">@Table</span> <span class="token keyword">EXEC</span> sp_who2
+
+    <span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> LoginProcess
+    <span class="token keyword">SELECT</span>  <span class="token operator">*</span><span class="token punctuation">,</span> GETDATE<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">-- 作為 InsertDataTime 的值</span>
+    <span class="token keyword">FROM</span>    <span class="token variable">@Table</span>
+    <span class="token keyword">WHERE</span> Login <span class="token operator">!=</span> <span class="token string">'sa'</span>  <span class="token operator">and</span> DBname <span class="token operator">not</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token string">'master'</span><span class="token punctuation">,</span> <span class="token string">'msdb'</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">-- 過濾不需要的資料列</span>
+<span class="token keyword">END</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Job-Run-Looply"><a href="#Job-Run-Looply" class="headerlink" title="Job Run Looply"></a>Job Run Looply</h3><p>最後再藉由 SQL Server Agent 的設定一個 Job ，來間隔特定時間重複執行 Stored Prcoedures，就完成本次的自動記錄設定！</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/02/SQL-Server-sp-who2-Program-Name/">SQL Server 使用 Sp_who2 查詢到的 ProgramName 意義</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/05/SQL-Server-Exec-SP-Who2/" data-id="ckr4we2lm00gomkuv2a3a90cm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/05/NTFS-Alternative-Data-Streams/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">NTFS Alternative Data Streams, ADS</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/05/Visual-Studio-Glimpse/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Visual Studio 入門教學
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

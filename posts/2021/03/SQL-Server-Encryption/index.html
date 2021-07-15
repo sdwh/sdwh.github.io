@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>SQL Server Backup Encryption 資料庫備份的加密方式 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 如何將備份檔進行加密，用以保護資料庫備份檔不被任意還原。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Backup Encryption 資料庫備份的加密方式">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/03/SQL-Server-Encryption/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記 SQL Server 如何將備份檔進行加密，用以保護資料庫備份檔不被任意還原。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-ServerBackup-Encryption-Steps.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Backup-Encryption-SSMS-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Backup-Encryption-SSMS-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/">
+<meta property="article:published_time" content="2021-03-14T02:00:00.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:53:02.096Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="SSMS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Encryption" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/03/SQL-Server-Encryption/" class="article-date">
+  <time datetime="2021-03-14T02:00:00.000Z" itemprop="datePublished">2021-03-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Backup Encryption 資料庫備份的加密方式
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#建立-Server-Master-Key"><span class="toc-text">建立 Server Master Key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立憑證"><span class="toc-text">建立憑證</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#備份憑證"><span class="toc-text">備份憑證</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#備份資料庫並使用憑證加密"><span class="toc-text">備份資料庫並使用憑證加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#還原憑證"><span class="toc-text">還原憑證</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#還原資料庫"><span class="toc-text">還原資料庫</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小結"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相關連結"><span class="toc-text">相關連結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#後續應用"><span class="toc-text">後續應用</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 如何將備份檔進行加密，用以保護資料庫備份檔不被任意還原。</p>
+<a href="/posts/2021/03/SQL-Server-Encryption/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>加密的起手式就是先建立 Server Master Key (Database Master Key)，接著在建立憑證，最後產生對稱式金鑰來進行加密，不論是 TDE、Always Encrypt 或者備份加密，都是依循此基本原理。</p>
+<p><img src="/assets/SQL-ServerBackup-Encryption-Steps.svg" alt=""></p>
+<p>而將備份檔進行加密的好處在於避免備份檔流出時，惡意第三方可以任意地將資料庫還原，使資料流出，而在作業成本上則是多了需要管理加解密備份檔的所使用的憑證。</p>
+<h3 id="建立-Server-Master-Key"><a href="#建立-Server-Master-Key" class="headerlink" title="建立 Server Master Key"></a>建立 Server Master Key</h3><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> MASTER <span class="token keyword">KEY</span> ENCRYPTION <span class="token keyword">BY</span> PASSWORD <span class="token operator">=</span> <span class="token string">'Pa$$w0rd'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>SQL Server Instance 只能擁有單一個 Master Key，重複建立的話會有錯誤訊息。而要確認是否已經擁有 Master Key 可以使用下列指令查詢：</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">USE</span> master<span class="token punctuation">;</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>symmetric_keys<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果有建立 Master Key 可以查詢到 <code class="watch">##MS_DatabaseMasterKey##</code>，此外 <code class="watch">##MS_ServiceMasterKey##</code> 則是建立 Instance 時會自動建立的 Key。</p>
+<h3 id="建立憑證"><a href="#建立憑證" class="headerlink" title="建立憑證"></a>建立憑證</h3><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> CERTIFICATE AdventureWorksCert
+    <span class="token keyword">WITH</span> SUBJECT <span class="token operator">=</span> <span class="token string">'AdventureWorks Database Backup Certificate'</span><span class="token punctuation">;</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<hr>
+<p>憑證也可以自行使用密碼加密，但會無法用於加密備份檔</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> CERTIFICATE AdventureWorksCertWP
+    ENCRYPTION <span class="token keyword">BY</span> PASSWORD <span class="token operator">=</span> <span class="token string">'Pa$$w0rdCert'</span>  
+    <span class="token keyword">WITH</span> SUBJECT <span class="token operator">=</span> <span class="token string">'AdventureWorks Backup Certificate With Passwords'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="備份憑證"><a href="#備份憑證" class="headerlink" title="備份憑證"></a>備份憑證</h3><p>在使用憑證進行備份檔的加密之前，建議先將憑證進行備份，以免憑證遺失造成備份檔無法復原，此外如果沒有備份憑證，再將備份檔進行加密的時候，系統也會主動的警示憑證尚未備份。</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">BACKUP</span> CERTIFICATE AdventureWorksCert <span class="token keyword">TO</span> <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorksCert.cert'</span>
+<span class="token keyword">WITH</span> PRIVATE <span class="token keyword">KEY</span> <span class="token punctuation">(</span>
+<span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorksCert.key'</span><span class="token punctuation">,</span>
+ENCRYPTION <span class="token keyword">BY</span> PASSWORD <span class="token operator">=</span> <span class="token string">'Pa$$w0rd'</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">-- 指定憑證私鑰檔案的密碼</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<hr>
+<p>自行使用密碼加密的憑證，備份的方式如下</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">BACKUP</span> CERTIFICATE AdventureWorksCertWP <span class="token keyword">TO</span> <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorksCertWP.cert'</span>
+<span class="token keyword">WITH</span> PRIVATE <span class="token keyword">KEY</span> <span class="token punctuation">(</span>
+<span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorksCertWP.key'</span><span class="token punctuation">,</span>
+ENCRYPTION <span class="token keyword">BY</span> PASSWORD <span class="token operator">=</span> <span class="token string">'Pa$$w0rd'</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">-- 指定憑證私鑰檔案的密碼</span>
+DECRYPTION <span class="token keyword">BY</span> PASSWORD <span class="token operator">=</span> <span class="token string">'Pa$$w0rdCert'</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">-- 建立憑證時所採用的密碼</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="備份資料庫並使用憑證加密"><a href="#備份資料庫並使用憑證加密" class="headerlink" title="備份資料庫並使用憑證加密"></a>備份資料庫並使用憑證加密</h3><p>加密備份檔所使用的憑證有一個限制，就是憑證必須是以 Server Master Key 所加密的，如果是以密碼加密的憑證無法用於加密備份檔上。如上述的憑證 AdventureWorksCertWP ，如果用於加密備份檔，可以見錯誤訊息：</p>
+<div class="article-blockquote">
+訊息 33101，層級 16，狀態 1，行 41
+無法使用 憑證 'AdventureWorksCertWP'，因為其私密金鑰不存在，或未受到資料庫主要金鑰保護。SQL Server 必須能夠自動存取這項作業所用之 憑證 的私密金鑰。<br/>
+訊息 3013，層級 16，狀態 1，行 41
+BACKUP DATABASE 正在異常結束。
+</div>
+
+<p>使用憑證對資料庫備份檔加密的方式如下：</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">BACKUP</span> <span class="token keyword">DATABASE</span> AdventureWorks
+<span class="token keyword">TO</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorks.bak'</span>
+<span class="token keyword">WITH</span> ENCRYPTION <span class="token punctuation">(</span><span class="token keyword">ALGORITHM</span> <span class="token operator">=</span> AES_256<span class="token punctuation">,</span> SERVER CERTIFICATE <span class="token operator">=</span> AdventureWorksCert<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果使用 SSMS GUI 來操作的話，必須勾選備份至新的媒體集才能夠進行備份檔的加密。</p>
+<p><img src="/assets/SQL-Server-Backup-Encryption-SSMS-1.png" alt=""></p>
+<p><img src="/assets/SQL-Server-Backup-Encryption-SSMS-2.png" alt=""></p>
+<h3 id="還原憑證"><a href="#還原憑證" class="headerlink" title="還原憑證"></a>還原憑證</h3><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> CERTIFICATE AdventureWorksCert
+<span class="token keyword">FROM</span> <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorksCert.cert'</span>
+<span class="token keyword">WITH</span> PRIVATE <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token string">'C:\Temp\AdventureWorksCert.key'</span><span class="token punctuation">,</span>
+DECRYPTION <span class="token keyword">BY</span> PASSWORD <span class="token operator">=</span> <span class="token string">'Pa$$w0rd'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 使用憑證私鑰檔案的密碼</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="還原資料庫"><a href="#還原資料庫" class="headerlink" title="還原資料庫"></a>還原資料庫</h3><p>如果有正確還原加密備份檔的憑證，則在還原資料庫的時候不需要特別操作，反之如果沒有還原加密備份檔的憑證，再還原資料庫時就會出現錯誤訊息。</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">RESTORE</span> <span class="token keyword">DATABASE</span> AdventureWorks
+<span class="token keyword">FROM</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token string">'C:\Backup\AdventureWorks.bak'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="/assets/" alt=""></p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>加密備份檔的方式並不複雜，只需要做好憑證檔的管理，以免無法正確還原。此外用於備份檔加密的憑證檔，必須使用 Server Master Key 加密而無法另行以指定密碼的方式產生，否則會無法加密備份檔。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://docs.microsoft.com/zh-tw/sql/t-sql/statements/create-certificate-transact-sql?view=sql-server-ver15" target="_blank" rel="noopener">CREATE CERTIFICATE (Transact-SQL)</a></p>
+<p><a href="https://docs.microsoft.com/zh-tw/sql/t-sql/statements/backup-certificate-transact-sql?view=sql-server-ver15" target="_blank" rel="noopener">BACKUP CERTIFICATE (Transact-SQL)</a></p>
+<p><a href="https://www.linkedin.com/learning/designing-database-solutions-for-sql-server-2016/backup-encryption" target="_blank" rel="noopener">Linkedin Learning</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+<h2 id="後續應用"><a href="#後續應用" class="headerlink" title="後續應用"></a>後續應用</h2><p>比較 TDE 以及 Always Encrypt 的加密方式</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/03/SQL-Server-Encryption/" data-id="ckr4we2ln00gsmkuv85fc49hi" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSMS/" rel="tag">SSMS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/03/SQL-Server-LDF-Truncate-Shrink/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">SQL Server LDF 容量大爆炸 (SQL Server Ldf Truncate &amp; Shrink)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/SQL-Server-Backup-Copy-Only/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          SQL Server 備份與還原實驗筆記 2 - Copy Only 的使用時機
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>Git 的 100 個情境應用 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用的情境如同學習 Gulp 的經驗，直接用需求情境的方式學習新工具是最有效率的，因為情境的需求是與自己切身相關的，而非代入生冷的範例。  創造屬於自己的情境 跟著情境實際操作 將技能融入自己的日常作業流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 的 100 個情境應用">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/05/Git-100/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="使用的情境如同學習 Gulp 的經驗，直接用需求情境的方式學習新工具是最有效率的，因為情境的需求是與自己切身相關的，而非代入生冷的範例。  創造屬於自己的情境 跟著情境實際操作 將技能融入自己的日常作業流程">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/git100-before-rebase.png">
+<meta property="og:image" content="https://sdwh.dev/assets/git100-after-rebase.png">
+<meta property="og:image" content="https://sdwh.dev/assets/git100-before-cherrypick.png">
+<meta property="og:image" content="https://sdwh.dev/assets/git100-in-cherrypick.png">
+<meta property="og:image" content="https://sdwh.dev/assets/git100-after-cherrypick.png">
+<meta property="article:published_time" content="2020-05-28T12:05:43.000Z">
+<meta property="article:modified_time" content="2021-07-15T09:47:04.871Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="LearningNote">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/git100-before-rebase.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Git-100" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/05/Git-100/" class="article-date">
+  <time datetime="2020-05-28T12:05:43.000Z" itemprop="datePublished">2020-05-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Git 的 100 個情境應用
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用的情境"><span class="toc-text">使用的情境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-啟用-Git"><span class="toc-text">情境@ 啟用 Git</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-常用的-Git-alias-設定-git-config-alias"><span class="toc-text">情境@ 常用的 Git alias 設定 (git config alias)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-Git-Status-UTF-8-檔案名稱被編碼的調整"><span class="toc-text">情境@ Git Status UTF-8 檔案名稱被編碼的調整</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-忽略特定檔案、資料夾-gitignore"><span class="toc-text">情境@ 忽略特定檔案、資料夾 (gitignore)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-存入暫存區-staged-與遞交至檔案庫-respository"><span class="toc-text">情境@ 存入暫存區 (staged) 與遞交至檔案庫 (respository)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-補充上一個-commit-amend"><span class="toc-text">情境@ 補充上一個 commit (amend)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-切換到上一個-commit-checkout"><span class="toc-text">情境@ 切換到上一個 commit (checkout)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-取回上一個版本的特定檔案-checkout"><span class="toc-text">情境@ 取回上一個版本的特定檔案 (checkout)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-比對-Head-與-Unstaged-差異-diff"><span class="toc-text">情境@ 比對 Head 與 Unstaged 差異 (diff)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-比對-Head-與-Staged-差異-diff"><span class="toc-text">情境@ 比對 Head 與 Staged 差異 (diff)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-比對-Head-與指定-Commit-差異-diff"><span class="toc-text">情境@ 比對 Head 與指定 Commit 差異 (diff)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-檢查目前的檔案歷次-commit-的異動情形-blame"><span class="toc-text">情境@ 檢查目前的檔案歷次 commit 的異動情形 (blame)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-檢視-Commit-紀錄-搜尋關鍵字"><span class="toc-text">情境@ 檢視 Commit 紀錄 - 搜尋關鍵字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-檢視-Commit-紀錄-最近一筆"><span class="toc-text">情境@ 檢視 Commit 紀錄 - 最近一筆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-檢視-Commit-紀錄-特定日期"><span class="toc-text">情境@ 檢視 Commit 紀錄 - 特定日期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-檢視-Commit-紀錄-這筆紀錄做了什麼"><span class="toc-text">情境@ 檢視 Commit 紀錄 - 這筆紀錄做了什麼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-檢視-Commit-紀錄-自定義顯示-format"><span class="toc-text">情境@ 檢視 Commit 紀錄 - 自定義顯示 format</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-比較兩筆-Commit-差異"><span class="toc-text">情境@ 比較兩筆 Commit 差異</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-移除檔案與重新命名檔案-rm-mv"><span class="toc-text">情境@ 移除檔案與重新命名檔案 (rm, mv)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-僅移除-stged-狀態，但保持檔案-rm-–cached"><span class="toc-text">情境@ 僅移除 stged 狀態，但保持檔案  (rm –cached)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-從特定版本延伸開發-branch"><span class="toc-text">情境@ 從特定版本延伸開發 (branch)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-放棄目前的所有異動-reset"><span class="toc-text">情境@ 放棄目前的所有異動 (reset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-移除特定異動，保留部分異動-reset"><span class="toc-text">情境@ 移除特定異動，保留部分異動 (reset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-刪除所有未追蹤的檔案-clean"><span class="toc-text">情境@ 刪除所有未追蹤的檔案 (clean)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-刪除已追蹤，但被-gitignore-排除的檔案-clean"><span class="toc-text">情境@ 刪除已追蹤，但被 .gitignore 排除的檔案 (clean)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-拆除掉目前-Commit-reset"><span class="toc-text">情境@ 拆除掉目前 Commit (reset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-復原被拆除掉的-Commit-reset"><span class="toc-text">情境@ 復原被拆除掉的 Commit (reset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-保存-staged-的檔案，回到正式區修正一些事情-stash"><span class="toc-text">情境@ 保存 staged 的檔案，回到正式區修正一些事情 (stash)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-保存未-commit-所有檔案，回到正式區修正一些事情-stash"><span class="toc-text">情境@ 保存未 commit 所有檔案，回到正式區修正一些事情 (stash)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-取回-Stash-暫存的內容-stash-u"><span class="toc-text">情境@ 取回 Stash 暫存的內容 (stash -u)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-取回-Stash-暫存的內容-stash-pop"><span class="toc-text">情境@ 取回 Stash 暫存的內容 (stash pop)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-取回特定-Stash-暫存的內容-stash-pop"><span class="toc-text">情境@ 取回特定 Stash 暫存的內容 (stash pop)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-取回-Stash-但保存在-Stash-list-stash-apply"><span class="toc-text">情境@ 取回 Stash 但保存在 Stash list (stash apply)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-清除-Stash-list-stash-clear"><span class="toc-text">情境@ 清除 Stash list (stash clear)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-用標籤標註歷次發行版本-tag"><span class="toc-text">情境@ 用標籤標註歷次發行版本 (tag)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-用標籤標註歷次發行版本-tag-a"><span class="toc-text">情境@ 用標籤標註歷次發行版本 (tag -a)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-列出所有標籤-tag"><span class="toc-text">情境@ 列出所有標籤 (tag)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-強制-branch-改指向-commit-git-branch-f"><span class="toc-text">情境@ 強制 branch 改指向 commit (git branch -f)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-合併分支-merge"><span class="toc-text">情境@ 合併分支 (merge)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-合併分支，但不啟用-fast-forward-merge-–no-ff"><span class="toc-text">情境@ 合併分支，但不啟用 fast-forward (merge –no-ff)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-Git-Commit-的符號參照、相對參照及別名"><span class="toc-text">情境@ Git Commit 的符號參照、相對參照及別名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-解析-Git-參照的絕對參照-Sha-1-值"><span class="toc-text">情境@ 解析 Git 參照的絕對參照 Sha-1 值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-reglog-立即-expire-reflog-expire"><span class="toc-text">情境@ reglog 立即 expire (reflog expire)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-將檔案庫推送至伺服器-push"><span class="toc-text">情境@ 將檔案庫推送至伺服器 (push)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-複製遠端的檔案庫-clone"><span class="toc-text">情境@ 複製遠端的檔案庫 (clone)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-多個推送伺服器目標-remote-add"><span class="toc-text">情境@ 多個推送伺服器目標 (remote add)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-推送至指定伺服器目標-push"><span class="toc-text">情境@ 推送至指定伺服器目標 (push)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-強制覆寫遠端伺服器的-Commit-History"><span class="toc-text">情境@ 強制覆寫遠端伺服器的 Commit History</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-確認遠端-remote-show"><span class="toc-text">情境@ 確認遠端 (remote show)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-同步遠端檔案庫-pull-fetch"><span class="toc-text">情境@ 同步遠端檔案庫 (pull, fetch)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-發送-Pull-Requst"><span class="toc-text">情境@ 發送 Pull Requst</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-What-is-Github-flow"><span class="toc-text">情境@ What is Github flow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-使用-Rebase-的情境-rebase"><span class="toc-text">情境@ 使用 Rebase 的情境 (rebase)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-使用-Revert-的情境-revert"><span class="toc-text">情境@ 使用 Revert 的情境 (revert)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-使用-Cherry-pick-的情境-cherry-pick"><span class="toc-text">情境@ 使用 Cherry-pick 的情境 (cherry-pick)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-使用-Filter-branch-的情境-filter-branch"><span class="toc-text">情境@ 使用 Filter-branch 的情境 (filter-branch)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-使用-Filter-branch-的情境-filter-branch-1"><span class="toc-text">情境@ 使用 Filter-branch 的情境 (filter-branch)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-關閉自動轉換-CRLF"><span class="toc-text">情境@ 關閉自動轉換 CRLF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-解決衝突，使用來對方的資料取代自己的"><span class="toc-text">情境@ 解決衝突，使用來對方的資料取代自己的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#情境-Remote-Commits-is-messy-清空遠端-Commits"><span class="toc-text">情境@ Remote Commits is messy 清空遠端 Commits</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <h2 id="使用的情境"><a href="#使用的情境" class="headerlink" title="使用的情境"></a>使用的情境</h2><p>如同學習 Gulp 的經驗，直接用需求情境的方式學習新工具是最有效率的，因為情境的需求是與自己切身相關的，而非代入生冷的範例。</p>
+<ol>
+<li>創造屬於自己的情境</li>
+<li>跟著情境實際操作</li>
+<li>將技能融入自己的日常作業流程</li>
+</ol>
+<a id="more"></a>
+
+<hr>
+<h3 id="情境-啟用-Git"><a href="#情境-啟用-Git" class="headerlink" title="情境@ 啟用 Git"></a>情境@ 啟用 Git</h3><p>Git 博大精深卻十分精簡，有關該專案的版本控制一切相關資訊都只關乎於專案下的 .git 資料夾，而要另一個專案開始啟用 Git 的版本控制機制，僅需要輸入下列指令：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">cd</span> folder
+<span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-常用的-Git-alias-設定-git-config-alias"><a href="#情境-常用的-Git-alias-設定-git-config-alias" class="headerlink" title="情境@ 常用的 Git alias 設定 (git config alias)"></a>情境@ 常用的 Git alias 設定 (git config alias)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> config --global alias.co checkout
+<span class="token function">git</span> config --global alias.ci commit
+<span class="token function">git</span> config --global alias.st status
+<span class="token function">git</span> config --global alias.sts <span class="token string">"status -s"</span>
+<span class="token function">git</span> config --global alias.br branch
+<span class="token function">git</span> config --global alias.re remote
+<span class="token function">git</span> config --global alias.di <span class="token function">diff</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-Git-Status-UTF-8-檔案名稱被編碼的調整"><a href="#情境-Git-Status-UTF-8-檔案名稱被編碼的調整" class="headerlink" title="情境@ Git Status UTF-8 檔案名稱被編碼的調整"></a>情境@ Git Status UTF-8 檔案名稱被編碼的調整</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> config --global core.quotepath <span class="token boolean">false</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-忽略特定檔案、資料夾-gitignore"><a href="#情境-忽略特定檔案、資料夾-gitignore" class="headerlink" title="情境@ 忽略特定檔案、資料夾 (gitignore)"></a>情境@ 忽略特定檔案、資料夾 (gitignore)</h3><p>一旦啟用 git init 後，專案下的任何新增檔案都會被視為 untracked，這個時候可以藉由設定 gitignore 來告訴 git 忽略掉某些特定的檔案，不要管其異動差別，並且不要放置檔案庫中。通常是編譯過程中產生的檔案或者 npm modules 資料夾等。</p>
+<p>使用的方式就是在專案目錄下加入一個 .gitignore 檔案，檔案內所羅列的檔案、資料夾路徑、檔案類型就會自動被 git 所排除。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># 忽略所有 txt 副檔名的檔案</span>
+*.txt
+
+<span class="token comment" spellcheck="true"># 忽略 node_modules 資料夾</span>
+mode_modules/
+
+<span class="token comment" spellcheck="true"># 忽略目前目錄下的 dir 資料夾，但不忽略子資料夾中的 dir 資料夾</span>
+/dir
+
+<span class="token comment" spellcheck="true"># 忽略所有 dir 資料夾下的 txt 檔案</span>
+/dir/**/*.txt
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-存入暫存區-staged-與遞交至檔案庫-respository"><a href="#情境-存入暫存區-staged-與遞交至檔案庫-respository" class="headerlink" title="情境@ 存入暫存區 (staged) 與遞交至檔案庫 (respository)"></a>情境@ 存入暫存區 (staged) 與遞交至檔案庫 (respository)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># 加入暫存區 (staged)</span>
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token comment" spellcheck="true"># 送入檔案庫 (respository)</span>
+<span class="token function">git</span> commit -m <span class="token string">"備註訊息"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-補充上一個-commit-amend"><a href="#情境-補充上一個-commit-amend" class="headerlink" title="情境@ 補充上一個 commit (amend)"></a>情境@ 補充上一個 commit (amend)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token keyword">echo</span> <span class="token string">"new file"</span> <span class="token operator">></span> file.txt
+<span class="token function">git</span> commit --amend <span class="token string">"訊息"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-切換到上一個-commit-checkout"><a href="#情境-切換到上一個-commit-checkout" class="headerlink" title="情境@ 切換到上一個 commit (checkout)"></a>情境@ 切換到上一個 commit (checkout)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> checkout head~<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>但這樣會出現 Head detached 的情形，正確的方式應該是建立分支，並且切換至分支。</p>
+<h3 id="情境-取回上一個版本的特定檔案-checkout"><a href="#情境-取回上一個版本的特定檔案-checkout" class="headerlink" title="情境@ 取回上一個版本的特定檔案 (checkout)"></a>情境@ 取回上一個版本的特定檔案 (checkout)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> checkout 9ee1a27 app.js <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-比對-Head-與-Unstaged-差異-diff"><a href="#情境-比對-Head-與-Unstaged-差異-diff" class="headerlink" title="情境@ 比對 Head 與 Unstaged 差異 (diff)"></a>情境@ 比對 Head 與 Unstaged 差異 (diff)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> <span class="token function">diff</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-比對-Head-與-Staged-差異-diff"><a href="#情境-比對-Head-與-Staged-差異-diff" class="headerlink" title="情境@ 比對 Head 與 Staged 差異 (diff)"></a>情境@ 比對 Head 與 Staged 差異 (diff)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> <span class="token function">diff</span> --cached<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-比對-Head-與指定-Commit-差異-diff"><a href="#情境-比對-Head-與指定-Commit-差異-diff" class="headerlink" title="情境@ 比對 Head 與指定 Commit 差異 (diff)"></a>情境@ 比對 Head 與指定 Commit 差異 (diff)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> <span class="token function">diff</span> commitId<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-檢查目前的檔案歷次-commit-的異動情形-blame"><a href="#情境-檢查目前的檔案歷次-commit-的異動情形-blame" class="headerlink" title="情境@ 檢查目前的檔案歷次 commit 的異動情形 (blame)"></a>情境@ 檢查目前的檔案歷次 commit 的異動情形 (blame)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> blame app.js<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-檢視-Commit-紀錄-搜尋關鍵字"><a href="#情境-檢視-Commit-紀錄-搜尋關鍵字" class="headerlink" title="情境@ 檢視 Commit 紀錄 - 搜尋關鍵字"></a>情境@ 檢視 Commit 紀錄 - 搜尋關鍵字</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> log -S <span class="token string">"keyword in comment"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-檢視-Commit-紀錄-最近一筆"><a href="#情境-檢視-Commit-紀錄-最近一筆" class="headerlink" title="情境@ 檢視 Commit 紀錄 - 最近一筆"></a>情境@ 檢視 Commit 紀錄 - 最近一筆</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> log -1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-檢視-Commit-紀錄-特定日期"><a href="#情境-檢視-Commit-紀錄-特定日期" class="headerlink" title="情境@ 檢視 Commit 紀錄 - 特定日期"></a>情境@ 檢視 Commit 紀錄 - 特定日期</h3><pre><code>git log --since=&quot;2020-05-27&quot; --until=&quot;2020-05-28&quot;</code></pre><h3 id="情境-檢視-Commit-紀錄-這筆紀錄做了什麼"><a href="#情境-檢視-Commit-紀錄-這筆紀錄做了什麼" class="headerlink" title="情境@ 檢視 Commit 紀錄 - 這筆紀錄做了什麼"></a>情境@ 檢視 Commit 紀錄 - 這筆紀錄做了什麼</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> show 0ba3a74 --stat<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-檢視-Commit-紀錄-自定義顯示-format"><a href="#情境-檢視-Commit-紀錄-自定義顯示-format" class="headerlink" title="情境@ 檢視 Commit 紀錄 - 自定義顯示 format"></a>情境@ 檢視 Commit 紀錄 - 自定義顯示 format</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> log --pretty<span class="token operator">=</span><span class="token string">"%h - %cr - %s"</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<table>
+<thead>
+<tr>
+<th>選項</th>
+<th>輸出說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%H</td>
+<td>該提交 SHA-1 雜湊值</td>
+</tr>
+<tr>
+<td>%h</td>
+<td>該提交簡短的 SHA-1 雜湊值</td>
+</tr>
+<tr>
+<td>%T</td>
+<td>「樹（tree）」物件的 SHA-1 雜湊值</td>
+</tr>
+<tr>
+<td>%t</td>
+<td>「樹」物件簡短的 SHA-1 雜湊值</td>
+</tr>
+<tr>
+<td>%P</td>
+<td>親代（parent）提交的 SHA-1 雜湊值</td>
+</tr>
+<tr>
+<td>%p</td>
+<td>親代提交簡短的 SHA-1 雜湊值</td>
+</tr>
+<tr>
+<td>%an</td>
+<td>作者名字</td>
+</tr>
+<tr>
+<td>%ae</td>
+<td>作者電子郵件</td>
+</tr>
+<tr>
+<td>%ad</td>
+<td>作者日期（依據 –date 選項值而有不同的格式）</td>
+</tr>
+<tr>
+<td>%ar</td>
+<td>作者日期，相對時間格式。</td>
+</tr>
+<tr>
+<td>%cn</td>
+<td>提交者名字</td>
+</tr>
+<tr>
+<td>%ce</td>
+<td>提交者電子郵件</td>
+</tr>
+<tr>
+<td>%cd</td>
+<td>提交者日期</td>
+</tr>
+<tr>
+<td>%cr</td>
+<td>提交者日期，相對時間格式。</td>
+</tr>
+<tr>
+<td>%s</td>
+<td>標題</td>
+</tr>
+</tbody></table>
+<p><a href="https://git-scm.com/book/zh-tw/v2/Git-%E5%9F%BA%E7%A4%8E-%E6%AA%A2%E8%A6%96%E6%8F%90%E4%BA%A4%E7%9A%84%E6%AD%B7%E5%8F%B2%E8%A8%98%E9%8C%84#rpretty_format" target="_blank" rel="noopener">資料參考</a></p>
+<h3 id="情境-比較兩筆-Commit-差異"><a href="#情境-比較兩筆-Commit-差異" class="headerlink" title="情境@ 比較兩筆 Commit 差異"></a>情境@ 比較兩筆 Commit 差異</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> <span class="token function">diff</span> 0ba3b74 a379a71 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-移除檔案與重新命名檔案-rm-mv"><a href="#情境-移除檔案與重新命名檔案-rm-mv" class="headerlink" title="情境@ 移除檔案與重新命名檔案 (rm, mv)"></a>情境@ 移除檔案與重新命名檔案 (rm, mv)</h3><p>已經加入 staged 的話可以透過 git rm 移除 staged並刪除檔案，如果仍在 untracted 階段直接 rm 即可。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token keyword">echo</span> <span class="token string">"untrackted"</span> <span class="token operator">></span> untracked.js
+<span class="token function">rm</span> untrackted.js
+<span class="token keyword">echo</span> <span class="token string">"unwnated"</span> <span class="token operator">></span> untracked.js
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token function">git</span> <span class="token function">rm</span> unwanted.js<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-僅移除-stged-狀態，但保持檔案-rm-–cached"><a href="#情境-僅移除-stged-狀態，但保持檔案-rm-–cached" class="headerlink" title="情境@ 僅移除 stged 狀態，但保持檔案  (rm –cached)"></a>情境@ 僅移除 stged 狀態，但保持檔案  (rm –cached)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token keyword">echo</span> <span class="token string">"unwnated"</span> <span class="token operator">></span> unwanted.js
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token function">git</span> <span class="token function">rm</span> unwanted.js --cached
+<span class="token comment" spellcheck="true"># unwanted.js is untracked</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-從特定版本延伸開發-branch"><a href="#情境-從特定版本延伸開發-branch" class="headerlink" title="情境@ 從特定版本延伸開發 (branch)"></a>情境@ 從特定版本延伸開發 (branch)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> checkout 9ee1a27 -b dev-branch
+<span class="token keyword">echo</span> dev <span class="token operator">></span> dev.txt
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token function">git</span> commit -m <span class="token string">"dev-branch new commit"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-放棄目前的所有異動-reset"><a href="#情境-放棄目前的所有異動-reset" class="headerlink" title="情境@ 放棄目前的所有異動 (reset)"></a>情境@ 放棄目前的所有異動 (reset)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token keyword">echo</span> <span class="token string">"隔著不回頭看的時間　回憶積雪　疊成冬天"</span> <span class="token operator">></span> regret.txt
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token comment" spellcheck="true"># oops, I don't need regret.txt anymore</span>
+<span class="token function">git</span> reset <span class="token function">head</span> --hard<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-移除特定異動，保留部分異動-reset"><a href="#情境-移除特定異動，保留部分異動-reset" class="headerlink" title="情境@ 移除特定異動，保留部分異動 (reset)"></a>情境@ 移除特定異動，保留部分異動 (reset)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token keyword">echo</span> <span class="token string">"隔著不回頭看的時間　回憶積雪　疊成冬天"</span> <span class="token operator">></span> regret.txt
+<span class="token keyword">echo</span> <span class="token string">"I really need this"</span> <span class="token operator">></span> keep.txt
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token comment" spellcheck="true"># oops, I don't need regret.txt anymore, but keep keep.txt</span>
+<span class="token function">git</span> reset <span class="token function">head</span>
+<span class="token comment" spellcheck="true"># regret.txt and keep.txt is untracked now</span>
+<span class="token function">rm</span> regret.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-刪除所有未追蹤的檔案-clean"><a href="#情境-刪除所有未追蹤的檔案-clean" class="headerlink" title="情境@ 刪除所有未追蹤的檔案 (clean)"></a>情境@ 刪除所有未追蹤的檔案 (clean)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token keyword">echo</span> <span class="token string">"unwanted"</span> <span class="token operator">></span> unwanted.txt
+<span class="token comment" spellcheck="true"># unwanted.txt is untracked</span>
+<span class="token function">git</span> clean -f
+<span class="token comment" spellcheck="true"># unwanted is removed</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-刪除已追蹤，但被-gitignore-排除的檔案-clean"><a href="#情境-刪除已追蹤，但被-gitignore-排除的檔案-clean" class="headerlink" title="情境@ 刪除已追蹤，但被 .gitignore 排除的檔案 (clean)"></a>情境@ 刪除已追蹤，但被 .gitignore 排除的檔案 (clean)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> clean -fX<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-拆除掉目前-Commit-reset"><a href="#情境-拆除掉目前-Commit-reset" class="headerlink" title="情境@ 拆除掉目前 Commit (reset)"></a>情境@ 拆除掉目前 Commit (reset)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reset head~ --hard<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-復原被拆除掉的-Commit-reset"><a href="#情境-復原被拆除掉的-Commit-reset" class="headerlink" title="情境@ 復原被拆除掉的 Commit (reset)"></a>情境@ 復原被拆除掉的 Commit (reset)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reflog
+<span class="token function">git</span> reset commitId --hard<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-保存-staged-的檔案，回到正式區修正一些事情-stash"><a href="#情境-保存-staged-的檔案，回到正式區修正一些事情-stash" class="headerlink" title="情境@ 保存 staged 的檔案，回到正式區修正一些事情 (stash)"></a>情境@ 保存 staged 的檔案，回到正式區修正一些事情 (stash)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> stash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-保存未-commit-所有檔案，回到正式區修正一些事情-stash"><a href="#情境-保存未-commit-所有檔案，回到正式區修正一些事情-stash" class="headerlink" title="情境@ 保存未 commit 所有檔案，回到正式區修正一些事情 (stash)"></a>情境@ 保存未 commit 所有檔案，回到正式區修正一些事情 (stash)</h3><p><strong>保存 staged 及 untracked 的檔案</strong>，原理是創造一個 staged commit 及 untracked commit 並且合併為一個 stash branch。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> stash -u<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-取回-Stash-暫存的內容-stash-u"><a href="#情境-取回-Stash-暫存的內容-stash-u" class="headerlink" title="情境@ 取回 Stash 暫存的內容 (stash -u)"></a>情境@ 取回 Stash 暫存的內容 (stash -u)</h3><p>取回的方式預設是後進先出(LIFO)，原理是將 stash 分支合併回目前的分支。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> stash pop<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-取回-Stash-暫存的內容-stash-pop"><a href="#情境-取回-Stash-暫存的內容-stash-pop" class="headerlink" title="情境@ 取回 Stash 暫存的內容 (stash pop)"></a>情境@ 取回 Stash 暫存的內容 (stash pop)</h3><p>取回的方式預設是後進先出(LIFO)</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> pop<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-取回特定-Stash-暫存的內容-stash-pop"><a href="#情境-取回特定-Stash-暫存的內容-stash-pop" class="headerlink" title="情境@ 取回特定 Stash 暫存的內容 (stash pop)"></a>情境@ 取回<strong>特定</strong> Stash 暫存的內容 (stash pop)</h3><p>取回的方式預設是後進先出(LIFO)</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> stash list
+<span class="token function">git</span> stash pop <span class="token string">"stash@{1}"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-取回-Stash-但保存在-Stash-list-stash-apply"><a href="#情境-取回-Stash-但保存在-Stash-list-stash-apply" class="headerlink" title="情境@ 取回 Stash 但保存在 Stash list (stash apply)"></a>情境@ 取回 Stash 但保存在 Stash list (stash apply)</h3><p>取回的方式預設是後進先出(LIFO)</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> stash list
+<span class="token function">git</span> stash apply <span class="token string">"stash@{1}"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-清除-Stash-list-stash-clear"><a href="#情境-清除-Stash-list-stash-clear" class="headerlink" title="情境@ 清除 Stash list (stash clear)"></a>情境@ 清除 Stash list (stash clear)</h3><p>取回的方式預設是後進先出(LIFO)</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> stash <span class="token function">clear</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-用標籤標註歷次發行版本-tag"><a href="#情境-用標籤標註歷次發行版本-tag" class="headerlink" title="情境@ 用標籤標註歷次發行版本 (tag)"></a>情境@ 用標籤標註歷次發行版本 (tag)</h3><p><strong>輕量標籤 (lightweight tag)</strong> Commit 的別名用途；標籤和分支的差別在於分支會隨著 Commit 而移動，但標籤只會保持在同一個 Commit 上。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> tag tagName commitId<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-用標籤標註歷次發行版本-tag-a"><a href="#情境-用標籤標註歷次發行版本-tag-a" class="headerlink" title="情境@ 用標籤標註歷次發行版本 (tag -a)"></a>情境@ 用標籤標註歷次發行版本 (tag -a)</h3><p><strong>標示標籤 (annotated tag)</strong> tag 物件，能夠另外帶有訊息。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> tag tagName commitId<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-列出所有標籤-tag"><a href="#情境-列出所有標籤-tag" class="headerlink" title="情境@ 列出所有標籤 (tag)"></a>情境@ 列出所有標籤 (tag)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> tag<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-強制-branch-改指向-commit-git-branch-f"><a href="#情境-強制-branch-改指向-commit-git-branch-f" class="headerlink" title="情境@ 強制 branch 改指向 commit (git branch -f)"></a>情境@ 強制 branch 改指向 commit (git branch -f)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> branch -f master commitId<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-合併分支-merge"><a href="#情境-合併分支-merge" class="headerlink" title="情境@ 合併分支 (merge)"></a>情境@ 合併分支 (merge)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> merge branchName<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-合併分支，但不啟用-fast-forward-merge-–no-ff"><a href="#情境-合併分支，但不啟用-fast-forward-merge-–no-ff" class="headerlink" title="情境@ 合併分支，但不啟用 fast-forward (merge –no-ff)"></a>情境@ 合併分支，但不啟用 fast-forward (merge –no-ff)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> merge branchName --no-ff<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-Git-Commit-的符號參照、相對參照及別名"><a href="#情境-Git-Commit-的符號參照、相對參照及別名" class="headerlink" title="情境@ Git Commit 的符號參照、相對參照及別名"></a>情境@ Git Commit 的符號參照、相對參照及別名</h3><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HEAD</td>
+<td>指向當前分支的最新 commit</td>
+</tr>
+<tr>
+<td>ORIG_HEAD</td>
+<td>Head Commit 的前一版</td>
+</tr>
+<tr>
+<td>@</td>
+<td>HEAD 的別名</td>
+</tr>
+<tr>
+<td>HEAD~n</td>
+<td>HEAD 前n代 parent commit</td>
+</tr>
+<tr>
+<td>HEAD^n</td>
+<td>HEAD 有n個 上層 parent commit 時選擇其一</td>
+</tr>
+</tbody></table>
+<h3 id="情境-解析-Git-參照的絕對參照-Sha-1-值"><a href="#情境-解析-Git-參照的絕對參照-Sha-1-值" class="headerlink" title="情境@ 解析 Git 參照的絕對參照 Sha-1 值"></a>情境@ 解析 Git 參照的絕對參照 Sha-1 值</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> rev-parse master
+<span class="token function">git</span> rev-parse HEAD
+<span class="token function">git</span> rev-parse @
+<span class="token function">git</span> rev-parse HEAD^
+<span class="token function">git</span> rev-parse HEAD~2
+<span class="token function">git</span> rev-parse ORIG_HEAD<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-reglog-立即-expire-reflog-expire"><a href="#情境-reglog-立即-expire-reflog-expire" class="headerlink" title="情境@ reglog 立即 expire (reflog expire)"></a>情境@ reglog 立即 expire (reflog expire)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reflog expire --all --expire<span class="token operator">=</span>now
+<span class="token function">git</span> <span class="token function">fsck</span> --unreachable
+<span class="token function">git</span> gc --prune<span class="token operator">=</span>now<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="情境-將檔案庫推送至伺服器-push"><a href="#情境-將檔案庫推送至伺服器-push" class="headerlink" title="情境@ 將檔案庫推送至伺服器 (push)"></a>情境@ 將檔案庫推送至伺服器 (push)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> remote -v
+<span class="token function">git</span> push<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-複製遠端的檔案庫-clone"><a href="#情境-複製遠端的檔案庫-clone" class="headerlink" title="情境@ 複製遠端的檔案庫 (clone)"></a>情境@ 複製遠端的檔案庫 (clone)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> clone <span class="token punctuation">[</span>url<span class="token operator">|</span>ssh<span class="token punctuation">]</span> folderName<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-多個推送伺服器目標-remote-add"><a href="#情境-多個推送伺服器目標-remote-add" class="headerlink" title="情境@ 多個推送伺服器目標 (remote add)"></a>情境@ 多個推送伺服器目標 (remote add)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> remote add abbr <span class="token punctuation">[</span>url<span class="token operator">|</span>ssh<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-推送至指定伺服器目標-push"><a href="#情境-推送至指定伺服器目標-push" class="headerlink" title="情境@ 推送至指定伺服器目標 (push)"></a>情境@ 推送至指定伺服器目標 (push)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#git push [remote-name] [branch-anme]</span>
+<span class="token function">git</span> push origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="情境-強制覆寫遠端伺服器的-Commit-History"><a href="#情境-強制覆寫遠端伺服器的-Commit-History" class="headerlink" title="情境@ 強制覆寫遠端伺服器的 Commit History"></a>情境@ 強制覆寫遠端伺服器的 Commit History</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> push -f<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-確認遠端-remote-show"><a href="#情境-確認遠端-remote-show" class="headerlink" title="情境@ 確認遠端 (remote show)"></a>情境@ 確認遠端 (remote show)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> remote show origin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-同步遠端檔案庫-pull-fetch"><a href="#情境-同步遠端檔案庫-pull-fetch" class="headerlink" title="情境@ 同步遠端檔案庫 (pull, fetch)"></a>情境@ 同步遠端檔案庫 (pull, fetch)</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> pull<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-發送-Pull-Requst"><a href="#情境-發送-Pull-Requst" class="headerlink" title="情境@ 發送 Pull Requst"></a>情境@ 發送 Pull Requst</h3><h3 id="情境-What-is-Github-flow"><a href="#情境-What-is-Github-flow" class="headerlink" title="情境@ What is Github flow"></a>情境@ What is Github flow</h3><h3 id="情境-使用-Rebase-的情境-rebase"><a href="#情境-使用-Rebase-的情境-rebase" class="headerlink" title="情境@ 使用 Rebase 的情境 (rebase)"></a>情境@ 使用 Rebase 的情境 (rebase)</h3><p>剪下分支，並依照指定的基準貼上分支。</p>
+<p><img src="/assets/git100-before-rebase.png" alt="Before Rebase"><br><img src="/assets/git100-after-rebase.png" alt="After Rebase"></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> rebase <span class="token punctuation">[</span>new base commitId<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-使用-Revert-的情境-revert"><a href="#情境-使用-Revert-的情境-revert" class="headerlink" title="情境@ 使用 Revert 的情境 (revert)"></a>情境@ 使用 Revert 的情境 (revert)</h3><p>用一個新的 Commit 的還原某個 Commit 的動作，在共用檔案庫的情境尤其適用，避免造成別人的 Commit History 混亂。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> revert commitId<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-使用-Cherry-pick-的情境-cherry-pick"><a href="#情境-使用-Cherry-pick-的情境-cherry-pick" class="headerlink" title="情境@ 使用 Cherry-pick 的情境 (cherry-pick)"></a>情境@ 使用 Cherry-pick 的情境 (cherry-pick)</h3><p>揀選特定的 Commit 並<strong>依序</strong>新增為新的 Commit。</p>
+<p><img src="/assets/git100-before-cherrypick.png" alt="Before Cherry-pick"><br><img src="/assets/git100-in-cherrypick.png" alt="In Cherry-pick"><br><img src="/assets/git100-after-cherrypick.png" alt="After Cherry-pick"></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> cherry-pick commitId1 commitId2 <span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-使用-Filter-branch-的情境-filter-branch"><a href="#情境-使用-Filter-branch-的情境-filter-branch" class="headerlink" title="情境@ 使用 Filter-branch 的情境 (filter-branch)"></a>情境@ 使用 Filter-branch 的情境 (filter-branch)</h3><h3 id="情境-使用-Filter-branch-的情境-filter-branch-1"><a href="#情境-使用-Filter-branch-的情境-filter-branch-1" class="headerlink" title="情境@ 使用 Filter-branch 的情境 (filter-branch)"></a>情境@ 使用 Filter-branch 的情境 (filter-branch)</h3><h3 id="情境-關閉自動轉換-CRLF"><a href="#情境-關閉自動轉換-CRLF" class="headerlink" title="情境@ 關閉自動轉換 CRLF"></a>情境@ 關閉自動轉換 CRLF</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> config --global core.autocrlf <span class="token boolean">false</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="情境-解決衝突，使用來對方的資料取代自己的"><a href="#情境-解決衝突，使用來對方的資料取代自己的" class="headerlink" title="情境@ 解決衝突，使用來對方的資料取代自己的"></a>情境@ 解決衝突，使用來對方的資料取代自己的</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> checkout --theirs conflict.txt
+<span class="token function">git</span> add <span class="token keyword">.</span>
+<span class="token function">git</span> commit -m <span class="token string">"fix conflict : accept theirs"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://gitbook.tw/chapters/branch/fix-conflict.html#section-2" target="_blank" rel="noopener">合併發生衝突了 | 那如果不是文字檔的衝突怎麼解？</a></p>
+<h3 id="情境-Remote-Commits-is-messy-清空遠端-Commits"><a href="#情境-Remote-Commits-is-messy-清空遠端-Commits" class="headerlink" title="情境@ Remote Commits is messy 清空遠端 Commits"></a>情境@ Remote Commits is messy 清空遠端 Commits</h3><p>使用的原理是先將最後 Commit 另存為其他 Branch，並將原本的 Master Branch 刪除後，重新創造 Master Branch，並且再 push 到 Github。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> checkout --orphan latest_branch 
+<span class="token operator">&amp;&amp;</span> <span class="token function">git</span> add -A 
+<span class="token operator">&amp;&amp;</span> <span class="token function">git</span> commit -am <span class="token string">"update"</span> 
+<span class="token operator">&amp;&amp;</span> <span class="token function">git</span> branch -D master 
+<span class="token operator">&amp;&amp;</span> <span class="token function">git</span> branch -m master 
+<span class="token operator">&amp;&amp;</span> <span class="token function">git</span> push -f origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/05/Git-100/" data-id="ckr4we2jw008emkuv4yt3dg0e" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/05/MVC-Sqlite/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">如何在 ASP.NET MVC下使用 Sqlite (ASP.NET MVC 5 With Sqlite)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/05/PBI-ReportServer/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Power BI 報表伺服器安裝步驟 (How to Install Power BI Report Server)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

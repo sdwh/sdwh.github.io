@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>如何使用 Hexo 建構屬於自己的部落格網站 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="元筆記，記錄著用 Hexo 寫筆記的點點滴滴，包括設定、技巧與待辦事項。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何使用 Hexo 建構屬於自己的部落格網站">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/04/Hexo-Setup/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="元筆記，記錄著用 Hexo 寫筆記的點點滴滴，包括設定、技巧與待辦事項。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/HEXO-PRISM-FIX.png">
+<meta property="article:published_time" content="2020-04-26T11:38:07.000Z">
+<meta property="article:modified_time" content="2021-06-16T23:36:44.289Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/HEXO-PRISM-FIX.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Hexo-Setup" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/04/Hexo-Setup/" class="article-date">
+  <time datetime="2020-04-26T11:38:07.000Z" itemprop="datePublished">2020-04-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Blog/">Blog</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何使用 Hexo 建構屬於自己的部落格網站
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#環境設定"><span class="toc-text">環境設定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Style-設置"><span class="toc-text">Style 設置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hexo-Front-matter-Layouy"><span class="toc-text">Hexo Front-matter Layouy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tips"><span class="toc-text">Tips</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#計算各年度-Post-數量"><span class="toc-text">計算各年度 Post 數量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tags-Type-amp-Categories-Type"><span class="toc-text">Tags Type &amp; Categories Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hexo-Sitemap"><span class="toc-text">Hexo Sitemap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#標籤排序"><span class="toc-text">標籤排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TOC"><span class="toc-text">TOC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Upgrade-To-Hexo-5"><span class="toc-text">Upgrade To Hexo 5</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hexo-Deploy-發生異常"><span class="toc-text">Hexo Deploy 發生異常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code-Section-125-異常的-Esacpe-Sequence"><span class="toc-text">Code Section &amp;#125; 異常的 Esacpe Sequence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不再支援-lodash"><span class="toc-text">不再支援 lodash</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#待辦項目"><span class="toc-text">待辦項目</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>元筆記，記錄著用 Hexo 寫筆記的點點滴滴，包括設定、技巧與待辦事項。</p>
+<a id="more"></a>
+
+<h2 id="環境設定"><a href="#環境設定" class="headerlink" title="環境設定"></a>環境設定</h2><pre class="line-numbers language-cmd"><code class="language-cmd">npm install hexo-cli -g<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果發生 <strong>‘hexo’ 不是內部或外部命令、可執行的程式或批次檔。</strong><br>檢查方向：</p>
+<ol>
+<li>環境變數是否加入 %userprofile%\AppData\Roaming\npm</li>
+<li>移除 hexo-cli 並再次嘗試安裝</li>
+</ol>
+<pre class="line-numbers language-cmd"><code class="language-cmd">npm uninstall hexo-cli<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="Style-設置"><a href="#Style-設置" class="headerlink" title="Style 設置"></a>Style 設置</h2><ul>
+<li>._config.yml</li>
+<li>themes\landscape_config.yml</li>
+</ul>
+<h3 id="Hexo-Front-matter-Layouy"><a href="#Hexo-Front-matter-Layouy" class="headerlink" title="Hexo Front-matter Layouy"></a>Hexo Front-matter Layouy</h3><p>預設使用 layout 是設定於 _config.yml 中，預設值是 post ，對應到 themes\layout\post.ejs。</p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><p>Hexo EJS 原生有支援 lodash librardy。</p>
+<h3 id="計算各年度-Post-數量"><a href="#計算各年度-Post-數量" class="headerlink" title="計算各年度 Post 數量"></a>計算各年度 Post 數量</h3><pre class="line-numbers language-html"><code class="language-html">&lt;% gp = _.groupBy(page.posts.data, (p) => p.date.year()) %
+&lt;%= gp[year].length %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="Tags-Type-amp-Categories-Type"><a href="#Tags-Type-amp-Categories-Type" class="headerlink" title="Tags Type &amp; Categories Type"></a>Tags Type &amp; Categories Type</h3><p>如何處理標籤與類別的邏輯是檢查 front-matter 中的 type 屬性，如果符合 tags 或 categories 就會做以下的渲染行為。</p>
+<pre class="line-numbers language-html"><code class="language-html">&lt;% if (post.type === 'tags') { %
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Tags<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        &lt;%- partial('_partial/tag-list', { className: 'tag-list', tags: site.tags }) %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+&lt;% } else if (post.type === 'categories') { %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Tags<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        &lt;%- partial('_partial/tag-list', { className: 'tag-list', tags: site.categories }) %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>%</span> <span class="token attr-name">}</span> <span class="token attr-name">%</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Hexo-Sitemap"><a href="#Hexo-Sitemap" class="headerlink" title="Hexo Sitemap"></a>Hexo Sitemap</h3><p>啟用 Sitemap ，讓 <a href="https://search.google.com/search-console/about" target="_blank" rel="noopener">Goole Search Console</a>可以索引部落格。</p>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">npm</span> install hexo-generator-sitemap <span class="token parameter attr-name">--save</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>_config.yml 加入下列內容</p>
+<pre class="line-numbers language-yaml"><code class="language-yaml"><span class="token comment" spellcheck="true"># sitemap</span>
+<span class="token key atrule">sitemap</span><span class="token punctuation">:</span>
+    <span class="token key atrule">path</span><span class="token punctuation">:</span> sitemap.xml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>重新 hexo clean 後再次 hexo deploy。</p>
+<p>sitemap 的網址 <strong><a href="https://userName.github.io/sitemap" target="_blank" rel="noopener">https://userName.github.io/sitemap</a></strong></p>
+<p><em>疑難排除</em> : 如果 sitemap 突然沒有正確產生，重新 npm install。</p>
+<h3 id="標籤排序"><a href="#標籤排序" class="headerlink" title="標籤排序"></a>標籤排序</h3><p>partial/tag-list.ejs</p>
+<pre class="line-numbers language-html"><code class="language-html">&lt;% var tagUnpack = Object.values(tags.data).map(x => x); %>
+
+&lt;%  
+const sortBy = (key) => {
+  return (a, b) => (a[key].toLowerCase() > b[key].toLowerCase()) ? 1 : ((b[key].toLowerCase() > a[key].toLowerCase()) ? -1 : 0);
+};
+
+const tagOrderDesc = tagUnpack.concat().sort(sortBy("name"));
+%> 
+
+&lt;% tagOrderDesc.forEach(tag => { %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>tag-card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>&lt;%- url_for(tag.path) %<span class="token punctuation">></span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&lt;%= tag.name %> - &lt;%= tag.length %><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>%</span> <span class="token attr-name">})</span> <span class="token attr-name">%</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>tag 物件具有的 Property name, _id, slug, path, permalink, posts, length</p>
+<pre class="line-numbers language-html"><code class="language-html">&lt;% tagOrderDesc.forEach(tag => { %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"&lt;%=String.prototype.concat(Object.keys(tag))%>"</span><span class="token punctuation">)</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>%</span> <span class="token attr-name">})</span> <span class="token attr-name">%</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://cythilya.github.io/2018/06/17/array-and-object-handling/" target="_blank" rel="noopener">物件轉值參考</a></p>
+<h3 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h3><p>所使用的 themes 原生就有支援 TOC ，只要在 article.ejs 中選擇適當的位置加入 partial/toc.ejs 即可。另外 Hexo 也提供了產生 <a href="https://hexo.io/zh-tw/docs/helpers.html#toc" target="_blank" rel="noopener">TOC</a> 的函數可供使用，所以不用特別額外安裝 <a href="https://github.com/bubkoo/hexo-toc" target="_blank" rel="noopener">plugins</a>。</p>
+<p><a href="https://pengloo53.gitbooks.io/hexo/content/chapter2/7%20%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E7%9B%AE%E5%BD%95.html" target="_blank" rel="noopener">必須加入 toc</a></p>
+<h2 id="Upgrade-To-Hexo-5"><a href="#Upgrade-To-Hexo-5" class="headerlink" title="Upgrade To Hexo 5"></a>Upgrade To Hexo 5</h2><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h3><p><a href="https://dnocm.com/articles/cherry/hexo-5/" target="_blank" rel="noopener">Dnocm - Hexo 5.0.0 正式发布</a></p>
+<h3 id="Hexo-Deploy-發生異常"><a href="#Hexo-Deploy-發生異常" class="headerlink" title="Hexo Deploy 發生異常"></a>Hexo Deploy 發生異常</h3><p><strong>異常訊息</strong></p>
+<pre class="line-numbers language-batch"><code class="language-batch"><span class="token command"><span class="token keyword">typeError</span> [ERR_INVALID_ARG_TYPE]: The <span class="token string">"mode"</span> argument must be integer. </span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>解決方式：安裝 NVM 並切換到 NODE.JS 12.2 版本後恢復正常。</p>
+<p><a href="https://www.jianshu.com/p/13c0b3ca7c71" target="_blank" rel="noopener">nvm安装（Windows篇）</a><br><a href="https://www.jianshu.com/p/68177749d33f" target="_blank" rel="noopener">关于部署HEXO博客到github时，提示typeError [ERR_INVALID_ARG_TYPE]: The “mode” argument must be integer. Recei…</a></p>
+<h3 id="Code-Section-125-異常的-Esacpe-Sequence"><a href="#Code-Section-125-異常的-Esacpe-Sequence" class="headerlink" title="Code Section &#125; 異常的 Esacpe Sequence"></a>Code Section &#125; 異常的 Esacpe Sequence</h3><p>更新成 Hexo 5 之後，可能因為原生支援 Prism 所以和 Hexo-Prism-Plugin 產生衝突。但因為尚無法調整 Hexo 原生支援的 Prism 符合原生的使用設計，所以替代處理方式尋找解決 Escape Sequence 異常的 Workaround：</p>
+<p>前往 node_modules/hexo-prism-plugin/src/index.js</p>
+<p>新增異常的 Escape Sequence 對應如附圖。</p>
+<p><img src="/assets/HEXO-PRISM-FIX.png" alt=""></p>
+<h3 id="不再支援-lodash"><a href="#不再支援-lodash" class="headerlink" title="不再支援 lodash"></a>不再支援 lodash</h3><p>參考<a href="https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore" target="_blank" rel="noopener">You-Dont-Need-Lodash-Underscore</a>改寫原本使用 lodash 的 ejs，主要 OrderBy 以及 GroupBy 😎</p>
+<h2 id="待辦項目"><a href="#待辦項目" class="headerlink" title="待辦項目"></a>待辦項目</h2><ul>
+<li>Hexo With Gulp<ul>
+<li>Minify Image Files</li>
+<li>Mnify HTML &amp; CSS &amp; JS Files</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://ellis-wu.github.io/2018/06/13/hexo-color-quote/" target="_blank" rel="noopener">必須學習 color quote</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/04/Hexo-Setup/" data-id="ckr4we2k5009emkuvdb156jio" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+    
+    
+  
+    <a href="/posts/2020/04/Csharp/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          C# Console 學習筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

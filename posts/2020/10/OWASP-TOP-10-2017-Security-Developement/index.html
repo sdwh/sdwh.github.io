@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>一定要知道的 OWASP Top 10:2017 Web 開發攻防之道 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="摘要 OWASP top 10:2017 各項常見風險的介紹與對應的攻擊、防禦之道 ⚔️🛡️">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一定要知道的 OWASP Top 10:2017 Web 開發攻防之道">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/10/OWASP-TOP-10-2017-Security-Developement/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="摘要 OWASP top 10:2017 各項常見風險的介紹與對應的攻擊、防禦之道 ⚔️🛡️">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/OWASP-TOP-10-2017-Icons.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Top10-Risk-Factor-Summary.png">
+<meta property="article:published_time" content="2020-10-08T10:00:00.000Z">
+<meta property="article:modified_time" content="2020-11-30T11:17:27.134Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Http">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/OWASP-TOP-10-2017-Icons.png">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-OWASP-TOP-10-2017-Security-Developement" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/OWASP-TOP-10-2017-Security-Developement/" class="article-date">
+  <time datetime="2020-10-08T10:00:00.000Z" itemprop="datePublished">2020-10-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      一定要知道的 OWASP Top 10:2017 Web 開發攻防之道
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Top-10-Web-Application-Security-Risks"><span class="toc-text">Top 10 Web Application Security Risks</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Injection"><span class="toc-text">Injection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broken-Authentication"><span class="toc-text">Broken Authentication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sensitive-Data-Exposure"><span class="toc-text">Sensitive Data Exposure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XML-External-Entities-XXE"><span class="toc-text">XML External Entities (XXE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broken-Access-Control"><span class="toc-text">Broken Access Control</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Security-Misconfiguration"><span class="toc-text">Security Misconfiguration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cross-Site-Scripting-XSS"><span class="toc-text">Cross-Site Scripting XSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Insecure-Deserialization"><span class="toc-text">Insecure Deserialization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-Components-with-Known-Vulnerabilities"><span class="toc-text">Using Components with Known Vulnerabilities</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Insufficient-Logging-amp-Monitoring"><span class="toc-text">Insufficient Logging &amp; Monitoring</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#後續行動"><span class="toc-text">後續行動</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>摘要 OWASP top 10:2017 各項常見風險的介紹與對應的攻擊、防禦之道 ⚔️🛡️</p>
+<a href="https://owasp.org/www-project-top-ten/" target="_blank" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/OWASP-TOP-10-2017-Icons.png" alt="logo" width="300px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="Top-10-Web-Application-Security-Risks"><a href="#Top-10-Web-Application-Security-Risks" class="headerlink" title="Top 10 Web Application Security Risks"></a>Top 10 Web Application Security Risks</h2><p><img src="/assets/Top10-Risk-Factor-Summary.png" alt=""></p>
+<h3 id="Injection"><a href="#Injection" class="headerlink" title="Injection"></a><a href="https://owasp.org//www-project-top-ten/2017/A1_2017-Injection" target="_blank" rel="noopener"><strong>Injection</strong></a></h3><blockquote>
+<p>Injection flaws, such as SQL, NoSQL, OS, and LDAP injection, occur when untrusted data is sent to an interpreter as part of a command or query. The attacker’s hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization.</p>
+</blockquote>
+<p>惡意的資料被傳入應用程式(Url, Query String, Headers, Input field, etc)，被應用程式詮釋為 SQL, Command 以及 Code 的一部分，行出預期外的結果，可能造成資料與系統的損失。</p>
+<p><strong>⚔️ 攻擊之道：</strong></p>
+<ul>
+<li>對任何輸入欄位手工填空</li>
+<li><a href="https://github.com/sqlmapproject/sqlmap" target="_blank" rel="noopener">sqlmap</a></li>
+</ul>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>參數化查詢 (Parameter Query)</li>
+<li>輸入內容檢查 (Input Sanitization)</li>
+<li>Filter Request 篩選規則輔助</li>
+</ul>
+<h3 id="Broken-Authentication"><a href="#Broken-Authentication" class="headerlink" title="Broken Authentication"></a><a href="https://owasp.org//www-project-top-ten/2017/A2_2017-Broken_Authentication" target="_blank" rel="noopener"><strong>Broken Authentication</strong></a></h3><blockquote>
+<p>Application functions related to authentication and session management are often implemented incorrectly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other users’ identities temporarily or permanently.</p>
+</blockquote>
+<p>驗證機制不正確實做，另惡意使用者有偽造 (Spoofing) 身分的機會。</p>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>Session 逾期時限</li>
+<li>登出後銷毀 Session 實作</li>
+<li>不提供重複的 SessionId</li>
+<li>Cookie 設定 HttpOnly 保護 SessionId</li>
+<li>配合 HTTPS 將 Cookie 設定 SSLRequire 保護 SessionId</li>
+</ul>
+<h3 id="Sensitive-Data-Exposure"><a href="#Sensitive-Data-Exposure" class="headerlink" title="Sensitive Data Exposure"></a><a href="https://owasp.org//www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure" target="_blank" rel="noopener"><strong>Sensitive Data Exposure</strong></a></h3><blockquote>
+<p>Many web applications and APIs do not properly protect sensitive data, such as financial, healthcare, and PII. Attackers may steal or modify such weakly protected data to conduct credit card fraud, identity theft, or other crimes. Sensitive data may be compromised without extra protection, such as encryption at rest or in transit, and requires special precautions when exchanged with the browser.</p>
+</blockquote>
+<p>敏感的資料未做處理，當其他惡意攻擊成功時，資料被取用時因為無加密處理會以明文的形式流出。</p>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>敏感資料存入資料庫時進行雜湊 (hash) 或加密 (encrypt)</li>
+<li>敏感資料進行遮蔽</li>
+</ul>
+<h3 id="XML-External-Entities-XXE"><a href="#XML-External-Entities-XXE" class="headerlink" title="XML External Entities (XXE)"></a><a href="https://owasp.org//www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE)" target="_blank" rel="noopener"><strong>XML External Entities (XXE)</strong></a></h3><blockquote>
+<p>Many older or poorly configured XML processors evaluate external entity references within XML documents. External entities can be used to disclose internal files using the file URI handler, internal file shares, internal port scanning, remote code execution, and denial of service attacks.</p>
+</blockquote>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>關閉 DTD</li>
+</ul>
+<h3 id="Broken-Access-Control"><a href="#Broken-Access-Control" class="headerlink" title="Broken Access Control"></a><a href="https://owasp.org//www-project-top-ten/2017/A5_2017-Broken_Access_Control" target="_blank" rel="noopener"><strong>Broken Access Control</strong></a></h3><blockquote>
+<p>Restrictions on what authenticated users are allowed to do are often not properly enforced. Attackers can exploit these flaws to access unauthorized functionality and/or data, such as access other users’ accounts, view sensitive files, modify other users’ data, change access rights, etc.</p>
+</blockquote>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>前後端並行的檢查機制</li>
+<li>特別容易遺忘的權限檢查點：分頁、搜尋</li>
+<li>輸入內容檢查 (Input Sanitization)</li>
+<li>避免 Path Traversal</li>
+</ul>
+<h3 id="Security-Misconfiguration"><a href="#Security-Misconfiguration" class="headerlink" title="Security Misconfiguration"></a><a href="https://owasp.org//www-project-top-ten/2017/A6_2017-Security_Misconfiguration" target="_blank" rel="noopener"><strong>Security Misconfiguration</strong></a></h3><blockquote>
+<p>Security misconfiguration is the most commonly seen issue. This is commonly a result of insecure default configurations, incomplete or ad hoc configurations, open cloud storage, misconfigured HTTP headers, and verbose error messages containing sensitive information. Not only must all operating systems, frameworks, libraries, and applications be securely configured, but they must be patched/upgraded in a timely fashion.</p>
+</blockquote>
+<p>未停用預設不安全的設定，包括允許預設帳號、密碼，或啟用了不安全、不正確的設定，例如暴露資訊的錯誤訊息等。</p>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li><a href="/posts/2020/10/Cyber-Security-Web-Config-Configuration/">web.config 的安全設定</a></li>
+<li>IIS Configuration (Filter Request)</li>
+<li>停止詳細錯誤訊息</li>
+<li>停止目錄瀏覽</li>
+<li>停止預設帳號密碼</li>
+<li>移除不需要的模組、範例頁面</li>
+<li>移除測試模式</li>
+</ul>
+<h3 id="Cross-Site-Scripting-XSS"><a href="#Cross-Site-Scripting-XSS" class="headerlink" title="Cross-Site Scripting XSS"></a><a href="https://owasp.org//www-project-top-ten/2017/A7_2017-Cross-Site_Scripting_(XSS)" target="_blank" rel="noopener"><strong>Cross-Site Scripting XSS</strong></a></h3><blockquote>
+<p>XSS flaws occur whenever an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim’s browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.</p>
+</blockquote>
+<p>藉由 Reflected 或 Stored 的方式將對使用者的瀏覽端執行惡意的 JS Scripts ，可以竊取使用者 cookies 中的敏感資訊如 sessionID 或者將使用者導向惡意的網站。</p>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>輸入內容檢查 (Input Sanitization)</li>
+<li>UrlEncode</li>
+<li>HtmlEncode</li>
+<li>JavaScriptEncode</li>
+<li>設定 HttpOnly</li>
+</ul>
+<h3 id="Insecure-Deserialization"><a href="#Insecure-Deserialization" class="headerlink" title="Insecure Deserialization"></a><a href="https://owasp.org//www-project-top-ten/2017/A8_2017-Insecure_Deserialization" target="_blank" rel="noopener"><strong>Insecure Deserialization</strong></a></h3><blockquote>
+<p>Insecure deserialization often leads to remote code execution. Even if deserialization flaws do not result in remote code execution, they can be used to perform attacks, including replay attacks, injection attacks, and privilege escalation attacks.</p>
+</blockquote>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>輸入內容檢查 (Input Sanitization)</li>
+</ul>
+<h3 id="Using-Components-with-Known-Vulnerabilities"><a href="#Using-Components-with-Known-Vulnerabilities" class="headerlink" title="Using Components with Known Vulnerabilities"></a><a href="https://owasp.org//www-project-top-ten/2017/A9_2017-Using_Components_with_Known_Vulnerabilities" target="_blank" rel="noopener"><strong>Using Components with Known Vulnerabilities</strong></a></h3><blockquote>
+<p>Components, such as libraries, frameworks, and other software modules, run with the same privileges as the application. If a vulnerable component is exploited, such an attack can facilitate serious data loss or server takeover. Applications and APIs using components with known vulnerabilities may undermine application defenses and enable various attacks and impacts.</p>
+</blockquote>
+<p>使用具有漏洞的軟體以及元件，未能及時更新修補漏洞或者在尚未有更新之前停止使用該元件，造成惡意使用者得以 exploit vulnerabilites。</p>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>檢查產品、元件於 CVE 的弱點通報</li>
+<li>保持軟體的更新</li>
+<li>使用 Open Source Analysis (ex <a href="https://www.whitesourcesoftware.com/" target="_blank" rel="noopener">💲Whitesource</a>)</li>
+</ul>
+<h3 id="Insufficient-Logging-amp-Monitoring"><a href="#Insufficient-Logging-amp-Monitoring" class="headerlink" title="Insufficient Logging &amp; Monitoring"></a><a href="https://owasp.org//www-project-top-ten/2017/A10_2017-Insufficient_Logging%2526Monitoring" target="_blank" rel="noopener"><strong>Insufficient Logging &amp; Monitoring</strong></a></h3><blockquote>
+<p>Insufficient logging and monitoring, coupled with missing or ineffective integration with incident response, allows attackers to further attack systems, maintain persistence, pivot to more systems, and tamper, extract, or destroy data. Most breach studies show time to detect a breach is over 200 days, typically detected by external parties rather than internal processes or monitoring.</p>
+</blockquote>
+<p>系統紀錄與監測的機制不足，讓 APT 攻擊成為可能，同時在問題發生時沒有辦法尋找惡意行為的軌跡。</p>
+<p><strong>🛡️ 防禦之道：</strong></p>
+<ul>
+<li>IIS Logs</li>
+<li>Elmah</li>
+<li>Nlog</li>
+<li>Failed Requests Tracing </li>
+<li>Windows Event Logs</li>
+<li>Performance Logs</li>
+<li>Process Explorer</li>
+<li>Process Monitor</li>
+<li>Fiddle</li>
+</ul>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://github.com/OWASP/www-project-top-ten" target="_blank" rel="noopener">Github - OWASP www-project-top-ten</a><br><a href="https://github.com/OWASP/Top10" target="_blank" rel="noopener">Github - OWASP TOP 10</a><br><a href="https://download.nccst.nat.gov.tw/attachfilehandout/%E8%AD%B0%E9%A1%8C%E4%BA%8C%EF%BC%9A107_OWASP_TOP10_2017.pdf" target="_blank" rel="noopener">NCCST - OWASP_TOP10_2017</a></p>
+<h2 id="後續行動"><a href="#後續行動" class="headerlink" title="後續行動"></a>後續行動</h2><p>閱讀「107 安全資訊系統開發訓練研討會」教材：<strong>OWASP_TOP10_2017</strong>，完備 OWASP TOP 10:2017 攻防之道。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/OWASP-TOP-10-2017-Security-Developement/" data-id="ckr4we2ks00cpmkuv70001hnp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Http/" rel="tag">Http</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web/" rel="tag">Web</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/10/Software-Assurance-Maturity-Model/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">OWASP SAMM (Software Assurance Maturity Model)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/10/Security-Development-Checklist/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          安全軟體開發檢查清單 (Web Security Development Checklist)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

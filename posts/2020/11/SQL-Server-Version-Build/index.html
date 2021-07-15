@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>如何判斷 SQL Server Version 以及元件所使用的版本 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server Build Number 用以快速檢索資料庫所使用的版本 🏹">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何判斷 SQL Server Version 以及元件所使用的版本">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/11/SQL-Server-Version-Build/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="筆記 SQL Server Build Number 用以快速檢索資料庫所使用的版本 🏹">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2020-11-10T23:30:00.000Z">
+<meta property="article:modified_time" content="2021-06-27T02:53:02.097Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Version-Build" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/11/SQL-Server-Version-Build/" class="article-date">
+  <time datetime="2020-11-10T23:30:00.000Z" itemprop="datePublished">2020-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何判斷 SQL Server Version 以及元件所使用的版本
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#快速對照"><span class="toc-text">快速對照</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#說明"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2019-組建"><span class="toc-text">SQL Server 2019 組建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2017-組建"><span class="toc-text">SQL Server 2017 組建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2016-組建"><span class="toc-text">SQL Server 2016 組建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2014-組建"><span class="toc-text">SQL Server 2014 組建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2012-組建"><span class="toc-text">SQL Server 2012 組建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2008-組建"><span class="toc-text">SQL Server 2008 組建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-2005-組建"><span class="toc-text">SQL Server 2005 組建</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#參考資料"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server Build Number 用以快速檢索資料庫所使用的版本 🏹</p>
+<a href="/posts/2020/11/SQL-Server-Version-Build/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<a id="more"></a>
+
+<h2 id="快速對照"><a href="#快速對照" class="headerlink" title="快速對照"></a>快速對照</h2><table>
+<thead>
+<tr>
+<th>Build</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>15.0.x.x</td>
+<td>SQL Server 2019 Seattle</td>
+</tr>
+<tr>
+<td>14.0.x.x</td>
+<td>SQL Server 2017 Helsinki</td>
+</tr>
+<tr>
+<td>13.0.x.x</td>
+<td>SQL Server 2016</td>
+</tr>
+<tr>
+<td>12.0.x.x</td>
+<td>SQL Server 2014</td>
+</tr>
+<tr>
+<td>11.0.x.x</td>
+<td>SQL Server 2012 Denali</td>
+</tr>
+<tr>
+<td>10.50.x.x</td>
+<td>SQL Server 2008 R2 Kilimanjaro</td>
+</tr>
+<tr>
+<td>10.25.x.x</td>
+<td>SQL Azure CloudDatabase</td>
+</tr>
+<tr>
+<td>10.00.x.x</td>
+<td>SQL Server 2008 Katmai</td>
+</tr>
+<tr>
+<td>9.00.x.x</td>
+<td>SQL Server 2005 Yukon</td>
+</tr>
+<tr>
+<td>8.00.x.x</td>
+<td>SQL Server 2000 Shiloh</td>
+</tr>
+<tr>
+<td>7.0</td>
+<td>SQL Server 7.0 Sphinx</td>
+</tr>
+<tr>
+<td>6.5</td>
+<td>SQL Server 6.5 Hydra</td>
+</tr>
+<tr>
+<td>6.0</td>
+<td>SQL Server 6.0 SQL95</td>
+</tr>
+<tr>
+<td>4.21</td>
+<td>SQL Server 4.21 (WinNT)</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>SQL Server 1.0 (OS/2)</td>
+</tr>
+</tbody></table>
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="SQL-Server-2019-組建"><a href="#SQL-Server-2019-組建" class="headerlink" title="SQL Server 2019 組建"></a>SQL Server 2019 組建</h3><p>CU10 2019 (15.0.4123.1-四月 2021)<br>CU8 + GDR (15.0.4083.2-2021 年1月)<br>GDR (15.0.2080.9-2021 年1月)<br>適用於 2019 的 CU7 (15.0.4063.15 – 2020 年 9 月)</p>
+<h3 id="SQL-Server-2017-組建"><a href="#SQL-Server-2017-組建" class="headerlink" title="SQL Server 2017 組建"></a>SQL Server 2017 組建</h3><p>用於 2017 的 CU21 (14.0.3335.7 – 2020 年 7 月)</p>
+<h3 id="SQL-Server-2016-組建"><a href="#SQL-Server-2016-組建" class="headerlink" title="SQL Server 2016 組建"></a>SQL Server 2016 組建</h3><p>Server 2016 SP2 (13.0.5026.0 – 2018 年 4 月)<br>適用於 2016 SP2 的 CU14 (13.0.5830.85 – 2020 年 8 月)<br>2016 SP1 版的 CU15 + GDR (13.0.4604.0 – 2019 年 7 月)<br>適用於 2016 SP1 的 CU15(13.0.4574.0 – 2019 年 5 月)<br>適用於 2016 RTM 的 CU9 (13.0.2216.0 – 2017 年 11 月)    </p>
+<h3 id="SQL-Server-2014-組建"><a href="#SQL-Server-2014-組建" class="headerlink" title="SQL Server 2014 組建"></a>SQL Server 2014 組建</h3><p>SQL Server 2014    SQL Server 2014 SP3 (12.0.6024.0 – 2018 年 10 月)<br>適用於 2014 SP3 的 CU4 (12.0.6329.1 - 2019 年 7 月)<br>適用於 2014 SP2 的 CU18 (12.0.5687.1 – 2019 年 7 月)<br>適用於 2014 SP1 的 CU13 (12.0.4522.0 – 2017 年 8 月)</p>
+<h3 id="SQL-Server-2012-組建"><a href="#SQL-Server-2012-組建" class="headerlink" title="SQL Server 2012 組建"></a>SQL Server 2012 組建</h3><p>SQL Server 2012    SQL Server 2012 SP4 (11.0.7001.0 – 2017 年 9 月)<br>適用於 2012 SP3 的 CU10 (11.0.6607.3 – 2017 年 8 月)<br>適用於 2012 SP2 的 CU16 (11.0.5678.0 – 2017 年 1 月)<br>適用於 2012 SP1 的 CU16 (11.0.3487.0 – 2015 年 5 月)    </p>
+<h3 id="SQL-Server-2008-組建"><a href="#SQL-Server-2008-組建" class="headerlink" title="SQL Server 2008 組建"></a>SQL Server 2008 組建</h3><p>SQL Server 2008 R2    SQL Server 2008 R2 SP3 (10.50.6000.34 – 2014 年 9 月)<br>SQL Server 2008    SQL Server 2008 SP4 (10.0.6000.29 – 2014 年 9 月)</p>
+<h3 id="SQL-Server-2005-組建"><a href="#SQL-Server-2005-組建" class="headerlink" title="SQL Server 2005 組建"></a>SQL Server 2005 組建</h3><p>SQL Server 2005    SQL Server 2005 SP4 (9.00.5000.00 – 2010 年 12 月)    無    SQL Server 2005 組建</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a href="https://support.microsoft.com/zh-tw/help/321185/how-to-determine-the-version-edition-and-update-level-of-sql-server-an" target="_blank" rel="noopener">https://support.microsoft.com/zh-tw/help/321185/how-to-determine-the-version-edition-and-update-level-of-sql-server-an</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/Microsoft_SQL_Server" target="_blank" rel="noopener">Wikipedia</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/11/SQL-Server-Version-Build/" data-id="ckr4we2mg00kjmkuvfkuf47fg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/11/SQL-Server-DailyLife/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">資料庫管理的日常工作內容 (SQL Server Routinely Maintenance)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/11/GROW-THAT-DBA-CAREER/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          (轉載) 成就DBA職業生涯, Grow That DBA Career
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

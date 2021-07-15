@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-164997433-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <title>jQuery 開發筆記 | External Brain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="jQuery 的常用操作筆記，其次每次的使用需求都很簡單，只是有時候稍微卡住就要花費時間搜尋與測試，索性將常用的行為作成筆記，方便檢索。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jQuery 開發筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/jQuery-Note/index.html">
+<meta property="og:site_name" content="External Brain">
+<meta property="og:description" content="jQuery 的常用操作筆記，其次每次的使用需求都很簡單，只是有時候稍微卡住就要花費時間搜尋與測試，索性將常用的行為作成筆記，方便檢索。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-06-08T07:15:39.000Z">
+<meta property="article:modified_time" content="2020-11-30T11:17:27.144Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="jQuery">
+<meta property="article:tag" content="LearningNote">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">External Brain</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle"> </a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首頁</a>
+        
+          <a class="main-nav-link" href="/categories">分類</a>
+        
+          <a class="main-nav-link" href="/tags">標籤</a>
+        
+          <a class="main-nav-link" href="/archives">文件庫</a>
+        
+          <a class="main-nav-link" href="/about">關於</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://sdwh.dev"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-jQuery-Note" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/jQuery-Note/" class="article-date">
+  <time datetime="2020-06-08T07:15:39.000Z" itemprop="datePublished">2020-06-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      jQuery 開發筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素選取"><span class="toc-text">元素選取</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常見的選取方式"><span class="toc-text">常見的選取方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根據-input-的-name-選取"><span class="toc-text">根據 input 的 name 選取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#選取相同-Id-字串開頭的元素"><span class="toc-text">選取相同 Id 字串開頭的元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取出所有的-h2-h3-標籤"><span class="toc-text">取出所有的 h2, h3 標籤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#元素操作"><span class="toc-text">元素操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#取出元素值-val-text-html-attr"><span class="toc-text">取出元素值 (val, text, html, attr)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#元素賦值-val-text-html-attr"><span class="toc-text">元素賦值 (val, text, html, attr)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作元素的-CSS-addClass-removeClass-toggleClass-css"><span class="toc-text">操作元素的 CSS (addClass, removeClass, toggleClass, css)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在元素上綁定資訊-data"><span class="toc-text">在元素上綁定資訊 (data)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#對-jQuery-Select-Collection-逐一元素操作-each"><span class="toc-text">對 jQuery Select Collection 逐一元素操作 (each)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#將-jQuery-物件轉為-DOM-物件"><span class="toc-text">將 jQuery 物件轉為 DOM 物件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件行為"><span class="toc-text">事件行為</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#點擊-Click"><span class="toc-text">點擊 (Click)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全域聆聽鍵盤輸入-KeyPress"><span class="toc-text">全域聆聽鍵盤輸入 (KeyPress)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除元素-Hide-Remove"><span class="toc-text">移除元素 (Hide, Remove)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ajax"><span class="toc-text">Ajax</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#load-file-html-content"><span class="toc-text">load file html content</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ajax-並指定-callBack-行為"><span class="toc-text">ajax 並指定 callBack 行為</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他"><span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IE11-出現不支援-AddEventListner-時的處理方法"><span class="toc-text">IE11 出現不支援 AddEventListner 時的處理方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取得物件的所有-Key"><span class="toc-text">取得物件的所有 Key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#控制-DataTables-的搜尋行為"><span class="toc-text">控制 DataTables 的搜尋行為</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>jQuery 的常用操作筆記，其次每次的使用需求都很簡單，只是有時候稍微卡住就要花費時間搜尋與測試，索性將常用的行為作成筆記，方便檢索。</p>
+<a id="more"></a>
+
+<h2 id="元素選取"><a href="#元素選取" class="headerlink" title="元素選取"></a>元素選取</h2><h3 id="常見的選取方式"><a href="#常見的選取方式" class="headerlink" title="常見的選取方式"></a>常見的選取方式</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.className'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id:first'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.parentClass > .childClass'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="根據-input-的-name-選取"><a href="#根據-input-的-name-選取" class="headerlink" title="根據 input 的 name 選取"></a>根據 input 的 name 選取</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'input[name="Name"]'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>⚠️ 注意 name 的選取有 <code class="watch">Case Sensitive</code></p>
+<h3 id="選取相同-Id-字串開頭的元素"><a href="#選取相同-Id-字串開頭的元素" class="headerlink" title="選取相同 Id 字串開頭的元素"></a>選取相同 Id 字串開頭的元素</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'[id^=Element]'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="取出所有的-h2-h3-標籤"><a href="#取出所有的-h2-h3-標籤" class="headerlink" title="取出所有的 h2, h3 標籤"></a>取出所有的 h2, h3 標籤</h3><p>Pure JS</p>
+<pre class="line-numbers language-javascript"><code class="language-javascript">document<span class="token punctuation">.</span><span class="token function">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">'h2 , h3'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">.</span>tagName<span class="token punctuation">,</span> x<span class="token punctuation">.</span>textContent<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="元素操作"><a href="#元素操作" class="headerlink" title="元素操作"></a>元素操作</h2><h3 id="取出元素值-val-text-html-attr"><a href="#取出元素值-val-text-html-attr" class="headerlink" title="取出元素值 (val, text, html, attr)"></a>取出元素值 (val, text, html, attr)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">attr</span><span class="token punctuation">(</span><span class="token string">'data-property'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="元素賦值-val-text-html-attr"><a href="#元素賦值-val-text-html-attr" class="headerlink" title="元素賦值 (val, text, html, attr)"></a>元素賦值 (val, text, html, attr)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token string">'Value'</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token string">'Text'</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;p>lorem ipsum&lt;/p>'</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">attr</span><span class="token punctuation">(</span><span class="token string">'data-property'</span><span class="token punctuation">,</span> val<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="操作元素的-CSS-addClass-removeClass-toggleClass-css"><a href="#操作元素的-CSS-addClass-removeClass-toggleClass-css" class="headerlink" title="操作元素的 CSS (addClass, removeClass, toggleClass, css)"></a>操作元素的 CSS (addClass, removeClass, toggleClass, css)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addClass</span><span class="token punctuation">(</span><span class="token string">'className'</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">removeClass</span><span class="token punctuation">(</span><span class="token string">'className'</span><span class="token punctuation">)</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toggleClass</span><span class="token punctuation">(</span><span class="token string">'className'</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//add if Not exists, remove If exists</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'background-color'</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//get element specific css attribute value</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'background-color'</span><span class="token punctuation">,</span> <span class="token string">'red'</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//get element specific css attribute value</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="在元素上綁定資訊-data"><a href="#在元素上綁定資訊-data" class="headerlink" title="在元素上綁定資訊 (data)"></a>在元素上綁定資訊 (data)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">data</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><a href="https://api.jquery.com/data/" target="_blank" rel="noopener">jQuery API - data</a></p>
+<h3 id="對-jQuery-Select-Collection-逐一元素操作-each"><a href="#對-jQuery-Select-Collection-逐一元素操作-each" class="headerlink" title="對 jQuery Select Collection 逐一元素操作 (each)"></a>對 jQuery Select Collection 逐一元素操作 (each)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span> <span class="token string">"li"</span> <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span> index <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span> index <span class="token operator">+</span> <span class="token string">": "</span> <span class="token operator">+</span> <span class="token function">$</span><span class="token punctuation">(</span> <span class="token keyword">this</span> <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://api.jquery.com/each/" target="_blank" rel="noopener">jQuery API - each</a></p>
+<h3 id="將-jQuery-物件轉為-DOM-物件"><a href="#將-jQuery-物件轉為-DOM-物件" class="headerlink" title="將 jQuery 物件轉為 DOM 物件"></a>將 jQuery 物件轉為 DOM 物件</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'selector'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//to js array</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'selector'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//get first element of js array</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="事件行為"><a href="#事件行為" class="headerlink" title="事件行為"></a>事件行為</h2><h3 id="點擊-Click"><a href="#點擊-Click" class="headerlink" title="點擊 (Click)"></a>點擊 (Click)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//對 #id 元素進行點擊</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//對 #id 元素註冊被點擊的 callback function</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://api.jquery.com/category/events/mouse-events/" target="_blank" rel="noopener">更多關於滑鼠的事件</a></p>
+<h3 id="全域聆聽鍵盤輸入-KeyPress"><a href="#全域聆聽鍵盤輸入-KeyPress" class="headerlink" title="全域聆聽鍵盤輸入 (KeyPress)"></a>全域聆聽鍵盤輸入 (KeyPress)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token function">$</span><span class="token punctuation">(</span>window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">keypress</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>which<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://api.jquery.com/category/events/keyboard-events/" target="_blank" rel="noopener">更多關於鍵盤事件</a></p>
+<h3 id="移除元素-Hide-Remove"><a href="#移除元素-Hide-Remove" class="headerlink" title="移除元素 (Hide, Remove)"></a>移除元素 (Hide, Remove)</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hide</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//still can be see by html source, add style display none</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="Ajax"><a href="#Ajax" class="headerlink" title="Ajax"></a>Ajax</h2><h3 id="load-file-html-content"><a href="#load-file-html-content" class="headerlink" title="load file html content"></a>load file html content</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">".btn"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#p1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token string">"htmlContent.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#p2"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token string">"htmlContent.html"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="ajax-並指定-callBack-行為"><a href="#ajax-並指定-callBack-行為" class="headerlink" title="ajax 並指定 callBack 行為"></a>ajax 並指定 callBack 行為</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#id'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> status<span class="token punctuation">,</span> xhr<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://api.jquery.com/load/" target="_blank" rel="noopener">Load</a></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="IE11-出現不支援-AddEventListner-時的處理方法"><a href="#IE11-出現不支援-AddEventListner-時的處理方法" class="headerlink" title="IE11 出現不支援 AddEventListner 時的處理方法"></a>IE11 出現不支援 AddEventListner 時的處理方法</h3><p>Html 加入以下 meta：</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">http-equiv</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>X-UA-Compatible<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>IE<span class="token punctuation">=</span>edge, chrome<span class="token punctuation">=</span>1<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="取得物件的所有-Key"><a href="#取得物件的所有-Key" class="headerlink" title="取得物件的所有 Key"></a>取得物件的所有 Key</h3><pre class="line-numbers language-js"><code class="language-js">Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="控制-DataTables-的搜尋行為"><a href="#控制-DataTables-的搜尋行為" class="headerlink" title="控制 DataTables 的搜尋行為"></a>控制 DataTables 的搜尋行為</h3><pre class="line-numbers language-js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.dataTableFilter'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.dataTableEnable'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">DataTable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">search</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//modify search text</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.dataTableEnable'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">DataTable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">search</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">draw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//implement search</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://datatables.net/" target="_blank" rel="noopener">DataTables</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/jQuery-Note/" data-id="ckr4we2no00pkmkuvgq2r81kx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jQuery/" rel="tag">jQuery</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/IIS-AlwaysRunning/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇文章</strong>
+      <div class="article-nav-title">如何啟用 IIS 預先載入的功能 (IIS Always Running)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/Excel-PrintPreview/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇文章</strong>
+      <div class="article-nav-title">
+        
+          Excel 完美對齊地列印表格 (How to Print Excel Table Perfectly)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/">Github Pages 使用教學 ⭐ 發布網頁設計成果</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Vue-Cli-First-Projects/">初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/">ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Useful-Cmd/">Windows Command Line, CMD, 命令提示字元 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/">Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">文件庫</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">134</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2021 -->
+      External Brain &copy; 2020 - <span class="margin-right"></span>
+      部落格框架 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首頁</a>
+  
+    <a href="/categories" class="mobile-nav-link">分類</a>
+  
+    <a href="/tags" class="mobile-nav-link">標籤</a>
+  
+    <a href="/archives" class="mobile-nav-link">文件庫</a>
+  
+    <a href="/about" class="mobile-nav-link">關於</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
