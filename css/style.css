@@ -570,7 +570,7 @@ body {
   margin: 0 12px 1em;
 }
 .article-header {
-  padding: 10px 0px 5px 15px;
+  padding: 10px 0px 5px 10px;
 }
 .article-title {
   text-decoration: none;
@@ -1295,6 +1295,7 @@ blockquote footer:before {
   color: #fff;
   font-size: 1.68em;
   font-weight: 600;
+  display: none;
 }
 #footer a {
   color: #f6d565;
@@ -1305,6 +1306,11 @@ blockquote footer:before {
 }
 #footer .margin-right {
   margin-right: 50%;
+}
+@media screen and (min-width: 1024px) {
+  #footer {
+    display: inherit;
+  }
 }
 #footer-info {
   line-height: 2em;
@@ -1667,4 +1673,15 @@ code.watch {
 }
 .display-inline {
   display: inline !important;
+}
+.new-line-in-mobile {
+  display: block;
+  line-height: 3px;
+  color: #fff;
+}
+@media screen and (min-width: 1024px) {
+  .new-line-in-mobile {
+    display: inline;
+    color: #000;
+  }
 }
