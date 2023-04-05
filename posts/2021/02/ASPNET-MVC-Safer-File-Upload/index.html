@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC 5 實作更安全的檔案上傳功能 (ASP.NET MVC Safer File Upload Implements) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="不當的檔案上傳功能，可能導致被植入後門程式(webshell)或者惡意的下載檔擴散影響至網站使用者，筆記 ASP.NET MVC 如何實作更安全的檔案上傳機制，同時也探討網頁伺服器可以在那些層面協助，讓網站應用程式更為安全 🐱‍💻">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 5 實作更安全的檔案上傳功能 (ASP.NET MVC Safer File Upload Implements)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/02/ASPNET-MVC-Safer-File-Upload/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="不當的檔案上傳功能，可能導致被植入後門程式(webshell)或者惡意的下載檔擴散影響至網站使用者，筆記 ASP.NET MVC 如何實作更安全的檔案上傳機制，同時也探討網頁伺服器可以在那些層面協助，讓網站應用程式更為安全 🐱‍💻">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2021-02-26T11:30:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Safer-File-Upload" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/02/ASPNET-MVC-Safer-File-Upload/" class="article-date">
+  <time datetime="2021-02-26T11:30:00.000Z" itemprop="datePublished">2021-02-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 5 實作更安全的檔案上傳功能 (ASP.NET MVC Safer File Upload Implements)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A6%8B%E7%9A%84%E8%B3%87%E5%AE%89%E5%BC%B1%E9%BB%9E"><span class="toc-text">常見的資安弱點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B6%B2%E9%A0%81%E4%BC%BA%E6%9C%8D%E5%99%A8%E7%9A%84%E8%81%AF%E5%90%88%E9%98%B2%E7%A6%A6"><span class="toc-text">網頁伺服器的聯合防禦</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E5%82%B3%E7%A8%8B%E5%BC%8F%E7%A2%BC"><span class="toc-text">上傳程式碼</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Controller"><span class="toc-text">Controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#View"><span class="toc-text">View</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B3%87%E5%AE%89%E5%AF%A6%E8%B8%90"><span class="toc-text">資安實踐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%A6%E4%BD%9C%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%8B%E8%BC%89%E6%A9%9F%E5%88%B6"><span class="toc-text">實作安全的下載機制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E6%AA%94%E6%A1%88%E4%B8%8A%E5%82%B3%E8%B3%87%E6%96%99%E5%A4%BE%E8%A2%AB%E7%9B%B4%E6%8E%A5%E5%8F%96%E7%94%A8"><span class="toc-text">避免檔案上傳資料夾被直接取用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>不當的檔案上傳功能，可能導致被植入後門程式(webshell)或者惡意的下載檔擴散影響至網站使用者，筆記 ASP.NET MVC 如何實作更安全的檔案上傳機制，同時也探討網頁伺服器可以在那些層面協助，讓網站應用程式更為安全 🐱‍💻</p>
+<a href="/posts/2021/02/ASPNET-MVC-Safer-File-Upload/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="常見的資安弱點"><a href="#常見的資安弱點" class="headerlink" title="常見的資安弱點"></a>常見的資安弱點</h3><ul>
+<li>大量的檔案癱瘓應用程式伺服器儲存空間</li>
+<li>惡意使用者上傳後門 webshell (asp, php, etc)</li>
+</ul>
+<h3 id="網頁伺服器的聯合防禦"><a href="#網頁伺服器的聯合防禦" class="headerlink" title="網頁伺服器的聯合防禦"></a>網頁伺服器的聯合防禦</h3><ul>
+<li>確認 UploadFiles 資料夾 Handler 沒有提供 <strong>執行</strong> 權限</li>
+<li>要求篩選(Request Filtering) 設定副檔名白名單</li>
+<li>限定允許的 MIME(ContentType) 類型</li>
+</ul>
+<h2 id="上傳程式碼"><a href="#上傳程式碼" class="headerlink" title="上傳程式碼"></a>上傳程式碼</h2><h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Upload</span><span class="token punctuation">(</span><span class="token class-name">HttpPostedFileBase</span> file<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> fileValid <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token comment">// Limit File Szie Below : 5MB</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>file<span class="token punctuation">.</span>ContentLength <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> file<span class="token punctuation">.</span>ContentLength <span class="token operator">></span> <span class="token number">5242880</span><span class="token punctuation">)</span> 
+    <span class="token punctuation">&#123;</span>
+        fileValid <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>file<span class="token punctuation">.</span>ContentType <span class="token operator">!=</span> <span class="token string">"image/png"</span> <span class="token operator">||</span> file<span class="token punctuation">.</span>ContentType <span class="token operator">!=</span> <span class="token string">"image/jpeg"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      fileValid <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>fileValid <span class="token operator">==</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">string</span></span> extension <span class="token operator">=</span> Path<span class="token punctuation">.</span><span class="token function">GetExtension</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>FileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">string</span></span> fileName <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">Guid<span class="token punctuation">.</span><span class="token function">NewGuid</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><span class="token punctuation">&#125;</span></span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">extension</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">string</span></span> savePath <span class="token operator">=</span> Path<span class="token punctuation">.</span><span class="token function">Combine</span><span class="token punctuation">(</span>Server<span class="token punctuation">.</span><span class="token function">MapPath</span><span class="token punctuation">(</span><span class="token string">"~/UploadFile"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        file<span class="token punctuation">.</span><span class="token function">SaveAs</span><span class="token punctuation">(</span>savePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ViewBag<span class="token punctuation">.</span>Message <span class="token operator">=</span> <span class="token string">"檔案上傳成功。"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span>
+    <span class="token punctuation">&#123;</span>
+        ViewBag<span class="token punctuation">.</span>Message <span class="token operator">=</span> <span class="token string">"Upload Failed 😫"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中存入伺服器資料夾的檔案名稱，使用 <code class="watch">Guid.NewGuid()</code> 來產生混淆，避免讓惡意上傳者直接猜到圖片生成的路徑。</p>
+<p>此外如果限制上傳的檔案必須為圖片，可以在利用 <code class="watch">System.Drawing.Image.FromStream</code> 來檢查上傳的檔案是否符合：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">NonAction</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">CheckIsImage</span><span class="token punctuation">(</span><span class="token class-name">Stream</span> imageStream<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">bool</span></span> check<span class="token punctuation">;</span>
+    <span class="token keyword">try</span>
+    <span class="token punctuation">&#123;</span>
+        System<span class="token punctuation">.</span>Drawing<span class="token punctuation">.</span>Image<span class="token punctuation">.</span><span class="token function">FromStream</span><span class="token punctuation">(</span>imageStream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        check <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">catch</span>
+    <span class="token punctuation">&#123;</span>
+        check <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> check<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>CheckIsImage 檢查的方式</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">CheckIsImage</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>InputStream<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+   fileValid <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="View"><a href="#View" class="headerlink" title="View"></a>View</h3><pre class="line-numbers language-html" data-language="html"><code class="language-html">@using (Html.BeginForm(
+  "Upload", "Upload", FormMethod.Post, new &#123; enctype = "multipart/form-data" &#125;))
+&#123;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
+        @Html.TextBox("file", "", new &#123; type = "file" &#125;) <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Upload<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span>
+        @ViewBag.Message
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>注意: enctype 要使用 <strong>multipart/form-data</strong></p>
+            <p>注意: File input 如果不是使用 <code class="s">Html.TextBox</code> 要注意要主動給予 Name Attributes，且必須與 Controller 中 Action <strong>HttpPostedFileBase</strong> 所接收的參數名稱一致，否則會發現上傳但卻是 Null 的問題。
+            </p>
+        </div>
+    </div>
+</div>
+
+<p>關於 enctype 的筆記，請參考 <a href="/posts/2022/02/HTML-Form-Enctype/">HTML Form Enctype</a></p>
+<h2 id="資安實踐"><a href="#資安實踐" class="headerlink" title="資安實踐"></a>資安實踐</h2><h3 id="實作安全的下載機制"><a href="#實作安全的下載機制" class="headerlink" title="實作安全的下載機制"></a>實作安全的下載機制</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">NonAction</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">FileNameMapping</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> fileName<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token string">"mapping.png"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Download</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> fileName<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> convertFileName <span class="token operator">=</span> <span class="token function">FileNameMapping</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token function">File</span><span class="token punctuation">(</span>
+      Path<span class="token punctuation">.</span><span class="token function">Combine</span><span class="token punctuation">(</span>
+        Server<span class="token punctuation">.</span><span class="token function">MapPath</span><span class="token punctuation">(</span><span class="token string">"~/UploadFiles"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> convertFileName<span class="token punctuation">)</span>
+        <span class="token punctuation">,</span> <span class="token string">"image/png"</span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Download Action 必須要限制授權存取，並檢查存取者是否有要存取檔案的權限。</p>
+<p>其中 FileNameMapping 需要利用資料庫對照表、Base64編碼，來轉換混淆後的檔案名稱回原本的檔案名稱，此外也可以藉由 FileNameMapping 思考是否會存在 <strong>Path Traversal</strong> 的問題。</p>
+<h3 id="避免檔案上傳資料夾被直接取用"><a href="#避免檔案上傳資料夾被直接取用" class="headerlink" title="避免檔案上傳資料夾被直接取用"></a>避免檔案上傳資料夾被直接取用</h3><p>web.config 可以設定隱藏區段的方式處理</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>security</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>requestFiltering</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hiddenSegments</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">segment</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UploadFiles<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>hiddenSegments</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>requestFiltering</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>security</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/09/ASPNET-MVC-Safer-Download/">ASP.NET MVC 5 實作更安全的檔案下載功能 (ASP.NET MVC Safer Downloads Implements)</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html">OWASP - File Upload Cheat Sheet</a></p>
+<p><a target="_blank" rel="noopener" href="https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload">OWASP - Unrestricted File Upload</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/02/ASPNET-MVC-Safer-File-Upload/" data-id="clg3fma9q005js4ts0snz106p" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/02/Visual-Studio-Roslyn-csc/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Visual Studio 專案取回時的各種異象</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/Visual-Studio-Debugging-Tools/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Visual Studio Debugging Tools (活用除錯工具)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

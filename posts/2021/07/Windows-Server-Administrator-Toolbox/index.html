@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 Windows 伺服器管理員所需要的工具，除了 cmd 以及 powershell 以外，實用的 GUI 工具，包含 perfmon, resmon, taskmgr, eventvwr 以及 services.msc 等等，藉由指令以及 GUI 工具的互相搭配，能夠讓伺服器管理的工作更為輕鬆。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/Windows-Server-Administrator-Toolbox/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 Windows 伺服器管理員所需要的工具，除了 cmd 以及 powershell 以外，實用的 GUI 工具，包含 perfmon, resmon, taskmgr, eventvwr 以及 services.msc 等等，藉由指令以及 GUI 工具的互相搭配，能夠讓伺服器管理的工作更為輕鬆。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Tools-Taskmgr-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Tools-Taskmgr-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Tools-Taskmgr-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Tools-Perfmon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Tools-Resmon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Tools-Eventvwr.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ProcessExplorer-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ProcessMonitor-min.png">
+<meta property="article:published_time" content="2021-07-07T22:30:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows-Server-Administrator-Toolbox" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/" class="article-date">
+  <time datetime="2021-07-07T22:30:00.000Z" itemprop="datePublished">2021-07-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows 作業系統管理員的工具箱 | Windows Server Administrator Toolbox
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F%E5%B7%A5%E5%85%B7"><span class="toc-text">原生工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Take-Manager-Taskmgr"><span class="toc-text">Take Manager, Taskmgr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Performance-Monitor-Perfmon"><span class="toc-text">Performance Monitor, Perfmon</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%8C%87%E6%A8%99"><span class="toc-text">常用的指標</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resource-Monitor-Resmon"><span class="toc-text">Resource Monitor, Resmon</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Event-Viwer-Eventvwr"><span class="toc-text">Event Viwer, Eventvwr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Services-Services-msc"><span class="toc-text">Services, Services.msc</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%B2%E9%9A%8E%E5%B7%A5%E5%85%B7"><span class="toc-text">進階工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Procexp-Process-Explorer"><span class="toc-text">Procexp, Process Explorer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Procmon-Process-Monitor"><span class="toc-text">Procmon, Process Monitor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sysmon"><span class="toc-text">Sysmon</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 Windows 伺服器管理員所需要的工具，除了 cmd 以及 powershell 以外，實用的 GUI 工具，包含 perfmon, resmon, taskmgr, eventvwr 以及 services.msc 等等，藉由指令以及 GUI 工具的互相搭配，能夠讓伺服器管理的工作更為輕鬆。</p>
+<a href="/posts/2021/07/Windows-Server-Administrator-Toolbox/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="原生工具"><a href="#原生工具" class="headerlink" title="原生工具"></a>原生工具</h2><h3 id="Take-Manager-Taskmgr"><a href="#Take-Manager-Taskmgr" class="headerlink" title="Take Manager, Taskmgr"></a>Take Manager, Taskmgr</h3><p><code class="watch">Taskmgr</code></p>
+<p>繁體中文作業系統中的翻譯為<strong>工作管理員</strong>，可以檢視處理程序、效能、使用者與服務等相關資訊。可以提供基本的伺服器資訊查詢，但對於處理程序、效能與服務都有對應的工具可以取得更完整的資訊。</p>
+<p><img src="/assets/Windows-Server-Tools-Taskmgr-1.png" alt="工作管理員的處理程序檢視"><br><img src="/assets/Windows-Server-Tools-Taskmgr-2.png" alt="工作管理員的效能檢視"><br><img src="/assets/Windows-Server-Tools-Taskmgr-3.png" alt="工作管理員的服務檢視"></p>
+<h3 id="Performance-Monitor-Perfmon"><a href="#Performance-Monitor-Perfmon" class="headerlink" title="Performance Monitor, Perfmon"></a>Performance Monitor, Perfmon</h3><p><code class="watch">Perfmon</code></p>
+<p>繁體中文作業系統中的翻譯為<strong>效能監視器</strong>，提供了檢視各項作業系統指標(計數器, Performance Counter)的即時監測工具，包含 Processor, .NET Application 等等非常豐富，同時允許使用者自行定義資料收集器，用以蒐集感興趣的特定資料，並將相關資料進行保存。</p>
+<p>Perfmon 經常是處理作業系統、應用程式 Trouble Shooting 以及 Performance Problem 處理的好幫手，而最大的使用門檻在於知道自己需要的計數器是那些 🤣</p>
+<h4 id="常用的指標"><a href="#常用的指標" class="headerlink" title="常用的指標"></a>常用的指標</h4><table>
+<thead>
+<tr>
+<th>類別</th>
+<th>指標</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Processor</td>
+<td>% Processor Time</td>
+</tr>
+<tr>
+<td>Processor</td>
+<td>Interrupt/sec</td>
+</tr>
+<tr>
+<td>System</td>
+<td>Processor Queue Length</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Page/sec</td>
+</tr>
+<tr>
+<td>Physical Disk</td>
+<td>% Disk Time</td>
+</tr>
+<tr>
+<td>Physical Disk</td>
+<td>Avg. Disk Queue Length</td>
+</tr>
+<tr>
+<td>Network Interface</td>
+<td>Current Bandwidth</td>
+</tr>
+<tr>
+<td>Network Interface</td>
+<td>Output Queue Length</td>
+</tr>
+<tr>
+<td>Network Interface</td>
+<td>Bytes Total/sec</td>
+</tr>
+</tbody></table>
+<p><img src="/assets/Windows-Server-Tools-Perfmon.png" alt="效能監視器"></p>
+<h3 id="Resource-Monitor-Resmon"><a href="#Resource-Monitor-Resmon" class="headerlink" title="Resource Monitor, Resmon"></a>Resource Monitor, Resmon</h3><p><code class="watch">Resmon</code></p>
+<p>繁體中文作業系統中的翻譯為<strong>資源監視器</strong>，提供了更完整的工具用以即時監視 CPU、RAM、Storage 以及 Network 流量情形。</p>
+<p><img src="/assets/Windows-Server-Tools-Resmon.png" alt="資源監視器"></p>
+<h3 id="Event-Viwer-Eventvwr"><a href="#Event-Viwer-Eventvwr" class="headerlink" title="Event Viwer, Eventvwr"></a>Event Viwer, Eventvwr</h3><p><code class="watch">Eventvwr</code></p>
+<p>繁體中文作業系統中的翻譯為<strong>事件檢視器</strong>，提供管理者檢視作業系統發生關於應用系統、Security、Setup、系統等各種資訊、警告或錯誤訊息。</p>
+<p><img src="/assets/Windows-Server-Tools-Eventvwr.png" alt="事件檢視器"></p>
+<h3 id="Services-Services-msc"><a href="#Services-Services-msc" class="headerlink" title="Services, Services.msc"></a>Services, Services.msc</h3><p><code class="watch">Services.msc</code></p>
+<p>繁體中文作業系統中的翻譯為<strong>服務</strong>，提供管理者檢視作業系統上所有的服務，並且可以啟用或停止服務，也可以管理服務的執行身分以及調整是否伴隨作業系統啟動自行啟用。</p>
+<p>使用服務與執行應用程式的最大差別在於，服務是在作業系統的背景執行，應用程式則會顯示執行中的視窗，所以服務特別適用於伴隨作業系統啟動，自動啟用的使用情境。</p>
+<h2 id="進階工具"><a href="#進階工具" class="headerlink" title="進階工具"></a>進階工具</h2><p>進階工具不是原生於 Windows 作業系統中可以使用的工具，而是由 Windows Sysinternals (微軟旗下的組織) 所提供的管理工具，能夠提供更為詳盡的伺服器資訊，是管理人員不容錯過的實用工具。</p>
+<h3 id="Procexp-Process-Explorer"><a href="#Procexp-Process-Explorer" class="headerlink" title="Procexp, Process Explorer"></a>Procexp, Process Explorer</h3><p><code class="watch">Procexp</code></p>
+<p>Super Task Manager，可以查詢 Process 及其使用的 DLL 以 VirusTotal 的分析，可以從 Process 觀察到的內容包括 Image (path/ autoruns)、Threads、TCP/IP、Strings。</p>
+<p><img src="/assets/ProcessExplorer-min.png" alt="Process Exoplorer"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer">Prcoexp 下載連結</a></p>
+<h3 id="Procmon-Process-Monitor"><a href="#Procmon-Process-Monitor" class="headerlink" title="Procmon, Process Monitor"></a>Procmon, Process Monitor</h3><p><code class="watch">Procmon</code></p>
+<p>Process Monitor 可以用以收集觸發的事件、網路連線、檔案讀寫並且匯出 DUMP 紀錄。</p>
+<p><img src="/assets/ProcessMonitor-min.png" alt="Process Moniror"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/downloads/procmon">Procmon 下載連結</a></p>
+<h3 id="Sysmon"><a href="#Sysmon" class="headerlink" title="Sysmon"></a>Sysmon</h3><p><code class="watch">Sysmon</code></p>
+<div class="article-blockquote">
+System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time. By collecting the events it generates using Windows Event Collection or SIEM agents and subsequently analyzing them, you can identify malicious or anomalous activity and understand how intruders and malware operate on your network.
+
+<div style="text-align:right">learn.microsoft.com</div>
+</div>
+
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon">Sysmon 下載連結</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/Windows-Server-Administrator-Toolbox/" data-id="clg3fmanj01nls4ts1i2f0m31" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Python-Crawler-Toys/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python 使用爬蟲批次下載網頁圖片 (Python Using Requests download imgae files)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/Windows-Useful-Cmd/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows Command Line, CMD, 命令提示字元 使用指南
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

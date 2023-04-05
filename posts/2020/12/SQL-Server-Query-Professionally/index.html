@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server 閃電般快速查詢指南 Quick Query⚡ | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="蒐羅生涯中遇見的各種 SQL Server 快捷專業的指令 ⚡">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 閃電般快速查詢指南 Quick Query⚡">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/12/SQL-Server-Query-Professionally/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="蒐羅生涯中遇見的各種 SQL Server 快捷專業的指令 ⚡">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-List-All-Databases-Db_Owner.png">
+<meta property="og:image" content="https://sdwh.dev/assets/sp_helplogins.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-HelpDB.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-List-All-Databases-Info.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-SP-SPACEDUSED.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Get-DB-All-Tables-Space-Used.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-DB-CurrentSize-And-FreeSpace.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Before-Primary-key.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-After-Primary-key.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-List-All-Backup-History.png">
+<meta property="article:published_time" content="2020-12-23T12:35:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="DBA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Query-Professionally" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/12/SQL-Server-Query-Professionally/" class="article-date">
+  <time datetime="2020-12-23T12:35:00.000Z" itemprop="datePublished">2020-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 閃電般快速查詢指南 Quick Query⚡
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%A3%E7%9D%A3%E7%B3%BB%E7%B5%B1"><span class="toc-text">監督系統</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sp-who-sp-who2"><span class="toc-text">sp_who &#x2F; sp_who2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97%E8%B3%87%E6%96%99%E5%BA%AB%E4%BC%BA%E6%9C%8D%E5%99%A8%E7%A1%AC%E9%AB%94%E8%B3%87%E8%A8%8A"><span class="toc-text">取得資料庫伺服器硬體資訊</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Login-%E7%B3%BB%E5%88%97"><span class="toc-text">Login 系列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E8%B3%87%E6%96%99%E5%BA%AB%E7%9A%84-db-owner"><span class="toc-text">列出所有資料庫的 db_owner</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Login-Drop-Login"><span class="toc-text">Create Login &#x2F; Drop Login</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sp-helplogins"><span class="toc-text">sp_helplogins</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sp-helpsrvrole"><span class="toc-text">sp_helpsrvrole</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sp-helpsrvrolemember"><span class="toc-text">sp_helpsrvrolemember</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sp-helpuser"><span class="toc-text">sp_helpuser</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-syslogins"><span class="toc-text">sys.syslogins</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%A2%E8%A3%BD%E6%87%89%E7%94%A8-%E5%B0%8B%E6%89%BE%E4%BC%BA%E6%9C%8D%E5%99%A8%E7%9A%84-%E7%99%BB%E5%85%A5-%E4%BB%A5%E5%8F%8A%E8%A8%88%E7%AE%97%E6%AC%8A%E9%99%90%E7%AD%89%E7%B4%9A"><span class="toc-text">客製應用 - 尋找伺服器的 登入 以及計算權限等級</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AA%A2%E8%A6%96%E9%80%A3%E7%B7%9A%E4%B8%AD%E7%9A%84-Session-%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%80%9A%E8%A8%8A%E5%8D%94%E5%AE%9A%E5%8F%8A%E9%A9%97%E8%AD%89%E6%96%B9%E6%B3%95"><span class="toc-text">檢視連線中的 Session 所使用的通訊協定及驗證方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Database"><span class="toc-text">Database</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sp-helpdb"><span class="toc-text">sp_helpdb</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E8%B3%87%E6%96%99%E5%BA%AB%E4%BC%BA%E6%9C%8D%E5%99%A8%E4%B8%AD%E7%9A%84%E8%B3%87%E6%96%99%E5%BA%AB%E8%B3%87%E8%A8%8A-sys-databases"><span class="toc-text">列出資料庫伺服器中的資料庫資訊 (sys.databases)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B9%E8%AE%8A%E8%B3%87%E6%96%99%E5%BA%AB-Owner-sp-changedbowner"><span class="toc-text">改變資料庫 Owner (sp_changedbowner)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97-Exec-T-SQL-%E4%B8%AD%E7%9A%84%E8%B3%87%E6%96%99-%E5%8F%96%E7%94%A8-T-SQL-%E7%9A%84%E7%B5%90%E6%9E%9C"><span class="toc-text">取得 Exec T-SQL 中的資料 &#x2F; 取用 T-SQL 的結果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97-Table-%E7%9A%84%E7%9B%B8%E9%97%9C%E8%B3%87%E8%A8%8A-%E6%AC%84%E4%BD%8D%E5%90%8D%E7%A8%B1"><span class="toc-text">取得 Table 的相關資訊 (欄位名稱)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%A2%E8%A3%BD%E6%87%89%E7%94%A8-%E5%8F%96%E5%BE%97%E8%B3%87%E6%96%99%E5%BA%AB%E6%89%80%E6%9C%89%E4%BD%BF%E7%94%A8%E7%9A%84%E6%AC%84%E4%BD%8D%E5%9E%8B%E5%88%A5%E8%B3%87%E8%A8%8A"><span class="toc-text">客製應用 - 取得資料庫所有使用的欄位型別資訊</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99%E5%BA%AB%E3%80%81%E8%B3%87%E6%96%99%E8%A1%A8%E4%BD%BF%E7%94%A8%E7%9A%84%E7%A1%AC%E7%A2%9F%E7%A9%BA%E9%96%93"><span class="toc-text">查詢資料庫、資料表使用的硬碟空間</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2-Single-Database-all-Tables-Rows-Count"><span class="toc-text">查詢 Single Database, all Tables, Rows Count</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99%E5%BA%AB%E5%AF%A6%E9%AB%94%E6%AA%94%E6%A1%88%E7%9A%84%E5%A4%A7%E5%B0%8F%E8%88%87%E6%9C%AA%E4%BD%BF%E7%94%A8%E5%A4%A7%E5%B0%8F-SpaceUsed"><span class="toc-text">查詢資料庫實體檔案的大小與未使用大小 (SpaceUsed)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%80%E6%9C%89%E7%9A%84%E8%B3%87%E6%96%99%E5%BA%AB%E8%88%87%E5%85%B6%E6%89%80%E6%9C%89%E7%9A%84%E8%B3%87%E6%96%99%E8%A1%A8"><span class="toc-text">所有的資料庫與其所有的資料表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Indexes"><span class="toc-text">Indexes</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99%E5%BA%AB%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E7%B4%A2%E5%BC%95"><span class="toc-text">查詢資料庫中的所有索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8%E6%83%85%E5%BD%A2"><span class="toc-text">確認索引的使用情形</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2%E6%8E%A8%E8%96%A6%E5%BB%BA%E7%AB%8B%E7%9A%84%E9%81%BA%E5%A4%B1%E7%B4%A2%E5%BC%95"><span class="toc-text">查詢推薦建立的遺失索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Backup-Device"><span class="toc-text">Backup Device</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E6%9C%80%E8%BF%91%E7%9A%84%E5%82%99%E4%BB%BD%E7%B4%80%E9%8C%84"><span class="toc-text">列出最近的備份紀錄</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RESTORE-HEADERONLY"><span class="toc-text">RESTORE HEADERONLY</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RESTORE-FILELISTONLY"><span class="toc-text">RESTORE FILELISTONLY</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Jobs"><span class="toc-text">Jobs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2-SQL-Server-Agent-%E6%89%80%E6%9C%89%E7%9A%84%E4%BD%9C%E6%A5%AD"><span class="toc-text">查詢 SQL Server Agent 所有的作業</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>蒐羅生涯中遇見的各種 SQL Server 快捷專業的指令 ⚡</p>
+<a href="/posts/2020/12/SQL-Server-Query-Professionally/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="監督系統"><a href="#監督系統" class="headerlink" title="監督系統"></a>監督系統</h2><h3 id="sp-who-sp-who2"><a href="#sp-who-sp-who2" class="headerlink" title="sp_who / sp_who2"></a>sp_who / sp_who2</h3><p><strong>sp_who</strong> 基本查詢，主要用於判別 hostname, dbname 等資訊。</p>
+<p><strong>sp_who2</strong> 可以查詢到 SQL 連線 CPUTime / DIskIO / ProgramName 等資訊</p>
+<p>令 <strong>stored procedure</strong> 可以被條件查詢的 fast script</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token comment">#sp_who2 (SPID INT,Status VARCHAR(255),</span>
+      Login  <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>HostName  <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      BlkBy  <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>DBName  <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      Command <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>CPUTime <span class="token keyword">INT</span><span class="token punctuation">,</span>
+      DiskIO <span class="token keyword">INT</span><span class="token punctuation">,</span>LastBatch <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      ProgramName <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>SPID2 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+      REQUESTID <span class="token keyword">INT</span><span class="token punctuation">)</span>
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token comment">#sp_who2 EXEC sp_who2</span>
+<span class="token keyword">SELECT</span>      <span class="token operator">*</span>
+<span class="token keyword">FROM</span>        <span class="token comment">#sp_who2</span>
+<span class="token keyword">WHERE</span>       DBName <span class="token operator">!=</span> <span class="token string">'master'</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>    DBName <span class="token keyword">ASC</span>
+<span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token comment">#sp_who2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>替代 sp_who2 的 T-sql</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>  spid<span class="token punctuation">,</span>
+        sp<span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token keyword">status</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        loginame <span class="token punctuation">[</span>Login<span class="token punctuation">]</span><span class="token punctuation">,</span>
+        hostname<span class="token punctuation">,</span> 
+        blocked BlkBy<span class="token punctuation">,</span>
+        sd<span class="token punctuation">.</span>name DBName<span class="token punctuation">,</span> 
+        cmd Command<span class="token punctuation">,</span>
+        cpu CPUTime<span class="token punctuation">,</span>
+        physical_io DiskIO<span class="token punctuation">,</span>
+        last_batch LastBatch<span class="token punctuation">,</span>
+        <span class="token punctuation">[</span>program_name<span class="token punctuation">]</span> ProgramName   
+<span class="token keyword">FROM</span> master<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>sysprocesses sp 
+<span class="token keyword">JOIN</span> master<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>sysdatabases sd <span class="token keyword">ON</span> sp<span class="token punctuation">.</span>dbid <span class="token operator">=</span> sd<span class="token punctuation">.</span>dbid
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> spid <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://www.sqlmatters.com/Articles/sp_who2%20-%20filtering%20and%20sorting%20the%20results.aspx">SQL Matters</a></p>
+<h3 id="取得資料庫伺服器硬體資訊"><a href="#取得資料庫伺服器硬體資訊" class="headerlink" title="取得資料庫伺服器硬體資訊"></a>取得資料庫伺服器硬體資訊</h3><p>搭配本機資料庫伺服器群組查詢更為方便 😁</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+	cpu_count<span class="token punctuation">,</span> 
+	hyperthread_ratio<span class="token punctuation">,</span>
+	socket_count<span class="token punctuation">,</span>
+	physical_memory_kb <span class="token operator">/</span> <span class="token number">1024</span> <span class="token operator">/</span> <span class="token number">1024</span> <span class="token keyword">as</span> <span class="token string">'RAM (GB)'</span>
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_os_sys_info<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>SQL Server 2008 (含) 以前的版本不支援 <code class="s">socket_count</code> 以及 <code class="s">physical_memory_kb</code>，必須使用替代方式：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+	cpu_count<span class="token punctuation">,</span> 
+	hyperthread_ratio<span class="token punctuation">,</span>
+	<span class="token number">0</span> <span class="token string">'socket_count'</span><span class="token punctuation">,</span>
+	physical_memory_in_bytes <span class="token operator">/</span> <span class="token number">1024</span> <span class="token operator">/</span> <span class="token number">1024</span> <span class="token operator">/</span> <span class="token number">1024</span> <span class="token keyword">as</span> <span class="token string">'RAM (GB)'</span>
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_os_sys_info<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Login-系列"><a href="#Login-系列" class="headerlink" title="Login 系列"></a>Login 系列</h2><h3 id="列出所有資料庫的-db-owner"><a href="#列出所有資料庫的-db-owner" class="headerlink" title="列出所有資料庫的 db_owner"></a>列出所有資料庫的 db_owner</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DECLARE</span> <span class="token variable">@Table</span> <span class="token keyword">TABLE</span>
+<span class="token punctuation">(</span>
+   ServerName SYSNAME<span class="token punctuation">,</span>
+   DbName SYSNAME<span class="token punctuation">,</span>
+   UserName SYSNAME<span class="token punctuation">,</span>
+   TypeOfLogIn <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+   PermissionLevel <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+   TypeOfRole <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">INSERT</span> <span class="token variable">@Table</span>
+<span class="token keyword">EXEC</span> sp_MSforeachdb <span class="token string">'
+
+use [?]
+
+BEGIN
+  SELECT 
+	ServerName=@@servername, 
+	dbname=db_name(db_id()),
+	p.name AS UserName, 
+	p.type_desc AS TypeOfLogin,
+	pp.name AS PermissionLevel, 
+	pp.type_desc AS TypeOfRole 
+  FROM sys.database_role_members roles
+  JOIN sys.database_principals p ON roles.member_principal_id = p.principal_id
+  JOIN sys.database_principals pp ON roles.role_principal_id = pp.principal_id
+  WHERE pp.name = ''db_owner'' and p.name != ''dbo'' 
+END '</span>
+
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span>  <span class="token variable">@Table</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-List-All-Databases-Db_Owner.png"></p>
+<h3 id="Create-Login-Drop-Login"><a href="#Create-Login-Drop-Login" class="headerlink" title="Create Login / Drop Login"></a>Create Login / Drop Login</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">CRETAE LOGIN loginName <span class="token keyword">WITH</span> PASSWORD <span class="token operator">=</span> <span class="token string">'password'</span><span class="token punctuation">;</span>
+<span class="token keyword">DROP</span> LOGIN loginName<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="sp-helplogins"><a href="#sp-helplogins" class="headerlink" title="sp_helplogins"></a>sp_helplogins</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">sp_helplogins <span class="token string">'loginName'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/sp_helplogins.png"></p>
+<h3 id="sp-helpsrvrole"><a href="#sp-helpsrvrole" class="headerlink" title="sp_helpsrvrole"></a>sp_helpsrvrole</h3><p>列出 Server Level Roles 的所有角色資訊</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">sp_helpsrvrole<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="sp-helpsrvrolemember"><a href="#sp-helpsrvrolemember" class="headerlink" title="sp_helpsrvrolemember"></a>sp_helpsrvrolemember</h3><p>列出所有 Server Level 具有特定 Role 的所有 Logins</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">sp_helpsrvrolemember <span class="token string">'sysadmin'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="sp-helpuser"><a href="#sp-helpuser" class="headerlink" title="sp_helpuser"></a>sp_helpuser</h3><p>列出 Database User 的 Role, LoginName, Default Schema</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">sp_helpuser<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="sys-syslogins"><a href="#sys-syslogins" class="headerlink" title="sys.syslogins"></a>sys.syslogins</h3><p>列出 Login Create Date / isEnable 等相關資訊</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span><span class="token punctuation">,</span> loginname <span class="token keyword">from</span> sys<span class="token punctuation">.</span>syslogins <span class="token keyword">order</span> <span class="token keyword">by</span> accdate <span class="token keyword">desc</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="客製應用-尋找伺服器的-登入-以及計算權限等級"><a href="#客製應用-尋找伺服器的-登入-以及計算權限等級" class="headerlink" title="客製應用 - 尋找伺服器的 登入 以及計算權限等級"></a>客製應用 - 尋找伺服器的 登入 以及計算權限等級</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> loginname<span class="token punctuation">,</span> 
+	<span class="token keyword">CASE</span>
+		<span class="token keyword">WHEN</span> sysadmin <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">then</span> <span class="token number">8</span>
+		<span class="token keyword">WHEN</span> securityadmin <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">then</span> <span class="token number">8</span>
+		<span class="token keyword">ELSE</span> sysadmin <span class="token operator">+</span> securityadmin <span class="token operator">+</span> serveradmin <span class="token operator">+</span> setupadmin <span class="token operator">+</span> processadmin <span class="token operator">+</span> diskadmin <span class="token operator">+</span> dbcreator <span class="token operator">+</span> bulkadmin
+	<span class="token keyword">END</span> <span class="token keyword">AS</span> SENSITIVE<span class="token punctuation">,</span> <span class="token comment">/* 權限等級；越高權限越大 */</span>
+	createdate<span class="token punctuation">,</span>
+	sysadmin<span class="token punctuation">,</span>
+	securityadmin<span class="token punctuation">,</span>
+	serveradmin<span class="token punctuation">,</span>
+	setupadmin<span class="token punctuation">,</span>
+	processadmin<span class="token punctuation">,</span>
+	diskadmin<span class="token punctuation">,</span>
+	dbcreator<span class="token punctuation">,</span>
+	bulkadmin
+<span class="token keyword">from</span> sys<span class="token punctuation">.</span>syslogins 
+<span class="token keyword">where</span> isntname <span class="token operator">=</span> <span class="token number">0</span> <span class="token comment">/* 排除本機帳號*/</span>
+<span class="token operator">and</span> <span class="token punctuation">(</span>isntgroup <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">or</span> isntgroup <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment">/* 群組*/</span>
+<span class="token keyword">order</span> <span class="token keyword">by</span> createdate <span class="token keyword">desc</span>
+
+<span class="token comment">/* 無法找到最近一次登入時間 */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="檢視連線中的-Session-所使用的通訊協定及驗證方法"><a href="#檢視連線中的-Session-所使用的通訊協定及驗證方法" class="headerlink" title="檢視連線中的 Session 所使用的通訊協定及驗證方法"></a>檢視連線中的 Session 所使用的通訊協定及驗證方法</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> client_net_address<span class="token punctuation">,</span> net_transport<span class="token punctuation">,</span> auth_scheme<span class="token punctuation">,</span> encrypt_option
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_exec_connections<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h2><h3 id="sp-helpdb"><a href="#sp-helpdb" class="headerlink" title="sp_helpdb"></a>sp_helpdb</h3><p>查看資料庫伺服器中的所有資料庫，包含資料庫大小、擁有者、建立日期、相容性層級等資訊，無法顯示離線的資料庫。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span> sp_helpdb<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-HelpDB.png"></p>
+<h3 id="列出資料庫伺服器中的資料庫資訊-sys-databases"><a href="#列出資料庫伺服器中的資料庫資訊-sys-databases" class="headerlink" title="列出資料庫伺服器中的資料庫資訊 (sys.databases)"></a>列出資料庫伺服器中的資料庫資訊 (sys.databases)</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+d<span class="token punctuation">.</span>name<span class="token punctuation">,</span> <span class="token comment">-- 資料庫名稱</span>
+f<span class="token punctuation">.</span>physical_name<span class="token punctuation">,</span> <span class="token comment">--實體檔案路徑</span>
+d<span class="token punctuation">.</span>state_desc<span class="token punctuation">,</span>  <span class="token comment">--資料庫狀態 線上、離線、復原模式</span>
+<span class="token punctuation">(</span>cast<span class="token punctuation">(</span>f<span class="token punctuation">.</span>size <span class="token keyword">AS</span> <span class="token keyword">FLOAT</span><span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">1024</span> <span class="token keyword">AS</span> fileSize<span class="token punctuation">,</span> <span class="token comment">--實體檔案大小 MB</span>
+d<span class="token punctuation">.</span>recovery_model_desc<span class="token punctuation">,</span> <span class="token comment">--復原模式 完整、批次、簡單</span>
+d<span class="token punctuation">.</span>compatibility_level<span class="token punctuation">,</span> <span class="token comment">--相容性等級</span>
+d<span class="token punctuation">.</span>create_date <span class="token punctuation">,</span> f<span class="token punctuation">.</span>differential_base_time <span class="token comment">--建立日期與檔案異動日期</span>
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>master_files <span class="token keyword">as</span> f
+<span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span><span class="token keyword">databases</span> <span class="token keyword">AS</span> d <span class="token keyword">ON</span> f<span class="token punctuation">.</span>database_id <span class="token operator">=</span> d<span class="token punctuation">.</span>database_id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-List-All-Databases-Info.png"></p>
+<p>簡化查詢版本，但查詢結果不容易閱讀</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">sp_msforeachdb <span class="token string">'use ?;select DB_NAME();exec sp_helpfile'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="改變資料庫-Owner-sp-changedbowner"><a href="#改變資料庫-Owner-sp-changedbowner" class="headerlink" title="改變資料庫 Owner (sp_changedbowner)"></a>改變資料庫 Owner (sp_changedbowner)</h3><p>處理錯誤訊息 <strong>「出現錯誤｢無法改變使用者’dbo’｣</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">use</span> DatabaseName
+<span class="token keyword">EXEC</span> sp_changedbowner <span class="token string">'sa'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="取得-Exec-T-SQL-中的資料-取用-T-SQL-的結果"><a href="#取得-Exec-T-SQL-中的資料-取用-T-SQL-的結果" class="headerlink" title="取得 Exec T-SQL 中的資料 / 取用 T-SQL 的結果"></a>取得 Exec T-SQL 中的資料 / 取用 T-SQL 的結果</h3><p><a target="_blank" rel="noopener" href="https://rainmakerho.github.io/2017/10/03/20171003-2/">取得 Execute SQL 裡面資料的值</a></p>
+<h3 id="取得-Table-的相關資訊-欄位名稱"><a href="#取得-Table-的相關資訊-欄位名稱" class="headerlink" title="取得 Table 的相關資訊 (欄位名稱)"></a>取得 Table 的相關資訊 (欄位名稱)</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">use</span> DatabaseName
+<span class="token keyword">exec</span> sp_columns <span class="token string">"tableName"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="客製應用-取得資料庫所有使用的欄位型別資訊"><a href="#客製應用-取得資料庫所有使用的欄位型別資訊" class="headerlink" title="客製應用 - 取得資料庫所有使用的欄位型別資訊"></a>客製應用 - 取得資料庫所有使用的欄位型別資訊</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> tb<span class="token punctuation">.</span>name <span class="token keyword">as</span> TableName<span class="token punctuation">,</span> t<span class="token punctuation">.</span>name <span class="token keyword">as</span> ColumnType<span class="token punctuation">,</span> c<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">from</span> sys<span class="token punctuation">.</span>all_columns <span class="token keyword">as</span> c
+	<span class="token keyword">join</span> sys<span class="token punctuation">.</span><span class="token keyword">types</span> <span class="token keyword">as</span> t
+	<span class="token keyword">on</span> c<span class="token punctuation">.</span>system_type_id <span class="token operator">=</span> t<span class="token punctuation">.</span>system_type_id
+	<span class="token keyword">join</span> <span class="token punctuation">(</span><span class="token keyword">select</span> name<span class="token punctuation">,</span> OBJECT_ID <span class="token keyword">from</span> sys<span class="token punctuation">.</span><span class="token keyword">tables</span><span class="token punctuation">)</span> <span class="token keyword">as</span> tb
+	<span class="token keyword">on</span> tb<span class="token punctuation">.</span>object_id <span class="token operator">=</span> c<span class="token punctuation">.</span>object_id
+<span class="token keyword">where</span> t<span class="token punctuation">.</span>name <span class="token operator">!=</span> <span class="token string">'sysname'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查詢資料庫、資料表使用的硬碟空間"><a href="#查詢資料庫、資料表使用的硬碟空間" class="headerlink" title="查詢資料庫、資料表使用的硬碟空間"></a>查詢資料庫、資料表使用的硬碟空間</h3><p>方式一</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span> sp_spaceused<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-SP-SPACEDUSED.png"></p>
+<p>一次打十個💢，缺點不容易閱讀</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXECUTE</span> sp_MSforeachdb <span class="token string">'EXECUTE sp_spaceused'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<hr>
+<p>⭐方式二、取得資料庫所有資料表的硬碟使用空間資訊</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> DatabaseName
+Go
+
+<span class="token keyword">SELECT</span> 
+    t<span class="token punctuation">.</span>NAME <span class="token keyword">AS</span> TableName<span class="token punctuation">,</span>
+    <span class="token comment">--s.Name AS SchemaName,</span>
+    p<span class="token punctuation">.</span><span class="token keyword">rows</span> <span class="token keyword">AS</span> RowCounts<span class="token punctuation">,</span>
+    <span class="token function">SUM</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>total_pages<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">8</span> <span class="token operator">/</span><span class="token number">1024</span> <span class="token keyword">AS</span> TotalSpaceMB<span class="token punctuation">,</span> 
+    <span class="token function">SUM</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>used_pages<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">8</span> <span class="token operator">/</span><span class="token number">1024</span> <span class="token keyword">AS</span> UsedSpaceMB<span class="token punctuation">,</span> 
+    <span class="token punctuation">(</span><span class="token function">SUM</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>total_pages<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token function">SUM</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>used_pages<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">8</span> <span class="token operator">/</span><span class="token number">1024</span> <span class="token keyword">AS</span> UnusedSpaceMB
+<span class="token keyword">FROM</span> 
+    sys<span class="token punctuation">.</span><span class="token keyword">tables</span> t
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>      
+    sys<span class="token punctuation">.</span>indexes i <span class="token keyword">ON</span> t<span class="token punctuation">.</span>OBJECT_ID <span class="token operator">=</span> i<span class="token punctuation">.</span>object_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+    sys<span class="token punctuation">.</span>partitions p <span class="token keyword">ON</span> i<span class="token punctuation">.</span>object_id <span class="token operator">=</span> p<span class="token punctuation">.</span>OBJECT_ID <span class="token operator">AND</span> i<span class="token punctuation">.</span>index_id <span class="token operator">=</span> p<span class="token punctuation">.</span>index_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+    sys<span class="token punctuation">.</span>allocation_units a <span class="token keyword">ON</span> p<span class="token punctuation">.</span>partition_id <span class="token operator">=</span> a<span class="token punctuation">.</span>container_id
+<span class="token keyword">LEFT</span> <span class="token keyword">OUTER</span> <span class="token keyword">JOIN</span> 
+    sys<span class="token punctuation">.</span>schemas s <span class="token keyword">ON</span> t<span class="token punctuation">.</span>schema_id <span class="token operator">=</span> s<span class="token punctuation">.</span>schema_id
+<span class="token keyword">WHERE</span> 
+    t<span class="token punctuation">.</span>NAME <span class="token operator">NOT</span> <span class="token operator">LIKE</span> <span class="token string">'dt%'</span> 
+    <span class="token operator">AND</span> t<span class="token punctuation">.</span>is_ms_shipped <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token operator">AND</span> i<span class="token punctuation">.</span>OBJECT_ID <span class="token operator">></span> <span class="token number">255</span> 
+<span class="token keyword">GROUP</span> <span class="token keyword">BY</span> 
+    t<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> s<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> p<span class="token punctuation">.</span><span class="token keyword">Rows</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> 
+    t<span class="token punctuation">.</span>Name<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-Get-DB-All-Tables-Space-Used.png"></p>
+<p><a target="_blank" rel="noopener" href="https://ryan-tw.blogspot.com/2015/07/ms-sqlget-size-of-all-tables-in-database.html">查詢資料庫中每個資料表之列數與資料表大小(容量)資訊。Get size of all tables in database</a></p>
+<h3 id="查詢-Single-Database-all-Tables-Rows-Count"><a href="#查詢-Single-Database-all-Tables-Rows-Count" class="headerlink" title="查詢 Single Database, all Tables, Rows Count"></a>查詢 Single Database, all Tables, Rows Count</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> 
+    t<span class="token punctuation">.</span>NAME <span class="token keyword">AS</span> TableName<span class="token punctuation">,</span>
+    p<span class="token punctuation">.</span><span class="token keyword">rows</span> <span class="token keyword">AS</span> RowCounts
+<span class="token keyword">FROM</span> 
+    sys<span class="token punctuation">.</span><span class="token keyword">tables</span> t
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+    sys<span class="token punctuation">.</span>partitions p <span class="token keyword">ON</span> t<span class="token punctuation">.</span>object_id <span class="token operator">=</span> p<span class="token punctuation">.</span>OBJECT_ID
+<span class="token keyword">WHERE</span> 
+    t<span class="token punctuation">.</span>is_ms_shipped <span class="token operator">=</span> <span class="token number">0</span> <span class="token operator">AND</span> p<span class="token punctuation">.</span>index_id <span class="token operator">&lt;</span> <span class="token number">2</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> 
+    TableName<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查詢資料庫實體檔案的大小與未使用大小-SpaceUsed"><a href="#查詢資料庫實體檔案的大小與未使用大小-SpaceUsed" class="headerlink" title="查詢資料庫實體檔案的大小與未使用大小 (SpaceUsed)"></a>查詢資料庫實體檔案的大小與未使用大小 (SpaceUsed)</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">use</span> DatabaseName
+<span class="token keyword">SELECT</span> DB_NAME<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> DbName<span class="token punctuation">,</span>
+    name <span class="token keyword">AS</span> FileName<span class="token punctuation">,</span> 
+    type_desc<span class="token punctuation">,</span>
+    size<span class="token operator">/</span><span class="token number">128.0</span> <span class="token keyword">AS</span> CurrentSizeMB<span class="token punctuation">,</span>  
+    size<span class="token operator">/</span><span class="token number">128.0</span> <span class="token operator">-</span> CAST<span class="token punctuation">(</span>FILEPROPERTY<span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'SpaceUsed'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">INT</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">128.0</span> <span class="token keyword">AS</span> FreeSpaceMB
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>database_files<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-DB-CurrentSize-And-FreeSpace.png"></p>
+<h3 id="所有的資料庫與其所有的資料表"><a href="#所有的資料庫與其所有的資料表" class="headerlink" title="所有的資料庫與其所有的資料表"></a>所有的資料庫與其所有的資料表</h3><p>使用 <strong>sp_msforeachdb</strong> 顯示資料庫伺服器下所有的資料庫及其資料表，尚需要擴充下列內容：</p>
+<ul>
+<li>Database : File Size</li>
+<li>Table : Rows, Size</li>
+<li>Database Users</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SET</span> NOCOUNT <span class="token keyword">ON</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@AllTables</span> <span class="token keyword">table</span> <span class="token punctuation">(</span>DbName sysname<span class="token punctuation">,</span>SchemaName sysname<span class="token punctuation">,</span> TableName sysname<span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span>
+     <span class="token variable">@SearchDb</span> nvarchar<span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span>
+    <span class="token punctuation">,</span><span class="token variable">@SearchSchema</span> nvarchar<span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span>
+    <span class="token punctuation">,</span><span class="token variable">@SearchTable</span> nvarchar<span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span>
+    <span class="token punctuation">,</span><span class="token variable">@SQL</span> nvarchar<span class="token punctuation">(</span><span class="token number">4000</span><span class="token punctuation">)</span>
+<span class="token keyword">SET</span> <span class="token variable">@SearchDb</span><span class="token operator">=</span><span class="token string">'%'</span>
+<span class="token keyword">SET</span> <span class="token variable">@SearchSchema</span><span class="token operator">=</span><span class="token string">'%'</span>
+<span class="token keyword">SET</span> <span class="token variable">@SearchTable</span><span class="token operator">=</span><span class="token string">'%'</span>
+<span class="token keyword">SET</span> <span class="token variable">@SQL</span><span class="token operator">=</span><span class="token string">'SELECT ''?'' AS DbName, s.name AS SchemaName, t.name AS TableName 
+FROM [?].sys.tables t INNER JOIN [?].sys.schemas s ON t.schema_id=s.schema_id WHERE ''?'' LIKE '''</span>
+<span class="token operator">+</span> <span class="token variable">@SearchDb</span> <span class="token operator">+</span> <span class="token string">''' AND s.name LIKE '''</span> <span class="token operator">+</span> <span class="token variable">@SearchSchema</span> <span class="token operator">+</span> <span class="token string">''' AND t.name LIKE '''</span> <span class="token operator">+</span> <span class="token variable">@SearchTable</span> <span class="token operator">+</span> <span class="token string">''''</span>
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token variable">@AllTables</span> <span class="token punctuation">(</span>DbName<span class="token punctuation">,</span> SchemaName<span class="token punctuation">,</span> TableName<span class="token punctuation">)</span>
+    <span class="token keyword">EXEC</span> sp_msforeachdb <span class="token variable">@SQL</span>
+<span class="token keyword">SET</span> NOCOUNT <span class="token keyword">OFF</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> <span class="token variable">@AllTables</span> 
+<span class="token keyword">WHERE</span> DBNAME <span class="token operator">NOT</span> <span class="token operator">IN</span> <span class="token punctuation">(</span><span class="token string">'tempdb'</span><span class="token punctuation">)</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> DbName<span class="token punctuation">,</span> SchemaName<span class="token punctuation">,</span> TableName<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Indexes"><a href="#Indexes" class="headerlink" title="Indexes"></a>Indexes</h2><h3 id="查詢資料庫中的所有索引"><a href="#查詢資料庫中的所有索引" class="headerlink" title="查詢資料庫中的所有索引"></a>查詢資料庫中的所有索引</h3><p>顯示單一資料庫的所有索引，包含名稱及碎片化程度以及分頁數量</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> S<span class="token punctuation">.</span>name <span class="token keyword">as</span> <span class="token string">'Schema'</span><span class="token punctuation">,</span>
+T<span class="token punctuation">.</span>name <span class="token keyword">as</span> <span class="token string">'Table'</span><span class="token punctuation">,</span>
+I<span class="token punctuation">.</span>name <span class="token keyword">as</span> <span class="token string">'Index'</span><span class="token punctuation">,</span>
+DDIPS<span class="token punctuation">.</span>avg_fragmentation_in_percent<span class="token punctuation">,</span>
+DDIPS<span class="token punctuation">.</span>page_count<span class="token punctuation">,</span>
+DDIPS<span class="token punctuation">.</span>index_type_desc<span class="token punctuation">,</span>
+P<span class="token punctuation">.</span><span class="token keyword">rows</span>
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_db_index_physical_stats <span class="token punctuation">(</span>DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> DDIPS
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span><span class="token keyword">tables</span> T <span class="token keyword">on</span> T<span class="token punctuation">.</span>object_id <span class="token operator">=</span> DDIPS<span class="token punctuation">.</span>object_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>schemas S <span class="token keyword">on</span> T<span class="token punctuation">.</span>schema_id <span class="token operator">=</span> S<span class="token punctuation">.</span>schema_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>indexes I <span class="token keyword">ON</span> I<span class="token punctuation">.</span>object_id <span class="token operator">=</span> DDIPS<span class="token punctuation">.</span>object_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+    sys<span class="token punctuation">.</span>partitions P <span class="token keyword">ON</span> I<span class="token punctuation">.</span>object_id <span class="token operator">=</span> p<span class="token punctuation">.</span>OBJECT_ID 
+    <span class="token operator">AND</span> I<span class="token punctuation">.</span>index_id <span class="token operator">=</span> p<span class="token punctuation">.</span>index_id
+<span class="token operator">AND</span> DDIPS<span class="token punctuation">.</span>index_id <span class="token operator">=</span> I<span class="token punctuation">.</span>index_id
+<span class="token keyword">WHERE</span> DDIPS<span class="token punctuation">.</span>database_id <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此外也可以用於觀察建立主鍵的資料表變化 (從 Heap 變成 Clustered Index)</p>
+<p><img src="/assets/SQL-Server-Before-Primary-key.png"></p>
+<p><img src="/assets/SQL-Server-After-Primary-key.png"></p>
+<h3 id="確認索引的使用情形"><a href="#確認索引的使用情形" class="headerlink" title="確認索引的使用情形"></a>確認索引的使用情形</h3><p>如果一片空白，可能表示資料庫從未使用！</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> DB_NAME<span class="token punctuation">(</span>database_id<span class="token punctuation">)</span> <span class="token punctuation">,</span>i<span class="token punctuation">.</span>name<span class="token punctuation">,</span> s<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_db_index_usage_stats s
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>indexes i
+<span class="token keyword">ON</span> s<span class="token punctuation">.</span>object_id <span class="token operator">=</span> i<span class="token punctuation">.</span>object_id <span class="token operator">AND</span> s<span class="token punctuation">.</span>index_id <span class="token operator">=</span> i<span class="token punctuation">.</span>index_id
+<span class="token keyword">WHERE</span> database_id <span class="token operator">=</span> db_id<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查詢推薦建立的遺失索引"><a href="#查詢推薦建立的遺失索引" class="headerlink" title="查詢推薦建立的遺失索引"></a>查詢推薦建立的遺失索引</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_db_missing_index_details IDS
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+sys<span class="token punctuation">.</span>dm_db_missing_index_groups IG
+<span class="token keyword">ON</span> IDS<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> IG<span class="token punctuation">.</span>index_handle
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats IGS
+<span class="token keyword">ON</span> IG<span class="token punctuation">.</span>index_group_handle <span class="token operator">=</span> IGS<span class="token punctuation">.</span>group_handle<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Backup-Device"><a href="#Backup-Device" class="headerlink" title="Backup Device"></a>Backup Device</h2><h3 id="列出最近的備份紀錄"><a href="#列出最近的備份紀錄" class="headerlink" title="列出最近的備份紀錄"></a>列出最近的備份紀錄</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> 
+   <span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">CHAR</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span> SERVERPROPERTY<span class="token punctuation">(</span><span class="token string">'Servername'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> Server<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>database_name<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>backup_start_date<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>backup_finish_date<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>expiration_date<span class="token punctuation">,</span> 
+   <span class="token keyword">CASE</span> msdb<span class="token punctuation">.</span><span class="token punctuation">.</span>backupset<span class="token punctuation">.</span><span class="token keyword">type</span> 
+      <span class="token keyword">WHEN</span> <span class="token string">'D'</span> <span class="token keyword">THEN</span> <span class="token string">'Database'</span> 
+      <span class="token keyword">WHEN</span> <span class="token string">'L'</span> <span class="token keyword">THEN</span> <span class="token string">'Log'</span> 
+      <span class="token keyword">END</span> <span class="token keyword">AS</span> backup_type<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>backup_size<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupmediafamily<span class="token punctuation">.</span>logical_device_name<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupmediafamily<span class="token punctuation">.</span>physical_device_name<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>name <span class="token keyword">AS</span> backupset_name<span class="token punctuation">,</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>description 
+<span class="token keyword">FROM</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupmediafamily 
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset <span class="token keyword">ON</span> msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupmediafamily<span class="token punctuation">.</span>media_set_id <span class="token operator">=</span> msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>media_set_id 
+<span class="token keyword">WHERE</span> 
+   <span class="token punctuation">(</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">datetime</span><span class="token punctuation">,</span> msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>backup_start_date<span class="token punctuation">,</span> <span class="token number">102</span><span class="token punctuation">)</span> <span class="token operator">>=</span> GETDATE<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">7</span><span class="token punctuation">)</span> 
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> 
+   msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupset<span class="token punctuation">.</span>backup_finish_date <span class="token keyword">desc</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-List-All-Backup-History.png"></p>
+<h3 id="RESTORE-HEADERONLY"><a href="#RESTORE-HEADERONLY" class="headerlink" title="RESTORE HEADERONLY"></a>RESTORE HEADERONLY</h3><p>檢查備份裝置 (Backup Device) / DISK 中備份組 (Backup Set) 的詳細資訊</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span> <span class="token string">'DEVICENAME'</span>
+<span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">''</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="RESTORE-FILELISTONLY"><a href="#RESTORE-FILELISTONLY" class="headerlink" title="RESTORE FILELISTONLY"></a>RESTORE FILELISTONLY</h3><p>檢查備份裝置 / DISK 中還原檔的詳細資訊 (mdf, ldf, ndf)</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> FILELISTONLY <span class="token keyword">FROM</span> <span class="token string">'DEVICENAME'</span>
+<span class="token keyword">RESTORE</span> FILELISTONLY <span class="token keyword">FROM</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">''</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="Jobs"><a href="#Jobs" class="headerlink" title="Jobs"></a>Jobs</h2><h3 id="查詢-SQL-Server-Agent-所有的作業"><a href="#查詢-SQL-Server-Agent-所有的作業" class="headerlink" title="查詢 SQL Server Agent 所有的作業"></a>查詢 SQL Server Agent 所有的作業</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+     job<span class="token punctuation">.</span>job_id<span class="token punctuation">,</span>
+     notify_level_email<span class="token punctuation">,</span>
+     name<span class="token punctuation">,</span>
+     enabled<span class="token punctuation">,</span>
+     description<span class="token punctuation">,</span>
+     step_name<span class="token punctuation">,</span>
+     command<span class="token punctuation">,</span>
+     server<span class="token punctuation">,</span>
+     database_name
+<span class="token keyword">FROM</span>
+    msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>sysjobs job
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+    msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>sysjobsteps steps        
+<span class="token keyword">ON</span>
+    job<span class="token punctuation">.</span>job_id <span class="token operator">=</span> steps<span class="token punctuation">.</span>job_id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/1601/script-to-retrieve-sql-server-database-backup-history-and-no-backups/">Script to retrieve SQL Server database backup history and no backups</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/12/SQL-Server-Query-Professionally/" data-id="clg3fmajq01ass4tsh2ouar7n" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DBA/" rel="tag">DBA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/12/SQL-Server-Connectivity/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 連線架構 (SQLNCLI / Network Interface)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/12/PC-Building-Simulation/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          從《PC Building Simulation》思考優化作業流程與決策輔助
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

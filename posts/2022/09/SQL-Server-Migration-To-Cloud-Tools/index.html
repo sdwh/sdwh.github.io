@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Migrate to Cloud Tools &amp; Solutions | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 該如何遷移至 Azure 雲端環境的步驟與相關工具資源。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Migrate to Cloud Tools &amp; Solutions">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/09/SQL-Server-Migration-To-Cloud-Tools/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 該如何遷移至 Azure 雲端環境的步驟與相關工具資源。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Backup-Restore-With-BACPAC-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Backup-Restore-With-BACPAC-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Transactional-Replication.png">
+<meta property="article:published_time" content="2022-09-06T11:12:25.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="Azure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Migration-To-Cloud-Tools" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/09/SQL-Server-Migration-To-Cloud-Tools/" class="article-date">
+  <time datetime="2022-09-06T11:12:25.000Z" itemprop="datePublished">2022-09-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Migrate to Cloud Tools &amp; Solutions
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solutions"><span class="toc-text">Solutions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BACKPAC"><span class="toc-text">BACKPAC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Backup-amp-Restore"><span class="toc-text">Backup &amp; Restore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Transactional-Replication"><span class="toc-text">Transactional Replication</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tools"><span class="toc-text">Tools</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Azure-Migrate"><span class="toc-text">Azure Migrate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Azure-Database-Migration-Service-DMS"><span class="toc-text">Azure Database Migration Service (DMS)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Migration-Assistant-DMA"><span class="toc-text">Data Migration Assistant (DMA)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-Migration-Assistant-SSMA"><span class="toc-text">SQL Server Migration Assistant (SSMA)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Database-Experimentation-Assistant-DEA"><span class="toc-text">Database Experimentation Assistant (DEA)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Microsoft-Planning-and-Assessment-MAP"><span class="toc-text">Microsoft Planning and Assessment (MAP)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 該如何遷移至 Azure 雲端環境的步驟與相關工具資源。</p>
+<a href="/posts/2022/09/SQL-Server-Migration-To-Cloud-Tools/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><table>
+<thead>
+<tr>
+<th>工具名稱</th>
+<th>類型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BACKPAC</td>
+<td>Solutions</td>
+<td>Offline 移轉</td>
+</tr>
+<tr>
+<td>Backup &amp; Restore</td>
+<td>Solutions</td>
+<td>Offline 移轉</td>
+</tr>
+<tr>
+<td>Transactional Replication</td>
+<td>Solutions</td>
+<td>Online 移轉</td>
+</tr>
+<tr>
+<td>Azure Migrate</td>
+<td>Tools</td>
+<td>Online &amp; Offline 移轉服務</td>
+</tr>
+<tr>
+<td>Azure Database Migration Service</td>
+<td>Tools</td>
+<td>Online &amp; Offline 移轉服務</td>
+</tr>
+<tr>
+<td>Data Migration Assistant</td>
+<td>Tools</td>
+<td>資料庫升級與移轉評估與進行協助</td>
+</tr>
+<tr>
+<td>SQL Server Migration Assistant</td>
+<td>Tools</td>
+<td>異質資料庫遷移至 SQL Server 輔助</td>
+</tr>
+<tr>
+<td>Database Experimentation Assistant</td>
+<td>Tools</td>
+<td>工作負載 A/B 測試工具</td>
+</tr>
+<tr>
+<td>Microsoft Planning and Assessment</td>
+<td>Tools</td>
+<td>地端環境資料庫盤點工具</td>
+</tr>
+</tbody></table>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><h3 id="BACKPAC"><a href="#BACKPAC" class="headerlink" title="BACKPAC"></a>BACKPAC</h3><p>適合用在 Offline (停機作業) 的使用情境，<strong>適合地端資料庫往雲端 Azure SQL Database 或從雲端資料庫回到地端資料庫的情境</strong>。</p>
+<p>相較於 Backup &amp; Restore，因為 Azure SQL Database 以及 Azure SQL Managed Instance 兩項 PaaS 服務，所使用的 SQL Server Version 為 Evergreen，備份出來的檔案無法相容在其他 Version 的 SQL Server，因此使用將建構指令以及 BCP 建立資料的壓縮檔案格式 BACPAC 就是這種情境下的理想選擇。</p>
+<p>需要注意的是 BACPAC 的還原時間遠較 Restore 長 😅</p>
+<p><img src="/assets/SQL-Server-Backup-Restore-With-BACPAC-1.png" alt="Azure SQL Database 只能使用 BACPAC - 1"><br><img src="/assets/SQL-Server-Backup-Restore-With-BACPAC-2.png" alt="Azure SQL Database 只能使用 BACPAC - 2"></p>
+<h3 id="Backup-amp-Restore"><a href="#Backup-amp-Restore" class="headerlink" title="Backup &amp; Restore"></a>Backup &amp; Restore</h3><p>SQL Server 傳統的 Backup &amp; Restore 仍是一項好的解決方案，尤其適合是到雲端的 IaaS 方式或 PaaS 的 Azure SQL Managed Instance，但無法支援 Azure SQL Database。</p>
+<h3 id="Transactional-Replication"><a href="#Transactional-Replication" class="headerlink" title="Transactional Replication"></a>Transactional Replication</h3><p>SQL Server 傳統保持跨資料庫伺服器的解決方案，可以用於地端往雲端的資料同步，以解決最小停機時間的需求。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/relational-databases/replication/transactional/transactional-replication?view=sql-server-ver16">異動複寫 | learn.microsoft</a></p>
+<p><img src="/assets/SQL-Server-Transactional-Replication.png" alt="Transactional Replication (異動複寫) | 圖片來源：learn.microsoft"></p>
+<h2 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h2><h3 id="Azure-Migrate"><a href="#Azure-Migrate" class="headerlink" title="Azure Migrate"></a>Azure Migrate</h3><p>以伺服器為單位進行移轉至 Azure，包含實體伺服器與虛擬伺服器 (VM)。</p>
+<p>屬於完整與全面的移轉方案，Azure Migrate 本身提供特定時間內免費的服務，此外會使用到協力廠商 ISV 相關技術則需要費用。</p>
+<p>Azure Database Migration Service (DMS) 以及 Data Migration Assistant (DMA) 都是其中的一部分。</p>
+<h3 id="Azure-Database-Migration-Service-DMS"><a href="#Azure-Database-Migration-Service-DMS" class="headerlink" title="Azure Database Migration Service (DMS)"></a>Azure Database Migration Service (DMS)</h3><p>Azure 的服務，用於協助地端到雲端或者雲端之間的資料庫遷移作業協助。</p>
+<p>可以協助將資料庫遷移至 Azure SQL Database 以及 Azure SQL Managed Instance ，但不支援將 SQL Server Instance 遷移至 Azure VM。</p>
+<p>可處理 MySQL, PostgreSQL, MariaDB 等資料庫的遷移。</p>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;">
+  <p>💡 DMS 需要使用使用到 TCP 1434 Port</p>
+</div>
+
+<h3 id="Data-Migration-Assistant-DMA"><a href="#Data-Migration-Assistant-DMA" class="headerlink" title="Data Migration Assistant (DMA)"></a>Data Migration Assistant (DMA)</h3><p>起始遷移作業前，評估資料庫升級與用於發現資料庫效能的問題，並提供改善建議。</p>
+<p>可以協助將資料庫遷移至 Azure SQL Database 以及 Azure SQL Managed Instance 並支援將 SQL Server Instance 遷移至 Azure VM。</p>
+<h3 id="SQL-Server-Migration-Assistant-SSMA"><a href="#SQL-Server-Migration-Assistant-SSMA" class="headerlink" title="SQL Server Migration Assistant (SSMA)"></a>SQL Server Migration Assistant (SSMA)</h3><p>協助由 Access, DB2, MySQL, Oracle 以及 SAP ASE 遷移至 SQL Server 的輔助工具。</p>
+<p>但無法處理開源的資料格式，例如 PostgreSQL, MariaDB。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/ssma/sql-server-migration-assistant?view=sql-server-ver16">SQL Server Migration Assistant | learn.microsoft</a></p>
+<h3 id="Database-Experimentation-Assistant-DEA"><a href="#Database-Experimentation-Assistant-DEA" class="headerlink" title="Database Experimentation Assistant (DEA)"></a>Database Experimentation Assistant (DEA)</h3><p>追蹤特定資料庫，並錄製執行腳本，並且使用 A/B Test 的方式，驗證相同 Workload 在不同組態的資料庫伺服器上差異的情形。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/dea/database-experimentation-assistant-overview?view=sql-server-ver16">Overview of Database Experimentation Assistant | learn.microsoft</a></p>
+<h3 id="Microsoft-Planning-and-Assessment-MAP"><a href="#Microsoft-Planning-and-Assessment-MAP" class="headerlink" title="Microsoft Planning and Assessment (MAP)"></a>Microsoft Planning and Assessment (MAP)</h3><p>協助 Windows 資產的清查，用以清查所有伺服器上 SQL Server 執行個體的使用資訊。與雲端的結合應用是整個遷移計畫初期，盤點資料庫執行個體數量所使用。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/learn/paths/sql-server-upgrades/">SQL Server 升級 | learn.microsoft</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/data-migration/">Azure Database Migration Guides | learn.microsoft</a></p>
+<p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/09/SQL-Server-Migration-To-Cloud-Tools/" data-id="clg3fmajg019xs4ts49oi4e61" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/09/IIS-Difference-Between-Application-Domain-And-Application-Pool/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">IIS Application Domain 與 Application Pool 差異比較</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/09/SQL-Server-Execution-Plan/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Execution Plan 執行計畫
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

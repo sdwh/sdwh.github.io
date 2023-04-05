@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>C# Junior Developer 面試問題集 / C# 學徒模式 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 C# 初階面試常見問題 🙂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# Junior Developer 面試問題集 &#x2F; C# 學徒模式">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/CSharp-Interview-Questions/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 C# 初階面試常見問題 🙂">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/OOP-Class-Object-Instantiate.png">
+<meta property="article:published_time" content="2021-06-23T12:45:27.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="LearningNote">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSharp-Interview-Questions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/CSharp-Interview-Questions/" class="article-date">
+  <time datetime="2021-06-23T12:45:27.000Z" itemprop="datePublished">2021-06-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C# Junior Developer 面試問題集 / C# 學徒模式
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%8F%E9%A1%8C%E9%9B%86"><span class="toc-text">問題集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A6%8B%E7%9A%84%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E6%9E%B6%E6%A7%8B%E7%82%BA%E4%BD%95"><span class="toc-text">常見的應用程式架構為何</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E6%9E%B6%E6%A7%8B"><span class="toc-text">為什麼需要使用應用程式架構</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Class-Object"><span class="toc-text">什麼是 Class &#x2F; Object</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Instantiate"><span class="toc-text">什麼是 Instantiate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E4%BD%BF%E7%94%A8%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6"><span class="toc-text">為什麼要使用單元測試</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Constructor"><span class="toc-text">什麼是 Constructor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Field-%E3%80%81-Property-%E7%9A%84%E5%B7%AE%E5%88%A5"><span class="toc-text">Field 、 Property 的差別</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Property-%E7%9A%84%E7%94%A8%E9%80%94"><span class="toc-text">Property 的用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E4%BD%BF%E7%94%A8-Namespace"><span class="toc-text">為什麼要使用 Namespace</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Static"><span class="toc-text">什麼是 Static</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Static-Class"><span class="toc-text">什麼是 Static Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Static-Members"><span class="toc-text">什麼是 Static Members</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Singleton-Pattern"><span class="toc-text">什麼是 Singleton Pattern</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Lazy-Loading"><span class="toc-text">什麼是 Lazy Loading</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Object-Initializers"><span class="toc-text">什麼是 Object Initializers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Encapsulation-%E7%9A%84%E7%94%A8%E9%80%94"><span class="toc-text">Data Encapsulation 的用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Constant"><span class="toc-text">Constant</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ReadOnly-Field"><span class="toc-text">ReadOnly Field</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Constant-And-Readonly-Field-Diff"><span class="toc-text">Constant And Readonly Field Diff</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Auto-Implemented-Property"><span class="toc-text">Auto-Implemented Property</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Method"><span class="toc-text">Method</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameter"><span class="toc-text">Parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Argument"><span class="toc-text">Argument</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Method-Overloading"><span class="toc-text">Method Overloading</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Method-Chaining"><span class="toc-text">Method Chaining</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Expression-bodied-method"><span class="toc-text">Expression-bodied method</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Named-Arguement"><span class="toc-text">Named Arguement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Enum-%E7%9A%84%E4%BD%BF%E7%94%A8%E6%83%85%E5%A2%83"><span class="toc-text">Enum 的使用情境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Optional-Parameter"><span class="toc-text">Optional Parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Call-by-value-vs-Call-by-reference"><span class="toc-text">Call by value vs Call by reference</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ref"><span class="toc-text">Ref</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Out"><span class="toc-text">Out</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Immutable"><span class="toc-text">Immutable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#StringBuilder-Benefits"><span class="toc-text">StringBuilder Benefits</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Initailizing-Auto-Implemented-Properties"><span class="toc-text">Initailizing Auto-Implemented Properties</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Verbatim-String-Literals"><span class="toc-text">Verbatim String Literals</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String-Interpolation"><span class="toc-text">String Interpolation</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 C# 初階面試常見問題 🙂</p>
+<a href="/posts/2021/06/CSharp-Interview-Questions/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="問題集"><a href="#問題集" class="headerlink" title="問題集"></a>問題集</h2><h3 id="常見的應用程式架構為何"><a href="#常見的應用程式架構為何" class="headerlink" title="常見的應用程式架構為何"></a>常見的應用程式架構為何</h3><p>UI Layer, Business Layer, Data Access Layer, Common Library Layer</p>
+<h3 id="為什麼需要使用應用程式架構"><a href="#為什麼需要使用應用程式架構" class="headerlink" title="為什麼需要使用應用程式架構"></a>為什麼需要使用應用程式架構</h3><p>讓程式碼能夠重複使用，同時也讓程式碼能夠基於架構的進行新增、異動，保持擴展的彈性。</p>
+<h3 id="什麼是-Class-Object"><a href="#什麼是-Class-Object" class="headerlink" title="什麼是 Class / Object"></a>什麼是 Class / Object</h3><p>Class 翻譯為<strong>類別，是 Object (物件) 的藍圖與樣板，定義物件的資料 (Field, Property) 規格與操作方法 (Method) 規格</strong>。</p>
+<p><img src="/assets/OOP-Class-Object-Instantiate.png"></p>
+<h3 id="什麼是-Instantiate"><a href="#什麼是-Instantiate" class="headerlink" title="什麼是 Instantiate"></a>什麼是 Instantiate</h3><p>由類別建立物件的過程，建立的過程會使用類別的 Constructor Method。</p>
+<h3 id="為什麼要使用單元測試"><a href="#為什麼要使用單元測試" class="headerlink" title="為什麼要使用單元測試"></a>為什麼要使用單元測試</h3><p>提升軟體的品質，更容易進行除錯，以及避免程式碼的異動造成未注意的影響。</p>
+<h3 id="什麼是-Constructor"><a href="#什麼是-Constructor" class="headerlink" title="什麼是 Constructor"></a>什麼是 Constructor</h3><p>也稱為建構子，當物件由類別被建立為實體(Instance)所執行的方法，可以作為建立時搭配的演算步驟所使用。</p>
+<p><strong>建構子可以呼叫靜態或者非靜態的方法</strong>（Call Static / Non-static Method is allowed）。</p>
+<h3 id="Field-、-Property-的差別"><a href="#Field-、-Property-的差別" class="headerlink" title="Field 、 Property 的差別"></a>Field 、 Property 的差別</h3><p>Field(Backing Field) 是封裝在物件之中的資料，不提供外界使用，僅供物件本身的方法邏輯所使用。</p>
+<p>Property 是提供外界讀取、寫入的資料屬性，其背後實際的資料是 Field，Property 提供的可以是 Field 資料的運算處理的結果，寫入的資料也可以經運算處理後才保存至 Field。</p>
+<h3 id="Property-的用途"><a href="#Property-的用途" class="headerlink" title="Property 的用途"></a>Property 的用途</h3><p><strong>組合</strong></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> FullName
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> FirstName <span class="token operator">+</span> <span class="token string">" "</span> <span class="token operator">+</span> LastName<span class="token punctuation">;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>計算</strong></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> BirthDate <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">float</span></span> Age 
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now <span class="token operator">-</span> BirthDate<span class="token punctuation">)</span><span class="token punctuation">.</span>Days <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token keyword">float</span><span class="token punctuation">)</span><span class="token number">365</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>關聯物件的屬性</strong></p>
+<p>如果組合關係下的物件，經常需要使用子物件的屬性或者屬性的運算結果，可以藉由本身的 Property 來進行設定，減輕語法的程式碼量。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> ManagerName
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> Manager<span class="token punctuation">?.</span>Name<span class="token punctuation">;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="為什麼要使用-Namespace"><a href="#為什麼要使用-Namespace" class="headerlink" title="為什麼要使用 Namespace"></a>為什麼要使用 Namespace</h3><ol>
+<li>可以有架構、邏輯性的管理類別</li>
+<li>避免類別名稱相同造成問題</li>
+</ol>
+<p><strong>Namespace Example:</strong></p>
+<div class="article-blockquote">
+Microsoft.AspNetCore.Mvc<br/>
+System.Web.Mvc</div>
+
+<h3 id="什麼是-Static"><a href="#什麼是-Static" class="headerlink" title="什麼是 Static"></a>什麼是 Static</h3><p>翻譯為<strong>靜態，靜態是指系統對於記憶體的分配方式，是在程式初始化階段就預先分配，直到整個程式結束才會回收的記憶體管理方式</strong>。</p>
+<h3 id="什麼是-Static-Class"><a href="#什麼是-Static-Class" class="headerlink" title="什麼是 Static Class"></a>什麼是 Static Class</h3><p>翻譯為<strong>靜態類別</strong>。</p>
+<p>可以不用建立實體就使用靜態類別中的方法，靜態類別中的成員（屬性及方法）都必須為靜態的。</p>
+<h3 id="什麼是-Static-Members"><a href="#什麼是-Static-Members" class="headerlink" title="什麼是 Static Members"></a>什麼是 Static Members</h3><p>非靜態類別的成員也可以是靜態的，不需要建立實體就可以使用靜態成員，而靜態成員是歸屬於類別，並非每個物件都有一份的存在。</p>
+<p>靜態類別可以用於計算該類別的物件建立數量。</p>
+<h3 id="什麼是-Singleton-Pattern"><a href="#什麼是-Singleton-Pattern" class="headerlink" title="什麼是 Singleton Pattern"></a>什麼是 Singleton Pattern</h3><p>類別藉由 Static Property 或者 Private Constructor 的方式檢查 Instance 是否已經存在，如果不存在則建立，已存在就以目前的 Instance 進行回傳，用以保存類別僅有單一 Instance 的狀態。</p>
+<h3 id="什麼是-Lazy-Loading"><a href="#什麼是-Lazy-Loading" class="headerlink" title="什麼是 Lazy Loading"></a>什麼是 Lazy Loading</h3><p>藉由 Property 的 Get 來檢查關聯物件是否存在，如果不存在則建立。相對於使用 Constructor 預設先建立好關聯物件的方式，Lazy Loading 是指當要使用時才建立，較不主動的方式。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token class-name">Person</span> _person<span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">Person</span> Person
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">get</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>_person <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      _person <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> _person<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">set</span> <span class="token punctuation">&#123;</span> _person <span class="token operator">=</span> <span class="token keyword">value</span><span class="token punctuation">;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="什麼是-Object-Initializers"><a href="#什麼是-Object-Initializers" class="headerlink" title="什麼是 Object Initializers"></a>什麼是 Object Initializers</h3><p><code class="watch">C# Language Features.</code></p>
+<p>可以不需要設定多種 Overloading 的 Parameterized Constructor，彈性的初始化物件、設定物件的資料。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> person <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span>
+<span class="token punctuation">&#123;</span>
+  Name <span class="token operator">=</span> <span class="token string">"Webber"</span><span class="token punctuation">,</span>
+  Job <span class="token operator">=</span> <span class="token string">"Software Developer"</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Data-Encapsulation-的用途"><a href="#Data-Encapsulation-的用途" class="headerlink" title="Data Encapsulation 的用途"></a>Data Encapsulation 的用途</h3><p>…</p>
+<h3 id="Constant"><a href="#Constant" class="headerlink" title="Constant"></a>Constant</h3><p>翻譯為常數。</p>
+<div class="article-blockquote">
+Simple Data Type Never chage values. Static / Assigned on declaration variable.</div>
+
+<p>Const 必須為 Compile 期間能夠決定數值的 Type。適用於經常不變，不會更改的內容 (例如：單位、圓周率)。</p>
+<p>Const 的 type 只能為 Integer, Float, String 等（不能是 Struct, Class）。</p>
+<p>此外 Const 的初始化只能在 Declaration 中進行，無法在 Constructor 中進行。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">double</span></span> Pi <span class="token operator">=</span> <span class="token number">3.14159</span><span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">double</span></span> GravitationalConstant <span class="token operator">=</span> <span class="token number">6.673e-11</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<h3 id="ReadOnly-Field"><a href="#ReadOnly-Field" class="headerlink" title="ReadOnly Field"></a>ReadOnly Field</h3><p>Static or non-static</p>
+<p>Readonly Field 可以由 Declaration 或者由 Constructor 進行賦值，並依照 Priority 的順序，如果先由 Priority 較小的賦予動作去執行，再由 Priority 高者覆蓋為新的賦值。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">Template</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name"><span class="token keyword">int</span></span> _myVar <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span> <span class="token comment">// Priority 0</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> MyVar <span class="token punctuation">&#123;</span> <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> _myVar<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Template</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _myVar <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span> <span class="token comment">// Priority 1</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Template</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">bool</span></span> b<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _myVar <span class="token operator">=</span> <span class="token number">120</span><span class="token punctuation">;</span> <span class="token comment">// Priority 2</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Constant-And-Readonly-Field-Diff"><a href="#Constant-And-Readonly-Field-Diff" class="headerlink" title="Constant And Readonly Field Diff"></a>Constant And Readonly Field Diff</h3><p>Constant 只能在 Declaration 賦值；Readonly Field 可以在 Declaration 以及 Constructor 賦值。</p>
+<p>Constant 是 Compile Time 的固定值；Readonly Field 是 Runtime 的固定值。</p>
+<h3 id="Auto-Implemented-Property"><a href="#Auto-Implemented-Property" class="headerlink" title="Auto-Implemented Property"></a>Auto-Implemented Property</h3><p><code class="watch">C# Language Features.</code></p>
+<div class="article-blockquote">
+Short cut syntax for implicit field and associated property getter and setter.</div>
+
+<p>在 Field 透過 Property 提供 get 與 set 沒有特別的程式邏輯的時候，藉由 Auto-Implemented Property 可以保持程式的簡潔，達到原本較繁瑣的宣告效果。</p>
+<p>詳盡的情境使用 <code class="watch">propfull</code> 來分別設定 Field, Property getter, setter；簡單的情境使用 <code class="watch">prop</code> 來使用 Auto-Implemented Property。</p>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><div class="article-blockquote">
+Implement the logic for specific behavior or functionality in a class</div>
+
+<p>翻譯為<strong>方法</strong>。</p>
+<p>方法相較於屬性是較為複雜的演算邏輯步驟，但是方法的設計仍不應該過於複雜：</p>
+<div class="article-blockquote">
+The first rule of functions is that they should be small. The second rule of functions is that they should be smaller than that. Functions should not be 100 lines long. Functions should hardly ever be 20 lines long.
+
+<div style="text-align:right">Bob Martin</div>
+</div>
+
+<h3 id="Parameter"><a href="#Parameter" class="headerlink" title="Parameter"></a>Parameter</h3><p>part of method signature</p>
+<p>翻譯為<strong>參數</strong>。</p>
+<h3 id="Argument"><a href="#Argument" class="headerlink" title="Argument"></a>Argument</h3><p>part of method call</p>
+<p>翻譯為<strong>引數</strong>。</p>
+<h3 id="Method-Overloading"><a href="#Method-Overloading" class="headerlink" title="Method Overloading"></a>Method Overloading</h3><div class="article-blockquote">
+Methods with same name and purpose but different signatures</div>
+
+<p>翻譯為<strong>方法多載</strong>。</p>
+<p>藉由 Signature (Method 的參數型別、數量) 的不同，允許同名的 Method。依據 Caller 所使用的 Signature 決定要使用的 Method。需要注意的是 Method 的回傳型別不屬於 Signature 的一部分，此外參數的</p>
+<h3 id="Method-Chaining"><a href="#Method-Chaining" class="headerlink" title="Method Chaining"></a>Method Chaining</h3><div class="article-blockquote">
+One method overload call another overload to prevent repeated code.</div>
+
+
+<h3 id="Expression-bodied-method"><a href="#Expression-bodied-method" class="headerlink" title="Expression-bodied method"></a>Expression-bodied method</h3><p><code class="watch">C# Language Features.</code></p>
+<p>Syntax short cut for single statement methods that returns a value</p>
+<p>readonly</p>
+<p>Property With Getter 的完整寫法：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> FirstName <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> LastName <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> FullName
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">FirstName</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">LastName</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Expression-bodied 的簡寫方式：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> FullName <span class="token operator">=></span> <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">FirstName</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">LastName</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Named-Arguement"><a href="#Named-Arguement" class="headerlink" title="Named Arguement"></a>Named Arguement</h3><p>Clarify the purpose of an argument and define argument without concern for their position in the parameter list.</p>
+<p>藉由在 Caller 主動具名的方式呼叫所要使用的 Method 讓程式碼更容易理解，但要注意過於明確的項目不需要畫蛇添足，造成反效果。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// ❌ 不易識別 Argument 的 true, false 用途</span>
+<span class="token function">OrderProduct</span><span class="token punctuation">(</span>product<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+
+<span class="token comment">// ⭕ 容易識別 Argument 的 true, false 分別代表</span>
+<span class="token function">OrderProduct</span><span class="token punctuation">(</span>
+  product<span class="token punctuation">,</span> 
+  <span class="token named-parameter punctuation">productNumber</span><span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span> 
+  <span class="token named-parameter punctuation">deliveryService</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> 
+  <span class="token named-parameter punctuation">productMemo</span><span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Enum-的使用情境"><a href="#Enum-的使用情境" class="headerlink" title="Enum 的使用情境"></a>Enum 的使用情境</h3><p>處理 Boolean Prameter 問題。</p>
+<p>使用 Enum Over Boolean Parameter / Constant</p>
+<p>避免使用在經常改變的情況</p>
+<h3 id="Optional-Parameter"><a href="#Optional-Parameter" class="headerlink" title="Optional Parameter"></a>Optional Parameter</h3><p>By specifying Parameter with a default value.</p>
+<p>參數的預設值宣告於 Method Signature，可以減少 Method OverLoading 的使用。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">Order</span> <span class="token function">OrderProduct</span><span class="token punctuation">(</span><span class="token class-name">Product</span> product<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> quantity <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token class-name">DateTime<span class="token punctuation">?</span></span> orderDate <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h3 id="Call-by-value-vs-Call-by-reference"><a href="#Call-by-value-vs-Call-by-reference" class="headerlink" title="Call by value vs Call by reference"></a>Call by value vs Call by reference</h3><p>…</p>
+<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p><code class="watch">C# Language Features.</code></p>
+<p>Allow method to modify the <strong>ref</strong> parameter.</p>
+<p>Argument must be Initialized.</p>
+<p>Parameter value can be changed in the method.</p>
+<h3 id="Out"><a href="#Out" class="headerlink" title="Out"></a>Out</h3><p><code class="watch">C# Language Features.</code></p>
+<p>Ask method must provide the <strong>out</strong> parameter value.</p>
+<p>Argument Must be declared.</p>
+<p>Parameter value must be set in the method.</p>
+<h3 id="Immutable"><a href="#Immutable" class="headerlink" title="Immutable"></a>Immutable</h3><p>…</p>
+<h3 id="StringBuilder-Benefits"><a href="#StringBuilder-Benefits" class="headerlink" title="StringBuilder Benefits"></a>StringBuilder Benefits</h3><p>Mutable, easily to change values.</p>
+<p>Efficient to append lots of strings.</p>
+<h3 id="Initailizing-Auto-Implemented-Properties"><a href="#Initailizing-Auto-Implemented-Properties" class="headerlink" title="Initailizing Auto-Implemented Properties"></a>Initailizing Auto-Implemented Properties</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> PlantType <span class="token punctuation">&#123;</span><span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span><span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token string">"Vegetable"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>Static Method Call Only;</p>
+<h3 id="Verbatim-String-Literals"><a href="#Verbatim-String-Literals" class="headerlink" title="Verbatim String Literals"></a>Verbatim String Literals</h3><p>翻譯為<strong>逐字識別項</strong>。</p>
+<p>可以讓 Escape Char 不發揮作用。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> normalString <span class="token operator">=</span> <span class="token string">"Hello\r\nWorld"</span><span class="token punctuation">;</span>
+<span class="token comment">// Hello</span>
+<span class="token comment">// World</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> verbatimString <span class="token operator">=</span> <span class="token string">@"Hello\r\nWorld"</span><span class="token punctuation">;</span>
+<span class="token comment">// Hello\r\nWorld</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="String-Interpolation"><a href="#String-Interpolation" class="headerlink" title="String Interpolation"></a>String Interpolation</h3><p>翻譯為<strong>字串插值</strong>。</p>
+<p>可以幫助組合字串以更容易閱讀的方式進行。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">string</span></span> name <span class="token operator">=</span> <span class="token string">"Mark"</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> date <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+
+<span class="token comment">// Composite formatting:</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Hello, &#123;0&#125;! Today is &#123;1&#125;, it's &#123;2:HH:mm&#125; now."</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> date<span class="token punctuation">.</span>DayOfWeek<span class="token punctuation">,</span> date<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// String interpolation:</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"Hello, </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">name</span><span class="token punctuation">&#125;</span></span><span class="token string">! Today is </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">date<span class="token punctuation">.</span>DayOfWeek</span><span class="token punctuation">&#125;</span></span><span class="token string">, it's </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">date</span><span class="token format-string"><span class="token punctuation">:</span>HH:mm</span><span class="token punctuation">&#125;</span></span><span class="token string"> now."</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/CSharp-Interview-Questions/" data-id="clg3fmabd00dfs4tsh4bvh5sr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/CSharp-Null-Conditional-Operator/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">C# Null Conditional Operator,  Null 條件運算子</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/SQL-Server-Rename-Hostname/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server 伺服器名稱變更的方法 (How to Rename SQL Server Hostname)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

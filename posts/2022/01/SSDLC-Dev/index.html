@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>實踐 SSDLC 深入附表十《資通系統防護基準修正規定》DSCS 的饗宴 🍱 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Headfirst : Defense Standard of Cyber System，藉由深入探討資通安全責任等級分級辦法中的附表十《資通系統防護基準修正規定》，探討需求、設計、開發、測試以及部署維運階段上，需要實踐的安全控制措施，並代入 ASP.NET 的程式設計與微軟生態系的維運經驗，思索實踐方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="實踐 SSDLC 深入附表十《資通系統防護基準修正規定》DSCS 的饗宴 🍱">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/01/SSDLC-Dev/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="Headfirst : Defense Standard of Cyber System，藉由深入探討資通安全責任等級分級辦法中的附表十《資通系統防護基準修正規定》，探討需求、設計、開發、測試以及部署維運階段上，需要實踐的安全控制措施，並代入 ASP.NET 的程式設計與微軟生態系的維運經驗，思索實踐方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+<meta property="article:published_time" content="2022-01-29T09:54:45.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="SSDLC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SSDLC-Dev" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SSDLC-Dev/" class="article-date">
+  <time datetime="2022-01-29T09:54:45.000Z" itemprop="datePublished">2022-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      實踐 SSDLC 深入附表十《資通系統防護基準修正規定》DSCS 的饗宴 🍱
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B7%A8%E8%BC%AF%E7%B4%80%E9%8C%84"><span class="toc-text">編輯紀錄</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B3%87%E8%A8%8A%E5%AE%89%E5%85%A8"><span class="toc-text">資訊安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%8F%96%E6%8E%A7%E5%88%B6"><span class="toc-text">存取控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%BD%E6%A0%B8%E8%88%87%E5%8F%AF%E6%AD%B8%E8%B2%AC%E6%80%A7"><span class="toc-text">稽核與可歸責性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%87%9F%E9%81%8B%E6%8C%81%E7%BA%8C%E8%A8%88%E7%95%AB"><span class="toc-text">營運持續計畫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AD%98%E5%88%A5%E8%88%87%E9%91%91%E5%88%A5"><span class="toc-text">識別與鑑別</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%B5%B1%E6%9C%8D%E5%8B%99%E8%88%87%E5%8F%96%E5%BE%97"><span class="toc-text">系統服務與取得</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%B5%B1%E8%88%87%E9%80%9A%E8%A8%8A%E4%BF%9D%E8%AD%B7"><span class="toc-text">系統與通訊保護</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%B5%B1%E8%88%87%E8%B3%87%E8%A8%8A%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-text">系統與資訊完整性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>Headfirst : Defense Standard of Cyber System，藉由深入探討<strong>資通安全責任等級分級辦法</strong>中的<strong>附表十《資通系統防護基準修正規定》</strong>，探討需求、設計、開發、測試以及部署維運階段上，需要實踐的安全控制措施，並代入 ASP.NET 的程式設計與微軟生態系的維運經驗，思索實踐方式。</p>
+<a href="/posts/2022/01/SSDLC-Dev/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="編輯紀錄"><a href="#編輯紀錄" class="headerlink" title="編輯紀錄"></a>編輯紀錄</h2><p>2023-01-27 根據 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《Web應用程式安全參考指引》</a> 以及 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《資通系統防護基準驗證實務》</a> 更新 <strong>稽核與可歸責性</strong> 實踐方式。</p>
+<h2 id="資訊安全"><a href="#資訊安全" class="headerlink" title="資訊安全"></a>資訊安全</h2><p>各控制措施來源為<strong>資通安全責任等級分級辦法</strong>中的<strong>附表十《資通系統防護基準修正規定》</strong>，並參考 NCCST 的資通系統防護基準驗證實務<a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《110年資通系統防護基準驗證實務》</a>。</p>
+<p>相關的說明除整理自《110年資通系統防護基準驗證實務》外，並加入ASP.NET 的程式設計與微軟生態系的維運經驗，同時思索各種實踐與優化的方式，讓資訊安全有更好的追求😉</p>
+<h3 id="存取控制"><a href="#存取控制" class="headerlink" title="存取控制"></a>存取控制</h3><ul>
+<li>帳號的管理，確認系統的使用者範圍，定義如何驗證使用者，並區分使用者的角色、權限。</li>
+<li>帳號依照 SQL Server 授權方式可以分為主體、權限與物件</li>
+</ul>
+<p><strong>1-1-1. 建立帳號管理機制，包含帳號之申請、開通、停用及刪除之程序。</strong></p>
+<ul>
+<li>應用系統使用網域驗證且開放所有的網域使用者使用，則不另外實作帳號管理機制。</li>
+<li>限制部分網域使用者使用，限制的方式在應用系統的資料庫當中實作，則必須由應用系統負責帳號管理機制。</li>
+</ul>
+<p>帳號的管理設計</p>
+<ul>
+<li>AD 使用者 Windows 驗證成功</li>
+<li>使用者存在於系統資料庫當中</li>
+<li>使用者的狀態非停用</li>
+</ul>
+<p><strong>1-1-2. 已逾期之臨時或緊急帳號應刪除或禁用。</strong><br><strong>1-1-3. 資通系統閒置帳號應禁用。</strong></p>
+<p>逾期、緊急以及閒置帳號的定義。</p>
+<dl>
+  <dt>臨時逾期</dt>
+  <dd>開發人員帳號、測試人員帳號</dd>
+  <dt>緊急逾期</dt>
+  <dd>備援、移機用途帳號</dd>
+  <dt>閒置</dt>
+  <dd>90天未有登入紀錄</dd>
+</dl>
+
+<div class="article-blockquote">
+在設計帳號管理上加入<strong>帳號使用期限</strong>，在新建帳號時自動設定為 90 天，臨時帳號則為 30 天、緊急帳號則為 1 天，逾期後帳號自動轉為停用。
+</div>
+
+<p><strong>1-1-4. 定期審核資通系統帳號之建立、修改、啟用、禁用及刪除。</strong></p>
+<p>系統進入維運階段後，<strong>定期</strong>檢視系統帳號。</p>
+<p>定期：每週、每月、每季人員異動<br>審核要點：建立帳號、修改帳號、啟用帳號是否能與文件勾稽</p>
+<p><strong>1-1-5. 逾越機關所定預期閒置時間或可使用期限時，系統應自動將使用者登出。</strong></p>
+<p>帳號登出機制，主動留意 Session 逾期的行為。</p>
+<p><strong>1-1-6. 應依機關規定之情況及條件，使用資通系統。</strong></p>
+<ul>
+<li>時間 (不允許非上班時間)</li>
+<li>IP 位址 (限制白名單 IP / Intranet / VPN)</li>
+<li>裝置 (裝置 MAC / 限制特定的作業系統 / 瀏覽器)</li>
+</ul>
+<p><strong>1-1-7. 監控資通系統帳號，如發現帳號違常使用時回報管理者。</strong></p>
+<dl>
+  <dt>違常使用</dt>
+  <dd>時間、位址、裝置、行為 (無效、大量上傳下載、觸發特定的 Http Status Code)</dd>
+  <dt>回報管理者</dt>
+  <dd>電子郵件、SMS、社群訊息</dd>
+</dl>
+
+<p><strong>1-2-1. 採最小權限原則，僅允許使用者(或代表使用者行為之程序)依機關任務及業務功能，完成指派任務所需之授權存取。</strong></p>
+<p><a href="/posts/2022/01/IIS-SMB-Files-Permissions/">IIS 資料夾權限深入 (IIS &amp; SMB)</a><br><a href="/posts/2021/07/SQL-Server-You-Dont-Need-Database-Owner-Role/">You Don’t Need Database Owner</a></p>
+<p><strong>1-3-1. 對於每一種允許之遠端存取類型(如遠端桌面連線、SSH、網路芳鄰或FTP)，均應先取得授權，建立使用限制、組態需求、連線需求及文件化，使用者之權限檢查作業應於伺服器端完成。</strong></p>
+<dl>
+  <dt>遠端存取類型</dt>
+  <dd>遠端桌面：MSTSC、SSH、SMB (Shared Folder)、FTP</dd>
+</dl>
+
+<p><strong>1-3-2. 使用者之權限檢查作業應於伺服器端完成。</strong></p>
+<p>相似於 <strong>7-3-2. 使用者輸入資料合法性檢查應置放於應用系統伺服器端。</strong></p>
+<p><strong>1-3-3. 應監控資通系統遠端連線。</strong></p>
+<p><strong>1-3-4. 資通系統應採用加密機制。</strong></p>
+<p>資料使用加密的傳輸方式，並且要避免有安全性的演算法及通訊協定 (TLS 1.1 含以下)。</p>
+<ul>
+<li>Web App: HTTPS</li>
+<li>Database: Encryption Connections</li>
+<li>FTP: SFTP。</li>
+</ul>
+<p>呼應 6-1-1 資通系統應採用加密機制，以防止未授權之資訊揭露或偵測資訊之變更。</p>
+<p><strong>1-3-5. 資通系統遠端存取之來源應為機關已預先定義及管理之存取控制點。</strong></p>
+<p>遠端存取應避免開放任何任何人使用，應以時間、位址、裝置的方式進行遠端存取限制。</p>
+<h3 id="稽核與可歸責性"><a href="#稽核與可歸責性" class="headerlink" title="稽核與可歸責性"></a>稽核與可歸責性</h3><p><strong>2-1-1. 訂定日誌之記錄時間週期及留存政策，並保留日誌至少六個月 (依規定時間週期及紀錄留存政策，保留稽核紀錄)。</strong></p>
+<p>原則是至少 6 個月，但若 ISMS 有更嚴格的定義稽核紀錄保存的時間，從 ISMS。</p>
+<p><strong>2-1-2. 確保資通系統有稽核特定事件之功能，並決定應稽核之特定資通系統事件。</strong></p>
+<p>資通系統的層級：</p>
+<dl>
+  <dt>網路設備</dt>
+  <dd>防火牆、路由器、交換器 Logs</dd>
+  <dt>作業系統</dt>
+  <dd>事件檢視器、稽核紀錄、效能 (ResMon, PerfMon)</dd>
+  <dt>網頁伺服器</dt>
+  <dd>IIS Logs</dd>
+  <dt>資料庫系統</dt>
+  <dd>SQL Server Error Logs / Agent Logs / Extended Events</dd>
+  <dt>應用系統</dt>
+  <dd>Database / SQLite / Text File</dd>
+</dl>
+
+<p><a href="/posts/2022/01/Log-Parser/">IIS Log Parser</a></p>
+<p>特定事件：身分驗證、存取資源、敏感或大量資料異動、觸發特定錯誤代碼及管理者行為等。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《資通系統防護基準驗證實務》</a>建議包含下列系統事件：</p>
+            <p>
+              <ul>
+                <li>管理者行為(如調整系統組態、異動系統帳號)</li>
+                <li>身分驗證失敗(如帳號登入失敗、觸發帳戶鎖定)</li>
+                <li>存取資源失敗(如頁面失效、資料庫連線失敗)</li>
+                <li>功能錯誤(如系統功能無法使用、帳戶無法登入)</li>
+                <li>重要資料異動(如存取個人資料或機敏資訊)</li>
+                <li>重要操作行為(如變更個人密碼、金融轉帳交易)</li>
+              </ul>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《Web應用程式安全參考指引》</a>則提到日誌紀錄應包含下列項目：</p>
+            <p>
+              <ul>
+                <li>使用者ID，不可為個資類型，避免共用帳號之情況。</li>
+                <li>時間，系統應設定定期校時。</li>
+                <li>執行之功能或存取之資源名稱。</li>
+                <li>事件類型或優先等級。</li>
+                <li>執行結果或事件描述。</li>
+                <li>事件發生當下相關物件資訊。</li>
+                <li>網路來源與目的位址。</li>
+                <li>錯誤代碼</li>
+              </ul>
+            </p>
+        </div>
+    </div>
+</div>
+
+<p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《Web應用程式安全參考指引》</a> 示範如何使用 NLog 進行日誌紀錄的 Sample Code：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">NLog<span class="token punctuation">.</span>Logger</span> logger <span class="token operator">=</span> NLog<span class="token punctuation">.</span>LogManager<span class="token punctuation">.</span><span class="token function">GetCurrentClassLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">UserLogin</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>TextBoxAccount<span class="token punctuation">.</span>Text<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>TextBoxPassword<span class="token punctuation">.</span>Text<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  logger<span class="token punctuation">.</span><span class="token function">Info</span><span class="token punctuation">(</span>TextBoxAccount<span class="token punctuation">.</span>Text <span class="token operator">+</span> <span class="token string">"登入成功!!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+  logger<span class="token punctuation">.</span><span class="token function">Warn</span><span class="token punctuation">(</span>TextBoxAccount<span class="token punctuation">.</span>Text <span class="token operator">+</span> <span class="token string">"登入失敗!!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>2-1-3. 應稽核資通系統管理者帳號所執行之各項功能。</strong></p>
+<dl>
+  <dt>管理者帳號</dt>
+  <dd>授權權限、系統參數修改權限、特定的內容維護者</dd>
+  <dt>功能的界定</dt>
+  <dd>ASP.NET MVC Action / ASP.NET ASPX / Permissions & Objects</dd>
+</dl>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《資通系統防護基準驗證實務》</a>建議管理者帳號功能執行紀錄應包含下列行為：</p>
+            <p>
+              <ul>
+                <li>管理者帳號登入與登出</li>
+                <li>管理者帳號密碼變更</li>
+                <li>異動使用者帳號密碼、鎖定狀態及存取權限等</li>
+                <li>異動系統重要功能組態</li>
+                <li>存取機敏資訊，如使用者個人資料、帳戶資訊等</li>
+              </ul>
+            </p>
+        </div>
+    </div>
+</div>
+
+<p><strong>2-1-4. 應定期審查稽核事件。</strong></p>
+<p>定期：每週、每月、每季、每半年、每年</p>
+<p><strong>2-2-1. 資通系統產生之稽核紀錄(Audit Logs)應包含事件類型、發生時間、發生位置及任何與事件相關之使用者身分識別等資訊，並採用單一日誌紀錄機制，確保輸出格式之一致性。</strong><br><strong>2-2-2. 資通系統產生之稽核紀錄(Audit Logs)，應依需求納入其他相關資訊。</strong></p>
+<p>基本的稽核紀錄欄位：</p>
+<ul>
+<li>事件類型 (應用系統自定義)</li>
+<li>發生時間 (Timestamp)</li>
+<li>發生位置 (Server, Database, Files)</li>
+<li>使用者資訊 (IP, Port, MAC, ComputerName, AD User)</li>
+</ul>
+<p><strong>2-3-1. 依據稽核紀錄(Audit Logs)儲存需求，配置稽核紀錄所需之儲存容量。</strong></p>
+<ul>
+<li>計算稽核所需的磁碟容量</li>
+<li>統計每月產生的稽核資料量</li>
+<li>空間不足的處理措施：循環紀錄</li>
+</ul>
+<p><strong>2-4-1. 資通系統於稽核處理失效時，應採取適當之行動。</strong><br><strong>2-4-2. 機關規定需要即時通報之稽核失效事件發生時，資通系統應於機關規定之時效內，對特定人員提出警告。</strong></p>
+<p>關於稽核處理的失效，包含下列情形：</p>
+<p>如果是磁碟空間低於警戒值，應通知 (郵件、簡訊) 相關人員。<br>而如果是稽核處理失效 (包含磁碟空間不足或其他任何原因)，處理方式有三種：停止資訊系統的使用、複寫最舊的日誌紀錄、停止日誌紀錄。</p>
+<p>無法處理稽核的對應方式，避免因稽核失效影響系統的服務可用性，對應方式：循環紀錄、停止紀錄、主動通知。</p>
+<p><strong>2-5-1. 資通系統應使用系統內部時鐘產生稽核紀錄(Audit Logs)所需時戳，並可以對應到世界協調時間(UTC)或格林威治標準時間(GMT)。</strong><br><strong>2-5-2. 系統內部時鐘應依機關規定之時間週期與基準時間源進行同步。</strong></p>
+<p>留意各種稽核紀錄的時間戳記：</p>
+<table>
+<thead>
+<tr>
+<th>Log</th>
+<th>UTC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IIS Logs</td>
+<td>UTC</td>
+</tr>
+<tr>
+<td>SQL Server Logs</td>
+<td>UTC+8</td>
+</tr>
+<tr>
+<td>Windows Eventvwr</td>
+<td>UTC+8</td>
+</tr>
+</tbody></table>
+<p>使用網路時間協定 (Network Time Protocol) 進行伺服器校正時間。</p>
+<p><strong>2-6-1. 對稽核紀錄(Audit Logs)之存取管理，僅限於有權限之使用者。</strong></p>
+<p>Logs 存取權限於設計身分權限時加入考量。</p>
+<p>如何提供應用系統管理者讀取資料庫 Logs、IIS Logs。</p>
+<p><strong>2-6-2. 應運用雜湊或其他適當方式之完整性確保機制。</strong></p>
+<p>應用系統稽核資料儲存於資料庫中，資料表欄位新增欄位總和雜湊，雜湊的實作方法搭配加鹽，避免單一欄位直接由資料庫進行修改。</p>
+<p>評估進行稽核資料雜湊的單位：Record, Files, Daily File</p>
+<p><strong>2-6-3. 定期備份稽核紀錄(Audit Logs)至與原稽核系統不同之實體系統。</strong></p>
+<p>稽核紀錄的流向：本機 -&gt; 磁碟備份 -&gt; 磁帶備份</p>
+<p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">《Web應用程式安全參考指引》</a> 有提到可以將 Log 儲存在 App_Data，因此 Log 可以為 SQLite 或者是 Text File 的方式儲存於 App_Data 資料夾。但如果考慮到要備份至不同實體系統，一開始就直接將日誌紀錄儲存在資料庫較為一勞永逸。</p>
+<h3 id="營運持續計畫"><a href="#營運持續計畫" class="headerlink" title="營運持續計畫"></a>營運持續計畫</h3><p><strong>3-1-1. 訂定系統可容忍資料損失之時間要求。</strong></p>
+<p>系統應該主動訂定<strong>資料的損失可容忍時間 (RPO)</strong> ，並採用能符合 RPO 目標的備份方式。</p>
+<p>如果是小時等級的 RPO 必須搭配交易紀錄備份，如果是分秒等級的則必須搭配高可用技術。</p>
+<p><strong>3-1-2. 執行系統源碼與資料備份。</strong></p>
+<p>系統源碼：系統開發原始碼、編譯後的應用程式檔、系統的部署檔<br>資料：保存於資料庫的檔案、保存於檔案伺服器的圖片、文件、影像等檔案</p>
+<p><strong>3-1-3. 應定期測試備份資訊，以驗證備份媒體之可靠性及資訊之完整性。</strong></p>
+<p>定期測試備份的頻率：每季 / 每半年 / 每年<br>如何驗證可靠性：還原成功就是可靠<br>如何驗證完整性：資料庫備份使用 DBCC 檢查</p>
+<p><strong>3-1-4. 應將備份還原，做為營運持續計畫測試之一部分。</strong></p>
+<p>營運持續計畫測試的具體內容：問題通報、營運持續替代、原服務水準復原。</p>
+<p><a target="_blank" rel="noopener" href="https://isms.ym.edu.tw/ezfiles/267/1267/img/1168/1030731.pdf">資訊安全營運持續運作管理</a></p>
+<p><strong>3-1-5. 應在與運作系統不同處之獨立設施或防火櫃中，儲存重要資通系統軟體與其他安全相關資訊之備份。</strong></p>
+<p>異地備份。</p>
+<p><strong>3-2-1. 訂定資通系統從中斷後至重新恢復服務之可容忍時間要求。</strong></p>
+<p>系統應該主動訂定<strong>復原時間目標 (RTO)、最大可容忍中斷時間 (MTPD)</strong> 。</p>
+<p><strong>3-2-2. 原服務中斷時，於可容忍時間內，由備援設備取代提供服務。</strong></p>
+<p>備援設備的種類：數位措施 / 紙本作業<br>備援啟用的銜接時間：是否會超過 MTPD</p>
+<h3 id="識別與鑑別"><a href="#識別與鑑別" class="headerlink" title="識別與鑑別"></a>識別與鑑別</h3><p><strong>4-1-1. 資通系統應具備唯一識別及鑑別機關使用者(或代表機關使用者行為之程序)之功能，禁止使用共用帳號。</strong></p>
+<p>禁止共用帳號為原則，另評估單人使用多重帳號的問題 (Context Switch 機制)</p>
+<p><strong>4-1-2. 對帳號之網路或本機存取採取多重認證技術。</strong></p>
+<p>評估登入方式如何結合多因子認證。</p>
+<p><strong>4-2-1. 使用預設密碼登入系統時，應於登入後要求立即變更。</strong></p>
+<p>呼應「5-5-2. 資通系統相關軟體，不使用預設密碼。」，原則不允許預設密碼，但如果使用預設密碼應該要求登入後立即變更。</p>
+<p><strong>4-2-2. 身分驗證相關資訊不以明文傳輸。</strong></p>
+<p>SQL Server 的連線資訊本身會採用加密方式，但資通系統在 IIS 若非採 Windows 驗證，該如何保證身分驗證的不使用明文傳輸？</p>
+<p><strong>4-2-3. 具備帳戶鎖定機制，帳號登入進行身分驗證失敗達三次後，至少十五分鐘內不允許該帳號繼續嘗試登入或使用機關自建之失敗驗證機制。</strong></p>
+<p>採 AD 驗證，應用程式端的錯誤是否會觸發暫時停止帳戶登入？如果沒有的話應由應用程式端自行實作。</p>
+<p>停用的對象評估：登入帳號、IP 位址</p>
+<p><strong>4-2-4. 基於密碼之鑑別資通系統應強制最低密碼複雜度、強制密碼最短及最長之效期限制。(但對於非內部使用者可依機關自行規範辦理)</strong><br><strong>4-2-5. 使用者更換密碼時，至少不可以與前三次使用過之密碼相同。(但對於非內部使用者可依機關自行規範辦理)</strong></p>
+<p>採 AD 驗證與 AD 一致的密碼複雜度以及密碼循環次數規則</p>
+<p><strong>4-2-6. 身分驗證機制應防範自動化程式之登入或密碼更換嘗試。</strong></p>
+<p>如果有身分登入的輸入頁面，應加入 CAPTCHA 防範自動化登入程式、爬蟲工具。</p>
+<p><strong>4-2-7. 密碼重設機制對使用者重新身分確認後，發送一次性及具有時效性符記。</strong></p>
+<p>採 AD 驗證的方式；如果自行實作，應注意變更密碼郵件時限以及加入連結 Token。</p>
+<p><strong>4-3-1. 資通系統應遮蔽鑑別過程中之資訊。</strong></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pwd<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pwd<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>4-4-1. 資通系統如以密碼進行鑑別時，該密碼應加密或經雜湊處理後儲存。</strong></p>
+<p>資料表保存的帳號密碼必須雜湊或加密保存</p>
+<p><strong>4-5-1. 資通系統應識別及鑑別非機關使用者(或代表機關使用者行為之程序)。</strong></p>
+<p>資通系統必須可以<strong>識別外部使用者</strong>，資通系統的身分資料表對於外部使用者以欄位加註。</p>
+<dl>
+  <dt>外部使用者</dt>
+  <dd>其他政府機關、機構、委外開發與維護廠商、臨時人員、勞務人員及一般民眾</dd>
+</dl>
+
+<h3 id="系統服務與取得"><a href="#系統服務與取得" class="headerlink" title="系統服務與取得"></a>系統服務與取得</h3><div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>保留完整資通系統之版本更新過程與紀錄，另及時更新與納管系統分析與設計文件，以落實系統發展生命週期各階段作業。</p>
+            <p style="text-align:right;font-weight:700">110 年政府機關(構)資通安全稽核作業 - 技術面</p>
+        </div>
+    </div>
+</div>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>1. 針對資通系統所使用之外部元件或軟體，應<strong>建立系統化管理機制</strong>，並<strong>納入驗收程序</strong>。</p>
+            <p>2. 針對外部元件或軟體之安全性漏洞通告，應落實評估更新，並關閉資通系統不必要之服務及埠口。</p>
+            <p style="text-align:right;font-weight:700">110 年政府機關(構)資通安全稽核作業 - 技術面</p>
+        </div>
+    </div>
+</div>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>資通系統定期進行弱點掃描、系統滲透測試及資通安全健診，<strong>並應追蹤檢測結果修補情形</strong>，以確實降低機關之資安風險。</p>
+            <p style="text-align:right;font-weight:700">110 年政府機關(構)資通安全稽核作業 - 技術面</p>
+        </div>
+    </div>
+</div>
+
+<p><strong>5-1-1. 針對系統安全需求(含機密性、可用性、完整性)，以檢核表方式進行確認。</strong></p>
+<p>系統設計初期即按資通系統防護基準提列安全需求，使用檢核表的方式驗證安全需求。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://sites.google.com/email.nchu.edu.tw/ssdlc">檢核表範例 | NCHU</a></li>
+<li>技服中心「資通系統委外開發RFP資安需求範本(V2.0)-附件1資通系統資安需求項目查檢表</li>
+</ul>
+<p>對於已經上線的系統，應針對系統進行分級，按所需要實作安全控制措施進行盤點與補強缺漏。</p>
+<div class="article-blockquote">
+
+<ol>
+<li>委外需求時，須完成「所定資通系統防護需求分級原則評估等級」，並讓受託開發者知悉；分級評估結果應由資安長確認。</li>
+<li>以專案百分之五的預算作為資安預算。</li>
+<li>廠商的資安作為應納入評選項目。</li>
+<li>受託開發的系統如屬<strong>核心系統</strong>，評選委員應包含一位資安專業人員。</li>
+<li>使用「資訊服務採購案之資安檢核事項」確認各項資安需求。</li>
+</ol>
+<div style="text-align:right">資通系統籌獲各階段資安強化措施 - 需求階段</div>
+</div>
+
+<p><strong>5-2-1. 根據系統功能與要求，識別可能影響系統之威脅，進行風險分析及評估。</strong></p>
+<p>依照威脅識別與風險分析相關方法論</p>
+<ul>
+<li>誤用模型(Misuse case)</li>
+<li>威脅建模 (Threat Modeling)</li>
+<li>STRIDE 威脅類別</li>
+<li>DREAD風險計算方法</li>
+</ul>
+<p><strong>5-2-2. 將風險評估結果回饋需求階段之檢核項目，並提出安全需求修正。</strong></p>
+<p>DREAD 風險計算後提出對應的控制措施</p>
+<p><strong>5-3-1. 應針對安全需求實作必要控制措施。</strong></p>
+<p>依照需求規格文件 (5-1-1) 內容，實作相關安全功能或機制，藉由 SRTM 將安全需求、功能實作及後續測試驗證等活動串聯起來。</p>
+<ul>
+<li>資通系統安全需求追蹤矩陣 (Secure Requirement Traceability Matrix, SRTM)</li>
+</ul>
+<p><strong>5-3-2. 應注意避免軟體常見漏洞及實作必要控制措施。</strong></p>
+<ul>
+<li>系統安全開發教育訓練 (Training)</li>
+<li>訂定安全程式碼撰寫原則 (Security Coding Principles)</li>
+<li>執行源碼掃描修補安全漏洞 (Static Code Analysis)</li>
+<li>執行弱點掃描修補安全漏洞 (Vulnerability Scanning)</li>
+<li>執行滲透測試修補安全漏洞 (Penetration Testing)</li>
+</ul>
+<p><a href="/posts/2020/10/OWASP-TOP-10-2017-Security-Developement/">一定要知道的 OWASP top 10:2017 Web 開發攻防之道</a></p>
+<p>CWE/SANS TOP 25</p>
+<p><strong>5-3-3. 發生錯誤時，使用者頁面僅顯示簡短錯誤訊息及代碼，不包含詳細之錯誤訊息。</strong></p>
+<p>IIS 網頁伺服器關閉「錯誤詳細檢視」，ASP.NET 實作 Custom Error Page。</p>
+<p>⭐<a href="/posts/2021/06/IIS-CustomErrors-Error-Pages/">IIS 錯誤頁面客製設定 (IIS Custom Erros, Error Pages)</a><br>⭐<a href="/posts/2021/05/ASPNET-MVC-Custom-Error/">ASP.NET MVC 如何客製錯誤畫面 (Custom Error Page)</a><br>⭐<a href="/posts/2020/08/ASP-Maintenance/">ASP 網頁服務的維護指南</a></p>
+<p><strong>5-3-4. 執行「源碼掃描」安全檢測。</strong></p>
+<p>呼應 5-3-2 應注意避免軟體常見漏洞及實作必要控制措施。</p>
+<p><strong>5-3-5. 具備系統嚴重錯誤之通知機制。</strong></p>
+<p>NLog / Elmah / Try Catch / SOC</p>
+<div class="article-blockquote">
+
+<ol>
+<li>資通安全專責人員以適當方式協助統籌獲取需求單位，進行與確認受託開發團隊遵循 SSDLC。</li>
+<li>核心系統，應有外部資安專家協助於重點里程碑檢視履約與成果相關的資安管理作為。</li>
+<li>核心資通系統且委託金額達一千萬以上，應導入獨立檢驗與驗證機制 (IV&amp;V)，評估結果應由資安長確認。</li>
+</ol>
+<div style="text-align:right">資通系統籌獲各階段資安強化措施 - 開發階段</div>
+</div>
+
+<p><strong>5-4-1. 執行「弱點掃描」安全檢測。</strong></p>
+<p>驗證實務上需要搭配弱掃的修補紀錄。</p>
+<p><strong>5-4-2. 執行「滲透測試」安全檢測。</strong></p>
+<p>驗證實務上需要搭配滲透的修補紀錄。</p>
+<p><strong>5-5-1. 於部署環境中應針對相關資通安全威脅，進行更新與修補，並關閉不必要服務及埠口。</strong></p>
+<p>定期進行軟體及元件安全性更新，加入 資安弱點通報機制 VANS。</p>
+<p>💡使用 NMAP 驗證伺服器所支援的 Port</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">nmap</span> -sV <span class="token number">192</span>.<span class="token number">168</span>.<span class="token number">112</span>.<span class="token number">1</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>5-5-2. 資通系統相關軟體，不使用預設密碼。</strong></p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>資通系統資料庫與資通系統伺服器等軟體元件如避免預設密碼，但這邊提到的資料庫與伺服器作業系統，資料庫與伺服器作業系統本身是否可以認定為資通系統？</p>
+        </div>
+    </div>
+</div>
+
+<p><strong>5-5-3. 於系統發展生命週期之維運階段，應執行版本控制與變更管理</strong></p>
+<p>使用版控系統並搭配變更管理機制，進行系統的維護。</p>
+<p>進行系統變更作業時，應完成申請與審核程序後進行（填寫資通系統變更作業申請單）。</p>
+<p>執行變更作業前，應先執行系統備份作業並訂定復原計畫，系統變更完成後，應更新相關系統操作文件及紀錄。</p>
+<p>進行變更作業應以積極管理為原則，避免完全由委外廠商負責。</p>
+<p><strong>5-6-1. 資通系統開發如委外辦理，應將系統發展生命週期各階段依等級將安全需求(含機密性、可用性、完整性)納入委外契約。</strong></p>
+<p>參考委外安全需求可參考技服中心「資通系統委外開發RFP資安需求範本(V2.0)」，將安全需求加入委外契約。</p>
+<p><strong>5-7-1. 開發、測試及正式作業環境應為區隔。</strong></p>
+<p>開發、測試、正式環境以網段及設備 (實體或邏輯)進行區隔，避免互相影響。系統的變更管理應由開發、測試到正式依序進行。</p>
+<p>避免開發、測試汙染到正式環境。</p>
+<p><strong>5-8-1. 應儲存與管理系統發展生命週期之相關文件。</strong></p>
+<p>相關文件舉隅：</p>
+<ul>
+<li>軟體發展計畫書</li>
+<li>軟體需求規格書</li>
+<li>系統規格書</li>
+<li>軟體測試計畫</li>
+<li>維護手冊</li>
+<li>軟體使用手冊</li>
+<li>系統文件審查表</li>
+<li>系統原始碼</li>
+<li>測試問題紀錄表</li>
+<li>軟體測試報告</li>
+<li>驗收紀錄表</li>
+</ul>
+<div class="article-blockquote">
+
+<ol>
+<li>由管理及需求單位負責主要的 SSDLC 及履約執行的監督、確認工作，並由資安專責人員協助第二線的勾稽確認。</li>
+<li>受託者應配置資安專責人員，協助確認履約執行階段作業符合委託及受託雙方的資安管理規範。</li>
+<li>契約期間，按資通系統防護需求「中級」、「高級」向受託者進行資安稽核，確認受託者符合資安要求。</li>
+</ol>
+<div style="text-align:right">資通系統籌獲各階段資安強化措施 - 維運階段</div>
+</div>
+
+<h3 id="系統與通訊保護"><a href="#系統與通訊保護" class="headerlink" title="系統與通訊保護"></a>系統與通訊保護</h3><p><strong>6-1-1. 資通系統應採用加密機制，以防止未授權之資訊揭露或偵測資訊之變更。但傳輸過程中有替代之實體保護措施者，不在此限。</strong></p>
+<p>呼應 1-3-4. 資通系統應採用加密機制。</p>
+<ul>
+<li>Web App: HTTPS</li>
+<li>Database: Encryption Connections</li>
+<li>FTP: SFTP。</li>
+</ul>
+<p><strong>6-1-2. 使用公開、國際機構驗證且未遭破解之演算法。</strong></p>
+<p>停用 SSL 3.0、TLS 1.0、TLS 1.1 等不安全的通訊協定。<br>停用 RC2、RC4、DES、3DES 等不安全加密法。</p>
+<p>💡使用 NMAP 檢測方式</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">namp</span> <span class="token parameter attr-name">--script</span> ssl-enum-ciphers <span class="token parameter attr-name">-p</span> <span class="token number">443</span> <span class="token number">192</span>.<span class="token number">168</span>.<span class="token number">112</span>.<span class="token number">1</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>6-1-3. 支援演算法最大長度金鑰。</strong></p>
+<p>AES 256<br>SHA 384<br>RSA 2048</p>
+<p><strong>6-1-4. 加密金鑰或憑證週期性更換。</strong></p>
+<p>避免使用萬年憑證，注意憑證是否過期。</p>
+<p><strong>6-1-5. 伺服器端之金鑰保管應訂定管理規範及實施應有之安全防護措施。</strong></p>
+<p>憑證及金鑰的管理防護措施。</p>
+<p><strong>6-2-1. 靜置資訊及相關具保護需求之機密資訊應加密儲存。</strong></p>
+<p>組態設定檔 (web.config、connectionStrings) 進行加密保護。</p>
+<h3 id="系統與資訊完整性"><a href="#系統與資訊完整性" class="headerlink" title="系統與資訊完整性"></a>系統與資訊完整性</h3><p><strong>7-1-1. 系統之漏洞修復應測試有效性及潛在影響，並定期更新。</strong></p>
+<p>呼應 <strong>5-5-1. 於部署環境中應針對相關資通安全威脅，進行更新與修補，並關閉不必要服務及埠口。</strong></p>
+<p>定期進行作業系統、資通系統伺服器、開發框架，以及第三方函式庫的更新，加入 VANS 主動掌握弱點資訊，使用 White Source 檢查開源軟體弱點。</p>
+<p>先於測試環境進行更新，驗證不影響系統功能，但緊急性更新仍應先於測試環境驗證主要功能是否正常如期使用。</p>
+<p><strong>7-1-2. 定期確認資通系統相關漏洞修復之狀態。</strong></p>
+<p>瀏覽 CVE、廠商安全通告、弱掃等安全性檢測結果，追蹤漏洞的修復情形。</p>
+<p>弱點修補紀錄是驗證重點。</p>
+<p><strong>7-2-1. 發現資通系統有被入侵跡象時，應通報機關特定人員。</strong></p>
+<p>通報的對象：網管、系統管理者、系統擁有者、各級資安人員。</p>
+<p><strong>7-2-2. 監控資通系統，以偵測攻擊與未授權之連線，並識別資通系統之未授權使用。</strong></p>
+<p>重點一在於監控，使用下列工具達到：</p>
+<ul>
+<li>WAF, Web Applications Firewall</li>
+<li>IDS, Intrusion Defense Systems</li>
+<li>IPS, Intrusion Prevention Systems</li>
+<li>防毒軟體</li>
+<li>網路監控軟體</li>
+</ul>
+<p>重點二在於識別：</p>
+<ul>
+<li>攻擊行為</li>
+<li>未授權連線</li>
+<li>未授權使用</li>
+</ul>
+<p><strong>7-2-3. 資通系統應採用自動化工具監控進出之通信流量，並於發現不尋常或未授權之活動時，針對該事件進行分析。</strong></p>
+<p>針對通信的異常流量為事件進行分析</p>
+<p><strong>7-3-1. 使用完整性驗證工具，以偵測未授權變更特定軟體及資訊。</strong></p>
+<p>避免應用程式、目錄、組態被惡意竄改，使用雜湊函數、同位元檢查、循環冗餘檢查，使用目錄檔案監控工具，針對異動提出示警。</p>
+<p><strong>7-3-2. 使用者輸入資料合法性檢查應置放於應用系統伺服器端。</strong></p>
+<p>相似於 <strong>1-3-2. 使用者之權限檢查作業應於伺服器端完成。</strong>，強調伺服器端進行輸入合法性與權限檢查的動作，避免被惡意使用者繞過檢查機制，不當存取。</p>
+<p>合法性檢查主要是為避免 XSS 以及 Injection 的攻擊。</p>
+<p><strong>7-3-3. 發現違反完整性時，資通系統應實施機關指定之安全保護措施。</strong></p>
+<p>保護措施包含修復工作外，尚包含進行資安通報。</p>
+<p><a target="_blank" rel="noopener" href="https://www.ncert.nat.gov.tw/">國家資通安全通報應變網站</a></p>
+<p><strong>7-3-4. 應定期執行軟體與資訊完整性檢查。</strong></p>
+<p>將 7-3-1 的完整性驗證列為定期執行與檢查機制。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://sites.google.com/email.nchu.edu.tw/ssdlc">安全系統發展生命週期 | NCHU</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">110年資通系統防護基準驗證實務 | NCCST</a></p>
+<p><a target="_blank" rel="noopener" href="https://isms.ntut.edu.tw/p/406-1119-119902,r2318.php">試行 資通系統籌獲各階段資安強化措施</a></p>
+<p><a href="/assets/111年資通安全稽核計畫及稽核作業.pdf" target="_blank">111年資通安全稽核計畫及稽核作業</a>：<a target="_blank" rel="noopener" href="https://isms.ntut.edu.tw/p/406-1119-119118,r2318.php">資料來源</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SSDLC-Dev/" data-id="clg3fmal601g3s4ts12ypgvbv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSDLC/" rel="tag">SSDLC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/01/Windows-NTFS-File-Ownership-Permissions-ICACLS/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Windows NTFS File Ownership &amp; Permissions (icacls)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/Brain-Chemicals/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Brain Chemicals
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

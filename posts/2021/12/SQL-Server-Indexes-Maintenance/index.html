@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Indexes Maintenance 索引維護 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 如何查詢資料庫下的資料表需進行維護，自動產生出索引維護指令以及其目前的碎片化及資料列數，讓管理者判斷是否執行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Indexes Maintenance 索引維護">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/12/SQL-Server-Indexes-Maintenance/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 如何查詢資料庫下的資料表需進行維護，自動產生出索引維護指令以及其目前的碎片化及資料列數，讓管理者判斷是否執行。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Auto-Alter-Index-Generator.png">
+<meta property="article:published_time" content="2021-12-02T11:15:19.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.940Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Indexes-Maintenance" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/" class="article-date">
+  <time datetime="2021-12-02T11:15:19.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Indexes Maintenance 索引維護
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%82%BA%E4%BD%95%E9%9C%80%E8%A6%81%E7%B6%AD%E8%AD%B7"><span class="toc-text">索引為何需要維護</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#External-Fragmentation"><span class="toc-text">External Fragmentation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Internal-Fragmentation"><span class="toc-text">Internal Fragmentation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%B6%AD%E8%AD%B7"><span class="toc-text">索引維護</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A2%E7%94%9F%E7%B4%A2%E5%BC%95%E7%B6%AD%E8%AD%B7%E8%AA%9E%E6%B3%95"><span class="toc-text">產生索引維護語法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-Maintenance-Solution"><span class="toc-text">SQL Server Maintenance Solution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E7%B6%AD%E8%AD%B7%E7%AD%96%E7%95%A5"><span class="toc-text">索引的維護策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 如何查詢資料庫下的資料表需進行維護，自動產生出索引維護指令以及其目前的碎片化及資料列數，讓管理者判斷是否執行。</p>
+<a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="索引為何需要維護"><a href="#索引為何需要維護" class="headerlink" title="索引為何需要維護"></a>索引為何需要維護</h2><p>索引維護需要維護的原因就是發生 fragmentation (碎片化)，而 fragmentation 的原因有二，分別是 External Fragmentation 以及 Internal Fragmentation。</p>
+<h3 id="External-Fragmentation"><a href="#External-Fragmentation" class="headerlink" title="External Fragmentation"></a>External Fragmentation</h3><p>因資料庫進行資料寫入、更新等異動時，資料頁的空間不足，為了加入新的資料會進行資料更新，於是資料分頁 (page split) 產生，造成邏輯順序與實際順序的不一致。</p>
+<h3 id="Internal-Fragmentation"><a href="#Internal-Fragmentation" class="headerlink" title="Internal Fragmentation"></a>Internal Fragmentation</h3><p>源自因資料寫入時，需要進行資料分頁 (page split)，而使資料頁存在過多的空白，造成資料頁數量膨脹，使查詢需要讀取更多的資料頁才能完成。</p>
+<p>索引的碎片化程度，可以由 avg_fragmentation_in_percent 所觀察。</p>
+<hr>
+<p>顯示資料庫的所有索引，包含名稱及碎片化程度 (avg_fragmentation_in_percent) 以及分頁數量 (page_count)</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> S<span class="token punctuation">.</span>name <span class="token keyword">as</span> <span class="token string">'Schema'</span><span class="token punctuation">,</span>
+T<span class="token punctuation">.</span>name <span class="token keyword">as</span> <span class="token string">'Table'</span><span class="token punctuation">,</span>
+I<span class="token punctuation">.</span>name <span class="token keyword">as</span> <span class="token string">'Index'</span><span class="token punctuation">,</span>
+DDIPS<span class="token punctuation">.</span>avg_fragmentation_in_percent<span class="token punctuation">,</span>
+DDIPS<span class="token punctuation">.</span>page_count<span class="token punctuation">,</span>
+DDIPS<span class="token punctuation">.</span>index_type_desc<span class="token punctuation">,</span>
+P<span class="token punctuation">.</span><span class="token keyword">rows</span>
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_db_index_physical_stats <span class="token punctuation">(</span>DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> DDIPS
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span><span class="token keyword">tables</span> T <span class="token keyword">on</span> T<span class="token punctuation">.</span>object_id <span class="token operator">=</span> DDIPS<span class="token punctuation">.</span>object_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>schemas S <span class="token keyword">on</span> T<span class="token punctuation">.</span>schema_id <span class="token operator">=</span> S<span class="token punctuation">.</span>schema_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>indexes I <span class="token keyword">ON</span> I<span class="token punctuation">.</span>object_id <span class="token operator">=</span> DDIPS<span class="token punctuation">.</span>object_id
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+    sys<span class="token punctuation">.</span>partitions P <span class="token keyword">ON</span> I<span class="token punctuation">.</span>object_id <span class="token operator">=</span> p<span class="token punctuation">.</span>OBJECT_ID 
+    <span class="token operator">AND</span> I<span class="token punctuation">.</span>index_id <span class="token operator">=</span> p<span class="token punctuation">.</span>index_id
+<span class="token operator">AND</span> DDIPS<span class="token punctuation">.</span>index_id <span class="token operator">=</span> I<span class="token punctuation">.</span>index_id
+<span class="token keyword">WHERE</span> DDIPS<span class="token punctuation">.</span>database_id <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="索引維護"><a href="#索引維護" class="headerlink" title="索引維護"></a>索引維護</h2><h3 id="產生索引維護語法"><a href="#產生索引維護語法" class="headerlink" title="產生索引維護語法"></a>產生索引維護語法</h3><p>進行 REBUILD 或者 REORGANIZE 的判斷在於 avg_fragmentation_in_percent，示範腳本是以 30 為分界，此外要大於 10 才會顯示 😋</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> ix<span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+	  <span class="token string">'ALTER INDEX ['</span> <span class="token operator">+</span> ix<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">'] ON ['</span> <span class="token operator">+</span> s<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">'].['</span> <span class="token operator">+</span> t<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">'] '</span> <span class="token operator">+</span>
+       <span class="token keyword">CASE</span>
+              <span class="token keyword">WHEN</span> ps<span class="token punctuation">.</span>avg_fragmentation_in_percent <span class="token operator">></span> <span class="token number">30</span>
+              <span class="token keyword">THEN</span> <span class="token string">'REBUILD'</span>
+              <span class="token keyword">ELSE</span> <span class="token string">'REORGANIZE'</span>
+       <span class="token keyword">END</span> <span class="token operator">+</span>
+       <span class="token keyword">CASE</span>
+              <span class="token keyword">WHEN</span> pc<span class="token punctuation">.</span>partition_count <span class="token operator">></span> <span class="token number">1</span>
+              <span class="token keyword">THEN</span> <span class="token string">' PARTITION = '</span> <span class="token operator">+</span> CAST<span class="token punctuation">(</span>ps<span class="token punctuation">.</span>partition_number <span class="token keyword">AS</span> nvarchar<span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">)</span>
+              <span class="token keyword">ELSE</span> <span class="token string">''</span>
+       <span class="token keyword">END</span> <span class="token string">'alter_script'</span><span class="token punctuation">,</span>
+       ps<span class="token punctuation">.</span>avg_fragmentation_in_percent<span class="token punctuation">,</span>
+	   ps<span class="token punctuation">.</span>page_count<span class="token punctuation">,</span>
+	   p<span class="token punctuation">.</span><span class="token keyword">rows</span>
+<span class="token keyword">FROM</span>   sys<span class="token punctuation">.</span>indexes <span class="token keyword">AS</span> ix
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span><span class="token keyword">tables</span> t
+       <span class="token keyword">ON</span>     t<span class="token punctuation">.</span>object_id <span class="token operator">=</span> ix<span class="token punctuation">.</span>object_id
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>schemas s
+       <span class="token keyword">ON</span>     t<span class="token punctuation">.</span>schema_id <span class="token operator">=</span> s<span class="token punctuation">.</span>schema_id
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+              <span class="token punctuation">(</span><span class="token keyword">SELECT</span> object_id<span class="token punctuation">,</span>
+                      index_id<span class="token punctuation">,</span>
+                      avg_fragmentation_in_percent<span class="token punctuation">,</span>
+                      partition_number<span class="token punctuation">,</span>
+					            page_count
+              <span class="token keyword">FROM</span>    sys<span class="token punctuation">.</span>dm_db_index_physical_stats <span class="token punctuation">(</span>DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span>
+              <span class="token punctuation">)</span> ps
+       <span class="token keyword">ON</span>     t<span class="token punctuation">.</span>object_id <span class="token operator">=</span> ps<span class="token punctuation">.</span>object_id
+          <span class="token operator">AND</span> ix<span class="token punctuation">.</span>index_id <span class="token operator">=</span> ps<span class="token punctuation">.</span>index_id
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+              <span class="token punctuation">(</span><span class="token keyword">SELECT</span>  object_id<span class="token punctuation">,</span>
+                       index_id <span class="token punctuation">,</span>
+                       <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token keyword">DISTINCT</span> partition_number<span class="token punctuation">)</span> <span class="token keyword">AS</span> partition_count
+              <span class="token keyword">FROM</span>     sys<span class="token punctuation">.</span>partitions
+              <span class="token keyword">GROUP</span> <span class="token keyword">BY</span> object_id<span class="token punctuation">,</span>
+                       index_id
+              <span class="token punctuation">)</span> pc
+       <span class="token keyword">ON</span>     t<span class="token punctuation">.</span>object_id <span class="token operator">=</span> pc<span class="token punctuation">.</span>object_id
+          <span class="token operator">AND</span> ix<span class="token punctuation">.</span>index_id <span class="token operator">=</span> pc<span class="token punctuation">.</span>index_id
+	   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> 
+		sys<span class="token punctuation">.</span>partitions p <span class="token keyword">ON</span> ix<span class="token punctuation">.</span>object_id <span class="token operator">=</span> p<span class="token punctuation">.</span>OBJECT_ID <span class="token operator">AND</span> ix<span class="token punctuation">.</span>index_id <span class="token operator">=</span> p<span class="token punctuation">.</span>index_id
+<span class="token keyword">WHERE</span>  ps<span class="token punctuation">.</span>avg_fragmentation_in_percent <span class="token operator">></span> <span class="token number">10</span>
+   <span class="token operator">AND</span> ix<span class="token punctuation">.</span>name <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-Auto-Alter-Index-Generator.png"></p>
+<h3 id="SQL-Server-Maintenance-Solution"><a href="#SQL-Server-Maintenance-Solution" class="headerlink" title="SQL Server Maintenance Solution"></a>SQL Server Maintenance Solution</h3><p>使用 <a target="_blank" rel="noopener" href="https://github.com/olahallengren/sql-server-maintenance-solution/blob/master/IndexOptimize.sql">IndexOptimize</a> 進行索引維護，並細看各索引維護選項的用途。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/olahallengren/sql-server-maintenance-solution">sql-server-maintenance-solution | github</a></p>
+<h2 id="索引的維護策略"><a href="#索引的維護策略" class="headerlink" title="索引的維護策略"></a>索引的維護策略</h2><p>引用自 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/relational-databases/indexes/reorganize-and-rebuild-indexes?view=sql-server-ver16#index-maintenance-strategy">Index Maintenance Strategy | learn.microsoft</a>：</p>
+<p>💡 <strong>不要預期索引維護必定會帶來顯著的效能改善</strong>。</p>
+<div class="article-blockquote">
+
+<p>Do not assume that index maintenance will always noticeably improve your workload.</p>
+<div style="text-align:right">learn.microsoft.com</div>
+</div>
+
+<p>💡 <strong>衡量索引維護前後的具體效能改變</strong>，可以使用 Query Store 來輔助衡量。</p>
+<div class="article-blockquote">
+
+<p>Measure the specific impact of reorganizing or rebuilding indexes on query performance in your workload. Query Store is a good way to measure the “before maintenance” and “after maintenance” performance using the A/B testing technique.</p>
+<div style="text-align:right">learn.microsoft.com</div>
+</div>
+
+<p>💡 如果<strong>重建索引 (rebuild index) 對效能改善有幫助</strong>，可以<strong>評估用更新統計值 (updating statistics) 來替代</strong>，可能有相同的效果但較低的作業成本。</p>
+<div class="article-blockquote">
+
+<p>If you observe that rebuilding indexes improves performance, try replacing it with updating statistics. This may result in a similar improvement. In that case, you may not need to rebuild indexes as frequently, or at all, and instead can perform periodic statistics updates.</p>
+<p>For some statistics, you may need to increase the sampling ratio using the <code class="s">WITH SAMPLE ... PERCENT</code> or <code class="s">WITH FULLSCAN</code> clauses (this is not common).</p>
+<div style="text-align:right">learn.microsoft.com</div>
+</div>
+
+<p>💡 藉由<strong>觀察索引碎片化程度 (index fragmentation)、頁面密度 (page density) 與查詢效能之間的關係</strong>，如果出現高碎片化或者低頁面密度影響效能，再進行索引的重組或重建，同時明確針對需要高碎片化以及低頁面密度的索引重建，<strong>勝於全面重建所耗費的資源及作業成本</strong>。</p>
+<div class="article-blockquote">
+
+<p>Monitor index fragmentation and page density over time to see if there is a correlation between these values trending up or down, and query performance. If higher fragmentation or lower page density degrade performance unacceptably, reorganize or rebuild indexes. It is often sufficient to only reorganize or rebuild specific indexes used by queries with degraded performance. This avoids a higher resource cost of maintaining every index in the database.</p>
+<p>Establishing a correlation between fragmentation/page density and performance also lets you determine the frequency of index maintenance. Do not assume that maintenance must be performed on a fixed schedule. A better strategy is to monitor fragmentation and page density, and run index maintenance as needed before performance degrades unacceptably.</p>
+<div style="text-align:right">learn.microsoft.com</div>
+</div>
+
+<p>💡 經過綜合評量，重組或者重建索引是必須的作業下，<strong>慎選作業時段避免影響使用者</strong>，同時經常檢討索引維護的作業時段是否應該調整？</p>
+<div class="article-blockquote">
+
+<p>If you have determined that index maintenance is needed and its resource cost is acceptable, perform maintenance during low resource usage times, if any, keeping in mind that resource usage patterns may change over time.</p>
+<div style="text-align:right">learn.microsoft.com</div>
+</div>
+
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2009/01/18/Let-SQL-Server-Tell-You-Which-Indexes-to-Rebuild-or-Reorganize">讓 SQL Server 告訴你有哪些索引應該被重建或重組</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/how-to-identify-and-resolve-sql-server-index-fragmentation/">How to identify and resolve SQL Server Index Fragmentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://guides.peruzal.com/sql-server-performance-tuning-and-optimization/index-analysis/">SQL Server Performance And Tuning</a></p>
+<p>討論為什麼索引重建持續很久仍未完成，被 Block 的情況：</p>
+<p><a target="_blank" rel="noopener" href="https://dba.stackexchange.com/questions/39793/suspended-in-index-rebuild">Suspended in index rebuild</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Indexes-Maintenance/" data-id="clg3fmaj3018gs4tsedct9l6q" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/11/Penetration-Test/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Penetration Test 滲透測試筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/12/SQL-Server-Sample-Databases/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Sample Databases (經典 / 示範資料庫)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

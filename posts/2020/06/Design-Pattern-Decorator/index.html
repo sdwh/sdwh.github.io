@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>重溫《深入淺出設計模式》裝飾者模式 (Book Review of Head First Design Pattern, Decorator Pattern) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="以前第一次看到 Python 的 Decorator 時滿滿的黑人問號，後來有機會接觸裝飾者模式才豁然開朗，但也沒有深究，甚至沒有真的用過 Decorator。但最近重溫才發現其實裝飾者模式和 Python 的 Decorator 並不是完全的等號。Python 的 Decorator 更像是一種語法糖，利用 Python 函式 first class 的特性，能夠有更方便包裝函式的語法，可以為函">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重溫《深入淺出設計模式》裝飾者模式 (Book Review of Head First Design Pattern, Decorator Pattern)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/Design-Pattern-Decorator/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="以前第一次看到 Python 的 Decorator 時滿滿的黑人問號，後來有機會接觸裝飾者模式才豁然開朗，但也沒有深究，甚至沒有真的用過 Decorator。但最近重溫才發現其實裝飾者模式和 Python 的 Decorator 並不是完全的等號。Python 的 Decorator 更像是一種語法糖，利用 Python 函式 first class 的特性，能夠有更方便包裝函式的語法，可以為函">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/UML-Decorator.svg">
+<meta property="article:published_time" content="2020-06-29T07:49:10.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="DesignPattern">
+<meta property="article:tag" content="Example">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Design-Pattern-Decorator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/Design-Pattern-Decorator/" class="article-date">
+  <time datetime="2020-06-29T07:49:10.000Z" itemprop="datePublished">2020-06-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      重溫《深入淺出設計模式》裝飾者模式 (Book Review of Head First Design Pattern, Decorator Pattern)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A3%9D%E9%A3%BE%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text">裝飾者模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Before-Pattern"><span class="toc-text">Before Pattern</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#After-Pattern"><span class="toc-text">After Pattern</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>以前第一次看到 Python 的 Decorator 時滿滿的黑人問號，後來有機會接觸裝飾者模式才豁然開朗，但也沒有深究，甚至沒有真的用過 Decorator。但最近重溫才發現其實裝飾者模式和 Python 的 Decorator 並不是完全的等號。Python 的 Decorator 更像是一種語法糖，利用 Python 函式 first class 的特性，能夠有更方便包裝函式的語法，可以為函式前後加入邏輯並且重利用程式碼。而要利用 Python 的 Decorator 也可以實踐 Decorator Pattern ，只是兩者並不是相等的，一個是語法模式，但背後有 Pattern 的精神；另一個則是 Pattern。</p>
+<a target="_blank" href="https://www.tenlong.com.tw/products/9789867794529" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/HeadFirst-DesignPattern.jpg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="裝飾者模式"><a href="#裝飾者模式" class="headerlink" title="裝飾者模式"></a>裝飾者模式</h2><p><em>Attach additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.</em></p>
+<p>裝飾者模式提供了一個有別於繼承的設計方式，讓程式碼不僅得以重複使用且易於擴充。本模式是以咖啡為範例，咖啡作為一種類別，而調味則是其需求，如果要因應各式需求，必須衍生繁瑣的類別。</p>
+<p><img src="/assets/UML-Decorator.svg" alt="裝飾者模式的 UML"></p>
+<h3 id="Before-Pattern"><a href="#Before-Pattern" class="headerlink" title="Before Pattern"></a>Before Pattern</h3><p>目前的設計會有以下問題:</p>
+<ol>
+<li>如果有悉的配料，就要加入新的方法，並且變更 Beverage 類別中 cost 的邏輯</li>
+<li>如果需求條件(配料)有特殊需求，例如雙倍、新類型，Beverage 類別就必須配合修改。</li>
+</ol>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Beverage</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> condimentCost <span class="token operator">=</span> <span class="token number">0.0</span><span class="token punctuation">;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">hasMilk</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">hasMocha</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> <span class="token function">cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">hasMilk</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+      condimentCost <span class="token operator">+=</span> milkCost<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">hasMocha</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+      condimentCost <span class="token operator">+=</span> mochaCost<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> condimentCost<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DarkRoast</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Beverage</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> <span class="token function">cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token number">1.99</span> <span class="token operator">+</span> super<span class="token punctuation">.</span><span class="token function">cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="After-Pattern"><a href="#After-Pattern" class="headerlink" title="After Pattern"></a>After Pattern</h3><p>而裝飾者模式要求先設計一個類別與裝飾類別之間共通的類別(超類別)，並且可以用一個或多個裝飾者包裝物件，最重要的是<strong>裝飾者可以在所委派被裝飾者的行為之前或之後，加上自己的行為達到特定目的</strong>，裝飾者提供了動態將責任加諸於物件的彈性，相較於繼承更易於擴充。</p>
+<p>要實作裝飾者，最重要的就是</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Beverage</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">string</span></span> _description <span class="token operator">=</span> <span class="token string">"unknown beverage"</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> _description<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">CondimentDecorator</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Beverage</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Espresso</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Beverage</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token function">Espresso</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    _description <span class="token operator">=</span> <span class="token string">"Espresso"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> <span class="token function">cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token number">1.99</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Decorator 的靈魂，實作與被裝飾者相同的超類別，並且將被裝飾者當成自己的 private 成員，於是可以一層一層的呼叫</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Mocha</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">CondimentDecorator</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token class-name">Beverage</span> _beverage<span class="token punctuation">;</span>
+
+  <span class="token keyword">public</span> Mocha <span class="token punctuation">(</span><span class="token class-name">Beverage</span> beverage<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    _beverage <span class="token operator">=</span> beverage<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> _beberage<span class="token punctuation">.</span><span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", Mocha"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> <span class="token function">Cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token number">0.2</span> <span class="token operator">+</span> _beverage<span class="token punctuation">.</span><span class="token function">Cost</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">Beverage</span> beverage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Espresso</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+beverage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Mocha</span><span class="token punctuation">(</span>beverage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">Writeline</span><span class="token punctuation">(</span>beverage<span class="token punctuation">.</span><span class="token function">GetDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Espresso, Mocha</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>✔️將變動的部分封裝起來</p>
+<ul>
+<li>裝飾的類別會衍生，所以個別封裝</li>
+</ul>
+<p>✔️多用合成，少用繼承</p>
+<ul>
+<li>根據裝飾者模式的精神，演算邏輯由合成的類別實作</li>
+</ul>
+<p>✔️類別應該對需求保持開放；應該對既有的程式碼修改保持關閉</p>
+<ul>
+<li>實作新的裝飾類別或者被裝飾類別，並不會互相影響</li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/Design-Pattern-Decorator/" data-id="clg3fmacf00i1s4tsg9k57eyg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Example/" rel="tag">Example</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/Design-Pattern-Observer/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">重溫《深入淺出設計模式》觀察者模式 (Book Review of Head First Design Pattern, Observer Pattern)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/Design-Pattern-Factory/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          重溫《深入淺出設計模式》工廠模式 (Book Review of Head First Design Pattern, Factory Pattern)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

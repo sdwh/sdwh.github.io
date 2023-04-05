@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC Extending Framework 藉由實作擴充讓開發更為優雅 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET MVC 如何藉由擴充開發框架所提供的 Interface 以及既有 Class，來達到優雅簡潔的需求達成以及易於維護的架構。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC Extending Framework 藉由實作擴充讓開發更為優雅">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/02/ASPNET-MVC-Extending-Framework/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET MVC 如何藉由擴充開發框架所提供的 Interface 以及既有 Class，來達到優雅簡潔的需求達成以及易於維護的架構。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="article:published_time" content="2023-02-05T03:09:21.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Extending-Framework" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/02/ASPNET-MVC-Extending-Framework/" class="article-date">
+  <time datetime="2023-02-05T03:09:21.000Z" itemprop="datePublished">2023-02-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC Extending Framework 藉由實作擴充讓開發更為優雅
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Views"><span class="toc-text">Views</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTML-Helpers"><span class="toc-text">HTML Helpers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Custom-View-Engine"><span class="toc-text">Custom View Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Custom-Action-Results"><span class="toc-text">Custom Action Results</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Model"><span class="toc-text">Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Extending-Validation"><span class="toc-text">Extending Validation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Custom-Model-Binders"><span class="toc-text">Custom Model Binders</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Custom-Value-Providers"><span class="toc-text">Custom Value Providers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Controller"><span class="toc-text">Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Action-Filters"><span class="toc-text">Action Filters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication-Filtes"><span class="toc-text">Authentication Filtes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exception-Filters"><span class="toc-text">Exception Filters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Action-Method-Selectors"><span class="toc-text">Action Method Selectors</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET MVC 如何藉由擴充開發框架所提供的 Interface 以及既有 Class，來達到優雅簡潔的需求達成以及易於維護的架構。</p>
+<a href="/posts/2023/02/ASPNET-MVC-Extending-Framework/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>本次的筆記來自 Alex Wolf 在 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/mvc-applications-10-extension-points-improving/table-of-contents">Improving Your MVC Applications with 10 Extension Points</a> 課程中的教學內容。</p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/sdwh/Extending-MVC" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> Github
+  </a>
+</div>
+
+<h2 id="Views"><a href="#Views" class="headerlink" title="Views"></a>Views</h2><h3 id="HTML-Helpers"><a href="#HTML-Helpers" class="headerlink" title="HTML Helpers"></a>HTML Helpers</h3><p>在 Keeping Your Razor Code Clean with <strong>HTML Helpers</strong> 的課程模組中，介紹兩種 Helper 方式來簡化重複的內容，包含使用 <code class="s">inline Razor Helpers</code> 以及 HTML Helper Using <code class="s">Extensino Methods</code> 的方式來 Reuse 需要在 View 當中重複使用的程式碼以及邏輯。</p>
+<pre class="line-numbers language-cshtml" data-language="cshtml"><code class="language-cshtml"><span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">helper</span></span> DisplayList(List<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span><span class="token punctuation">></span></span> data)
+&#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ol</span><span class="token punctuation">></span></span>
+    <span class="token block"><span class="token keyword">@foreach</span> <span class="token csharp language-csharp"><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> data<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">item</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span></span>
+    <span class="token punctuation">&#125;</span></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ol</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用 inline Razor Helper 的好處是容易建立，可以快速用於消除重複的 HTML 語法，但缺點是重複使用的可能較低，受限於在相同的 cshtml 當中使用。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>可以藉由將 Razor Helper 獨立儲存在 cshtml 檔案當中，並且儲存於 <code class="s">App_Code</code> 資料夾，這樣在其他 cshtml 當中，也可以重複使用，提升重複使用的可能性。例如儲存在 <code class="s">App_Code/MyHelper.cshtml</code>，可以透過 <code class="s">@MyHelper.DisplayList(...)</code> 的方式使用。</p>
+        </div>
+    </div>
+</div>
+
+<p><code class="watch">Infrastructure/HtmlHelperExtensions.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">HtmlHelperExtensions</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">MvcHtmlString</span> <span class="token function">DisplayList</span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name">HtmlHelper</span> html<span class="token punctuation">,</span> <span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> data<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+      <span class="token class-name"><span class="token keyword">var</span></span> ulBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TagBuilder</span><span class="token punctuation">(</span><span class="token string">"ul"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> data<span class="token punctuation">)</span>
+      <span class="token punctuation">&#123;</span>
+          <span class="token class-name"><span class="token keyword">var</span></span> liBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TagBuilder</span><span class="token punctuation">(</span><span class="token string">"li"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          liBuilder<span class="token punctuation">.</span><span class="token function">SetInnerText</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          ulBuilder<span class="token punctuation">.</span>InnerHtml <span class="token operator">+=</span> liBuilder<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MvcHtmlString</span><span class="token punctuation">(</span>ulBuilder<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以在 <code class="s">Views/Web.config</code> 加入 HelperExtensions 的命名空間，如此在使用擴充的 Helper 時就不用重複輸入命名空間。</p>
+<p>而除了 Helper 的方式外，也可以透過 Partial View 以及 ChildAction 的方式來重複使用 View 的內容與邏輯，而取決於如果是簡單的 Html 元素搭配資料重現，適合使用 Helper；如果是複雜的區塊 (Sections) 包含較多的 Html 組合以及資料，則適合使用 Partial View 以及 ChildAction 的方式。</p>
+<h3 id="Custom-View-Engine"><a href="#Custom-View-Engine" class="headerlink" title="Custom View Engine"></a>Custom View Engine</h3><p>在 Enabling Theme Support with a <strong>Custom View Engine</strong> 的課程模組中，示範如何客製化 View 的主題引擎，能夠在 Web.config 調整主題的選擇，讓應用程式對應使用不同風格的 cshtml 進行呈現。</p>
+<p>原理是利用客製 View Engine，由此客製的 View Engine 決定如何尋找與回應對應的 cshtml，而如果沒有找到相符的 cshtml，則會使用第二順序的 View Engine 進行尋找。</p>
+<p><code class="watch">ThemeEngine.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ThemeViewEngine</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">RazorViewEngine</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">ThemeViewEngine</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> activeThemeName<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+
+        ViewLocationFormats <span class="token operator">=</span> <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token string">"~/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/&#123;1&#125;/&#123;0&#125;.cshtml"</span><span class="token punctuation">,</span>
+            <span class="token string">"~/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/Shared/&#123;0&#125;.cshtml"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        PartialViewLocationFormats <span class="token operator">=</span> <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token string">"~/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/&#123;1&#125;/&#123;0&#125;.cshtml"</span><span class="token punctuation">,</span>
+            <span class="token string">"~/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/Shared/&#123;0&#125;.cshtml"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        AreaViewLocationFormats <span class="token operator">=</span> <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token string">"~Areas/&#123;2&#125;/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/&#123;1&#125;/&#123;0&#125;.cshtml"</span><span class="token punctuation">,</span>
+            <span class="token string">"~Areas/&#123;2&#125;/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/Shared/&#123;0&#125;.cshtml"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        AreaPartialViewLocationFormats <span class="token operator">=</span> <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token string">"~Areas/&#123;2&#125;/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/&#123;1&#125;/&#123;0&#125;.cshtml"</span><span class="token punctuation">,</span>
+            <span class="token string">"~Areas/&#123;2&#125;/Views/Themes/"</span> <span class="token operator">+</span> activeThemeName <span class="token operator">+</span> <span class="token string">"/Shared/&#123;0&#125;.cshtml"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>完成 Custom View Engine 的設計後，接著必須在 Global.asax 進行註冊，並且將 Custom View Engine 的順序設定為最優先 (index 0)：</p>
+<p><code class="watch">Global.asax</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>ConfigurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">[</span><span class="token string">"ActiveTheme"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> activeTheme <span class="token operator">=</span> ConfigurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">[</span><span class="token string">"ActiveTheme"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    ViewEngines<span class="token punctuation">.</span>Engines<span class="token punctuation">.</span><span class="token function">Insert</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ThemeViewEngine</span><span class="token punctuation">(</span>activeTheme<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而在 Web.config 中調整 ActiveTheme 即可以讓 Controller 在回應 Action 所需要使用的 View 時，優先至 Custom View Engine 所定義的路徑進行 cshtml 檔案尋找，如沒有才會回到以往的尋找路徑 🙂</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appSettings</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ActiveTheme<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Vertical<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>appSettings</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Custom-Action-Results"><a href="#Custom-Action-Results" class="headerlink" title="Custom Action Results"></a>Custom Action Results</h3><p>在 Improving Application Responses with <strong>Custom Action Results</strong> 的課程模組中，說明如何客製化 Action Results，例如回應 XML 或者是 CSV 檔。</p>
+<p>要客製化 Action Results，可以藉由繼承 <code class="s">ActionResult</code> 類別，並且覆寫 <code class="s">ExecuteResult</code> 方法來達成。</p>
+<p><code class="watch">Infrastructure/XMLResult.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XMLResult</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ActionResult</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">object</span></span> _data<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">XMLResult</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">object</span></span> data<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _data <span class="token operator">=</span> data<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ExecuteResult</span><span class="token punctuation">(</span><span class="token class-name">ControllerContext</span> context<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">XmlSerializer</span> serializer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">XmlSerializer</span><span class="token punctuation">(</span>_data<span class="token punctuation">.</span><span class="token function">GetType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> response <span class="token operator">=</span> context<span class="token punctuation">.</span>HttpContext<span class="token punctuation">.</span>Response<span class="token punctuation">;</span>
+        response<span class="token punctuation">.</span>ContentType <span class="token operator">=</span> <span class="token string">"text/xml"</span><span class="token punctuation">;</span>
+        serializer<span class="token punctuation">.</span><span class="token function">Serialize</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>Output<span class="token punctuation">,</span> _data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著就可以在 Controller 當中使用：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">XMLService</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">XMLResult</span><span class="token punctuation">(</span>vmApplicants<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而許多開發情境下，繼承 ASP.NET MVC 既有的 ActionResult 省去重複的底層實作會讓開發與維護更為輕鬆，例如回應 CSV 檔案，可以利用既有的 FileResult 去覆寫 <code class="s">ExecuteResult</code> 方法：</p>
+<p><code class="watch">Infrastructure/CSVResult.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CSVResult</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">FileResult</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">IEnumerable</span> _data<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">CSVResult</span><span class="token punctuation">(</span><span class="token class-name">IEnumerable</span> data<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> fileName<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token string">"text/csv"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _data <span class="token operator">=</span> data<span class="token punctuation">;</span>
+        FileDownloadName <span class="token operator">=</span> fileName<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">WriteFile</span><span class="token punctuation">(</span><span class="token class-name">HttpResponseBase</span> response<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> stringWriter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringWriter</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> _data<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> properties <span class="token operator">=</span> item<span class="token punctuation">.</span><span class="token function">GetType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> prop <span class="token keyword">in</span> properties<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                stringWriter<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span><span class="token function">GetValue</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> prop<span class="token punctuation">.</span>Name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                stringWriter<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span><span class="token string">", "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            stringWriter<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        response<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">object</span></span> item<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> propName<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> item<span class="token punctuation">.</span><span class="token function">GetType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetProperty</span><span class="token punctuation">(</span>propName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token string">""</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><h3 id="Extending-Validation"><a href="#Extending-Validation" class="headerlink" title="Extending Validation"></a>Extending Validation</h3><p>在 <strong>Extending Validation</strong> to Improve Data Integrity 的課程模組中，說明除 ASP.NET MVC 預設的 <code class="s">Validation Attributes</code> 外，也可以利用在 Model 加入時做 <code class="s">IValidatableObject</code> 的方式，來達到資料 Model 的驗證，<code class="s">Validation Attributes</code> 的優點是驗證的邏輯<strong>關注點分離、易於重複使用</strong>；<code class="s">IValidatableObject</code> 則是易於設計跨屬性的資料驗證邏輯。</p>
+<p>BirthdateValidator.cs 範例說明如何客製化 <code class="s">Validation Attributes</code>。</p>
+<p><code class="watch">Infrastructure\BirthdateValidator.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BirthdateValidator</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ValidationAttribute</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">BirthdateValidator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        ErrorMessage <span class="token operator">=</span>
+          <span class="token string">"Please enter a valid birth date."</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">IsValid</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">object</span></span> <span class="token keyword">value</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">DateTime</span> enteredDate<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span><span class="token function">TryParse</span><span class="token punctuation">(</span><span class="token keyword">value</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">out</span> enteredDate<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+          <span class="token keyword">return</span> enteredDate <span class="token operator">&lt;=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span><span class="token function">AddYears</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">18</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>EmploymentSummary.cs 則是以 ViewModel 結合 <code class="s">IValidatableObject</code> 的方式進行資料驗證，</p>
+<p><code class="watch">ViewModels\EmploymentSummary.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">EmploymentSummary</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IValidatableObject</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">EmploymentSummary</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        PrimaryEmployer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">EmploymentVM</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        PreviousEmployer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">EmploymentVM</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">EmploymentVM</span> PrimaryEmployer <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">EmploymentVM</span> PreviousEmployer <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">IEnumerable<span class="token punctuation">&lt;</span>ValidationResult<span class="token punctuation">></span></span> <span class="token function">Validate</span><span class="token punctuation">(</span><span class="token class-name">ValidationContext</span> validationContext<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> results <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>ValidationResult<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>PrimaryEmployer<span class="token punctuation">.</span>StartDate <span class="token operator">></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span><span class="token function">AddYears</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>PreviousEmployer<span class="token punctuation">.</span>EmploymentType <span class="token operator">!=</span> <span class="token string">"Unemployed"</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>PreviousEmployer<span class="token punctuation">.</span>Employer<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    results<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">ValidationResult</span><span class="token punctuation">(</span><span class="token string">"Previous employer is required."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>PreviousEmployer<span class="token punctuation">.</span>Position<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    results<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">ValidationResult</span><span class="token punctuation">(</span><span class="token string">"Previous position is required."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">return</span> results<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Custom-Model-Binders"><a href="#Custom-Model-Binders" class="headerlink" title="Custom Model Binders"></a>Custom Model Binders</h3><p>在 Extending Data Binding with <strong>Custom Model Binders</strong> 的課程模組中，介紹如何客製 Model Binder，並以處理 Client 端 XML 格式的 InputStream 為例。</p>
+<p>ASP.NET MVC 的 Action Invoker 在 Controller 處理傳入的參數時，會依序使用 Model Binder 檢查是否可以處理對應的參數，如果不行就換下一個 Model Binder 直到 Default Model Binder 都無法處理則報錯為止；除了可以將直接客製化的 Model Binder 加入順序以外，也可以藉由客製化 Model Binder Provider 的方式來達到特定時機使用特定的 Model Binder。</p>
+<p>示範如何客製 Model Binder ，搭配分別建立類別實作 <code class="s">IModelBinder</code> 以及 <code class="s">IModelBinderProvider</code> 介面。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IModelBinder</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token return-type class-name"><span class="token keyword">object</span></span> <span class="token function">BindModel</span><span class="token punctuation">(</span><span class="token class-name">ControllerContext</span> controllerContext<span class="token punctuation">,</span> <span class="token class-name">ModelBindingContenxt</span> bindingContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IModelBinderProvider</span>
+<span class="token punctuation">&#123;</span>
+  IModelBinder <span class="token return-type class-name"><span class="token keyword">object</span></span> <span class="token function">GetBinder</span><span class="token punctuation">(</span><span class="token class-name">Type</span> model<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Infrastructure/XMLModelBinder.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XmlModelBinder</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IModelBinder</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">object</span></span> <span class="token function">BindModel</span><span class="token punctuation">(</span>
+        <span class="token class-name">ControllerContext</span> controllerContext<span class="token punctuation">,</span>
+        <span class="token class-name">ModelBindingContext</span> bindingContext<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">try</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> modelType <span class="token operator">=</span> bindingContext<span class="token punctuation">.</span>ModelType<span class="token punctuation">;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> serializer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">XmlSerializer</span><span class="token punctuation">(</span>modelType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token class-name"><span class="token keyword">var</span></span> inputStream <span class="token operator">=</span> controllerContext<span class="token punctuation">.</span>HttpContext<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>InputStream<span class="token punctuation">;</span>
+
+            <span class="token keyword">return</span> serializer<span class="token punctuation">.</span><span class="token function">Deserialize</span><span class="token punctuation">(</span>inputStream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            bindingContext<span class="token punctuation">.</span>ModelState<span class="token punctuation">.</span><span class="token function">AddModelError</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"The item could not be serialized"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Infrastructure/XMLModelBinderProvider.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XmlModelBinderProvider</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IModelBinderProvider</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">IModelBinder</span> <span class="token function">GetBinder</span><span class="token punctuation">(</span><span class="token class-name">Type</span> modelType<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> contentType <span class="token operator">=</span> HttpContext<span class="token punctuation">.</span>Current<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>ContentType<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Compare</span><span class="token punctuation">(</span>contentType<span class="token punctuation">,</span> <span class="token string">@"text/xml"</span><span class="token punctuation">,</span>
+            StringComparison<span class="token punctuation">.</span>OrdinalIgnoreCase<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">XmlModelBinder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著到 Global.asax 進行 Model Binder Provider 的註冊：</p>
+<p><code class="watch">Global.asax</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">protected</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Application_Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    ModelBinderProviders<span class="token punctuation">.</span>BinderProviders<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">XmlModelBinderProvider</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>相關參考：保哥的 <a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2015/11/08/ASPNET-MVC-Developer-Note-Part-25-Value-Provider-and-Model-Binder">ASP.NET MVC 開發心得分享 (25)：ModelBinder 與 ValueProvider 的用途</a></p>
+<h3 id="Custom-Value-Providers"><a href="#Custom-Value-Providers" class="headerlink" title="Custom Value Providers"></a>Custom Value Providers</h3><p>在 Improving Data Availability with <strong>Custom Value Providers</strong> 的課程模組中，示範如何藉由 Value Provider 將 Http Request Headers 的資料讀入 Model 之中，方便在 Controller 使用。</p>
+<p>Custom Value Provider 是除了重新實作 IModelBinder 或者是覆寫既有 ModelBinder <code class="s">BindModel</code>, <code class="s">BindProperty</code> 以外，同樣可以達成資料 Binding 的擴充方式。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IValueProvider</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">ContainsPrefix</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> prefix<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token return-type class-name">ValueProviderResult</span> <span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Infrastructure/HttpValueProvider.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HttpValueProvider</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IValueProvider</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">NameValueCollection</span> _headers<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> _headerKeys<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">HttpValueProvider</span><span class="token punctuation">(</span><span class="token class-name">NameValueCollection</span> httpHeaders<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _headers <span class="token operator">=</span> httpHeaders<span class="token punctuation">;</span>
+        _headerKeys <span class="token operator">=</span> _headers<span class="token punctuation">.</span>AllKeys<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">ContainsPrefix</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> prefix<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> _headerKeys<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span>h <span class="token operator">=></span> h<span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"-"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+                          <span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>prefix<span class="token punctuation">,</span> StringComparison<span class="token punctuation">.</span>OrdinalIgnoreCase<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">ValueProviderResult</span> <span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> key<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> header <span class="token operator">=</span> _headerKeys<span class="token punctuation">.</span><span class="token function">FirstOrDefault</span><span class="token punctuation">(</span>
+            h <span class="token operator">=></span> h<span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"-"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> StringComparison<span class="token punctuation">.</span>OrdinalIgnoreCase<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>_headers<span class="token punctuation">[</span>header<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ValueProviderResult</span><span class="token punctuation">(</span>
+                _headers<span class="token punctuation">[</span>header<span class="token punctuation">]</span><span class="token punctuation">,</span> 
+                _headers<span class="token punctuation">[</span>header<span class="token punctuation">]</span><span class="token punctuation">,</span> 
+                CultureInfo<span class="token punctuation">.</span>CurrentCulture<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HttpValueProviderFactory</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ValueProviderFactory</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name">IValueProvider</span> <span class="token function">GetValueProvider</span><span class="token punctuation">(</span><span class="token class-name">ControllerContext</span> controllerContext<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpValueProvider</span><span class="token punctuation">(</span>controllerContext<span class="token punctuation">.</span>HttpContext<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>Headers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著著在 Global.asax 進行 Value Provider Factory 的註冊。</p>
+<p><code class="watch">Global.asax</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">protected</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Application_Start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    ValueProviderFactories<span class="token punctuation">.</span>Factories<span class="token punctuation">.</span><span class="token function">Insert</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>從 ASP.NET MVC 的原始碼，我們可以觀察各種預設的 Value Provider 順序，從而 Model Binder 在繫結模型時，取得資料的優先順序。</p>
+<p><code class="watch">ValueProviderFactories.cs</code> </p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">ValueProviderFactories</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">readonly</span> <span class="token class-name">ValueProviderFactoryCollection</span> _factories <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ValueProviderFactoryCollection</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ChildActionValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FormValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">JsonValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RouteDataValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">QueryStringValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpFileCollectionValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">JQueryFormValueProviderFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">ValueProviderFactoryCollection</span> Factories
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> _factories<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<dl>
+    <dt>Value Provider</dt>
+    <dd>提供網站資料的提供程式，它可以從不同的來源（例如表單、請求查詢字符串、請求頭）中獲取資料；從請求中擷取參數值，並將其填入 ValueProviderResult 物件中。</dd>
+    <dt>Model Binder Provider</dt>
+    <dd>選擇適當的 Model Binder 的提供程式，根據模型類型和資料來源選據對應的 Model Binder；</dd>
+    <dt>Model Binder</dt>
+    <dd>綁定模型對象的系統，它使用 Value Provider 中的資料來填充模型對象；將 ValueProviderResult 值與 MyInputModel 參數物件繫結。</dd>
+</dl>
+
+<h2 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h2><h3 id="Action-Filters"><a href="#Action-Filters" class="headerlink" title="Action Filters"></a>Action Filters</h3><p>在 Organizing Application Flow with <strong>Action Filters</strong> 的課程模組中</p>
+<h3 id="Authentication-Filtes"><a href="#Authentication-Filtes" class="headerlink" title="Authentication Filtes"></a>Authentication Filtes</h3><p>在 Customizing Security Using <strong>Authentication Filters</strong> 的課程模組中</p>
+<h3 id="Exception-Filters"><a href="#Exception-Filters" class="headerlink" title="Exception Filters"></a>Exception Filters</h3><p>在 Improving Error Handling with <strong>Custom Exception Filters</strong> 的課程模組中</p>
+<h3 id="Action-Method-Selectors"><a href="#Action-Method-Selectors" class="headerlink" title="Action Method Selectors"></a>Action Method Selectors</h3><p>在 Influencing <strong>Action Method</strong> Execution Using <strong>Custom Selectors</strong> 的課程模組中</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/02/ASPNET-MVC-Extending-Framework/" data-id="clg3fma99003ns4ts80oy1j11" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/02/Coding-With-Word/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Coding With Office Word</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/02/PowerShell-Find-File-With-FileHash/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PowerShell Find File With FileHash (比對 FileHash 搜尋檔案)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

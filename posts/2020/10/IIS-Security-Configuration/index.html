@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>IIS 網頁伺服器的安全設定 (IIS Security Configuration, GCB &amp; CIS) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本次的筆記源自 Pluralsight - Securing IIS Websites、Pluralsight - Auditing IIS Web Servers for Security and Best Practices課程心得、CSI Bnechmark IIS、技服中心 Government Configuration Baseline 的實務設定及相關文章的綜合整理：關於 IIS 安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IIS 網頁伺服器的安全設定 (IIS Security Configuration, GCB &amp; CIS)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/10/IIS-Security-Configuration/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="本次的筆記源自 Pluralsight - Securing IIS Websites、Pluralsight - Auditing IIS Web Servers for Security and Best Practices課程心得、CSI Bnechmark IIS、技服中心 Government Configuration Baseline 的實務設定及相關文章的綜合整理：關於 IIS 安">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="article:published_time" content="2020-10-10T02:04:02.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IIS-Security-Configuration" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/IIS-Security-Configuration/" class="article-date">
+  <time datetime="2020-10-10T02:04:02.000Z" itemprop="datePublished">2020-10-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IIS 網頁伺服器的安全設定 (IIS Security Configuration, GCB &amp; CIS)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%9B%E5%B0%91%E8%A2%AB%E6%94%BB%E6%93%8A%E7%9A%84%E9%9D%A2%E7%A9%8D-Attack-Surface"><span class="toc-text">減少被攻擊的面積 (Attack Surface)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E4%B8%BB%E6%8E%A2%E6%B8%AC%E4%BC%BA%E6%9C%8D%E5%99%A8%E7%9A%84%E8%B3%87%E8%A8%8A-%F0%9F%95%B5%EF%B8%8F%E2%80%8D%E2%99%82%EF%B8%8F"><span class="toc-text">自主探測伺服器的資訊 🕵️‍♂️</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%B1%E8%97%8F%E4%BC%BA%E6%9C%8D%E5%99%A8%E8%B3%87%E8%A8%8A-%F0%9F%92%A1"><span class="toc-text">隱藏伺服器資訊 💡</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A%E7%82%BA-Deployment-Retail"><span class="toc-text">設定為 Deployment Retail</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E7%94%A8%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84-Encryption-%F0%9F%92%A1"><span class="toc-text">停用不安全的 Encryption 💡</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Remove-Unnecessary-Modules-Featrues-%F0%9F%92%A1"><span class="toc-text">Remove Unnecessary Modules &#x2F; Featrues 💡</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Secuire-Cookies-amp-Secure-Sessions"><span class="toc-text">Secuire Cookies &amp; Secure Sessions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Request-Filter-%E8%A6%81%E6%B1%82%E7%AF%A9%E9%81%B8"><span class="toc-text">Request Filter (要求篩選)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>本次的筆記源自 <a target="_blank" rel="noopener" href="https://www.pluralsight.com/courses/securing-iis-websites">Pluralsight - Securing IIS Websites</a>、<a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/auditing-iis-web-servers-security-best-practices/table-of-contents">Pluralsight - Auditing IIS Web Servers for Security and Best Practices</a>課程心得、CSI Bnechmark IIS、技服中心 Government Configuration Baseline 的實務設定及相關文章的綜合整理：關於 IIS 安全實務設定建議。</p>
+<p>良好的 IIS 安全設定可以和 Application Security 互相輝映，同時也可以補充不足，本次筆記綜合課程的內容，並反思個人在 IIS 設定上的心得 😄</p>
+<a href="/posts/2020/10/IIS-Security-Configuration/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>2022-02-27 加入來自 <a href="/posts">CSI Benchmark</a> 以及參考<a href="">技服中心 GCB</a>，</p>
+<h3 id="減少被攻擊的面積-Attack-Surface"><a href="#減少被攻擊的面積-Attack-Surface" class="headerlink" title="減少被攻擊的面積 (Attack Surface)"></a>減少被攻擊的面積 (Attack Surface)</h3><h4 id="自主探測伺服器的資訊-🕵️‍♂️"><a href="#自主探測伺服器的資訊-🕵️‍♂️" class="headerlink" title="自主探測伺服器的資訊 🕵️‍♂️"></a>自主探測伺服器的資訊 🕵️‍♂️</h4><p><a target="_blank" rel="noopener" href="https://securityheaders.com/">Http Headers Scan</a><br><a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Server Test</a><br><a target="_blank" rel="noopener" href="https://mxtoolbox.com/SuperTool.aspx">DNS Lookup</a><br><a target="_blank" rel="noopener" href="https://who.is/">DNS Query - Whois</a><br><a target="_blank" rel="noopener" href="https://hackertarget.com/nmap-online-port-scanner/">Port scan - Nmap</a><br><a target="_blank" rel="noopener" href="https://hackertarget.com/whatweb-scan/">Passive Web Site Analysis - Wappalyzer</a></p>
+<h4 id="隱藏伺服器資訊-💡"><a href="#隱藏伺服器資訊-💡" class="headerlink" title="隱藏伺服器資訊 💡"></a>隱藏伺服器資訊 💡</h4><ul>
+<li>Server</li>
+<li>MVC Version</li>
+<li>Powered-By</li>
+</ul>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpRuntime</span> <span class="token attr-name">targetFramework</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">enableVersionHeader</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customHeaders</span><span class="token punctuation">></span></span>
+     <span class="token comment">&lt;!-- Hide Server Information --></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>remove</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>X-Powered-By<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>remove</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>X-AspNetMvc-Version<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customHeaders</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>httpProtocol</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="設定為-Deployment-Retail"><a href="#設定為-Deployment-Retail" class="headerlink" title="設定為 Deployment Retail"></a>設定為 Deployment Retail</h4><p>設定以後會主動啟用 <code class="s">customErrros</code> 並且將 <code class="s">compilation debug</code> 設定為關閉，此外 <code class="s">trace</code> 也會被關閉。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>deployment</span> <span class="token attr-name">retail</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="停用不安全的-Encryption-💡"><a href="#停用不安全的-Encryption-💡" class="headerlink" title="停用不安全的 Encryption 💡"></a>停用不安全的 Encryption 💡</h4><p>可以藉由修改機碼 (Registry) 或者使用 <a target="_blank" rel="noopener" href="https://www.nartac.com/Products/IISCrypto/">IISCrypto</a>  來關閉傳輸層不安全的加密法。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.alantsai.net/posts/2017/09/iis-security-set-correct-schannel-and-cipher-suite-using-iis-crypto">Alan Tsai - 每個Server都應該做的資安防護 - 使用IIS Crypto一鍵設定該啟用和停用的SChannel</a></p>
+<h4 id="Remove-Unnecessary-Modules-Featrues-💡"><a href="#Remove-Unnecessary-Modules-Featrues-💡" class="headerlink" title="Remove Unnecessary Modules / Featrues 💡"></a>Remove Unnecessary Modules / Featrues 💡</h4><h3 id="Secuire-Cookies-amp-Secure-Sessions"><a href="#Secuire-Cookies-amp-Secure-Sessions" class="headerlink" title="Secuire Cookies &amp; Secure Sessions"></a>Secuire Cookies &amp; Secure Sessions</h3><p>於 Web.config 中設定，藉由調整 Http Header 來避免 SesssionID 被竊取的問題。</p>
+<p><a href="/posts/2020/10/Cyber-Security-Web-Config-Configuration/">ASP.NET Web.config &amp; Http Headers 安全設定大全 | sdwh.dev</a></p>
+<h3 id="Request-Filter-要求篩選"><a href="#Request-Filter-要求篩選" class="headerlink" title="Request Filter (要求篩選)"></a>Request Filter (要求篩選)</h3><p><a href="/posts/2021/02/IIS-Requests-Filtering/">IIS 要求篩選的設定筆記 (Requests Filtering)</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/t5/itops-talk-blog/windows-server-101-hardening-iis-via-security-control/ba-p/329979">Windows Server 101: Hardening IIS via Security Control Configuration</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.upguard.com/blog/10-steps-for-improving-iis-security">IIS Security: How to Harden a Windows IIS Web Server in 10 Steps</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/iis/get-started/planning-for-security/secure-content-in-iis-through-file-system-acls">Secure Content in IIS Through File System ACLs</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/jj635855(v=ws.11)">Security Best Practices for IIS 8</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/IIS-Security-Configuration/" data-id="clg3fmaex00sos4ts5h941nk8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/10/CyberSecurity-SSDLC/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SSDLC 各階段資訊安全作業參考筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/10/Microsoft-License/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          微軟產品授權條款查閱方式 (How to check Microsoft&#39;s Products License)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

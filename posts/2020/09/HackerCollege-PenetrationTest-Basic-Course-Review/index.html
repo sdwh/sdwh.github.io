@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>交通大學亥客書院─基礎網頁安全與滲透測試 課程心得 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="2020年參加亥客書院辦理的「基礎網頁安全與滲透測試」課程心得筆記 📝">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交通大學亥客書院─基礎網頁安全與滲透測試 課程心得">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/09/HackerCollege-PenetrationTest-Basic-Course-Review/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="2020年參加亥客書院辦理的「基礎網頁安全與滲透測試」課程心得筆記 📝">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/NCTU_Hacker_College_Logo.png">
+<meta property="article:published_time" content="2020-09-14T11:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="LearningNote">
+<meta property="article:tag" content="HackerCollege">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/NCTU_Hacker_College_Logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-HackerCollege-PenetrationTest-Basic-Course-Review" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/09/HackerCollege-PenetrationTest-Basic-Course-Review/" class="article-date">
+  <time datetime="2020-09-14T11:00:00.000Z" itemprop="datePublished">2020-09-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      交通大學亥客書院─基礎網頁安全與滲透測試 課程心得
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A5%E5%AE%A2%E6%9B%B8%E9%99%A2%E4%BB%8B%E7%B4%B9"><span class="toc-text">亥客書院介紹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A4%8E%E7%B6%B2%E9%A0%81%E5%AE%89%E5%85%A8%E8%88%87%E6%BB%B2%E9%80%8F%E6%B8%AC%E8%A9%A6"><span class="toc-text">基礎網頁安全與滲透測試</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AA%B2%E7%A8%8B%E5%A4%A7%E7%B6%B1"><span class="toc-text">課程大綱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AC%9B%E5%B8%AB%E4%BB%8B%E7%B4%B9"><span class="toc-text">講師介紹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%B4%B9"><span class="toc-text">工具介紹</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B5%90%E8%AB%96"><span class="toc-text">結論</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AA%B2%E7%A8%8B%E5%BF%83%E5%BE%97"><span class="toc-text">課程心得</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E8%A1%8C%E5%8B%95"><span class="toc-text">後續行動</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>2020年參加亥客書院辦理的「基礎網頁安全與滲透測試」課程心得筆記 📝</p>
+<a target="_blank" href="https://hackercollege.nctu.edu.tw/" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/NCTU_Hacker_College_Logo.png" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="亥客書院介紹"><a href="#亥客書院介紹" class="headerlink" title="亥客書院介紹"></a>亥客書院介紹</h2><p>由交大所成立的教學單位，邀請業界實務的講師進行授課，課程取向是實務性質，因此授課的進行聚焦在實驗與工具上，而非單純的理論知識。</p>
+<p>課程的開課時間類似學院以春季、秋季等方式規劃，而且上課的時間是星期六整天，或連續隔週的星期六，方便學生或者在職人士週末的時候進修資安攻防實務。授課的地點則在台北車站附近的北門郵局，同時也是交通大學台北校區的所在，交通十分便利。</p>
+<p>教室環境雖然不算是新穎，但基於教學的各項功能都很齊全。同時書院有準備專門的筆記型電腦供上課的人借用，不用另外準備自己的設備十分方便。</p>
+<h2 id="基礎網頁安全與滲透測試"><a href="#基礎網頁安全與滲透測試" class="headerlink" title="基礎網頁安全與滲透測試"></a>基礎網頁安全與滲透測試</h2><h3 id="課程大綱"><a href="#課程大綱" class="headerlink" title="課程大綱"></a>課程大綱</h3><ol>
+<li>Web應用程式安全趨勢</li>
+<li>網頁安全常見威脅</li>
+<li>OWASP Top 10:2017</li>
+<li>CVSS與常見網頁攻擊手法</li>
+<li>滲透測試簡介</li>
+<li>常用之滲透測試方法論</li>
+<li>網頁滲透測試框架</li>
+<li>網頁滲透測試流程與細節</li>
+<li>網站應用程式弱點實作</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://hackercollege.nctu.edu.tw/?p=1182">課程網頁連結</a></p>
+<p>因為是初階的課程，講師先概論性的介紹何謂滲透測試？一個很好認識滲透測試的方式，是將滲透測試與原碼檢測、弱點掃描等資安健檢方式相比較。</p>
+<p><strong>原碼檢測 Source code analysis</strong></p>
+<p>將開發者的原始碼做檢測，從而發現可以利用的資安弱點，並由開發者加以修正。</p>
+<p><strong>弱點掃描 Vulnerability Scanning</strong></p>
+<p>針對作業系統以及應用程式，進行定義規則的弱點掃描，掃描的結果可以被利用，由系統管理員與開發者共同處理。</p>
+<p><strong>滲透測試 Penetration Test</strong></p>
+<p>目標是取得系統的存取權限、資料庫的機敏資料以及破壞服務的正常運作。不拘束任何方法與工具，弱點掃描也可能是滲透測中的一環，掃描到的弱點可以供滲透測試所用。滲透測試是為了企業修補資安漏洞，並站在攻擊者的角度來做資安漏洞檢測。</p>
+<hr>
+<p>而接著講師介紹了滲透測試的方法論，以往對於繁雜的資安分類方式並沒有特別的感覺。但在滲透測試的範疇下，在有限的時間內要達成滲透的作業，自然需要一套方法論的方式來作業。於是步驟的順序以及將攻擊方式分類的 OWASP TOP 10 在實際作業上都相當重要。也不會流於迷失在龐雜工具中不知所措。</p>
+<p>課程的最後實際以作為練習的動作，過程中綜合運用 OWASP 中提及的 Injection, Weak ，等實驗的時間很短且雖然綜合認識了許多方法與工具，但一時之間其實也沒有辦法靈活的運用。如果能多看幾個引導範例，綜合運用各式各式方法與工具可能會有更大的啟發。</p>
+<h3 id="講師介紹"><a href="#講師介紹" class="headerlink" title="講師介紹"></a>講師介紹</h3><p>講者的講授風格相當溫和，課程中也會穿插實務上碰到的案例輔助課程說明，並且實際操作滲透測試工具做示範，同時也樂於回答提問，這個部分值得肯定 👍</p>
+<h3 id="工具介紹"><a href="#工具介紹" class="headerlink" title="工具介紹"></a>工具介紹</h3><p>Armitage<br>Burp suite<br>Metasploit<br>Nmap<br>Owasp Zap<br>Sqlmap</p>
+<p><strong>Kali</strong></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><h3 id="課程心得"><a href="#課程心得" class="headerlink" title="課程心得"></a>課程心得</h3><p>整體而言對於滲透測試有初步的認識，並且學習了滲透測試的方法與工具。當然作為一門基礎課程且在投入時間有限的情況下，對於滲透測試僅有初步的認識，但可以做為未來延伸的基礎。因為自己要跨出第一步並不容易，而在講者有系統的說明之下，學習滲透測試的開始卻不在那麼困難。</p>
+<p>整體而言亥客書院提供的課程品質相當良好，美中不足的是作為教學資源的素材，部分的中文與台灣慣用的用語不同，例如社交工程被翻譯為社會工程 🙄，對於教材期待有更好的校閱品質。</p>
+<h3 id="後續行動"><a href="#後續行動" class="headerlink" title="後續行動"></a>後續行動</h3><ol>
+<li>思考工具如何運用於日常的作業中，提供自我檢測的服務</li>
+<li>藉由 Linkedin Learing Peneration Test Series Videos 擴充知識</li>
+<li>以證照準備的方式，有系統的深入滲透測試的學習 <a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/300/EC-Council-CEH-7-%E9%A7%AD%E5%AE%A2%E6%8A%80%E8%A1%93%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CEH</a></li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Penetration_test">Wikipedia - Penetration test</a><br><a target="_blank" rel="noopener" href="https://owasp.org/www-project-web-security-testing-guide/latest/3-The_OWASP_Testing_Framework/1-Penetration_Testing_Methodologies#owasp-testing-guides">OWASP - Penetration Testing Methodologies</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/09/HackerCollege-PenetrationTest-Basic-Course-Review/" data-id="clg3fmae400p3s4ts5nmtdvwf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HackerCollege/" rel="tag">HackerCollege</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/09/WebServiceASMX/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">介接 WebService asmx 的方式</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/09/ASPNET-MVC-Building-For-Productivity-Maintainability/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          精進 ASP.NET MVC 開發技術，打造高生產力與易於維護的系統 (Develop ASP.NET MVC Better)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

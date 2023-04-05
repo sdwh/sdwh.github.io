@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 12 Azure Content Delivery Network, CDN | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用 Azure Azure Content Delivery Network, CDN。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 12 Azure Content Delivery Network, CDN">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab-12/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用 Azure Azure Content Delivery Network, CDN。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-Diagram.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-CDN-Error.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-12-5.png">
+<meta property="article:published_time" content="2022-03-25T10:29:11.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Certification">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Certification-AZ-204-Lab-12" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-12/" class="article-date">
+  <time datetime="2022-03-25T10:29:11.000Z" itemprop="datePublished">2022-03-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 12 Azure Content Delivery Network, CDN
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lab12-Azure-Content-Delivery-Network-CDN"><span class="toc-text">Lab12 - Azure Content Delivery Network, CDN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-App-Service"><span class="toc-text">Create App Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Storage-Account"><span class="toc-text">Create Storage Account</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configure-App-Service"><span class="toc-text">Configure App Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Register-CDN-Provider"><span class="toc-text">Register CDN Provider</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Azure-CDN"><span class="toc-text">Create Azure CDN</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Azure-Azure-Content-Delivery-Network-CDN-%E7%9B%B8%E9%97%9C%E7%9F%A5%E8%AD%98"><span class="toc-text">Azure Azure Content Delivery Network, CDN 相關知識</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E6%88%B0-Azure-Azure-Content-Delivery-Network-CDN-%E5%BF%83%E5%BE%97"><span class="toc-text">實戰 Azure Azure Content Delivery Network, CDN 心得</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用 Azure Azure Content Delivery Network, CDN。</p>
+<a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-12/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Lab12-Azure-Content-Delivery-Network-CDN"><a href="#Lab12-Azure-Content-Delivery-Network-CDN" class="headerlink" title="Lab12 - Azure Content Delivery Network, CDN"></a>Lab12 - Azure Content Delivery Network, CDN</h2><p>詳細的實驗流程可以參考微軟在 Github上的<a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Instructions/Labs">專案</a></p>
+<p><img src="/assets/AZ-204-Lab-12-Diagram.png" alt="圖片來源：微軟"></p>
+<p>這次的專案會先透過建立 App Service 以及 Storage Account 將圖片、影片儲存，並且在比較使用 CDN 技術前後的連結網址變化。</p>
+<h3 id="Create-App-Service"><a href="#Create-App-Service" class="headerlink" title="Create App Service"></a>Create App Service</h3><p>在 Resource Group <code class="s">MarketingContent</code> 下建立 App Service <code class="s">landingpagecs</code></p>
+<p>使用 Linux Docker Container，App Service Plain <code class="s">MarketingPlan</code></p>
+<p>Docker 的設定如下：</p>
+<p>Docker Hub / Public / microsoftlearning/edx-html-landing-page:latest</p>
+<p>設定完成後瀏覽網頁會發現還需要設定 Storage Account 的連動才能夠正確顯示網站</p>
+<p><img src="/assets/AZ-204-Lab-12-1.png"></p>
+<h3 id="Create-Storage-Account"><a href="#Create-Storage-Account" class="headerlink" title="Create Storage Account"></a>Create Storage Account</h3><p>接著設定 Storage Account <code class="s">contenthostcs</code></p>
+<p>並且建立兩個 Container <code class="s">media</code> 以及 <code class="s">video</code></p>
+<p>Access level 都是使用 <strong>Blob (anonymous read access for blobs only)</strong></p>
+<p>分別將圖片上傳至 <code class="s">media</code> 影片上傳至 <code class="s">video</code></p>
+<h3 id="Configure-App-Service"><a href="#Configure-App-Service" class="headerlink" title="Configure App Service"></a>Configure App Service</h3><p>前往 App Service <code class="s">landingpagecs</code>，由 Configuration 新增兩筆 Application settings，</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CDNMediaEndpoint</td>
+<td>從 Meida Container Properties 取得 URI</td>
+</tr>
+<tr>
+<td>CDNVideoEndpoint</td>
+<td>從 Video Container Properties 取得 URI</td>
+</tr>
+</tbody></table>
+<p>本此進行分別是 <a target="_blank" rel="noopener" href="https://contenthostcs.blob.core.windows.net/meida">https://contenthostcs.blob.core.windows.net/meida</a></p>
+<p>以及 <a target="_blank" rel="noopener" href="https://contenthostcs.blob.core.windows.net/video">https://contenthostcs.blob.core.windows.net/video</a></p>
+<p>這個時候在觀察網頁會發現已經可以正常瀏覽囉 😁</p>
+<p><img src="/assets/AZ-204-Lab-12-2.png"></p>
+<h3 id="Register-CDN-Provider"><a href="#Register-CDN-Provider" class="headerlink" title="Register CDN Provider"></a>Register CDN Provider</h3><p>接著我們要使用 Azure CDN 的技術，讓網站以及資源在使用者鄰近的伺服器機房建立快取，減少存取時間。</p>
+<p>首先確認是否註冊 Microsoft.Cdn Provider</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">az</span> provider list <span class="token parameter attr-name">--query</span> <span class="token string">"[?namespace=='Microsoft.Cdn'].registrationState"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果沒有，進行註冊</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">az</span> provider register <span class="token parameter attr-name">--namespace</span> Microsoft.CDN</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Create-Azure-CDN"><a href="#Create-Azure-CDN" class="headerlink" title="Create Azure CDN"></a>Create Azure CDN</h3><p>從 marketplace 建立 CDN <code class="s">contentdeliverynetwork</code></p>
+<p><img src="/assets/AZ-204-Lab-12-3.png"></p>
+<p>在 CDN <code class="s">contentdeliverynetwork</code> 下建立三個 endpoint</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Type</th>
+<th>Optimized</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code class="s">cdnmediacs</code></td>
+<td>storage</td>
+<td>General web delivery</td>
+</tr>
+<tr>
+<td><code class="s">cdnvideocs</code></td>
+<td>storage</td>
+<td>Video on demand media streaming</td>
+</tr>
+<tr>
+<td><code class="s">cdnwebcs</code></td>
+<td>Web App</td>
+<td>General web delivery</td>
+</tr>
+</tbody></table>
+<p><code class="s">cdnmediacs</code> -&gt; contenthost.blob.core.windows.net -&gt; /Media<br><code class="s">cdnvideocs</code> -&gt; contenthost.blob.core.windows.net -&gt; /Video<br><code class="s">cdnwebcs</code> -&gt; landingpage.azurewebsites.net</p>
+<p>完成 Endpoint 設定後，可以從 CDN 位址確認媒體是否存在</p>
+<p><a target="_blank" rel="noopener" href="https://cdnmediacs.azureedge.net/campus.jpg">https://cdnmediacs.azureedge.net/campus.jpg</a></p>
+<p><a target="_blank" rel="noopener" href="https://cdnvideocs.azureedge.net/welcome.mp4">https://cdnvideocs.azureedge.net/welcome.mp4</a></p>
+<p><a target="_blank" rel="noopener" href="https://cdnwebcs.azureedge.net/">https://cdnwebcs.azureedge.net</a></p>
+<p>剛建立好 Endpoint 出現下列畫面不用幾張，需要讓子彈飛一會，稍微等待一下</p>
+<p><img src="/assets/AZ-204-Lab-12-CDN-Error.png"></p>
+<p>稍等一下 <kbd class="s">Ctrl + F5</kbd> 重新整理頁面，會發現可以正常瀏覽囉</p>
+<p><img src="/assets/AZ-204-Lab-12-2.png"></p>
+<p>但目前 App Service 所使用的圖片及影片仍是直接來自於 Storage Account，這邊再從 App Service 的 Configuration 進行調整</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token property">"CDNMediaEndpoint"</span><span class="token operator">:</span> <span class="token string">"https://cdnmediacs.azureedge.net"</span><span class="token punctuation">,</span>
+  <span class="token property">"CDNVideoEndpoint"</span><span class="token operator">:</span> <span class="token string">"https://cdnvideocs.azureedge.net"</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>最後使用 <code class="s">cmd</code> 進行 nslookup 比較從 Azure 機房與 CDN 機房回應結果的差別</p>
+<p>位於 Azure Eastus 機房的回應<br><img src="/assets/AZ-204-Lab-12-6.png"></p>
+<p>Azure CDN 機房的回應，從 <a target="_blank" rel="noopener" href="https://www.twnic.tw/whois_n.cgi?query=203.211.4.145">whois</a> 可以發現回應的是來自台灣固網的 Points of Presence</p>
+<p><img src="/assets/AZ-204-Lab-12-5.png"></p>
+<h2 id="Azure-Azure-Content-Delivery-Network-CDN-相關知識"><a href="#Azure-Azure-Content-Delivery-Network-CDN-相關知識" class="headerlink" title="Azure Azure Content Delivery Network, CDN 相關知識"></a>Azure Azure Content Delivery Network, CDN 相關知識</h2><p>…</p>
+<h2 id="實戰-Azure-Azure-Content-Delivery-Network-CDN-心得"><a href="#實戰-Azure-Azure-Content-Delivery-Network-CDN-心得" class="headerlink" title="實戰 Azure Azure Content Delivery Network, CDN 心得"></a>實戰 Azure Azure Content Delivery Network, CDN 心得</h2><p>…</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab-12/" data-id="clg3fmaaj009ps4tsea1g7igg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-10/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 10 Azure Service Bus Queues</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/03/Microsoft-Retired-Documents/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Retired Documents 微軟 MSDN 經典文件
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

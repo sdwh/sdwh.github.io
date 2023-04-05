@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 01 App Services | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。 本次要實驗的是如何使用 Azure App Service，取代傳統使用作業系統搭配 IIS 的部署方式，App Service 是 Fully Managed 的 Platform as a service 服務，不再需要管理作業系統更新、網路機制等問題，對於開發者而言需要煩惱的事情減到最少的部">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 01 App Services">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。 本次要實驗的是如何使用 Azure App Service，取代傳統使用作業系統搭配 IIS 的部署方式，App Service 是 Fully Managed 的 Platform as a service 服務，不再需要管理作業系統更新、網路機制等問題，對於開發者而言需要煩惱的事情減到最少的部">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Diagram.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-10.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-9.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-11.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Ext-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Ext-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-12.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-13.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-14.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-15.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Auto-Scaling-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Auto-Scaling-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Slots.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Slots-Swap.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Slots-Traffic.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Authentication-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Authentication-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-01-Logging.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-App-Services-Loggings-Flow.svg">
+<meta property="article:published_time" content="2022-03-13T02:29:12.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Certification">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Certification-AZ-204-Lab" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab/" class="article-date">
+  <time datetime="2022-03-13T02:29:12.000Z" itemprop="datePublished">2022-03-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 01 App Services
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lab01-Web-App"><span class="toc-text">Lab01 - Web App</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Storage-Account"><span class="toc-text">Storage Account</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web-App-API"><span class="toc-text">Web App API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web-App-Web-Site"><span class="toc-text">Web App Web Site</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#App-Service-%E7%9B%B8%E9%97%9C%E7%9F%A5%E8%AD%98"><span class="toc-text">App Service 相關知識</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Auto-Scaling"><span class="toc-text">Auto Scaling</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deployment-Slots"><span class="toc-text">Deployment Slots</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication"><span class="toc-text">Authentication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logging"><span class="toc-text">Logging</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E6%88%B0-App-Service-%E5%BF%83%E5%BE%97"><span class="toc-text">實戰 App Service 心得</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。</p>
+<p>本次要實驗的是如何使用 Azure App Service，取代傳統使用作業系統搭配 IIS 的部署方式，App Service 是 Fully Managed 的 Platform as a service 服務，不再需要管理作業系統更新、網路機制等問題，對於開發者而言需要煩惱的事情減到最少的部署方式。</p>
+<a href="/posts/2022/03/Azure-Certification-AZ-204-Lab/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Lab01-Web-App"><a href="#Lab01-Web-App" class="headerlink" title="Lab01 - Web App"></a>Lab01 - Web App</h2><p>詳細的實驗流程可以參考微軟在 Github上的<a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Instructions/Labs">專案</a></p>
+<p><img src="/assets/AZ-204-Lab-01-Diagram.png" alt="圖片來源：微軟"></p>
+<h3 id="Storage-Account"><a href="#Storage-Account" class="headerlink" title="Storage Account"></a>Storage Account</h3><p>建立 Storage Account</p>
+<p><img src="/assets/AZ-204-Lab-01-1.png"></p>
+<p>取得 API Key 以及 ConnectionString 提供後續 Web App 使用</p>
+<p><img src="/assets/AZ-204-Lab-01-2.png"></p>
+<p>建立 Storage Container (Blob)</p>
+<p><img src="/assets/AZ-204-Lab-01-3.png"></p>
+<p>測試上傳圖片</p>
+<p><img src="/assets/AZ-204-Lab-01-4.png"></p>
+<h3 id="Web-App-API"><a href="#Web-App-API" class="headerlink" title="Web App API"></a>Web App API</h3><p>建立 Web App - API</p>
+<p><img src="/assets/AZ-204-Lab-01-5.png"><br><img src="/assets/AZ-204-Lab-01-6.png"></p>
+<p>設定 AppSettings</p>
+<p><img src="/assets/AZ-204-Lab-01-7.png"><br><img src="/assets/AZ-204-Lab-01-8.png"></p>
+<p>瀏覽 Web App</p>
+<p><img src="/assets/AZ-204-Lab-01-10.png"></p>
+<p>建立好的 Web App 初始畫面如附圖</p>
+<p><img src="/assets/AZ-204-Lab-01-9.png"></p>
+<p>將微軟提供的範例程式部署至 Web App</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Allfiles/Labs/01/Starter/API">Source Code | Github</a></p>
+<p><code class="watch">ImagesController.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ApiController</span></span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ImagesController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ControllerBase</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">HttpClient</span> _httpClient<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Options</span> _options<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">ImagesController</span><span class="token punctuation">(</span><span class="token class-name">HttpClient</span> httpClient<span class="token punctuation">,</span> <span class="token class-name">Options</span> options<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _httpClient <span class="token operator">=</span> httpClient<span class="token punctuation">;</span>
+        _options <span class="token operator">=</span> options<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>BlobContainerClient<span class="token punctuation">></span></span> <span class="token function">GetCloudBlobContainer</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> containerName<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BlobServiceClient</span> serviceClient <span class="token operator">=</span> 
+          <span class="token keyword">new</span> <span class="token constructor-invocation class-name">BlobServiceClient</span><span class="token punctuation">(</span>_options<span class="token punctuation">.</span>StorageConnectionString<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BlobContainerClient</span> containerClient <span class="token operator">=</span> 
+          serviceClient<span class="token punctuation">.</span><span class="token function">GetBlobContainerClient</span><span class="token punctuation">(</span>containerName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">await</span> containerClient<span class="token punctuation">.</span><span class="token function">CreateIfNotExistsAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> containerClient<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpGet</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>ActionResult<span class="token punctuation">&lt;</span>IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span><span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">Get</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BlobContainerClient</span> containerClient <span class="token operator">=</span> 
+          <span class="token keyword">await</span> <span class="token function">GetCloudBlobContainer</span><span class="token punctuation">(</span>_options<span class="token punctuation">.</span>FullImageContainerName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> results <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">await</span> <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">BlobItem</span> blobItem <span class="token keyword">in</span> containerClient<span class="token punctuation">.</span><span class="token function">GetBlobsAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            results<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+                Flurl<span class="token punctuation">.</span>Url<span class="token punctuation">.</span><span class="token function">Combine</span><span class="token punctuation">(</span>
+                    containerClient<span class="token punctuation">.</span>Uri<span class="token punctuation">.</span>AbsoluteUri<span class="token punctuation">,</span>
+                    blobItem<span class="token punctuation">.</span>Name
+                <span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        Console<span class="token punctuation">.</span>Out<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Got Images"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">Ok</span><span class="token punctuation">(</span>results<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>ActionResult<span class="token punctuation">></span></span> <span class="token function">Post</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">Stream</span> image <span class="token operator">=</span> Request<span class="token punctuation">.</span>Body<span class="token punctuation">;</span>
+        <span class="token class-name">BlobContainerClient</span> containerClient <span class="token operator">=</span> 
+          <span class="token keyword">await</span> <span class="token function">GetCloudBlobContainer</span><span class="token punctuation">(</span>_options<span class="token punctuation">.</span>FullImageContainerName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">string</span></span> blobName <span class="token operator">=</span> Guid<span class="token punctuation">.</span><span class="token function">NewGuid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToLower</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"-"</span><span class="token punctuation">,</span> String<span class="token punctuation">.</span>Empty<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BlobClient</span> blobClient <span class="token operator">=</span> containerClient<span class="token punctuation">.</span><span class="token function">GetBlobClient</span><span class="token punctuation">(</span>blobName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">await</span> blobClient<span class="token punctuation">.</span><span class="token function">UploadAsync</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">Created</span><span class="token punctuation">(</span>blobClient<span class="token punctuation">.</span>Uri<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Program</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task</span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> args<span class="token punctuation">)</span> <span class="token operator">=></span>
+        <span class="token keyword">await</span> Host<span class="token punctuation">.</span><span class="token function">CreateDefaultBuilder</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">ConfigureWebHostDefaults</span><span class="token punctuation">(</span>webBuilder <span class="token operator">=></span>
+            <span class="token punctuation">&#123;</span>
+                webBuilder<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">UseStartup</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Startup<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">RunAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Startup</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token return-type class-name">IConfiguration</span> _configuration <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Startup</span><span class="token punctuation">(</span><span class="token class-name">IConfiguration</span> configuration<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _configuration <span class="token operator">=</span> configuration<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ConfigureServices</span><span class="token punctuation">(</span><span class="token class-name">IServiceCollection</span> services<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Options<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>_configuration<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Get</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Options<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>HttpClient<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        services<span class="token punctuation">.</span><span class="token function">AddControllers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Configure</span><span class="token punctuation">(</span><span class="token class-name">IApplicationBuilder</span> app<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseDeveloperExceptionPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseRouting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseEndpoints</span><span class="token punctuation">(</span>endpoints <span class="token operator">=></span>
+        <span class="token punctuation">&#123;</span>
+            endpoints<span class="token punctuation">.</span><span class="token function">MapControllers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用 az cli 來進行部署作業</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">az</span> webapp deployment source config-zip </span>
+  --resource-group ManagedPlatform 
+  --src api.zip 
+  --name imgapics<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>部署完成後，再次瀏覽可以看到目前 Web App API 就是將 Storage Container 當中的 Blod Images 以陣列的方式將 Imgeas URL 回應。</p>
+<p><img src="/assets/AZ-204-Lab-01-11.png"></p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>除了使用 az cli 進行部署作業外，也可以從 Visual Studio Code 安裝 Azure App Service Extensions 來進行部署作業。</p>
+        </div>
+    </div>
+</div>
+
+<p><img src="/assets/AZ-204-Lab-01-Ext-1.png"><br><img src="/assets/AZ-204-Lab-01-Ext-2.png"></p>
+<h3 id="Web-App-Web-Site"><a href="#Web-App-Web-Site" class="headerlink" title="Web App Web Site"></a>Web App Web Site</h3><p>建立 Web App - Web Site</p>
+<p><img src="/assets/AZ-204-Lab-01-12.png"></p>
+<p>設定 AppSettings，介接到先前完成部署的 Web App API</p>
+<p><img src="/assets/AZ-204-Lab-01-13.png"></p>
+<p>將微軟提供的程式更新部署至 Web App</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Allfiles/Labs/01/Starter/Web">Source Code | Github</a></p>
+<p><code class="watch">Index.cshtml.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">IndexModel</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">PageModel</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">HttpClient</span> _httpClient<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Options</span> _options<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">IndexModel</span><span class="token punctuation">(</span><span class="token class-name">HttpClient</span> httpClient<span class="token punctuation">,</span> <span class="token class-name">Options</span> options<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _httpClient <span class="token operator">=</span> httpClient<span class="token punctuation">;</span>
+        _options <span class="token operator">=</span> options<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">BindProperty</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> ImageList <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">BindProperty</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">IFormFile</span> Upload <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task</span> <span class="token function">OnGetAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> imagesUrl <span class="token operator">=</span> _options<span class="token punctuation">.</span>ApiUrl<span class="token punctuation">;</span>
+
+        <span class="token class-name"><span class="token keyword">string</span></span> imagesJson <span class="token operator">=</span> <span class="token keyword">await</span> _httpClient<span class="token punctuation">.</span><span class="token function">GetStringAsync</span><span class="token punctuation">(</span>imagesUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> imagesList <span class="token operator">=</span> 
+          JsonConvert<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">DeserializeObject</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span><span class="token punctuation">></span></span></span><span class="token punctuation">(</span>imagesJson<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>ImageList <span class="token operator">=</span> imagesList<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ToList</span><span class="token generic class-name"><span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>IActionResult<span class="token punctuation">></span></span> <span class="token function">OnPostAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>Upload <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> Upload<span class="token punctuation">.</span>Length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> imagesUrl <span class="token operator">=</span> _options<span class="token punctuation">.</span>ApiUrl<span class="token punctuation">;</span>
+
+            <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StreamContent</span><span class="token punctuation">(</span>Upload<span class="token punctuation">.</span><span class="token function">OpenReadStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                image<span class="token punctuation">.</span>Headers<span class="token punctuation">.</span>ContentType <span class="token operator">=</span> 
+                  <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MediaTypeHeaderValue</span><span class="token punctuation">(</span>Upload<span class="token punctuation">.</span>ContentType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> response <span class="token operator">=</span> <span class="token keyword">await</span> _httpClient<span class="token punctuation">.</span><span class="token function">PostAsync</span><span class="token punctuation">(</span>imagesUrl<span class="token punctuation">,</span> image<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> <span class="token function">RedirectToPage</span><span class="token punctuation">(</span><span class="token string">"/Index"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"> <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Program</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task</span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> args<span class="token punctuation">)</span> <span class="token operator">=></span>
+        <span class="token keyword">await</span> Host<span class="token punctuation">.</span><span class="token function">CreateDefaultBuilder</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">ConfigureWebHostDefaults</span><span class="token punctuation">(</span>webBuilder <span class="token operator">=></span>
+            <span class="token punctuation">&#123;</span>
+                webBuilder<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">UseStartup</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Startup<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">RunAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Startup</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token return-type class-name">IConfiguration</span> _configuration <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Startup</span><span class="token punctuation">(</span><span class="token class-name">IConfiguration</span> configuration<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _configuration <span class="token operator">=</span> configuration<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ConfigureServices</span><span class="token punctuation">(</span><span class="token class-name">IServiceCollection</span> services<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Options<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>_configuration<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Get</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Options<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>HttpClient<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        services<span class="token punctuation">.</span><span class="token function">AddRazorPages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Configure</span><span class="token punctuation">(</span><span class="token class-name">IApplicationBuilder</span> app<span class="token punctuation">,</span> <span class="token class-name">IWebHostEnvironment</span> env<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseDeveloperExceptionPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseStaticFiles</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseRouting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        app<span class="token punctuation">.</span><span class="token function">UseEndpoints</span><span class="token punctuation">(</span>endpoints <span class="token operator">=></span>
+        <span class="token punctuation">&#123;</span>
+            endpoints<span class="token punctuation">.</span><span class="token function">MapRazorPages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>使用 az cli 來進行部署作業</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">az</span> webapp deployment source config-zip </span>
+  --resource-group ManagedPlatform 
+  --src web.zip 
+  --name imgwebcs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>完成部署後可以瀏覽成果：</p>
+<p><img src="/assets/AZ-204-Lab-01-14.png"></p>
+<p>測試使用上傳圖片的功能：</p>
+<p><img src="/assets/AZ-204-Lab-01-15.png"></p>
+<h2 id="App-Service-相關知識"><a href="#App-Service-相關知識" class="headerlink" title="App Service 相關知識"></a>App Service 相關知識</h2><h3 id="Auto-Scaling"><a href="#Auto-Scaling" class="headerlink" title="Auto Scaling"></a>Auto Scaling</h3><p><img src="/assets/AZ-204-Lab-01-Auto-Scaling-1.png" alt="設定 Scaling Rule"><br><img src="/assets/AZ-204-Lab-01-Auto-Scaling-2.png" alt="觀察 Instance 的變化"></p>
+<h3 id="Deployment-Slots"><a href="#Deployment-Slots" class="headerlink" title="Deployment Slots"></a>Deployment Slots</h3><p><img src="/assets/AZ-204-Lab-01-Slots.png"><br><img src="/assets/AZ-204-Lab-01-Slots-Swap.png" alt="Slots 可以交換"><br><img src="/assets/AZ-204-Lab-01-Slots-Traffic.png" alt="Slots 用於分流"></p>
+<h3 id="Authentication"><a href="#Authentication" class="headerlink" title="Authentication"></a>Authentication</h3><p><img src="/assets/AZ-204-Lab-01-Authentication-1.png"><br><img src="/assets/AZ-204-Lab-01-Authentication-2.png"></p>
+<h3 id="Logging"><a href="#Logging" class="headerlink" title="Logging"></a>Logging</h3><p><img src="/assets/AZ-204-Lab-01-Logging.png"></p>
+<p><img src="/assets/Azure-App-Services-Loggings-Flow.svg"></p>
+<h2 id="實戰-App-Service-心得"><a href="#實戰-App-Service-心得" class="headerlink" title="實戰 App Service 心得"></a>實戰 App Service 心得</h2><p>App Service 提供了 Free Tier 免費使用，雖然有限制每天的 CPU 運算時間以及儲存空間，但對於測試性質的網站服務而言應該相當足夠，值得馬上進駐使用。</p>
+<p>此外 App Service 提供了 MySQL In App (可惜不是 SQL Server Express，相關知識無法發揮 😗)，更包含 phyMyAdmin 管理工具，讓基本的網站服務可以搭配資料庫進行應用，非常方便。此外也可以考慮使用 sqlite 的方式，設計資料庫類型的網站服務，在 Free Tier 下就有如此豐富的資源可以使用，對於開發者而言，實在是福音 😍</p>
+<p>進階管理的工具包含 Kudu 可以用 GUI Explorer 的方式瀏覽 App Service 的目錄結構以及檔案，此外目前 Preview 的 App Service Editor 可以直接用於在 App Service 上檔案的編輯，讓 PAAS 的站台管理體驗更好。</p>
+<p>實際應用部署作業上，除了可以使用 Visual Studio 直接部署到 App Service，也可以透過 Azure DevOps 以 Continuous Deployment 的方式部署，或者是 App Service 提供的 Private Git 位址，直接由 Visual Studio 推送到 App Service 專案上，部署的方式非常方便，幾乎與發佈到 IIS 無異。</p>
+<p>使用 Azure Service PAAS 平台的最大好處在於可以省去許多繁複的作業系統管理、網站伺服器管理等設定，專注在功能的實現 😄</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab/" data-id="clg3fmaak009ss4tsdqwx3ya4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/03/Azure-DevOps-Server-Tutorial/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Azure DevOps Server 入門指南 - 從安裝到 CI/CD 實踐現代化系統開發流程</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-02/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 02 Azure Functions
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

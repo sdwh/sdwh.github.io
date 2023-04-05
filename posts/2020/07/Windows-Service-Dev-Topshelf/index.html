@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>如何開發 Windows Service 使用 .Net 及 Topshelf | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="從來沒有想過自行開發 Windows Service，一直以來都是在伺服器上直接執行 batch 或者經由工作排程器的方式執行想要達成的服務，但偶然契機下學習到 Windows Service 可以得到更多的便利性，同時藉由安裝 Topshelf 僅需要以 Console 開發上做延伸即可，非常實用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何開發 Windows Service 使用 .Net 及 Topshelf">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/Windows-Service-Dev-Topshelf/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="從來沒有想過自行開發 Windows Service，一直以來都是在伺服器上直接執行 batch 或者經由工作排程器的方式執行想要達成的服務，但偶然契機下學習到 Windows Service 可以得到更多的便利性，同時藉由安裝 Topshelf 僅需要以 Console 開發上做延伸即可，非常實用。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/posts/2020/07/Windows-Service-Dev-Topshelf/assets/">
+<meta property="article:published_time" content="2020-07-04T10:46:35.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="OS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows-Service-Dev-Topshelf" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/Windows-Service-Dev-Topshelf/" class="article-date">
+  <time datetime="2020-07-04T10:46:35.000Z" itemprop="datePublished">2020-07-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何開發 Windows Service 使用 .Net 及 Topshelf
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E9%9C%80%E8%A6%81-Windows-Service"><span class="toc-text">為什麼要需要 Windows Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Topshelf-%E7%9A%84%E5%A5%BD%E8%99%95"><span class="toc-text">使用 Topshelf 的好處</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E5%AF%A6%E4%BD%9C"><span class="toc-text">專案實作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>從來沒有想過自行開發 Windows Service，一直以來都是在伺服器上直接執行 batch 或者經由工作排程器的方式執行想要達成的服務，但偶然契機下學習到 Windows Service 可以得到更多的便利性，同時藉由安裝 Topshelf 僅需要以 Console 開發上做延伸即可，非常實用。</p>
+<a href="/posts/2020/07/Windows-Service-Dev-Topshelf/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="為什麼要需要-Windows-Service"><a href="#為什麼要需要-Windows-Service" class="headerlink" title="為什麼要需要 Windows Service"></a>為什麼要需要 Windows Service</h3><ul>
+<li>可以控制執行服務的角色與身分 (user, account)</li>
+<li>作業系統啟用後會<strong>服務</strong>自動啟用，不需要仰賴使用者的登入</li>
+<li>可以做為其他系統的依賴項目</li>
+<li>可以將腳本包裝進入 Windows OS</li>
+<li>可以遠端的控制腳本</li>
+</ul>
+<h3 id="使用-Topshelf-的好處"><a href="#使用-Topshelf-的好處" class="headerlink" title="使用 Topshelf 的好處"></a>使用 Topshelf 的好處</h3><p>讓 Topshelf 負責 Service 的安裝、移除、管理，開發者可以專注在 Service 本身的開發工作。</p>
+<h3 id="專案實作"><a href="#專案實作" class="headerlink" title="專案實作"></a>專案實作</h3><ol>
+<li>藉由 Visual Studio 新增 Console專案</li>
+<li>Nuget Install Topshelf</li>
+</ol>
+<p><img src="assets/" alt="Nuget - Topshelf"></p>
+<ol start="3">
+<li>設計服務</li>
+<li>用 Topshelf 包裝服務的類別與執行、停止</li>
+<li>Cli Install Topshelf 至 OS</li>
+<li>驗證如何遠端控制 Service</li>
+</ol>
+<p>待實作 😋😋😋</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/442264/what-is-the-benefit-of-developing-the-application-as-a-windows-service">stackoverflow - Benefits of Windows Service</a></li>
+<li><a target="_blank" rel="noopener" href="https://youtu.be/y64L-3HKuP0">Youtube - Intro to Windows Services in C# - How to create, install, and use a service using Topshelf</a></li>
+<li><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/yc421206/2019/08/30/use_topshelf_replace_windows_service_project">使用 Topshelf 取代 Windows Service 專案</a></li>
+<li><a target="_blank" rel="noopener" href="https://tpu.thinkpower.com.tw/tpu/articleDetails/1594">使用 Topshelf 簡化 Windows Service 開發</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/Windows-Service-Dev-Topshelf/" data-id="clg3fmanq01o6s4tsdbn7hncw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/" rel="tag">OS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/07/Design-Pattern-Adapter/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">重溫《深入淺出設計模式》轉接器模式 (Book Review of Head First Design Pattern, Adapter Pattern)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/07/Design-Pattern-Iterator/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          重溫《深入淺出設計模式》反覆器模式 (Book Review of Head First Design Pattern, Iterator Pattern)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

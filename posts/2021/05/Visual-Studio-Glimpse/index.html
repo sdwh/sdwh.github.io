@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Visual Studio 入門教學 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="有人說 Visual Studio 是地表最強大的 IDE 工具？原因在於許多便利性的功能，例如 Intellisense、IntelliCode。而對於 .NET 生態系的開發人員而言，不論是 Web 系統開發、 Client 系統開發 或者是 SSIS 的流程設計都少不了 Visual Studio。本次的筆記就是要針對使用 Visual Studio 絕對不能錯過的功能做一個介紹，讓使用 V">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Visual Studio 入門教學">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/05/Visual-Studio-Glimpse/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="有人說 Visual Studio 是地表最強大的 IDE 工具？原因在於許多便利性的功能，例如 Intellisense、IntelliCode。而對於 .NET 生態系的開發人員而言，不論是 Web 系統開發、 Client 系統開發 或者是 SSIS 的流程設計都少不了 Visual Studio。本次的筆記就是要針對使用 Visual Studio 絕對不能錯過的功能做一個介紹，讓使用 V">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Clean-Up.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Window-Layout.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Quick-Launch-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Quick-Launch-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Go-To.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Search-Replace-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Search-Replace-2.png">
+<meta property="article:published_time" content="2021-05-07T01:13:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="VisualStudio">
+<meta property="article:tag" content="DevSetup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Visual-Studio-Glimpse" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/05/Visual-Studio-Glimpse/" class="article-date">
+  <time datetime="2021-05-07T01:13:00.000Z" itemprop="datePublished">2021-05-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Visual Studio 入門教學
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B7%A8%E8%BC%AF%E6%8A%80%E5%B7%A7-Editor"><span class="toc-text">編輯技巧 Editor</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Quick-Action-amp-Code-Snippet"><span class="toc-text">Quick Action &amp; Code Snippet</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Clean-Up-%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%B8%85%E9%99%A4"><span class="toc-text">Clean Up, 程式碼清除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows-Layout-%E8%A6%96%E7%AA%97%E9%85%8D%E7%BD%AE"><span class="toc-text">Windows Layout, 視窗配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Quick-Launch-%E6%90%9C%E5%B0%8B"><span class="toc-text">Quick Launch, 搜尋</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Go-To-%E5%89%8D%E5%BE%80%E7%89%B9%E5%AE%9A%E7%9B%AE%E6%A8%99"><span class="toc-text">Go To, 前往特定目標</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Search-amp-Replace-%E6%90%9C%E5%B0%8B%E8%88%87%E5%8F%96%E4%BB%A3"><span class="toc-text">Search &amp; Replace, 搜尋與取代</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BC%8F%E7%A2%BC%E8%87%AA%E5%8B%95%E6%8F%9B%E8%A1%8C"><span class="toc-text">程式碼自動換行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E7%AE%A1%E7%90%86-Solution-amp-Projects"><span class="toc-text">專案管理 Solution &amp; Projects</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%97%E4%BB%B6%E7%AE%A1%E7%90%86-Nuget"><span class="toc-text">套件管理 Nuget</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%A4%E9%8C%AF%E5%B7%A5%E5%85%B7-Debug"><span class="toc-text">除錯工具 Debug</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Version-Control-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-text">Version Control, 版本控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E8%A3%BD%E8%A8%AD%E5%AE%9A-Custom"><span class="toc-text">客製設定 Custom</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E8%B3%87%E8%A8%8A"><span class="toc-text">相關資訊</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%95%8F%E9%A1%8C%E5%9B%9E%E5%A0%B1%E8%88%87%E5%BB%BA%E8%AD%B0"><span class="toc-text">問題回報與建議</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Visual-Studio-%E6%8E%88%E6%AC%8A-%E8%A8%82%E9%96%B1"><span class="toc-text">Visual Studio 授權 &#x2F; 訂閱</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>有人說 Visual Studio 是地表最強大的 IDE 工具？原因在於許多便利性的功能，例如 Intellisense、IntelliCode。而對於 .NET 生態系的開發人員而言，不論是 Web 系統開發、 Client 系統開發 或者是 SSIS 的流程設計都少不了 Visual Studio。本次的筆記就是要針對使用 Visual Studio 絕對不能錯過的功能做一個介紹，讓使用 Visual Studio 的開發者都能樂在其中。</p>
+<a href="/posts/2021/05/Visual-Studio-Glimpse/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="編輯技巧-Editor"><a href="#編輯技巧-Editor" class="headerlink" title="編輯技巧 Editor"></a>編輯技巧 Editor</h3><h4 id="Quick-Action-amp-Code-Snippet"><a href="#Quick-Action-amp-Code-Snippet" class="headerlink" title="Quick Action &amp; Code Snippet"></a>Quick Action &amp; Code Snippet</h4><p>Quick Action 可以自動輔助程式碼的錯誤修正以及程式碼<strong>重構, Refactoring</strong>，而 Code Snippet 則可以提升開發速度，只要輸入部分字元就完成全部的內容輸入，絕對是 VS 的開發人員不同錯過的功能。</p>
+<p><a href="/posts/2020/07/VisualStudio-QuickAction/">使用 Visual Studio 開發，你不能錯過的 Quick Action 及 Code Snippet</a></p>
+<h4 id="Clean-Up-程式碼清除"><a href="#Clean-Up-程式碼清除" class="headerlink" title="Clean Up, 程式碼清除"></a>Clean Up, 程式碼清除</h4><p>執行程式碼清除可以自動為檔案中的程式碼套入一致的程式碼規範，例如移除不必要的 Using、自動為流程控制加入括號等，非常方便。</p>
+<p><img src="/assets/Visual-Studio-Clean-Up.png"></p>
+<h4 id="Windows-Layout-視窗配置"><a href="#Windows-Layout-視窗配置" class="headerlink" title="Windows Layout, 視窗配置"></a>Windows Layout, 視窗配置</h4><p>Visual Studio 可以將視窗的配置保存，因應不同的開發情境使用相對的視窗配置。</p>
+<p>當視窗因為 Debug 需求調整的十分混亂時，可以重置視窗的排放方式。</p>
+<p><img src="/assets/Visual-Studio-Window-Layout.png"></p>
+<h4 id="Quick-Launch-搜尋"><a href="#Quick-Launch-搜尋" class="headerlink" title="Quick Launch, 搜尋"></a>Quick Launch, 搜尋</h4><p>使用 <code class="watch">Ctrl + Q</code> 搜尋，可以用於尋找 Visual Studio 的功能或者是搜尋檔案，可以加速功能的尋找。檔案的搜尋則建議使用下一個介紹的 Go to。</p>
+<p><img src="/assets/Visual-Studio-Quick-Launch-1.png"></p>
+<p>要注意的是中文環境下，必須交互用中文、英文才能查到所需的功能，例如中斷點，搜尋 Breakpoint 會找不到結果。</p>
+<p><img src="/assets/Visual-Studio-Quick-Launch-2.png"></p>
+<h4 id="Go-To-前往特定目標"><a href="#Go-To-前往特定目標" class="headerlink" title="Go To, 前往特定目標"></a>Go To, 前往特定目標</h4><p>使用 <code class="watch">Ctrl + ,</code> 前往檔案(f)、行號(:)、物件成員(m)</p>
+<p>例如輸入：f views\home\about.cshtml</p>
+<p>來開啟 ASP.NET MVC Project 中的 Home Controller 的 About View</p>
+<p><img src="/assets/Visual-Studio-Go-To.png"></p>
+<p>⚠️將語言切換為 English ，使用 <code class="watch">Ctrl + ,</code> 才不會因為被替換為執行中文的「，」符號</p>
+<h4 id="Search-amp-Replace-搜尋與取代"><a href="#Search-amp-Replace-搜尋與取代" class="headerlink" title="Search &amp; Replace, 搜尋與取代"></a>Search &amp; Replace, 搜尋與取代</h4><p>使用 <code class="watch">Ctrl + Shift + F</code> 來進行搜尋。</p>
+<p>搜尋可以限定範圍、副檔名，並且可以逐一對檔案搜尋並列出全部的結果。</p>
+<p><img src="/assets/Visual-Studio-Search-Replace-1.png"></p>
+<p>搜尋的結果只要點選就可以開啟檔案瀏覽，同時也可以在搜尋結果中再次篩選，而搜尋的結果也可以保存在頁籤上，如此一來再次執行搜尋與取代就不會關閉原本的搜尋。</p>
+<p>而如果想要將搜尋結果匯出，可以使用清單檢視的方式，並剪貼到記事本上。</p>
+<p><img src="/assets/Visual-Studio-Search-Replace-2.png"></p>
+<h4 id="程式碼自動換行"><a href="#程式碼自動換行" class="headerlink" title="程式碼自動換行"></a>程式碼自動換行</h4><p>當程式碼佔據整個螢幕版寬的時候，需要移動橫軸來瀏覽很不方便，這個時候可以讓過寬的程式碼自動換行以便閱讀。</p>
+<p><a href="/posts/2021/02/Visual-Studio-Auto-Wrap/">Visual Studio 程式碼如何自動換行 (Word Wrap)</a></p>
+<h3 id="專案管理-Solution-amp-Projects"><a href="#專案管理-Solution-amp-Projects" class="headerlink" title="專案管理 Solution &amp; Projects"></a>專案管理 Solution &amp; Projects</h3><p><strong>Solution, 解決方案</strong> 是 <strong>Project, 專案</strong> 的容器，一個解決方案可以有多個專案；專案則是資料夾與檔案的容器，專案下可以有多個資料夾與檔案。</p>
+<p>同時專案之間也可以設定 Dependency，讓關注點進行分離，比如商業邏輯的類別可以自成專案，並用於提供其他專案的依賴 DLL。</p>
+<p><a href="/posts/2021/02/Visual-Studio-Roslyn-csc/">Visual Studio 專案取回時的各種異象</a></p>
+<h3 id="套件管理-Nuget"><a href="#套件管理-Nuget" class="headerlink" title="套件管理 Nuget"></a>套件管理 Nuget</h3><p>待編輯。</p>
+<h3 id="除錯工具-Debug"><a href="#除錯工具-Debug" class="headerlink" title="除錯工具 Debug"></a>除錯工具 Debug</h3><p>相較於傳統開發使用 Console 來顯示相關變數的除錯方式，VS IDE 有著更完善的 Debugger 可以使用，除了可以下中斷點觀察變數，並且可以在除錯的過程直接調整變數進行測試，更為快速的達到 Debug 的功能。</p>
+<p><a href="/posts/2021/03/Visual-Studio-Debugging-Tools/">Visual Studio Debugging Tools (活用除錯工具)</a></p>
+<h3 id="Version-Control-版本控制"><a href="#Version-Control-版本控制" class="headerlink" title="Version Control, 版本控制"></a>Version Control, 版本控制</h3><p><a href="/posts/2020/06/VisualStudio-Git/">Visual Studio 使用 Git 版本控制</a></p>
+<h3 id="客製設定-Custom"><a href="#客製設定-Custom" class="headerlink" title="客製設定 Custom"></a>客製設定 Custom</h3><p><a href="/posts/2020/06/AspNet-VisualStudio-Setup/">Visual Studio Setup for ASP.NET MVC (編輯環境設定)</a></p>
+<h2 id="相關資訊"><a href="#相關資訊" class="headerlink" title="相關資訊"></a>相關資訊</h2><h3 id="問題回報與建議"><a href="#問題回報與建議" class="headerlink" title="問題回報與建議"></a>問題回報與建議</h3><p>可以前往 Visual Studio 的 Community 進行問題回報與功能建議，一起讓這個產品更美好 😉</p>
+<p><a target="_blank" rel="noopener" href="https://developercommunity.visualstudio.com/search">Developer Community</a></p>
+<h3 id="Visual-Studio-授權-訂閱"><a href="#Visual-Studio-授權-訂閱" class="headerlink" title="Visual Studio 授權 / 訂閱"></a>Visual Studio 授權 / 訂閱</h3><h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/visual-studio-2019-getting-started/table-of-contents">Pluralsight - Visual Studio 2019 Getting Started</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/05/Visual-Studio-Glimpse/" data-id="clg3fmam001ixs4tsh2qvhept" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevSetup/" rel="tag">DevSetup</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/05/SQL-Server-Exec-SP-Who2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 利用 sp_who2 來記錄資料庫伺服器的應用程式連線情形</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/05/NET-Class-Library-Project/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          .NET 開發自己的類別庫專案與 DLL (Class Library Project)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

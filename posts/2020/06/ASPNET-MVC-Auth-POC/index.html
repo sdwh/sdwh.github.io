@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC 5 如何客製化驗證與授權並實作帳號登入機制 (How to custom ASP.NET MVC Auth Filters &amp; Login / Logoff systems) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="夏至的這天上午先去爬山，正午時分不一會就滿身大汗了，果然還是秋天的午後才是最適合的爬山時機。而最近寫程式的機會越來越多，不管是主管刻意的安排或者自己興趣的傾向，總之寫程式在工作中是越來越重要且主要的一部份了。自從有寫筆記的習慣之後，對於學習陳果可以被視覺化的呈現，同時也可以量化，這種看得見累積的感覺讓人更加有動力去學習。 最近深有所感，只有經驗過、練習過的才能真正在開發的時候發揮作用，並且沉入心流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 5 如何客製化驗證與授權並實作帳號登入機制 (How to custom ASP.NET MVC Auth Filters &amp; Login &#x2F; Logoff systems)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/ASPNET-MVC-Auth-POC/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="夏至的這天上午先去爬山，正午時分不一會就滿身大汗了，果然還是秋天的午後才是最適合的爬山時機。而最近寫程式的機會越來越多，不管是主管刻意的安排或者自己興趣的傾向，總之寫程式在工作中是越來越重要且主要的一部份了。自從有寫筆記的習慣之後，對於學習陳果可以被視覺化的呈現，同時也可以量化，這種看得見累積的感覺讓人更加有動力去學習。 最近深有所感，只有經驗過、練習過的才能真正在開發的時候發揮作用，並且沉入心流">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/aspnet-mvc-authpoc-new-project.png">
+<meta property="og:image" content="https://sdwh.dev/assets/aspnet-mvc-authpoc-nuget-console.png">
+<meta property="og:image" content="https://sdwh.dev/assets/aspnet-mvc-authpoc-sqlquery.png">
+<meta property="og:image" content="https://sdwh.dev/assets/aspnet-mvc-authpoc-loginview.png">
+<meta property="article:published_time" content="2020-06-21T07:36:15.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Auth-POC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/ASPNET-MVC-Auth-POC/" class="article-date">
+  <time datetime="2020-06-21T07:36:15.000Z" itemprop="datePublished">2020-06-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 5 如何客製化驗證與授權並實作帳號登入機制 (How to custom ASP.NET MVC Auth Filters &amp; Login / Logoff systems)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-By-Step"><span class="toc-text">Step By Step</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%B0%88%E6%A1%88"><span class="toc-text">新建專案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D%E5%A5%97%E4%BB%B6"><span class="toc-text">安裝套件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Codefirst-%E8%A8%AD%E8%A8%88-Models-User-Role"><span class="toc-text">Codefirst - 設計 Models (User, Role)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Codefirst-%E5%8A%A0%E5%85%A5-DBContext-%E8%88%87-ConnectionStrings"><span class="toc-text">Codefirst - 加入 DBContext 與 ConnectionStrings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Codefirst-Enable-Migrations"><span class="toc-text">Codefirst - Enable Migrations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E5%85%A5-AccountController"><span class="toc-text">加入 AccountController</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E8%A3%BD%E5%8C%96-Authentication-Filter"><span class="toc-text">客製化 Authentication Filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E8%A3%BD%E5%8C%96-Authorize-Attribute"><span class="toc-text">客製化 Authorize Attribute</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%87-Filter-%E5%8A%A0%E5%85%A5-HomeController"><span class="toc-text">將 Filter 加入 HomeController</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%A6%E4%BD%9C-LoginPartial-%E9%A1%AF%E7%A4%BA%E7%99%BB%E5%85%A5%E8%B3%87%E8%A8%8A%E5%8F%8A%E7%99%BB%E5%87%BA%E6%8C%89%E9%88%95"><span class="toc-text">實作 _LoginPartial 顯示登入資訊及登出按鈕</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%89%8D%E6%87%89%E7%94%A8%E7%9A%84%E7%AF%84%E4%BE%8B-Custom-Authorization-Fitler"><span class="toc-text">目前應用的範例 Custom Authorization Fitler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>夏至的這天上午先去爬山，正午時分不一會就滿身大汗了，果然還是秋天的午後才是最適合的爬山時機。而最近寫程式的機會越來越多，不管是主管刻意的安排或者自己興趣的傾向，總之寫程式在工作中是越來越重要且主要的一部份了。自從有寫筆記的習慣之後，對於學習陳果可以被視覺化的呈現，同時也可以量化，這種看得見累積的感覺讓人更加有動力去學習。</p>
+<p>最近深有所感，只有經驗過、練習過的才能真正在開發的時候發揮作用，並且沉入心流的開發體驗。驗證與授權一直是寫每個系統的起手式，特此跟隨一篇教學文章，並整理成筆記。</p>
+<a href="/posts/2020/06/ASPNET-MVC-Auth-POC/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<p>範例是採 CodeFirst 的方式進行，且使用帳號密碼的方式管理驗證。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/sdwh/Aspnet-MVC-AuthFilter-POC">範例程式碼</a></p>
+<h2 id="Step-By-Step"><a href="#Step-By-Step" class="headerlink" title="Step By Step"></a>Step By Step</h2><h3 id="新建專案"><a href="#新建專案" class="headerlink" title="新建專案"></a>新建專案</h3><p><strong>ASP.NET MVC</strong></p>
+<p>.NET Framework : 4.52<br>驗證方式: 無驗證<br>套件: MVC</p>
+<p><img src="/assets/aspnet-mvc-authpoc-new-project.png"></p>
+<h3 id="安裝套件"><a href="#安裝套件" class="headerlink" title="安裝套件"></a>安裝套件</h3><p>EntityFramework</p>
+<h3 id="Codefirst-設計-Models-User-Role"><a href="#Codefirst-設計-Models-User-Role" class="headerlink" title="Codefirst - 設計 Models (User, Role)"></a>Codefirst - 設計 Models (User, Role)</h3><p>/Models/Role.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Models</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Role</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>/Models/User.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>ComponentModel<span class="token punctuation">.</span>DataAnnotations</span><span class="token punctuation">;</span>
+<span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Models</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">User</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Display</span><span class="token attribute-arguments"><span class="token punctuation">(</span>Name <span class="token operator">=</span> <span class="token string">"使用者名稱"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> UserId <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> UserName <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Password <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> RoleId <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Codefirst-加入-DBContext-與-ConnectionStrings"><a href="#Codefirst-加入-DBContext-與-ConnectionStrings" class="headerlink" title="Codefirst - 加入 DBContext 與 ConnectionStrings"></a>Codefirst - 加入 DBContext 與 ConnectionStrings</h3><p>/Models/SqlDbContext.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Data<span class="token punctuation">.</span>Entity</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Models</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SqlDbContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token function">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token string">"name=SqlConnection"</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>User<span class="token punctuation">></span></span> Users <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>Role<span class="token punctuation">></span></span> Roles <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>/web.config</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>connectionStrings</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>SqlConnection<span class="token punctuation">"</span></span>
+        <span class="token attr-name">connectionString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=MvcAuthPOC; Integrated Security=SSPI<span class="token punctuation">"</span></span>
+        <span class="token attr-name">providerName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Data.SqlClient<span class="token punctuation">"</span></span>
+        <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>connectionStrings</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Codefirst-Enable-Migrations"><a href="#Codefirst-Enable-Migrations" class="headerlink" title="Codefirst - Enable Migrations"></a>Codefirst - Enable Migrations</h3><p>使用 <strong>Nuget Package Manager</strong> (<strong>套件管理器主控台</strong>)</p>
+<p><img src="/assets/aspnet-mvc-authpoc-nuget-console.png"></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">enable</span>-migrations</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>執行完 <watch class="code">enable-migrations</watch> 後，系統會自動產生 Migrations Folder 及 Configuration.cs。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">add</span>-migration Initial</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>執行完 <watch class="code">add-migration Initial</watch> 後，系統會自動產生 日期時間_Initial.cs，裡面包含著從 Models 藉由 EntityFramework 到 Database 建立 Table 的互動。這邊可以加入產生預設資料的 SQL Command，方便預設資料不用每次都重新建立。</p>
+<p>/Migrations/_Initial.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Migrations</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+    <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Data<span class="token punctuation">.</span>Entity<span class="token punctuation">.</span>Migrations</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">partial</span> <span class="token keyword">class</span> <span class="token class-name">Initial</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbMigration</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">CreateTable</span><span class="token punctuation">(</span>
+                <span class="token string">"dbo.Roles"</span><span class="token punctuation">,</span>
+                c <span class="token operator">=></span> <span class="token keyword">new</span>
+                    <span class="token punctuation">&#123;</span>
+                        Id <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">Int</span><span class="token punctuation">(</span><span class="token named-parameter punctuation">nullable</span><span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token named-parameter punctuation">identity</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        Name <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">PrimaryKey</span><span class="token punctuation">(</span>t <span class="token operator">=></span> t<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">CreateTable</span><span class="token punctuation">(</span>
+                <span class="token string">"dbo.Users"</span><span class="token punctuation">,</span>
+                c <span class="token operator">=></span> <span class="token keyword">new</span>
+                    <span class="token punctuation">&#123;</span>
+                        Id <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">Int</span><span class="token punctuation">(</span><span class="token named-parameter punctuation">nullable</span><span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token named-parameter punctuation">identity</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        UserId <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        UserName <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        Password <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        RoleId <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">Int</span><span class="token punctuation">(</span><span class="token named-parameter punctuation">nullable</span><span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">PrimaryKey</span><span class="token punctuation">(</span>t <span class="token operator">=></span> t<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"Insert into Roles (Name) Values ('SystemAdmin')"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"Insert into Roles (Name) Values ('Admin')"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"Insert into Roles (Name) Values ('User')"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"Insert into Users (UserId,UserName,Password,RoleId) Values ('acc1','Ryan System Admin','pwd',1)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"Insert into Users (UserId,UserName,Password,RoleId) Values ('acc2','Josh Admin','pwd',2)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"Insert into Users (UserId,UserName,Password,RoleId) Values ('acc3','Kevin User','pwd',3)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">DropTable</span><span class="token punctuation">(</span><span class="token string">"dbo.Users"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">DropTable</span><span class="token punctuation">(</span><span class="token string">"dbo.Roles"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>執行完 <watch class="code">update-database</watch> 後，資料庫就會配合產生對應的資料表與預設資料了。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">update</span>-database</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/aspnet-mvc-authpoc-sqlquery.png"></p>
+<h3 id="加入-AccountController"><a href="#加入-AccountController" class="headerlink" title="加入 AccountController"></a>加入 AccountController</h3><p>/Controller/AccountController.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Models</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Mvc</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Controllers</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AccountController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Controller</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpGet</span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Login</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Login</span><span class="token punctuation">(</span><span class="token class-name">User</span> model<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>ModelState<span class="token punctuation">.</span>IsValid<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    <span class="token class-name">User</span> user <span class="token operator">=</span> context<span class="token punctuation">.</span>Users
+                                       <span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>u <span class="token operator">=></span> u<span class="token punctuation">.</span>UserId <span class="token operator">==</span> model<span class="token punctuation">.</span>UserId <span class="token operator">&amp;&amp;</span> u<span class="token punctuation">.</span>Password <span class="token operator">==</span> model<span class="token punctuation">.</span>Password<span class="token punctuation">)</span>
+                                       <span class="token punctuation">.</span><span class="token function">FirstOrDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>user <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">&#123;</span>
+                        Session<span class="token punctuation">[</span><span class="token string">"UserName"</span><span class="token punctuation">]</span> <span class="token operator">=</span> user<span class="token punctuation">.</span>UserName<span class="token punctuation">;</span>
+                        Session<span class="token punctuation">[</span><span class="token string">"UserId"</span><span class="token punctuation">]</span> <span class="token operator">=</span> user<span class="token punctuation">.</span>UserId<span class="token punctuation">;</span>
+                        <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"Index"</span><span class="token punctuation">,</span> <span class="token string">"Home"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">&#125;</span>
+                    <span class="token keyword">else</span>
+                    <span class="token punctuation">&#123;</span>
+                        ModelState<span class="token punctuation">.</span><span class="token function">AddModelError</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"Invalid User Name or Password"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>model<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+            <span class="token keyword">else</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>model<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ValidateAntiForgeryToken</span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">LogOff</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            Session<span class="token punctuation">[</span><span class="token string">"UserName"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">string</span><span class="token punctuation">.</span>Empty<span class="token punctuation">;</span>
+            Session<span class="token punctuation">[</span><span class="token string">"UserId"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">string</span><span class="token punctuation">.</span>Empty<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"Index"</span><span class="token punctuation">,</span> <span class="token string">"Home"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="客製化-Authentication-Filter"><a href="#客製化-Authentication-Filter" class="headerlink" title="客製化 Authentication Filter"></a>客製化 Authentication Filter</h3><p>這個部分也是整個教學文章的核心所在，如何客製驗證、授權的機制，則系統的開發就更能隨心所欲的設計，而使用 Filters 的方式同時也讓專案易於擴充與維護。</p>
+<p>加入 Filters Folder</p>
+<p>/Filters/CustomAuthenticationFilter.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Mvc</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Mvc<span class="token punctuation">.</span>Filters</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Routing</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Filters</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomAuthenticationFilter</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ActionFilterAttribute</span><span class="token punctuation">,</span> <span class="token class-name">IAuthenticationFilter</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnAuthentication</span><span class="token punctuation">(</span><span class="token class-name">AuthenticationContext</span> filterContext<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>Convert<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span>filterContext<span class="token punctuation">.</span>HttpContext<span class="token punctuation">.</span>Session<span class="token punctuation">[</span><span class="token string">"UserName"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                filterContext<span class="token punctuation">.</span>Result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpUnauthorizedResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnAuthenticationChallenge</span><span class="token punctuation">(</span><span class="token class-name">AuthenticationChallengeContext</span> filterContext<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>filterContext<span class="token punctuation">.</span>Result <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> filterContext<span class="token punctuation">.</span>Result <span class="token keyword">is</span> <span class="token class-name">HttpUnauthorizedResult</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token comment">//Redirecting the user to the Login View of Account Controller  </span>
+                filterContext<span class="token punctuation">.</span>Result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RedirectToRouteResult</span><span class="token punctuation">(</span>
+                <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RouteValueDictionary</span>
+                <span class="token punctuation">&#123;</span>
+                     <span class="token punctuation">&#123;</span> <span class="token string">"controller"</span><span class="token punctuation">,</span> <span class="token string">"Account"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                     <span class="token punctuation">&#123;</span> <span class="token string">"action"</span><span class="token punctuation">,</span> <span class="token string">"Login"</span> <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="客製化-Authorize-Attribute"><a href="#客製化-Authorize-Attribute" class="headerlink" title="客製化 Authorize Attribute"></a>客製化 Authorize Attribute</h3><p>/Filters/CustomAuthorizeAttribute.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Models</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Mvc</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Routing</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Filters</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomAuthorizeAttribute</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">AuthorizeAttribute</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> allowedroles<span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token function">CustomAuthorizeAttribute</span><span class="token punctuation">(</span><span class="token keyword">params</span> <span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> roles<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>allowedroles <span class="token operator">=</span> roles<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">AuthorizeCore</span><span class="token punctuation">(</span><span class="token class-name">HttpContextBase</span> httpContext<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">bool</span></span> authorize <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> userId <span class="token operator">=</span> Convert<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span>httpContext<span class="token punctuation">.</span>Session<span class="token punctuation">[</span><span class="token string">"UserId"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>userId<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    <span class="token class-name"><span class="token keyword">var</span></span> userRole <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">from</span> u <span class="token keyword">in</span> context<span class="token punctuation">.</span>Users
+                                    <span class="token keyword">join</span> r <span class="token keyword">in</span> context<span class="token punctuation">.</span>Roles <span class="token keyword">on</span> u<span class="token punctuation">.</span>RoleId equals r<span class="token punctuation">.</span>Id
+                                    <span class="token keyword">where</span> <span class="token class-name">u</span><span class="token punctuation">.</span>UserId <span class="token operator">==</span> userId
+                                    <span class="token keyword">select</span> <span class="token keyword">new</span>
+                                    <span class="token punctuation">&#123;</span>
+                                        r<span class="token punctuation">.</span>Name
+                                    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">FirstOrDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> role <span class="token keyword">in</span> allowedroles<span class="token punctuation">)</span>
+                    <span class="token punctuation">&#123;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>role <span class="token operator">==</span> userRole<span class="token punctuation">.</span>Name<span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">&#125;</span>
+
+
+            <span class="token keyword">return</span> authorize<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">HandleUnauthorizedRequest</span><span class="token punctuation">(</span><span class="token class-name">AuthorizationContext</span> filterContext<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            filterContext<span class="token punctuation">.</span>Result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RedirectToRouteResult</span><span class="token punctuation">(</span>
+               <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RouteValueDictionary</span>
+               <span class="token punctuation">&#123;</span>
+                    <span class="token punctuation">&#123;</span> <span class="token string">"controller"</span><span class="token punctuation">,</span> <span class="token string">"Home"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">&#123;</span> <span class="token string">"action"</span><span class="token punctuation">,</span> <span class="token string">"UnAuthorized"</span> <span class="token punctuation">&#125;</span>
+               <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="將-Filter-加入-HomeController"><a href="#將-Filter-加入-HomeController" class="headerlink" title="將 Filter 加入 HomeController"></a>將 Filter 加入 HomeController</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Mvc</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Filters</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">Aspnet_MVC_AuthFilter_POC<span class="token punctuation">.</span>Controllers</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">CustomAuthenticationFilter</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HomeController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Controller</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">CustomAuthorize</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"User"</span><span class="token punctuation">,</span> <span class="token string">"SystemAdmin"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Index</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token range operator">..</span><span class="token punctuation">.</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">CustomAuthorize</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Admin"</span><span class="token punctuation">,</span> <span class="token string">"SystemAdmin"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">About</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token range operator">..</span><span class="token punctuation">.</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">CustomAuthorize</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"SystemAdmin"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Contact</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token range operator">..</span><span class="token punctuation">.</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">UnAuthorized</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token range operator">..</span><span class="token punctuation">.</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/aspnet-mvc-authpoc-loginview.png"></p>
+<h3 id="實作-LoginPartial-顯示登入資訊及登出按鈕"><a href="#實作-LoginPartial-顯示登入資訊及登出按鈕" class="headerlink" title="實作 _LoginPartial 顯示登入資訊及登出按鈕"></a>實作 _LoginPartial 顯示登入資訊及登出按鈕</h3><p>/Views/_LoginPartial.cshtml</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html">@if (!string.IsNullOrEmpty(Convert.ToString(Session["UserName"])))  
+&#123;  
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new &#123; id = "logoutForm", @class = "navbar-right" &#125;))  
+    &#123;  
+        @Html.AntiForgeryToken()  
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>nav navbar-nav navbar-right<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>  
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Welcome : @Session["UserName"]<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>  
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>javascript:document.getElementById(<span class="token punctuation">'</span>logoutForm<span class="token punctuation">'</span>).submit()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Log off<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>  
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>  
+    &#125;  
+&#125;  
+else  
+&#123;  
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>nav navbar-nav navbar-right<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>  
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new &#123; id = "loginLink" &#125;)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>  
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>  
+&#125;  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>加入到 /Views/Shared/_Layout.cshtml</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>navbar-collapse collapse<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>nav navbar-nav<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>@Html.ActionLink("首頁", "Index", "Home")<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>@Html.ActionLink("關於", "About", "Home")<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>@Html.ActionLink("連絡人", "Contact", "Home")<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+    @Html.Partial("_LoginPartial")
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>未來可以再根據平時開發的需求，改採 Windows 驗證搭配 Filter Attribute，同時改採 SQLite 的方式儲存使用者資訊及權限。</p>
+<h3 id="目前應用的範例-Custom-Authorization-Fitler"><a href="#目前應用的範例-Custom-Authorization-Fitler" class="headerlink" title="目前應用的範例 Custom Authorization Fitler"></a>目前應用的範例 Custom Authorization Fitler</h3><p>/Filters/AuthorizeIdentityAttribute.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AuthorizeIdentityAttribute</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">AuthorizeAttribute</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> _permissionLists<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">string</span></span> _authGroupName<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">AuthorizeIdentityAttribute</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> authGroup <span class="token operator">=</span> <span class="token string">"default"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _authGroupName <span class="token operator">=</span> authGroup<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnAuthorization</span><span class="token punctuation">(</span><span class="token class-name">AuthorizationContext</span> filterContext<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>_permissionLists <span class="token operator">=</span> EmpAuthService<span class="token punctuation">.</span><span class="token function">GetAuthEmpListByAuthGroupName</span><span class="token punctuation">(</span>_authGroupName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">AuthorizeCore</span><span class="token punctuation">(</span>filterContext<span class="token punctuation">.</span>HttpContext<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">base</span><span class="token punctuation">.</span><span class="token function">HandleUnauthorizedRequest</span><span class="token punctuation">(</span>filterContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">AuthorizeCore</span><span class="token punctuation">(</span><span class="token class-name">HttpContextBase</span> httpContext<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> loginUser <span class="token operator">=</span> httpContext<span class="token punctuation">.</span>User<span class="token punctuation">.</span>Identity<span class="token punctuation">.</span>Name<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>_permissionLists<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">==</span> loginUser<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>/Controllers/HomeController.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">AuthorizeIdentity</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"default"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token comment">/* 所有 Controller 下的 Action 都受影響 */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HomeController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Controller</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Index</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OverrideAuthorization</span></span><span class="token punctuation">]</span> <span class="token comment">/* 不受 AuthorizeIdentity 影響 */</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Details</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.c-sharpcorner.com/article/custom-authorization-filter-in-mvc-with-an-example/">C# Corner - Custom Authorization Filter In MVC With An Example</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.learnmvc.in/aspnet-mvc5-filter-overrides.php">FILTER OVERRIDES IN ASP.NET MVC 5 STEP BY STEP</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.c-sharpcorner.com/members/sarath-lal7/articles/asp-dot-net-programming">SARATHLAL SASEENDRAN - Articles</a></li>
+<li><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/kevinya/2019/01/09/103425">CORS Attribute</a></li>
+<li><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/jesperlai/2018/03/20/170705">Asp .Net MVC 撰寫自己的AuthorizeAttribute</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/ASPNET-MVC-Auth-POC/" data-id="clg3fma8x0027s4tse8ro58li" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/Word-Set-Hyperlink-Target/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">如何設定 Word 超連結的目標視窗 (How to set Word hyperlink target)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/IIS-Support-ODF-MIME/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IIS 如何設定 ODF (ODS, ODT, ODP) 副檔名的 MIME
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

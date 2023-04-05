@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>超簡單學習 Vue.js 系列 | Fetch With Json Server | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Vue.js 簡單的示範專案，使用 Vue CLI 並搭配 Fetch API 向 Json Server 讀、寫、刪以及更新資料。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超簡單學習 Vue.js 系列 | Fetch With Json Server">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/12/Vue-Fetch-With-Json-Server/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="Vue.js 簡單的示範專案，使用 Vue CLI 並搭配 Fetch API 向 Json Server 讀、寫、刪以及更新資料。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/vue-js-logo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Fetch-With-Json-Server.png">
+<meta property="article:published_time" content="2021-12-28T11:51:23.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="F2E">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/vue-js-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue-Fetch-With-Json-Server" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/Vue-Fetch-With-Json-Server/" class="article-date">
+  <time datetime="2021-12-28T11:51:23.000Z" itemprop="datePublished">2021-12-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue/">Vue</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      超簡單學習 Vue.js 系列 | Fetch With Json Server
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Fetch-API"><span class="toc-text">Fetch API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Template"><span class="toc-text">Template</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Json-Server"><span class="toc-text">Json Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fetch-API-1"><span class="toc-text">Fetch API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Get-Read"><span class="toc-text">Get &#x2F; Read</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Delete-Remove"><span class="toc-text">Delete &#x2F; Remove</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Create-Insert"><span class="toc-text">Create &#x2F; Insert</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Update-Edit"><span class="toc-text">Update &#x2F; Edit</span></a></li></ol></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>Vue.js 簡單的示範專案，使用 Vue CLI 並搭配 Fetch API 向 Json Server 讀、寫、刪以及更新資料。</p>
+<a href="/posts/2021/12/Vue-Fetch-With-Json-Server/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/vue-js-logo.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Fetch-API"><a href="#Fetch-API" class="headerlink" title="Fetch API"></a>Fetch API</h2><p>首先在專案中安裝 Json Servers 以及 bootstrap</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">npm</span> install json-server</span>
+<span class="token command"><span class="token keyword">npm</span> install bootstrap</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Template"><a href="#Template" class="headerlink" title="Template"></a>Template</h3><p><img src="/assets/Fetch-With-Json-Server.png"></p>
+<p>設計 Vue 的 template</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Play Fetch With Json Server<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">min-height</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>datablock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>post in posts<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>post<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &#123;&#123; post.id &#125;&#125; / &#123;&#123; post.title &#125;&#125; / &#123;&#123; post.author&#125;&#125;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn<span class="token punctuation">"</span></span> <span class="token attr-name">@click</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fetchData<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Fetch Data<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn<span class="token punctuation">"</span></span> <span class="token attr-name">@click</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>RemoveData(1)<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Remove Data<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn<span class="token punctuation">"</span></span> <span class="token attr-name">@click</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CreateData<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Create Data<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn<span class="token punctuation">"</span></span> <span class="token attr-name">@click</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UpdateData<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Update Data<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css">
+<span class="token atrule"><span class="token rule">@import</span><span class="token string">'~bootstrap/dist/css/bootstrap.css'</span><span class="token punctuation">;</span></span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述的 template 省略顯示下列的 class 以免排版過亂，用途僅為美觀修飾。</p>
+<table>
+<thead>
+<tr>
+<th>Elements</th>
+<th>CSS Class</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>#datablock</td>
+<td>bg-danger</td>
+</tr>
+<tr>
+<td>#datablock</td>
+<td>w-75</td>
+</tr>
+<tr>
+<td>#datablock</td>
+<td>mx-auto</td>
+</tr>
+<tr>
+<td>#datablock</td>
+<td>p-3</td>
+</tr>
+<tr>
+<td>#datablock</td>
+<td>text-white</td>
+</tr>
+<tr>
+<td>#datablock</td>
+<td>rounded</td>
+</tr>
+<tr>
+<td>div.btn</td>
+<td>btn-outline-success</td>
+</tr>
+<tr>
+<td>div.btn</td>
+<td>mx-3</td>
+</tr>
+<tr>
+<td>div.btn</td>
+<td>my-2</td>
+</tr>
+</tbody></table>
+<h3 id="Json-Server"><a href="#Json-Server" class="headerlink" title="Json Server"></a>Json Server</h3><p><strong>db.json</strong></p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"posts"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+            <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"Fist Article"</span><span class="token punctuation">,</span>
+            <span class="token property">"author"</span><span class="token operator">:</span> <span class="token string">"S"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+            <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"Second Lieutenant"</span><span class="token punctuation">,</span>
+            <span class="token property">"author"</span><span class="token operator">:</span> <span class="token string">"S"</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> \db</span>
+<span class="token command"><span class="token keyword">json</span>-server <span class="token parameter attr-name">--watch</span> db.json <span class="token parameter attr-name">--port</span> <span class="token number">8888</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Fetch-API-1"><a href="#Fetch-API-1" class="headerlink" title="Fetch API"></a>Fetch API</h3><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">&#123;</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'App'</span><span class="token punctuation">,</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">&#123;</span>
+      <span class="token literal-property property">posts</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">methods</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token operator">...</span>
+  <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Methods 中具體的 Function 則如下：</p>
+<h4 id="Get-Read"><a href="#Get-Read" class="headerlink" title="Get / Read"></a>Get / Read</h4><p>要注意搭配 then 先將結果取為 json 再使用一次 then 更新 data。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">fetchData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'http://localhost:8888/posts'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">res</span> <span class="token operator">=></span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>posts <span class="token operator">=</span> data<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Delete-Remove"><a href="#Delete-Remove" class="headerlink" title="Delete / Remove"></a>Delete / Remove</h4><p>參數 id 用於指定要刪除的項目，本案例是以 lastOne 資料中的最後一筆為例。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">RemoveData</span><span class="token punctuation">(</span><span class="token parameter">id</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> lastOne <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>posts<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">i</span> <span class="token operator">=></span> i<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'http://localhost:8888/posts/'</span> <span class="token operator">+</span> lastOne<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'DELETE'</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">res</span> <span class="token operator">=></span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">this</span><span class="token punctuation">.</span>posts <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>posts<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token parameter">p</span> <span class="token operator">=></span> p<span class="token punctuation">.</span>id <span class="token operator">!=</span> lastOne<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Create-Insert"><a href="#Create-Insert" class="headerlink" title="Create / Insert"></a>Create / Insert</h4><p>Create 要注意要給予 headers 同時 body 的內容必須經由 JSON.stringify。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">CreateData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> lastOne <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>posts<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">i</span> <span class="token operator">=></span> i<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">let</span> post <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">'Hello World '</span> <span class="token operator">+</span> Math<span class="token punctuation">.</span><span class="token function">round</span><span class="token punctuation">(</span>Math<span class="token punctuation">.</span><span class="token function">random</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">author</span><span class="token operator">:</span> <span class="token string">'S'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">id</span><span class="token operator">:</span> lastOne <span class="token operator">+</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'http://localhost:8888/posts'</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'Content-Type'</span><span class="token operator">:</span> <span class="token string">'application/json'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>post<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">this</span><span class="token punctuation">.</span>posts<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>post<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Update-Edit"><a href="#Update-Edit" class="headerlink" title="Update / Edit"></a>Update / Edit</h4><p>使用 PATCH Method 可以達到局部更新的使用，謝謝你 Json Server 😀</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">UpdateData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> lastOne <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>posts<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">i</span> <span class="token operator">=></span> i<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'http://localhost:8888/posts/'</span> <span class="token operator">+</span> lastOne<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'PATCH'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'Content-Type'</span><span class="token operator">:</span> <span class="token string">'application/json'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> <span class="token literal-property property">author</span><span class="token operator">:</span> <span class="token string">'Edited'</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">fetchData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/Vue-Fetch-With-Json-Server/" data-id="clg3fmamc01jss4ts2a82aium" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/12/PowerShell-String-Padding-Zfill/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PowerShell String Padding (Zfill)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/Vue-Toys-3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          超簡單學習 Vue.js 系列 | Vue Ramen (Form)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

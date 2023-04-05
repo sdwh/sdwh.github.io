@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>CSS | Flexbox | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="CSS Flexbox 相較於 Float ，更適合處理一維度的 Components 例如 Navbar, Card 等，對於一維度的元素延展以及對齊非常方便。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS | Flexbox">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/01/CSS-Flexbox/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="CSS Flexbox 相較於 Float ，更適合處理一維度的 Components 例如 Navbar, Card 等，對於一維度的元素延展以及對齊非常方便。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CSS-Logo.svg">
+<meta property="article:published_time" content="2022-01-25T11:14:02.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="F2E">
+<meta property="article:tag" content="CSS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CSS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSS-Flexbox" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/CSS-Flexbox/" class="article-date">
+  <time datetime="2022-01-25T11:14:02.000Z" itemprop="datePublished">2022-01-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CSS | Flexbox
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Flex-Properties"><span class="toc-text">Flex Properties</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Flex-Direction"><span class="toc-text">Flex-Direction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flex-Wrap"><span class="toc-text">Flex-Wrap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flew-Flow"><span class="toc-text">Flew-Flow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Justify-Content"><span class="toc-text">Justify-Content</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Align-Items"><span class="toc-text">Align-Items</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Align-Content"><span class="toc-text">Align-Content</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gap"><span class="toc-text">Gap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Order"><span class="toc-text">Order</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flex-Grow"><span class="toc-text">Flex-Grow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flex-Shrink"><span class="toc-text">Flex-Shrink</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flex-Basis"><span class="toc-text">Flex-Basis</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%87%89%E7%94%A8"><span class="toc-text">應用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Navbar"><span class="toc-text">Navbar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Card"><span class="toc-text">Card</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flexbox-Application"><span class="toc-text">Flexbox Application</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>CSS Flexbox 相較於 Float ，更適合處理一維度的 Components 例如 Navbar, Card 等，對於一維度的元素延展以及對齊非常方便。</p>
+<a href="/posts/2022/01/CSS-Flexbox/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CSS-Logo.svg" alt="JavaScript logo" width="250px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Flex-Properties"><a href="#Flex-Properties" class="headerlink" title="Flex Properties"></a>Flex Properties</h2><style>
+  .d-flex {
+    display: flex;
+  }
+
+  .box {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #eee;
+  }
+
+  .no-height-box {
+    padding: .5rem;
+    border: 2px solid #eee;
+    font-size: 1rem;
+  }
+
+  .w-no-height-box {
+    width: 250px;
+    border: 2px solid #eee;
+  }
+
+  .bg-R {
+    background-color: Salmon;
+  }
+
+  .bg-G {
+    background-color: Mediumturquoise;
+  }
+
+  .bg-B {
+    background-color: Dodgerblue;
+  }
+
+  .w-box {
+    width: 250px;
+    height: 100px;
+    border: 2px solid #eee;
+  }
+
+  .tall {
+    height: 200px;
+  }
+
+  .tall-3 {
+    height: 300px;
+    background-color: aliceblue;
+  }
+
+  .short {
+    height: 50px;
+  }
+</style>
+
+<h3 id="Flex-Direction"><a href="#Flex-Direction" class="headerlink" title="Flex-Direction"></a>Flex-Direction</h3><p><code class="s">flex-direction</code> 用來控制 Flex 的 Main Axis 以及 Cross Axis，決定元素的排列方向是水平或者垂直。</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-direction</span><span class="token punctuation">:</span> row<span class="token punctuation">;</span> 
+<span class="token comment">/* Default Direction */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<div class="d-flex">
+  <div class="box bg-R"></div>
+  <div class="box bg-G"></div>
+  <div class="box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-direction</span><span class="token punctuation">:</span> row-reverse<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-direction: row-reverse;">
+  <div class="box bg-R"></div>
+  <div class="box bg-G"></div>
+  <div class="box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-direction: column">
+  <div class="box bg-R"></div>
+  <div class="box bg-G"></div>
+  <div class="box bg-B"></div>
+</div>
+
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-direction</span><span class="token punctuation">:</span> column-reverse<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-direction: column-reverse">
+  <div class="box bg-R"></div>
+  <div class="box bg-G"></div>
+  <div class="box bg-B"></div>
+</div>
+
+<h3 id="Flex-Wrap"><a href="#Flex-Wrap" class="headerlink" title="Flex-Wrap"></a>Flex-Wrap</h3><p>預設的情況下 <code class="s">flex-wrap</code> 是不自動換行，也就是 no wrap，flex 會把所有的元素使勁塞在同一列。</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-wrap</span><span class="token punctuation">:</span> no-wrap<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-wrap</span><span class="token punctuation">:</span> wrap<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-wrap:wrap">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-wrap</span><span class="token punctuation">:</span> wrap-reverse<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-wrap:wrap-reverse">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+
+<h3 id="Flew-Flow"><a href="#Flew-Flow" class="headerlink" title="Flew-Flow"></a>Flew-Flow</h3><p><code class="s">flex-flow</code> 是簡寫技巧，相當於 <code class="s">flex-direction</code> + <code class="s">flex-wrap</code>。</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">flex-flow</span><span class="token punctuation">:</span> row-reverse wrap<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Justify-Content"><a href="#Justify-Content" class="headerlink" title="Justify-Content"></a>Justify-Content</h3><p><code class="s">Justify-Content</code> 是使用 Flex 最常使用的 CSS 屬性，可以控制 Main Axis 中元素的對齊方式 (Alignment)。尤其適合處理一維的 Components 例如 Navbar 以及 Card 的對齊方式。</p>
+<p><code class="s">Justify-Content</code> 是每一個 CSS 人 Flexbox Lover 不可以錯過的重要屬性 😊</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">justify-content</span><span class="token punctuation">:</span> flex-start
+<span class="token comment">/* Default */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<div class="d-flex">
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">justify-content</span><span class="token punctuation">:</span> end<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="justify-content: end">
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">justify-content</span><span class="token punctuation">:</span> center<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="justify-content: center">
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="justify-content: space-between">
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">justify-content</span><span class="token punctuation">:</span> space-around<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="justify-content: space-around">
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">justify-content</span><span class="token punctuation">:</span> space-evenly<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="justify-content: space-evenly">
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+  <div class="box bg-R"></div>
+</div>
+
+<h3 id="Align-Items"><a href="#Align-Items" class="headerlink" title="Align-Items"></a>Align-Items</h3><p><code class="s">align-items</code> 預設為 <code class="s">strech</code> 對於沒有設定 Height 的元素，會自動伸展自 Flex 容器的最大高度，解決了以往多欄元素要保持高度一致的困難。</p>
+<p>例如以往 Bootsrap3 的 Grid System 不同 Col 因為有不同的元素高度，會讓高度較高的元素干擾到換列的元素。這個問題在 Bootsrap 4 改採 Flex 設計 Grid System 後已經不復存在。</p>
+<p>以下示範將 Flex Container 的高度調整為 200px</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-items</span><span class="token punctuation">:</span> stretch
+<span class="token comment">/* Default */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>除了有自帶高度的元素外，會被拉升到與容器同樣高度。</p>
+<div class="d-flex tall" style="align-items: stretch;">
+  <div class="no-height-box bg-G">Element Without Height & Width</div>
+  <div class="no-height-box bg-G">Width Decide by Elements Content</div>
+  <div class="no-height-box bg-G">Lorem</div>
+  <div class="no-height-box bg-G short">Ipsum</div>
+  <div class="no-height-box bg-G">Egg Ham Spam</div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-items</span><span class="token punctuation">:</span> flex-start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>元素依照自己的高度，並由開頭開始對齊。</p>
+<div class="d-flex tall" style="align-items: flex-start;">
+  <div class="no-height-box bg-G">Element Without Height & Width</div>
+  <div class="no-height-box bg-G short">Short Height</div>
+  <div class="no-height-box bg-G">Lorem</div>
+  <div class="no-height-box bg-G short">Ipsum</div>
+  <div class="no-height-box bg-G">Egg Ham Spam</div>
+</div>
+
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-items</span><span class="token punctuation">:</span> flex-end<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>元素依照自己的高度，並由底端開始對齊。</p>
+<div class="d-flex tall" style="align-items: flex-end;">
+  <div class="no-height-box bg-G">Element Without Height & Width</div>
+  <div class="no-height-box bg-G short">Short Height</div>
+  <div class="no-height-box bg-G">Lorem</div>
+  <div class="no-height-box bg-G short">Ipsum</div>
+  <div class="no-height-box bg-G">Egg Ham Spam</div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-items</span><span class="token punctuation">:</span> center<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>元素依照自己的高度，並由中間進行對齊。</p>
+<div class="d-flex tall" style="align-items: center;">
+  <div class="no-height-box bg-G">Element Without Height & Width</div>
+  <div class="no-height-box bg-G short">Short Height</div>
+  <div class="no-height-box bg-G">Lorem</div>
+  <div class="no-height-box bg-G short">Ipsum</div>
+  <div class="no-height-box bg-G">Egg Ham Spam</div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-items</span><span class="token punctuation">:</span> baseline<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code class="s">baseline</code> 的屬性效果尚無法正確呈現 🙄</p>
+<div class="d-flex" style="align-items: baseline;">
+  <div class="no-height-box bg-G">Element Without Height & Width</div>
+  <div class="no-height-box bg-G short">Short Height</div>
+  <div class="no-height-box bg-G">Lorem</div>
+  <div class="no-height-box bg-G short">Ipsum</div>
+  <div class="no-height-box bg-G">Egg Ham Spam</div>
+</div>
+
+<h3 id="Align-Content"><a href="#Align-Content" class="headerlink" title="Align-Content"></a>Align-Content</h3><p><code class="s">align-content</code> 需要搭配 <code class="s">flex-wrap</code> 一起使用，如果單獨使用不會有任何效果。而搭配 <code class="s">flex-wrap</code> 則可以用於控制多列元素的對齊方式。</p>
+<p>相對於 <code class="s">justify-content</code> 是對 Main Axis 進行對齊設定； <code class="s">align-content</code> 是用於對 Cross Axis 進行對齊設定。</p>
+<p>以下示範將 Flex Container 的高度調整為 300px</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-content</span><span class="token punctuation">:</span> stretch
+<span class="token comment">/* Default */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>在預設的 <code class="s">strech</code> 下，如果元素本身沒有高度，會被均分自動延伸到最大高度：</p>
+<div class="d-flex tall-3" style="flex-wrap:wrap">
+  <div class="w-no-height-box bg-R"></div>
+  <div class="w-no-height-box bg-G"></div>
+  <div class="w-no-height-box bg-B"></div>
+  <div class="w-no-height-box bg-G"></div>
+  <div class="w-no-height-box bg-B"></div>
+</div>
+
+<hr/>
+
+<p>但如果元素有高度就不受影響例如橘色塊或者海草綠色塊。</p>
+<div class="d-flex tall-3" style="flex-wrap:wrap">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-no-height-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-no-height-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-content</span><span class="token punctuation">:</span> flex-start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex tall-3" style="flex-wrap:wrap;align-content: flex-start">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-content</span><span class="token punctuation">:</span> flex-end<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex tall-3" style="flex-wrap:wrap;align-content: flex-end">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-content</span><span class="token punctuation">:</span> space-between<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex tall-3" style="flex-wrap:wrap;align-content: space-between">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-content</span><span class="token punctuation">:</span> space-around<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex tall-3" style="flex-wrap:wrap;align-content: space-around">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">align-content</span><span class="token punctuation">:</span> center<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex tall-3" style="flex-wrap:wrap;align-content: center">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<h3 id="Gap"><a href="#Gap" class="headerlink" title="Gap"></a>Gap</h3><p><code class="s">gap</code> 會令 Flex 容器下的元素增加邊距，可以和 <code class="s">justify-content</code> 混合使用。</p>
+<p>預設沒有 <code class="s">gap</code> 的情況下，元素是彼此先鄰的，微小的距離是來自於 <code class="s">border</code>。</p>
+<div class="d-flex" style="flex-wrap:wrap;background-color: aliceblue">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">gap</span><span class="token punctuation">:</span> 1rem<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-wrap:wrap;gap: 1rem;background-color: aliceblue">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">gap</span><span class="token punctuation">:</span> 2rem 1rem<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code class="s">gap</code> 可以分別對 Cross Axis 以及 Main Axis 指定數值。</p>
+<div class="d-flex" style="flex-wrap:wrap;gap: 2rem 1rem;background-color: aliceblue">
+  <div class="w-box bg-R"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+  <div class="w-box bg-G"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<h3 id="Order"><a href="#Order" class="headerlink" title="Order"></a>Order</h3><p>使用 <code class="s">order</code> 可以調整 flex 容器個別元素的順序，數值越小的順序越高，預設元素的 <code class="s">order</code> 都是 0。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>d-flex<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box R<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">order</span><span class="token punctuation">:</span> 1</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box G<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box B<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">order</span><span class="token punctuation">:</span> -1</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="d-flex" style="justify-content: space-around">
+  <div class="box bg-R" style="order: 1"></div>
+  <div class="box bg-G"></div>
+  <div class="box bg-B" style="order: -1"></div>
+</div>
+
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>d-flex<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">flex-direction</span><span class="token punctuation">:</span> column</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box bg-R<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box bg-G<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box bg-B<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">order</span><span class="token punctuation">:</span> -1</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="d-flex" style="flex-direction: column">
+  <div class="box bg-R"></div>
+  <div class="box bg-G"></div>
+  <div class="box bg-B" style="order: -1"></div>
+</div>
+
+<h3 id="Flex-Grow"><a href="#Flex-Grow" class="headerlink" title="Flex-Grow"></a>Flex-Grow</h3><p>使用 <code class="s">flex-grow</code> 會忽略原本元素的寬度，會將扣除未設定 <code class="s">flex-grow</code> 並且具有 width 的元素的 width，並將剩下的 width 按照 <code class="s">flex-grow</code> 之和去分配給各具有 <code class="s">flex-grow</code> 的元素。</p>
+<p>例如下列範例，藍色元素寬度為 250px，則會以 Flex 容器的 850px 先減去 250px，在分為 3 等份，其中橘色塊佔有 2 等份、草綠色佔有 1 等份。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>d-flex<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box R<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">flex-grow</span><span class="token punctuation">:</span> 2</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>box G<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">flex-grow</span><span class="token punctuation">:</span> 1</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>w-box B<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="d-flex">
+  <div class="box bg-R" style="flex-grow: 2"></div>
+  <div class="box bg-G" style="flex-grow: 1"></div>
+  <div class="w-box bg-B"></div>
+</div>
+
+<p>需要注意的是使用 <code class="s">flex-grow</code> 因為元素會自動長胖到容器寬度，所以這時 <code class="s">justify-content</code> 就不再有作用。</p>
+<h3 id="Flex-Shrink"><a href="#Flex-Shrink" class="headerlink" title="Flex-Shrink"></a>Flex-Shrink</h3><p><code class="s">flex-basis</code><br><code class="s">flex-shrink</code><br><code class="s">flex</code> = <code class="s">flex-basis</code> + <code class="s">flex-grow</code></p>
+<h3 id="Flex-Basis"><a href="#Flex-Basis" class="headerlink" title="Flex-Basis"></a>Flex-Basis</h3><p><code class="s">align-self</code></p>
+<h2 id="應用"><a href="#應用" class="headerlink" title="應用"></a>應用</h2><h3 id="Navbar"><a href="#Navbar" class="headerlink" title="Navbar"></a>Navbar</h3><p>Navbar 左右分列項目。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>nav<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>Website Logo<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>User<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.nav</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+  <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Card"><a href="#Card" class="headerlink" title="Card"></a>Card</h3><pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>card<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.card</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Flexbox-Application"><a href="#Flexbox-Application" class="headerlink" title="Flexbox Application"></a>Flexbox Application</h3><p><a target="_blank" rel="noopener" href="https://css.sdwh.dev/html//flex.html">Flex Demo | css.sdwh</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/sdwh/Common-Style-Solution/blob/master/html/flex.html">flex Source Code | css.sdwh</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">A Complete Guide to Flexbox</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.oxxostudio.tw/articles/201501/css-flexbox.html">深入解析 CSS Flexbox</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sketchingwithcss.com/samplechapter/cheatsheet.html">THE ULTIMATE FLEXBOX CHEAT SHEET</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/CSS-Flexbox/" data-id="clg3fmab200bzs4tsejo01qv3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/" rel="tag">CSS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/01/IIS-SMB-Files-Permissions/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">IIS 資料夾權限深入 (IIS &amp; SMB)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/CSS-Typography/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          CSS | Typography
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Integrated Service 初探 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="初探 SQL Server Integrated Service，從維護計畫的 SSIS 封裝到如何創立 SSIS 專案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Integrated Service 初探">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/04/SQL-Server-SSIS-Glimpse/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="初探 SQL Server Integrated Service，從維護計畫的 SSIS 封裝到如何創立 SSIS 專案。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-SSIS.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-SSDT-Installation-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-SSDT-Installation-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Installation-SSIS-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Installation-SSIS-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-SSIS-Project-Properties-Run64BitRuntime.png">
+<meta property="article:published_time" content="2021-04-02T05:25:29.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="SSIS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-SSIS-Glimpse" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/" class="article-date">
+  <time datetime="2021-04-02T05:25:29.000Z" itemprop="datePublished">2021-04-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Integrated Service 初探
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B6%AD%E8%AD%B7%E8%A8%88%E7%95%AB%E4%B8%AD%E7%9A%84-SSIS"><span class="toc-text">維護計畫中的 SSIS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D-SSDT"><span class="toc-text">安裝 SSDT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D-SSIS-Projects"><span class="toc-text">安裝 SSIS Projects</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E4%B8%AD%E7%9A%84-SSIS"><span class="toc-text">資料庫中的 SSIS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SSIS-%E7%9A%84%E7%89%87%E6%AE%B5%E7%9F%A5%E8%AD%98"><span class="toc-text">SSIS 的片段知識</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#32-Bit-vs-64-Bit"><span class="toc-text">32 Bit vs 64 Bit</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Fast-Load-%E5%BF%AB%E9%80%9F%E8%BC%89%E5%85%A5"><span class="toc-text">Fast Load 快速載入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>初探 SQL Server Integrated Service，從維護計畫的 SSIS 封裝到如何創立 SSIS 專案。</p>
+<a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="維護計畫中的-SSIS"><a href="#維護計畫中的-SSIS" class="headerlink" title="維護計畫中的 SSIS"></a>維護計畫中的 SSIS</h3><p>維護計畫中的作業步驟包含備份、清除紀錄、重建索引等，都是封裝為 SSIS 並儲存於 SQL Server 之中。如果要檢視這些 SSIS 封裝，必須要連線到 Integrated Service 檢視，從中就可以加以匯出 (Export)。</p>
+<p>需要注意的是必須要使用管理者權限開啟 SSMS，或者是依照連結的說明調整權限：</p>
+<p><a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/6236/connecting-to-integration-services-access-is-denied-in-sql-server-2016-or-2017/">Connecting to Integration Services Access is Denied in SQL Server 2016 or 2017</a></p>
+<p><img src="/assets/SQL-Server-SSIS.png"></p>
+<h3 id="安裝-SSDT"><a href="#安裝-SSDT" class="headerlink" title="安裝 SSDT"></a>安裝 SSDT</h3><p>Visual Studio 2019 使用「Tools」接續「Get Tools And Features」後，找到「SQL Server Data Tools」並安裝。</p>
+<p><img src="/assets/SQL-Server-SSDT-Installation-1.png"></p>
+<h3 id="安裝-SSIS-Projects"><a href="#安裝-SSIS-Projects" class="headerlink" title="安裝 SSIS Projects"></a>安裝 SSIS Projects</h3><p>Visual Studio 2019 使用「Extensions」接續「Manage Extensions」後，搜尋「SQL Server」找到 <strong>「SQL Server Integration Services Projects」</strong> 後進行安裝。</p>
+<p><img src="/assets/SQL-Server-SSDT-Installation-2.png"></p>
+<h3 id="資料庫中的-SSIS"><a href="#資料庫中的-SSIS" class="headerlink" title="資料庫中的 SSIS"></a>資料庫中的 SSIS</h3><p>如果當初在安裝 SQL Server 的時候沒有使用安裝 SSIS，則使用 Source (安裝檔) 對已經安裝的 Instances 新增功能。</p>
+<p><img src="/assets/SQL-Server-Installation-SSIS-1.png"></p>
+<p><img src="/assets/SQL-Server-Installation-SSIS-2.png"></p>
+<h3 id="SSIS-的片段知識"><a href="#SSIS-的片段知識" class="headerlink" title="SSIS 的片段知識"></a>SSIS 的片段知識</h3><ul>
+<li>SSIS 的定位是 ETL 工具，但不限於此 ETL 也可以做資料庫伺服器的維護管理功能</li>
+<li>SQL Server 維護計畫產生的作業就是使用 SSIS 封裝</li>
+<li>SSIS 專案分為 Solutioni / Project / Package 等不同的層級，其中 Package 是最小的單位，另稱為封裝</li>
+<li>以往可以在 SSMS 中直接編輯 Package(DTS)，但現在的做法是使用 Visual Studio 並安裝 SSDT 來進行編輯</li>
+<li>SSIS 專案可以設定 Environment / Parameters 來達到藉由參數控制 Package 的函數化用途</li>
+<li>SSIS 有對應的工具版本，例如 SSIS 2008 僅支援 Visual Studio 2008 商業智慧專案進行設計；Visaul Studio 2019 則可以支援 SSIS 2012 至 2019</li>
+<li>匯出的封裝必須要確認資料的保護方式</li>
+<li>第一次匯入的封裝必須要重新輸入連線密碼，因此必須妥善管理封裝中用到的所有連線密碼</li>
+</ul>
+<h4 id="32-Bit-vs-64-Bit"><a href="#32-Bit-vs-64-Bit" class="headerlink" title="32 Bit vs 64 Bit"></a>32 Bit vs 64 Bit</h4><ul>
+<li>SSIS 的封裝本身沒有位元之分，負責執行的環境才有分 32 或 64 Bit</li>
+<li>Excel 2003 連線方式所使用的是 <strong>Microsoft Jet Database Engine</strong>，必須要在 32 位元的環境進行</li>
+<li>Excel 2007 以後連線方式所使用的是 <strong>Microsoft Access Database Engine</strong> ，必須使用 64 位元的環境進行</li>
+<li>在 Visual Studio 中可以藉由專案屬性 「Run64BitRuntime」來設定執行環境的位元</li>
+<li>部署到 Integration Services 目錄上，用以設定執行的環境</li>
+</ul>
+<p><img src="/assets/SQL-Server-SSIS-Project-Properties-Run64BitRuntime.png" alt="Run64BitRuntime"></p>
+<h4 id="Fast-Load-快速載入"><a href="#Fast-Load-快速載入" class="headerlink" title="Fast Load 快速載入"></a>Fast Load 快速載入</h4><ul>
+<li>DataFlow 中設定使用快速載入，資料從來源是以批次的方式加載，載入的速度非常快</li>
+<li>快速載入每次是以一個 Buffer 量的方式載入，如果發生錯誤則會整個 Buffer 拋棄</li>
+<li>快速載入可以藉由設定 DefaultBufferMaxRows 以及 DefaultBufferSize 的方式來增加 Buffer 量</li>
+<li>Buffer 量是以資料先達到 MaxRows 或者 Size 來完成</li>
+</ul>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/jamesfu/2019/04/15/visualstudio_2019_bi">使用 Visual Studio 2019 開發商業智慧方案</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/importexport-data-sql-server-using-sql-server-import-export-wizard/4">How to import/export data to SQL Server using the SQL Server Import and Export Wizard</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/how-to-retrieve-information-about-ssis-packages-stored-in-msdb-database/">How to retrieve information about SSIS packages stored in MSDB Database</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/5335/move-sql-server-maintenance-plan-from-one-server-to-another/">Move SQL Server Maintenance Plan from One Server to Another</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/04/SQL-Server-SSIS-Glimpse/" data-id="clg3fmak701cms4tshep1ec97" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSIS/" rel="tag">SSIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/04/SQL-Server-Backup-Init-Format/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 備份使用 Init 與 Format 的時機點</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用 VMware 安裝 Windows Server 與 SQL Server
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

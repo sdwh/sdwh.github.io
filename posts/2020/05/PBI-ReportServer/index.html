@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Power BI 報表伺服器安裝步驟 (How to install Power BI Report Server) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="報表伺服器的安裝非常直覺，完成安裝後進入設定報表伺服器，如果已經具有資料庫的話，僅需設定資料庫連結、服務帳戶、前台網址即可。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Power BI 報表伺服器安裝步驟 (How to install Power BI Report Server)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/05/PBI-ReportServer/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="報表伺服器的安裝非常直覺，完成安裝後進入設定報表伺服器，如果已經具有資料庫的話，僅需設定資料庫連結、服務帳戶、前台網址即可。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/POWER-BI-LOGO.png">
+<meta property="og:image" content="https://sdwh.dev/assets/pbrs-service-account.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/pbrs-database.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/pbrs-webservice-url.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/pbrs-portal-url.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/pbrs-restore-key.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/pbrs-status.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/alert-sql-connect-fail.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/alert-sql-agent-service.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/sql-server-agent.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/PBIRS-Setting-Error-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/PBIRS-Setting-Error-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/PBIRS-Setting-Database-Connect.png">
+<meta property="og:image" content="https://sdwh.dev/assets/PBIRS-Setting-Database-Verify.png">
+<meta property="article:published_time" content="2020-05-29T11:14:50.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.909Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="PBRS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/POWER-BI-LOGO.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-PBI-ReportServer" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/05/PBI-ReportServer/" class="article-date">
+  <time datetime="2020-05-29T11:14:50.000Z" itemprop="datePublished">2020-05-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PowerBI/">PowerBI</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Power BI 報表伺服器安裝步驟 (How to install Power BI Report Server)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99"><span class="toc-text">環境準備</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-RSExecRole-Master-Msdb"><span class="toc-text">建立 RSExecRole (Master, Msdb)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%80%8CMaster%E3%80%8D%E7%B3%BB%E7%B5%B1%E8%B3%87%E6%96%99%E5%BA%AB%E5%BB%BA%E7%AB%8B%E8%A7%92%E8%89%B2%E6%AD%A5%E9%A9%9F"><span class="toc-text">「Master」系統資料庫建立角色步驟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%80%8CMsdb%E3%80%8D%E7%B3%BB%E7%B5%B1%E8%B3%87%E6%96%99%E5%BA%AB%E5%BB%BA%E7%AB%8B%E8%A7%92%E8%89%B2%E6%AD%A5%E9%A9%9F"><span class="toc-text">「Msdb」系統資料庫建立角色步驟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-T-SQL-%E5%BB%BA%E7%AB%8B-RSExecRole-%E8%A7%92%E8%89%B2%E8%88%87%E6%AC%8A%E9%99%90-%E6%80%8E%E9%BA%BC%E4%B8%8D%E6%97%A9%E8%AA%AA-%F0%9F%98%AD"><span class="toc-text">使用 T-SQL 建立 RSExecRole 角色與權限 (怎麼不早說.. 😭)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A%E5%A0%B1%E8%A1%A8%E4%BC%BA%E6%9C%8D%E5%99%A8"><span class="toc-text">設定報表伺服器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8B%99%E5%B8%B3%E6%88%B6%EF%BC%9A%E7%B6%B2%E8%B7%AF%E6%9C%8D%E5%8B%99"><span class="toc-text">服務帳戶：網路服務</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E6%AC%8A%E9%99%90%EF%BC%9A%E4%BD%BF%E7%94%A8-SQL-Server-%E9%A9%97%E8%AD%89"><span class="toc-text">資料庫權限：使用 SQL Server 驗證</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A-URL-%E8%88%87-SSL"><span class="toc-text">設定 URL 與 SSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%9C%89%E5%BF%85%E8%A6%81%E7%9A%84%E8%A9%B1-%E6%81%A2%E5%BE%A9%E5%A0%B1%E8%A1%A8%E4%BC%BA%E6%9C%8D%E5%99%A8%E5%8A%A0%E5%AF%86%E9%87%91%E9%91%B0%EF%BC%8C%E5%BF%85%E9%A0%88%E6%BA%96%E5%82%99-snk-%E6%AA%94%E5%8F%8A%E6%81%A2%E5%BE%A9%E5%AF%86%E7%A2%BC"><span class="toc-text">(如果有必要的話) 恢復報表伺服器加密金鑰，必須準備 snk 檔及恢復密碼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E5%95%9F%E7%94%A8%E5%A0%B1%E8%A1%A8%E4%BC%BA%E6%9C%8D%E5%99%A8"><span class="toc-text">重新啟用報表伺服器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%96%91%E9%9B%A3%E6%8E%92%E9%99%A4"><span class="toc-text">疑難排除</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A%E6%8E%92%E7%A8%8B%E6%99%82%E5%87%BA%E7%8F%BE%E3%80%8C%E5%A0%B1%E8%A1%A8%E4%BC%BA%E6%9C%8D%E5%99%A8%E8%B3%87%E6%96%99%E5%BA%AB%E5%85%A7%E9%83%A8%E7%99%BC%E7%94%9F%E9%8C%AF%E8%AA%A4%E3%80%82%E9%80%99%E5%8F%AF%E8%83%BD%E6%98%AF%E5%9B%A0%E7%82%BA%E9%80%A3%E6%8E%A5%E5%A4%B1%E6%95%97%E3%80%81%E9%80%BE%E6%99%82%E6%88%96%E8%B3%87%E6%96%99%E5%BA%AB%E5%85%A7%E7%A3%81%E7%A2%9F%E7%A9%BA%E9%96%93%E4%B8%8D%E8%B6%B3%E6%89%80%E9%80%A0%E6%88%90%E3%80%82%E3%80%8D"><span class="toc-text">設定排程時出現「報表伺服器資料庫內部發生錯誤。這可能是因為連接失敗、逾時或資料庫內磁碟空間不足所造成。」</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AA%E5%9F%B7%E8%A1%8C-SQL-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E6%9C%8D%E5%8B%99%E3%80%82%E6%AD%A4%E4%BD%9C%E6%A5%AD%E9%9C%80%E8%A6%81-SQL-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E6%9C%8D%E5%8B%99%E3%80%82"><span class="toc-text">未執行 SQL 代理程式服務。此作業需要 SQL 代理程式服務。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%84%A1%E6%B3%95-%E6%94%B9%E8%AE%8A%E8%A7%92%E8%89%B2-RSEexcRole-%E5%9B%A0%E7%82%BA%E5%AE%83%E4%B8%8D%E5%AD%98%E5%9C%A8%E6%88%96%E6%82%A8%E6%B2%92%E6%9C%89%E6%AC%8A%E9%99%90%E3%80%82"><span class="toc-text">無法 改變角色 RSEexcRole 因為它不存在或您沒有權限。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>報表伺服器的安裝非常直覺，完成安裝後進入設定報表伺服器，如果已經具有資料庫的話，僅需設定資料庫連結、服務帳戶、前台網址即可。</p>
+<a href="/posts/2020/05/PBI-ReportServer/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/POWER-BI-LOGO.png" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="環境準備"><a href="#環境準備" class="headerlink" title="環境準備"></a>環境準備</h2><ol>
+<li>下載報表伺服器安裝檔 <a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=56722"><strong>連結</strong></a></li>
+<li>安裝報表伺服器 可以選擇 評估版 (180日) 或者 輸入序號 (從 VLSC 上取得)</li>
+<li>為系統資料庫設定 RSExecRole 角色</li>
+<li><strong>設定報表伺服器</strong></li>
+<li>功能驗證</li>
+</ol>
+<h2 id="建立-RSExecRole-Master-Msdb"><a href="#建立-RSExecRole-Master-Msdb" class="headerlink" title="建立 RSExecRole (Master, Msdb)"></a>建立 RSExecRole (Master, Msdb)</h2><p>為了使連結資料庫的報表伺服器用 SQL 帳號有足夠的作業權限，並須在 Master 及 Msdb 資料庫 新增 <strong>RSExecRole</strong>，<br>並且必須依照下列步驟分別給予權限：</p>
+<h3 id="「Master」系統資料庫建立角色步驟"><a href="#「Master」系統資料庫建立角色步驟" class="headerlink" title="「Master」系統資料庫建立角色步驟"></a><strong>「Master」系統資料庫建立角色步驟</strong></h3><ol>
+<li>開啟資料庫 「Master」</li>
+<li>開啟安全性</li>
+<li>開啟角色</li>
+<li>點選「資料庫角色」新增「資料庫角色」，輸入角色名稱「<strong>RSExecRole</strong>」</li>
+<li>搜尋並加入「特定物件」，選擇「擴充預存程序」</li>
+<li>瀏覽後加入下列物件</li>
+</ol>
+<ul>
+<li>xp_sqlagent_enum_jobs</li>
+<li>xp_sqlagent_is_starting</li>
+<li>xp_sqlagent_notify</li>
+</ul>
+<ol start="7">
+<li>授予上述物件執行權限 (Execute)</li>
+</ol>
+<h3 id="「Msdb」系統資料庫建立角色步驟"><a href="#「Msdb」系統資料庫建立角色步驟" class="headerlink" title="「Msdb」系統資料庫建立角色步驟"></a><strong>「Msdb」系統資料庫建立角色步驟</strong></h3><ol>
+<li>開啟資料庫 「Msdb」</li>
+<li>開啟安全性</li>
+<li>開啟角色</li>
+<li>點選「資料庫角色」新增「資料庫角色」，輸入角色名稱「<strong>RSExecRole</strong>」</li>
+<li>搜尋並加入「特定物件」，選擇「預存程序」</li>
+<li>瀏覽後加入下列物件<ul>
+<li>sp_add_category</li>
+<li>sp_add_job</li>
+<li>sp_add_jobschedule</li>
+<li>sp_add_jobserver</li>
+<li>sp_add_jobstep</li>
+<li>sp_delete_job</li>
+<li>sp_help_category</li>
+<li>sp_help_job</li>
+<li>sp_help_jobschedule</li>
+<li>sp_verify_job_identifiers</li>
+</ul>
+</li>
+<li>授予上述物件執行權限 (Execute)</li>
+<li>搜尋並加入「特定物件」，選擇「資料表」</li>
+<li>瀏覽後加入下列物件</li>
+</ol>
+<ul>
+<li>syscategories</li>
+<li>sysjobs</li>
+</ul>
+<ol start="10">
+<li>授予上述物件執行權限 (Select))</li>
+</ol>
+<h3 id="使用-T-SQL-建立-RSExecRole-角色與權限-怎麼不早說-😭"><a href="#使用-T-SQL-建立-RSExecRole-角色與權限-怎麼不早說-😭" class="headerlink" title="使用 T-SQL 建立 RSExecRole 角色與權限 (怎麼不早說.. 😭)"></a>使用 T-SQL 建立 RSExecRole 角色與權限 (怎麼不早說.. 😭)</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> master<span class="token punctuation">;</span>
+GO
+<span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">(</span><span class="token keyword">SELECT</span> <span class="token number">1</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>database_principals <span class="token keyword">WHERE</span> <span class="token punctuation">[</span><span class="token keyword">type</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'R'</span> <span class="token operator">AND</span> <span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'RSExecRole'</span><span class="token punctuation">)</span> <span class="token keyword">BEGIN</span>
+    <span class="token keyword">CREATE</span> ROLE <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">END</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>xp_sqlagent_enum_jobs <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>xp_sqlagent_is_starting <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>xp_sqlagent_notify <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+GO
+<span class="token keyword">USE</span> msdb<span class="token punctuation">;</span>
+GO
+<span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">(</span><span class="token keyword">SELECT</span> <span class="token number">1</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>database_principals <span class="token keyword">WHERE</span> <span class="token punctuation">[</span><span class="token keyword">type</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'R'</span> <span class="token operator">AND</span> <span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'RSExecRole'</span><span class="token punctuation">)</span> <span class="token keyword">BEGIN</span>
+    <span class="token keyword">CREATE</span> ROLE <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">END</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_add_category <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_add_job <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_add_jobschedule <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_add_jobserver <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_add_jobstep <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_delete_job <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_help_category <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_help_job <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_help_jobschedule <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sp_verify_job_identifiers <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>syscategories <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> dbo<span class="token punctuation">.</span>sysjobs <span class="token keyword">TO</span> <span class="token punctuation">[</span>RSExecRole<span class="token punctuation">]</span><span class="token punctuation">;</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="設定報表伺服器"><a href="#設定報表伺服器" class="headerlink" title="設定報表伺服器"></a>設定報表伺服器</h2><h3 id="服務帳戶：網路服務"><a href="#服務帳戶：網路服務" class="headerlink" title="服務帳戶：網路服務"></a>服務帳戶：網路服務</h3><p><img src="/assets/pbrs-service-account.jpg"></p>
+<h3 id="資料庫權限：使用-SQL-Server-驗證"><a href="#資料庫權限：使用-SQL-Server-驗證" class="headerlink" title="資料庫權限：使用 SQL Server 驗證"></a>資料庫權限：使用 SQL Server 驗證</h3><p><img src="/assets/pbrs-database.jpg"></p>
+<p>使用 SQL 帳戶驗證，用來連接到報表伺服器資料庫帳戶必須擁有下列角色 (Role)：<br><strong>ReportServer</strong> 資料庫: <code class="watch">Role public</code>, <code class="watch">Role RSExecRole</code><br><strong>master</strong>, <strong>msdb</strong>, <strong>ReportServerTempDB</strong> 資料庫： <code class="watch">Role RSExecRole</code></p>
+<h3 id="設定-URL-與-SSL"><a href="#設定-URL-與-SSL" class="headerlink" title="設定 URL 與 SSL"></a>設定 URL 與 SSL</h3><p><img src="/assets/pbrs-webservice-url.jpg"><br><img src="/assets/pbrs-portal-url.jpg"></p>
+<h3 id="如果有必要的話-恢復報表伺服器加密金鑰，必須準備-snk-檔及恢復密碼"><a href="#如果有必要的話-恢復報表伺服器加密金鑰，必須準備-snk-檔及恢復密碼" class="headerlink" title="(如果有必要的話) 恢復報表伺服器加密金鑰，必須準備 snk 檔及恢復密碼"></a>(如果有必要的話) 恢復報表伺服器加密金鑰，必須準備 snk 檔及恢復密碼</h3><p><img src="/assets/pbrs-restore-key.jpg"></p>
+<h3 id="重新啟用報表伺服器"><a href="#重新啟用報表伺服器" class="headerlink" title="重新啟用報表伺服器"></a>重新啟用報表伺服器</h3><p><img src="/assets/pbrs-status.jpg"></p>
+<h2 id="疑難排除"><a href="#疑難排除" class="headerlink" title="疑難排除"></a>疑難排除</h2><h3 id="設定排程時出現「報表伺服器資料庫內部發生錯誤。這可能是因為連接失敗、逾時或資料庫內磁碟空間不足所造成。」"><a href="#設定排程時出現「報表伺服器資料庫內部發生錯誤。這可能是因為連接失敗、逾時或資料庫內磁碟空間不足所造成。」" class="headerlink" title="設定排程時出現「報表伺服器資料庫內部發生錯誤。這可能是因為連接失敗、逾時或資料庫內磁碟空間不足所造成。」"></a>設定排程時出現「報表伺服器資料庫內部發生錯誤。這可能是因為連接失敗、逾時或資料庫內磁碟空間不足所造成。」</h3><p><img src="/assets/alert-sql-connect-fail.jpg"><br>連線的權限不足，可能的問題就是未授予 RSExecRole，或者 RSExecRole 在系統資料庫 master 及 msdb 中的權限不足。</p>
+<h3 id="未執行-SQL-代理程式服務。此作業需要-SQL-代理程式服務。"><a href="#未執行-SQL-代理程式服務。此作業需要-SQL-代理程式服務。" class="headerlink" title="未執行 SQL 代理程式服務。此作業需要 SQL 代理程式服務。"></a>未執行 SQL 代理程式服務。此作業需要 SQL 代理程式服務。</h3><p><img src="/assets/alert-sql-agent-service.jpg"><br>資料庫伺服器啟用 <code class="watch">SQL Server Agent</code><br><img src="/assets/sql-server-agent.jpg"></p>
+<h3 id="無法-改變角色-RSEexcRole-因為它不存在或您沒有權限。"><a href="#無法-改變角色-RSEexcRole-因為它不存在或您沒有權限。" class="headerlink" title="無法 改變角色 RSEexcRole 因為它不存在或您沒有權限。"></a>無法 改變角色 RSEexcRole 因為它不存在或您沒有權限。</h3><p>因為需要將服務加入到資料庫伺服器的角色 RSExecRole ，所以在連線資料庫所使用的權限要足夠賦予 Login 角色。</p>
+<p><img src="/assets/PBIRS-Setting-Error-1.png" alt="錯誤訊息 無法 改變角色 RSEexcRole"></p>
+<p><img src="/assets/PBIRS-Setting-Error-2.png" alt="錯誤尋錫"></p>
+<p>範例中是使用具有 system admin 權限的 login 進行連線</p>
+<p><img src="/assets/PBIRS-Setting-Database-Connect.png"></p>
+<p>認證則是使用專為 Power BI Report Server 新建立的 Login 具備資料庫層級 Owner Role 以及 伺服器層級RSExecRole</p>
+<p><img src="/assets/PBIRS-Setting-Database-Verify.png"></p>
+<p>驗證後即完成資料庫連線的設定</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/power-bi/report-server/install-report-server">安裝 Power BI 報表伺服器</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/reporting-services/install-windows/configure-a-report-server-database-connection-ssrs-configuration-manager?view=sql-server-ver15">設定報表伺服器資料庫連接 (SSRS 組態管理員)</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/reporting-services/security/create-the-rsexecrole?view=sql-server-ver15">建立 RSExecRole</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/05/PBI-ReportServer/" data-id="clg3fmag600xls4tsgncz0lm5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PBRS/" rel="tag">PBRS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerBI/" rel="tag">PowerBI</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/05/Git-100/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Git 的 100 個情境應用</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/VisualStudio-Git/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Visual Studio 使用 Git 版本控制
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Center for Internet Security, CIS Benchmark &amp; CIS Control | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介紹 CIS Benchmark 與 CIS Control，藉由相關規範與最佳資安實務建議調整 IIS, SQL Server 與 Windows Server 減少潛在的資安風險 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Center for Internet Security, CIS Benchmark &amp; CIS Control">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/Center-for-Internet-Security/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="介紹 CIS Benchmark 與 CIS Control，藉由相關規範與最佳資安實務建議調整 IIS, SQL Server 與 Windows Server 減少潛在的資安風險 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+<meta property="article:published_time" content="2022-02-26T06:08:56.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Center-for-Internet-Security" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/Center-for-Internet-Security/" class="article-date">
+  <time datetime="2022-02-26T06:08:56.000Z" itemprop="datePublished">2022-02-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Center for Internet Security, CIS Benchmark &amp; CIS Control
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CIS-Benchmark"><span class="toc-text">CIS Benchmark</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IIS-Benchmark"><span class="toc-text">IIS Benchmark</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-Benchmark"><span class="toc-text">SQL Server Benchmark</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CIS-Control"><span class="toc-text">CIS Control</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mapping"><span class="toc-text">Mapping</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Abbreviations"><span class="toc-text">Abbreviations</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>介紹 CIS Benchmark 與 CIS Control，藉由相關規範與最佳資安實務建議調整 IIS, SQL Server 與 Windows Server 減少潛在的資安風險 😎</p>
+<a href="/posts/2022/02/Center-for-Internet-Security/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>CIS 是非營利組織，其提出關於資訊環境設置的 Benchmark 與 Control，可以做為提升資安的遵循規範。</p>
+<h2 id="CIS-Benchmark"><a href="#CIS-Benchmark" class="headerlink" title="CIS Benchmark"></a>CIS Benchmark</h2><ul>
+<li>IIS</li>
+<li>SQL Server</li>
+<li>Windows Server</li>
+<li>Windows</li>
+<li>Office</li>
+</ul>
+<p>技服中心的 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/GCB">GCB</a> 主題說明文件如 IIS 及 SQL Server，參考文獻都有提及到 CIS，尤其是 IIS 的部分，GCB 與 CIS 兩者的相互關聯非常高，因此溯源學習 CIS Benchmark 能夠更快更及時的掌握最佳組態設定。</p>
+<h3 id="IIS-Benchmark"><a href="#IIS-Benchmark" class="headerlink" title="IIS Benchmark"></a>IIS Benchmark</h3><p>IIS Benchmark 的主題：</p>
+<ul>
+<li>Basic Configurations</li>
+<li>Configure Authentication and Authorization</li>
+<li>ASP.NET Configuration Recommendations</li>
+<li>Request Filtering and Other Restriction Modules</li>
+<li>IIS Logging Recommendations</li>
+<li>FTP Requests</li>
+<li>Transport Encryption</li>
+</ul>
+<p>相關的最佳組態建議連同 GCB 的設定建議，合併整理於 <a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+<h3 id="SQL-Server-Benchmark"><a href="#SQL-Server-Benchmark" class="headerlink" title="SQL Server Benchmark"></a>SQL Server Benchmark</h3><p>SQL Server Benchmark 的主題：</p>
+<ul>
+<li>Installation, Updates and Patches</li>
+<li>Surface Area Reduction</li>
+<li>Authentication and Authorization</li>
+<li>Password Policies</li>
+<li>Auditing and Logging</li>
+<li>Application Development</li>
+<li>Encryption</li>
+<li>Appendix: Additional Considerations</li>
+</ul>
+<p>除了 CIS 外，GCB 在關於 SQL Server 的主題也參考了美國國防部<a target="_blank" rel="noopener" href="https://public.cyber.mil/stigs/downloads/">SITGS</a> 的建議設定。</p>
+<h2 id="CIS-Control"><a href="#CIS-Control" class="headerlink" title="CIS Control"></a>CIS Control</h2><p>不同於 <a target="_blank" rel="noopener" href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=A0030304">資通安全責任等級分級辦法</a>的<strong>附表十 資通系統防護基準</strong>是以系統高、中、普分級，決定控制措施。CIS 是以 Implementation Groups (企業規模)，分為 IG3、IG2 與 IG1，來定需要落實的控制措施。</p>
+<dl>
+  <dt>IG1</dt>
+  <dd>中小型企業，有限的 IT 與資安人力，企業最主要的目標是維持營運不中斷，較無機敏資料需要保護。因此 IG1 的控制措施就是在衡量經濟效益下，需要達到的最小限度資安控制措施。</dd>
+  <dt>IG2</dt>
+  <dd>企業具有專人負責資安防護，並且 IG2 通常為數個 IG1 的支援單位，例如總公司的資安單位。IG2 落實 IG1 的各種制措施，並處理保護敏感與重要資料的需求。</dd>
+  <dt>IG3</dt>
+  <dd>企業由各資安領域專家 (風險管理、滲透測試與應用系統安全等)落實防護措施，IG3 對於機敏資料受法規與合規性上的要求，並且對於可用性與資料完整性有嚴格的要求，若發生資安事變會動公共大眾有嚴重的影響。而落實 IG3 的控制措施包含落實 IG2 與 IG1 的控制措施。</dd>
+</dl>
+
+<h3 id="Mapping"><a href="#Mapping" class="headerlink" title="Mapping"></a>Mapping</h3><p>CIS Control 可以與其他資安框架、控制措施互相對照，以下是 CIS 所提供的對照清單：</p>
+<dl>
+  <dt>SOC2</dt>
+  <dd></dd>
+  <dt>PCI v3.2.1</dt>
+  <dd></dd>
+  <dt>NIST </dt>
+  <dd>
+    SP800-53 Rev 5 v8 <br/>
+    SP800-171 Rev 2 v8 <br/>
+    SP 800-53 Rev 5 Moderate and Low Baselines <br/>
+    CSF v8 Mappings
+  </dd>
+  <dt>NERC-CIP</dt>
+  <dd></dd>
+  <dt>ISO/IEC 27002:2021</dt>
+  <dd></dd>
+  <dt>ISACA COBIT 19</dt>
+  <dd></dd>
+  <dt>GSMA FS.31 Baseline Security Controls</dt>
+  <dd></dd>
+  <dt>FFEIC CAT</dt>
+  <dd>Federal Financial Institutions Examination Council - Cybersecurity Assessment Tool</dd>
+  <dt>Enterprise ATT&CK v8.2 Master Mapping</dt>
+  <dd></dd>
+  <dt>CSA v8</dt>
+  <dd>(Cloud Security Alliance)</dd>
+  <dt>CMMC v8</dt>
+  <dd></dd>
+  <dt>CJIS</dt>
+  <dd>(Criminal Justice Information Services)</dd>
+  <dt>Azure Security Benchmark v3</dt>
+  <dd></dd>
+</dl>
+
+<h2 id="Abbreviations"><a href="#Abbreviations" class="headerlink" title="Abbreviations"></a>Abbreviations</h2><p>CIS 中使用到的相關縮寫，資料來源為 CIS Controls Guide</p>
+<dl>
+<dt>AAA</dt><dd>Authentication, Authorization,and Auditing</dd>
+<dt>ACL</dt><dd>Access Control List</dd>
+<dt>AD</dt><dd>Active Directory</dd>
+<dt>AoC</dt><dd>Attestation of Compliance</dd>
+<dt>API</dt><dd>Application Programming Interface</dd>
+<dt>BEC</dt><dd>Business Email Compromise</dd>
+<dt>C2</dt><dd>Command and Control</dd>
+<dt>CCE</dt><dd>Common Configuration Enumeration</dd>
+<dt>CDM</dt><dd>Community Defense Model</dd>
+<dt>CIA</dt><dd>Confidentiality, Integrity, and Availability</dd>
+<dt>CIS</dt><dd>Center for Internet Security</dd>
+<dt>CIS-CAT</dt><dd>CIS Configuration Assessment Tool</dd>
+<dt>COTS</dt><dd>Commercial off-the-Shelf</dd>
+<dt>CPE</dt><dd>Common Platform Enumeration</dd>
+<dt>CREST</dt><dd>Council of Registered Security Testers</dd>
+<dt>CSA</dt><dd>Cloud Security Alliance</dd>
+<dt>CSP</dt><dd>Cloud Service Provider</dd>
+<dt>CVE</dt><dd>Common Vulnerabilities and Exposures</dd>
+<dt>CVSS</dt><dd>Common Vulnerability Scoring System</dd>
+<dt>DBIR</dt><dd>Data Breach Investigations Report</dd>
+<dt>DEP</dt><dd>Data Execution Prevention</dd>
+<dt>DG</dt><dd>Development Group</dd>
+<dt>DHCP</dt><dd>Dynamic Host Configuration Protocol</dd>
+<dt>DKIM</dt><dd>DomainKeys Identified Mail</dd>
+<dt>DLP</dt><dd>Data Loss Prevention</dd>
+<dt>DMARC</dt><dd>Domain-based Message Authentication, Reporting, and Conformance</dd>
+<dt>DMS</dt><dd>Database Management System</dd>
+<dt>DNS</dt><dd>Domain Name System</dd>
+<dt>DPI</dt><dd>Deep Packet Inspection</dd>
+<dt>EDR</dt><dd>Endpoint Detection and Response</dd>
+<dt>EOL</dt><dd>End of Life</dd>
+<dt>FFIEC</dt><dd>Federal Financial Institutions Examination Council</dd>
+<dt>FISMA</dt><dd>Federal Information Security Modernization Act</dd>
+<dt>GRC</dt><dd>Governance Risk and Compliance</dd>
+<dt>HECVAT</dt><dd>Higher Education Community Vendor Assessment Toolkit</dd>
+<dt>HIPAA</dt><dd>Health Insurance Portability and Accountability Act</dd>
+<dt>HTTP</dt><dd>Hypertext Transfer Protocol</dd>
+<dt>HTTPS</dt><dd>Hypertext Transfer Protocol Secure</dd>
+<dt>IaaS</dt><dd>Infrastructure as a Service</dd>
+<dt>IAM</dt><dd>Identity and Access Management</dd>
+<dt>IDS</dt><dd>Intrusion Detection System</dd>
+<dt>IG</dt><dd>Implementation Group</dd>
+<dt>IOCs</dt><dd>Indicators of Compromise</dd>
+<dt>IoT</dt><dd>Internet of Things</dd>
+<dt>IP</dt><dd>Internet Protocol</dd>
+<dt>IPS</dt><dd>Intrusion Prevention System</dd>
+<dt>ISAC</dt><dd>Information Sharing and AnalysisCenter</dd>
+<dt>ISO</dt><dd>International Organization for Standardization</dd>
+<dt>IT</dt><dd>Information Technology</dd>
+<dt>LotL</dt><dd>Living off the Land</dd>
+<dt>MDM</dt><dd>Mobile Device Management</dd>
+<dt>MFA</dt><dd>Multi-Factor Authentication</dd>
+<dt>MITRE ATT&CK</dt><dd>MITRE Adversarial Tactics, Techniques, and Common Knowledge</dd>
+<dt>MS-ISAC</dt><dd> Multi-State Information Sharing and Analysis Center</dd>
+<dt>NaaS</dt><dd>Network-as-a-Service</dd>
+<dt>NCSA</dt><dd>National Cyber Security Alliance</dd>
+<dt>NIDS</dt><dd>Network Intrusion Detection System</dd>
+<dt>NIST</dt><dd>National Institute of Standards and Technology</dd>
+<dt>OS</dt><dd>Operating System</dd>
+<dt>OSS</dt><dd>Open Source Software</dd>
+<dt>OVAL</dt><dd>Open Vulnerability and Assessment Language</dd>
+<dt>OWASP</dt><dd>Open Web Application Security Project</dd>
+<dt>PaaS</dt><dd>Platform as a Service</dd>
+<dt>PAM</dt><dd>Privileged Access Management</dd>
+<dt>PCI</dt><dd>Payment Card Industry</dd>
+<dt>SaaS</dt><dd>Software as a Service</dd>
+<dt>SAFECode</dt><dd>Software Assurance Forum for Excellence in Code</dd>
+<dt>SCADA</dt><dd>Supervisory Control and Data Acquisition</dd>
+<dt>SCAP</dt><dd>Security Content Automation Protocol</dd>
+<dt>SIEM</dt><dd>Security Information and Event Management</dd>
+<dt>SIP</dt><dd>System Integrity Protection</dd>
+<dt>SMS</dt><dd>Short Messaging Service</dd>
+<dt>SOC</dt><dd>Security Operations Center</dd>
+<dt>SOC 2</dt><dd>Service Organization Control 2</dd>
+<dt>SPAM</dt><dd>Something Posing as Mail</dd>
+<dt>SPF</dt><dd>Sender Policy Framework</dd>
+<dt>SQL</dt><dd>Structured Query Language</dd>
+<dt>SSDF</dt><dd>Secure Software Development Framework</dd>
+<dt>SSH</dt><dd>Secure Shell</dd>
+<dt>SSO</dt><dd>Single Sign-On Telnet Teletype Network</dd>
+<dt>TLS</dt><dd>Transport Layer Security</dd>
+<dt>TTPs</dt><dd>Tactics, Techniques, and Procedures</dd>
+<dt>URL</dt><dd>Uniform Resource Locator</dd>
+<dt>USB</dt><dd>Universal Serial Bus</dd>
+<dt>VPN</dt><dd>Virtual Private Network</dd>
+<dt>WDEG</dt><dd>Windows Defender Exploit Guard</dd>
+<dt>WPA2</dt><dd>Wi-Fi Protected Access 2</dd>
+<dt>XCCDF</dt><dd>Extensible Configuration Checklist Description Format</dd>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/Center-for-Internet-Security/" data-id="clg3fmabl00els4ts66loam9n" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/SQL-Server-Dbatools-Dbachecks/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Dbatools &amp; Dbachecks</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/Digital-Orgnization/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Digital Orgnization 數位組織與部門架構
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

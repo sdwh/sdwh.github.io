@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Learn DP-300 The Hard Way | 實作 DP-300 Lab 01 Azure SQL Server VM | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="實作 DP-300 Lab，從實驗課程中精熟 DP-300 的測驗重點以及工具操作。本次要實驗的是如何建立 Azure VM 並且搭配 SQL Server Developer 版本，並使用 SSMS 進行資料庫還原與操作，最後會調整 Azure Networking 設定，從本機使用 SSMS 遠端連線至 Azure VM 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Learn DP-300 The Hard Way | 實作 DP-300 Lab 01 Azure SQL Server VM">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/04/Azure-Certification-DP-300-Lab-01/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="實作 DP-300 Lab，從實驗課程中精熟 DP-300 的測驗重點以及工具操作。本次要實驗的是如何建立 Azure VM 並且搭配 SQL Server Developer 版本，並使用 SSMS 進行資料庫還原與操作，最後會調整 Azure Networking 設定，從本機使用 SSMS 遠端連線至 Azure VM 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Storage.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Instance.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-VM-Pricing.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-9.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Configuration-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Configuration-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Default-Tools.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-VM-Disks.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Server-Database.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Server-Security.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Success.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-DP-300-Lab-01-Networking-Setting.png">
+<meta property="article:published_time" content="2022-04-13T13:24:14.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Certification">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Certification-DP-300-Lab-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/" class="article-date">
+  <time datetime="2022-04-13T13:24:14.000Z" itemprop="datePublished">2022-04-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Learn DP-300 The Hard Way | 實作 DP-300 Lab 01 Azure SQL Server VM
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lab01"><span class="toc-text">Lab01</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Azure-VM"><span class="toc-text">Create Azure VM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Connect-To-VM"><span class="toc-text">Connect To VM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Database-Query"><span class="toc-text">Database Query</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Remote-SSMS"><span class="toc-text">Remote SSMS</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>實作 DP-300 Lab，從實驗課程中精熟 DP-300 的測驗重點以及工具操作。本次要實驗的是如何建立 Azure VM 並且搭配 SQL Server Developer 版本，並使用 SSMS 進行資料庫還原與操作，最後會調整 Azure Networking 設定，從本機使用 SSMS 遠端連線至 Azure VM 😎</p>
+<a href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Lab01"><a href="#Lab01" class="headerlink" title="Lab01"></a>Lab01</h2><p>詳細的實驗流程可以參考微軟在 Github上的<a target="_blank" rel="noopener" href="https://microsoftlearning.github.io/DP-300T00-Administering-Relational-Databases-on-Azure/Instructions/Labs/DP-300_01_lab.html">專案</a></p>
+<h3 id="Create-Azure-VM"><a href="#Create-Azure-VM" class="headerlink" title="Create Azure VM"></a>Create Azure VM</h3><p>首先要前往 Azure Portal，並且在搜尋列查詢 <strong>AZURE SQL</strong>。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-1.png"></p>
+<p>可以使用 Serverless 的 SQL Databases 或者是 PaaS 的 SQL Managed Instances，但這兩種解決方案費用上都納入了 SQL Server 的 License。對於只是要做 POC 的開發人員而言，無法使用到 SQL Server Developer 版本免費的好處 🤨</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-2.png"></p>
+<p>我們這邊選用的是 IaaS 的方式搭配 SQL Server Developer Edition，只要選擇好 OS 以及 SQL Server Edition，剩下的在 Azure VM 的建立過程，SQL Server 也會一併的準備好，實在太方便啦 🤣</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-3.png"><br><img src="/assets/AZ-DP-300-Lab-01-5.png"></p>
+<p>建立 VM 的過程，不外乎就是命名、伺服器的機房位置、規格等設定：</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-6.png"></p>
+<p>在網路的設定部分，我們需要允許 3389 Port，待會才能以 RDP 的方式遠端桌面連線至 VM 上。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-7.png"></p>
+<p>接著可以設定 SQL Server 的 Storage 以及相關的組態設定，有些類似安裝 SQL Server 的簡化步驟。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-8.png"></p>
+<p>我們可以對於 Storage 進行更詳細的設定，包括指定 Disk Size 以及 tempdb、data 還有 log 分別要放在那些 Disk Path。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Storage.png"></p>
+<p>也可以對 SQL Server Instance 進行 Collation 定序、MAXDOP 以及 Memory 的設定。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Instance.png"></p>
+<p>本次實驗是使用 D2s v3 規格等級的虛擬機，因為使用 SQL Server Developer 版本，沒有額外的 SQL Server 授權費用，因此成本集中在虛擬機本身。大家從圖片中可以看到每小時約 5.6 元新台幣，實驗結束可要儘速將資源刪除，否則就像是開著的水龍頭，一點一滴會讓你的荷包流光 😫</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-VM-Pricing.png"></p>
+<h3 id="Connect-To-VM"><a href="#Connect-To-VM" class="headerlink" title="Connect To VM"></a>Connect To VM</h3><p>虛擬機完成部署後，我們可以從 Azure Portal 的資源面板找到連線方式，我們這邊使用 RDP 進行連線。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-9.png"></p>
+<p>連線成功後，首先讓我們來確認一下 Azure VM 上的 SQL Server Configuration。</p>
+<p>哇嗚，除了 Databse Engine 外，一併也安裝好 SSIS、SSAS 以及全文檢索呢 😊</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Configuration-1.png"></p>
+<p>Protocols 則是開啟了 Shared Memory 以及 TCP/IP，很好，方便我們待會可以試驗遠端使用 SSMS 以 TCP/IP 的方式進行連線。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Configuration-2.png"></p>
+<p>我們可以看到 Azure VM 預先準備好 SSMS 以及 Azure Data Studio 可供使用。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Default-Tools.png"></p>
+<p>從作業系統可以看到總共有 4 個 Disks，分別如下：</p>
+<table>
+<thead>
+<tr>
+<th>Drive</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C Drive</td>
+<td>Windows Binaries</td>
+</tr>
+<tr>
+<td>D Drive</td>
+<td>Tempdb 以及任何臨時的儲存，重開 VM 會自動移除</td>
+</tr>
+<tr>
+<td>F Drive</td>
+<td>在設置 VM 時指定用於保存 Data</td>
+</tr>
+<tr>
+<td>G Drive</td>
+<td>在設置 VM 時指定用於保存 Log</td>
+</tr>
+</tbody></table>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>Tempdb, Data 和 Log 為什麼要放在不同的 Drive ? 這個是為了效能考量，讓磁碟讀寫成為資料庫使用的瓶頸，分散在多個實體磁碟，可以發揮個別讀頭同時工作的好處，提升資料庫的使用效能。</p>
+        </div>
+    </div>
+</div>
+
+<p><img src="/assets/AZ-DP-300-Lab-01-VM-Disks.png"></p>
+<p>我們可以使用 SSMS 看到關於資料庫的組態，資料庫的位置和 Disk 有對照</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Server-Database.png"></p>
+<p>在安全性部分，預設只有啟動 Windows 驗證，我們需要調整為 <strong>SQL Server and Windows Authentication mode</strong> 以便我們能夠從遠端連線至 Azure VM 上的 SQL Server，並且能夠使用 SQL Login 的方式登入資料庫。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Server-Security.png"></p>
+<p>再來我們需要下載 <a target="_blank" rel="noopener" href="https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksDW2017.bak">Adventrueworks.bak</a> 並且還原資料庫。</p>
+<p>可以從 VM 當中使用瀏覽器下載，或者在本機下載後複製貼上到遠端連線的 VM 當中。</p>
+<h3 id="Database-Query"><a href="#Database-Query" class="headerlink" title="Database Query"></a>Database Query</h3><p>還原完成後，接著讓我們查詢資料庫驗證一切都 ok 吧 🙂</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Success.png"></p>
+<h3 id="Remote-SSMS"><a href="#Remote-SSMS" class="headerlink" title="Remote SSMS"></a>Remote SSMS</h3><p>一切順利之後，接著是要從本機使用 SSMS 連線至 Azure VM 的 SQL Server。該怎麼進行呢？關鍵的步驟是到 Azure Portal 對 VM 設定 Networking 允許本機的網際網路 IP 可以經 1433 Port 連線至 Azure VM 當中。</p>
+<p><img src="/assets/AZ-DP-300-Lab-01-Networking-Setting.png"></p>
+<p>完成設定後，我們就可以順利從本機連線至 Azure VM 的 SQL Server 囉。</p>
+<p>只是連線速度略慢，不知道是否是物理距離美東 Eastus 太遠的關係？😣</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/Azure-Certification-DP-300-Lab-01/" data-id="clg3fmaal009ws4tsatuz3yvh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/04/dotnet-Hosting/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">.NET Hosting Solutions (Kestrel, HTTP.sys, IIS)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/04/Agile-Manifesto-Principles-Practices/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          初探 Agile 開發 Manifesto, Principles &amp; Practices
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

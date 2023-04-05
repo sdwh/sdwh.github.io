@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Web Application Architecture (Repository Pattern) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於網頁應用系統的分層架構設計。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web Application Architecture (Repository Pattern)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/12/Web-Application-Architecture/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於網頁應用系統的分層架構設計。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Web-Application-Architecture.svg">
+<meta property="article:published_time" content="2022-12-16T12:44:51.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Web-Application-Architecture" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/12/Web-Application-Architecture/" class="article-date">
+  <time datetime="2022-12-16T12:44:51.000Z" itemprop="datePublished">2022-12-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/DEV/">DEV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Web Application Architecture (Repository Pattern)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Presentation-Layer"><span class="toc-text">Presentation Layer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Service-Layer"><span class="toc-text">Service Layer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Business-Layer"><span class="toc-text">Business Layer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Repository-Layer"><span class="toc-text">Repository Layer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Access-Layer"><span class="toc-text">Data Access Layer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DTO-ViewModel"><span class="toc-text">DTO &#x2F; ViewModel</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Common-Layer"><span class="toc-text">Common Layer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Folders-vs-Projects"><span class="toc-text">Folders vs Projects</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E9%80%94"><span class="toc-text">用途</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%83%E5%BE%97"><span class="toc-text">心得</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sample-Codes"><span class="toc-text">Sample Codes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Huanlin-%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-Series"><span class="toc-text">Huanlin 學習筆記 Series</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於網頁應用系統的分層架構設計。</p>
+<a href="/posts/2022/12/Web-Application-Architecture/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>在剛學 ASP.NET MVC 的時候，習慣把所有的程式碼包含資料處理與商業邏輯，通通都寫在 Controller。雖然開發起來很方便，但隨著開發規模擴大，有維護或者變動需求的時候，要尋找著手的修改點就痛到不行，通常都是改天比改 Code 更多。</p>
+<p>後來開始依照情境，把商業邏輯都放在 Model，有時候橫空又創出一個 Service 資料夾或者 Business 資料夾，沒有太多分類邏輯的就把檔案散置其中，於是從混亂的 Controller 變成了混亂的檔案分類。</p>
+<p>隨著 Entity Framework 的學習，發現許多的分層討論都伴隨著 Entity Framework 的發生，甚至慢慢引領開發人員走向 Domain Drive Developement 的方向，這篇筆記沒有太大的野心，就是先將網路上、課程中以及各式來源的 Web Application 分層方式做一個綜整筆記，在加上一點自己的心得 😉</p>
+<hr>
+<p><img src="/assets/Web-Application-Architecture.svg"></p>
+<h3 id="Presentation-Layer"><a href="#Presentation-Layer" class="headerlink" title="Presentation Layer"></a>Presentation Layer</h3><p>接收使用者請求與進行回應，以 ASP.NET MVC 與 Web API 就是以 Controller 作為代表進行請求的處理 (Route, Query String, Form body 等)。</p>
+<p>收到的請求會在透過 Service Layer 進行商業邏輯的處理，並且在依照前端的類型回應 ViewModel, View 或者是 Json 資料。 </p>
+<p>Controller 不適合出現商業邏輯，會造成程式維護的困難以及無法測試。</p>
+<p>一個設計 Presentation Layer 的方式就是判斷如果今天專案不是 MVC 的時候，在 Presentation Layer 的程式碼仍想被重複使用該怎麼辦？在設計上就應開發在可被共用的 Service Layer。</p>
+<h3 id="Service-Layer"><a href="#Service-Layer" class="headerlink" title="Service Layer"></a>Service Layer</h3><p>將商業邏輯進行封裝提供 Presentation Layer 使用，而關於資料 CRUD 的工作則交由 Repository Layer 進行。</p>
+<p>Service Layer 下可以再分出 Business Layer，但部分時候兩者被當稱別稱互相替代。</p>
+<p>Service Layer 一派的認為包含處理 Logging, Exception, Authorization，但另一派則將此類分層在 Common 進行處理。</p>
+<p>如果選擇分出 Business Layer，在 Service Layer 會扮演輕量的介面，設計上可以是 Web API 或者是 POCOs。</p>
+<h3 id="Business-Layer"><a href="#Business-Layer" class="headerlink" title="Business Layer"></a>Business Layer</h3><p>別名為 Domain Model, Domain Layer。</p>
+<p>在 Business Layer 可以採用的技術包含 Transaction Script, Table Module, Active Record 或 Domain Model。</p>
+<p>而如果採用 Table Module 或 Active Record，則會與 Data Access Layer 混合在一起，</p>
+<p>例如直接使用 Entity Framework 而不使用 Repository 的情況。</p>
+<p>而使用 Transaction Script 則會搭配 Data Access Layer 進行資料庫 CRUD 控制；</p>
+<p>如果使用 Domain Model 則會需搭配 Repository Layer 由資料操作轉為物件操作的方式，以符合領域以及商業知識的開發維護。</p>
+<h3 id="Repository-Layer"><a href="#Repository-Layer" class="headerlink" title="Repository Layer"></a>Repository Layer</h3><p>負責料的存取操作資，包含如何取得資料以及取得多少資料，但不包含商業邏輯，僅只限於資料存取本身。</p>
+<p>如果要對存取到的資料再去做篩選，適合在 Service Layer 以商業邏輯進行。</p>
+<p>Repository 下可以再分出 Data Access Layer，但部分時候兩者被當成別稱互相替代。</p>
+<hr>
+<p>Repository 相關的名詞</p>
+<dl>
+  <dt>Domain Driven Development</dt>
+  <dd></dd>
+  <dt>Bounded Context</dt>
+  <dd></dd>
+  <dt>Unit of Work</dt>
+  <dd></dd>
+</dl>
+
+<h3 id="Data-Access-Layer"><a href="#Data-Access-Layer" class="headerlink" title="Data Access Layer"></a>Data Access Layer</h3><p>Data Access 的技術可以選擇的包含 ADO.NET, Entity Framework 或者是 Dapper。</p>
+<p>在這一層要負責項目包含與資料庫的 CRUD, Transaction 以及 Concurrency，</p>
+<p>而如果在 Business Layer 使用的是 Active Record 或者是 Table Module，Data Access Layer 與 Business Layer 不會有明顯的分界。</p>
+<h4 id="DTO-ViewModel"><a href="#DTO-ViewModel" class="headerlink" title="DTO / ViewModel"></a>DTO / ViewModel</h4><p>全名為 Data Transfer Model，在 Presentation Layer, Service Layer 以及 Repository Layer 之間溝通進行傳遞的物件。</p>
+<p>通常與 Domain Model 的類別物件有所區別，會因應 View 或者商業邏輯的需求，增減不同的 Property，</p>
+<p>而純粹的 DTO 只有 Property 不會具有方法，但在其他的使用情境也是有在 ViewModel 當中加入方法組合 Property 的技巧。</p>
+<p>DTO 背後可以代表的是 Controller 所需要的 ViewModel 或者來自使用者的 Parameter 或者是要傳入 Repository 的 Condition，</p>
+<p>藉由 DTO 可以隱藏參數的複雜性，並且減少分層之間的耦合關係。</p>
+<h3 id="Common-Layer"><a href="#Common-Layer" class="headerlink" title="Common Layer"></a>Common Layer</h3><p>將各層會使用到的共用類別，包含 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/dotnet/csharp/language-reference/builtin-types/enum">Enum</a> 以及 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/extension-methods">Extension Methods</a> 分離為獨立的層別。</p>
+<p>Common Layer / Infrastructure</p>
+<h3 id="Folders-vs-Projects"><a href="#Folders-vs-Projects" class="headerlink" title="Folders vs Projects"></a>Folders vs Projects</h3><p>Visual Studio 在專案上可以透過「資料夾分層」或「專案分層」的方式進行分層。</p>
+<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><p>分層所帶來的明確好處包含：</p>
+<ul>
+<li>關注點分離：讓程式碼依照功能分門別類專責工作，在維護或擴充時能夠快速定位進行修改</li>
+</ul>
+<div class="article-blockquote" style="margin-left: 2rem;">
+MVC 的分層一開始容易集中在 Controller，初步的分層會集中在 Model，而可以再進階為 Model 分層，加上 Service 以及 Repository。
+</div>
+
+<ul>
+<li>合作開發：基於關注點分離，要合作開發可以分從不同的層去進行、避免程式碼的衝突</li>
+</ul>
+<div class="article-blockquote" style="margin-left: 2rem;">
+合作開發的分工單位可以是不同的層，除了 MVC 的分工之外，可以再結合 Service 與 Repository 的分層進行分工。
+</div>
+
+<ul>
+<li>程式碼的重複使用：因為分層與分類，程式碼邏輯可以被重複使用，避免維護上需要逐一修改所有地方</li>
+</ul>
+<div class="article-blockquote" style="margin-left: 2rem;">
+例如商業邏輯與服務層可以提供不同的 Controller 使用；資料倉儲層可以提供不同的商業邏輯與服務層使用。
+</div>
+
+<ul>
+<li>面對需求的彈性：當需求變化時，例如資料庫底層或者是使用者介面層的調整，只需要在對應的層調整，其他地方可以沿用</li>
+</ul>
+<div class="article-blockquote" style="margin-left: 2rem;">
+例如 SQL Server 換為 MySQL 或者 Oracle；前台從 Web 換成 WebAPI 或者 Client Side。
+</div>
+
+<h3 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h3><p>分層依照不同的開發團隊有不同的使用方式與定義，必須知道的是<strong>不必為分層而分層</strong>，在開發初期的分層會有額外的成本，但在程式規模的成長之後則能帶來維護與擴充的成本降低。</p>
+<p>而該如何進行分層？可以從思考這項功能是否專屬於目前的環境平台或者是否有重複使用的必要性，如果有就不應該放在 Presentation 而是往 Service、Business 去安插，</p>
+<p>因此在沒有複雜的分層前提下，可以做到的會是先分出 Presentation 與 Service (Business)，至於 Data Access 或者是 Repository 則明顯區隔，</p>
+<p>先藉由 Entity Framework 扮演 Data Access 的方式，同時採 Active Record 的方式直接由 DbContext 透過 DBSet 與資料表的對應進行資料的 CRUD。</p>
+<p>此外如果近乎沒有成本的分層預備動作可以先完成，例如將專案的命名加入 <code class="s">.Web</code>，方便日後的其他專案加入 <code class="s">.Service</code>、<code class="s">.DAL</code> 等對應。</p>
+<h2 id="Sample-Codes"><a href="#Sample-Codes" class="headerlink" title="Sample Codes"></a>Sample Codes</h2><p>分層但不使用 Repositoroy 的範例，搭配文章 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/leotsai/p/entity-framework-doesnt-need-additional-repository.html">博客園的大牛們，被你們害慘了，Entity Framework從來都不需要去寫Repository設計模式</a> 服用。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/leotsai/mvcsolution">mvcsolution | Github</a></p>
+<p><a target="_blank" rel="noopener" href="https://kevintsengtw.blogspot.com/2012/10/aspnet-mvc-part1.html">ASP.NET MVC 專案分層架構 Part.1 初學者的起手式</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p>從 Pluralsight 挖出來的珍貴課程 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/architecting-applications-dotnet/table-of-contents">Architecting Applications for the Real World in .NET</a> 已經被歸類為 Retired，但充滿參考價值的課程，從時間成本的觀點來看待分層架構的必要性以及各層應扮演怎麼樣的角色。課程的內容和 <a target="_blank" rel="noopener" href="https://www.tenlong.com.tw/products/9786263330504">Martin Fowler 的企業級軟體架構模式：軟體重構教父傳授 51個模式，活用設計思考與架構決策 </a> 有許多概念關聯，也為更進階的學習提供了方向。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application">Implementing the Repository and Unit of Work Patterns in an ASP.NET MVC Application (9 of 10) | learn.microsoft</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.alantsai.net/posts/2014/10/buildyourownapplicationframeworkonmvc-09-repositorypattern">用Repository Pattern抽離對Entity Framework的依賴 | Alan Tsai 的學習筆記</a></p>
+<p><a target="_blank" rel="noopener" href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">隨手 Design Pattern (2) - 軟體分層設計模式 (Software Layered Architecture Pattern) | Ray’s Notes</a></p>
+<p><a target="_blank" rel="noopener" href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-4-Repository-%E6%A8%A1%E5%BC%8F-Repository-Pattern/">隨手 Design Pattern (4) - Repository 模式 (Repository Pattern) | Ray’s Notes</a></p>
+<p><a target="_blank" rel="noopener" href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧 | 伊果的沒人看筆記本</a></p>
+<p><a target="_blank" rel="noopener" href="https://sunnyday0932.github.io/2020/%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B/">三層式架構 | Sian</a></p>
+<h3 id="Huanlin-學習筆記-Series"><a href="#Huanlin-學習筆記-Series" class="headerlink" title="Huanlin 學習筆記 Series"></a>Huanlin 學習筆記 Series</h3><p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2012/09/designing-layered-data-centric.html">應用程式的分層設計 (1) - 入門範例</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2012/10/designing-layered-application-2.html">應用程式的分層設計 (2) - 一點改進</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2012/10/designing-layered-application-3-onion.html">應用程式的分層設計 (3) - DDD、六角、與洋蔥架構</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2015/07/designing-layered-application-4-cqrs.html">應用程式的分層設計 (4) - CQRS 風味</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2012/11/repository-yagni.html">Repository，我可能不會用你</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2012/12/repository-2_5.html">RRepository，我可能不會用你 (2) - 範例</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.huanlintalk.com/2012/12/repository-yagni-3-endless-war.html">Repository，我可能不會用你 (3) - 正反意見</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/12/Web-Application-Architecture/" data-id="clg3fmamq01kys4ts74f6hxh2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/12/ASPNET-MVC-Code-First/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC 使用 Entity Framework Code First</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/12/SQL-Server-Relationship-With-Entity-Framework/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Relationship With Entity Framework
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

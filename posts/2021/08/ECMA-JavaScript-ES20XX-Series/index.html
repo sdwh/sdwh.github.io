@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ES20XX Modern JS 新語言特性筆記 | Array | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記從 ES2015 &#x2F; ES2016 &#x2F; ES2017 &#x2F; ES2018 &#x2F; ES2019 &#x2F; ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES20XX Modern JS 新語言特性筆記 | Array">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/08/ECMA-JavaScript-ES20XX-Series/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記從 ES2015 &#x2F; ES2016 &#x2F; ES2017 &#x2F; ES2018 &#x2F; ES2019 &#x2F; ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/JS-New-Array-Array-Of.png">
+<meta property="og:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+<meta property="article:published_time" content="2021-08-01T05:30:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="F2E">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ECMA-JavaScript-ES20XX-Series" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/ECMA-JavaScript-ES20XX-Series/" class="article-date">
+  <time datetime="2021-08-01T05:30:00.000Z" itemprop="datePublished">2021-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ES20XX Modern JS 新語言特性筆記 | Array
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-of"><span class="toc-text">Array.of</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-from"><span class="toc-text">Array.from</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-find"><span class="toc-text">Array find()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-includes"><span class="toc-text">Array includes()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-flat"><span class="toc-text">Array flat()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Review-ES5-Array-Method"><span class="toc-text">Review ES5 Array Method</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#every"><span class="toc-text">every()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#filter"><span class="toc-text">filter()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#map"><span class="toc-text">map()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reduce"><span class="toc-text">reduce()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ECMA-JavaScript-ES20XX-%E7%B3%BB%E5%88%97%E7%AD%86%E8%A8%98"><span class="toc-text">ECMA JavaScript ES20XX 系列筆記</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ES20XX"><span class="toc-text">ES20XX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Node-js-Dancing-with-ES20XX"><span class="toc-text">Node.js Dancing with ES20XX</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記從 ES2015 / ES2016 / ES2017 / ES2018 / ES2019 / ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。</p>
+<a href="/posts/2021/08/ECMA-JavaScript-ES20XX-Series/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>想要先談的幾個新語言特性，都是被 ESLint 糾正或者是開發過程中恰好需要的。本篇筆記為 Modern JS Array 的相關 Property 以及 Method。</p>
+<h3 id="Array-of"><a href="#Array-of" class="headerlink" title="Array.of"></a>Array.of</h3><p>ES6 的新語法特性，用以解決以往使用 new Array 時候因為參數型別問題產生非預期回傳陣列的問題。但實際在寫 JS 的時候，都是以 Array Literal 的方式使用陣列居多。</p>
+<p><img src="/assets/JS-New-Array-Array-Of.png"></p>
+<h3 id="Array-from"><a href="#Array-from" class="headerlink" title="Array.from"></a>Array.from</h3><p>Array.from 可以處理 Array-Like 物件，並加以轉換成陣列。</p>
+<p>例如可以將字串拆解成字元陣列</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">Array<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">'Apple'</span><span class="token punctuation">)</span>
+<span class="token comment">// ['A', 'p', 'p', 'l', 'e']</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>從 Set 或 Map 轉換為陣列</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">Array<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// [1, 2, 3, 4, 5]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>Array.from 可以做為 Map 參數的還原轉換：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">Array<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// [[1, 2], [2, 4], [4, 8]]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>在函式中將 Arguments 轉換為陣列</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> Array<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>arguments<span class="token punctuation">)</span>'
+<span class="token punctuation">&#125;</span>
+<span class="token function">foo</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token comment">// [1, 2, 3]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>搭配 Arrow Function 達到 Map 功能</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">Array<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token parameter">x</span> <span class="token operator">=></span> x <span class="token operator">**</span> <span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token comment">// [1, 4, 9, 16, 25]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>上述範例所使用的 Array Function 中的 Exponentiation Operator 為 ES2016 所加入的語言特性，以往只能使用 Math.Pow 的方式來進行指數運算。</p>
+        </div>
+    </div>
+</div>
+
+<h3 id="Array-find"><a href="#Array-find" class="headerlink" title="Array find()"></a>Array find()</h3><p>以往要在陣列中查詢元素，僅能藉由 indexOf，找到陣列中第一個元素所屬 index 位置。而 Array.find 的參數則是 callback function，可以用條件化的方式來尋找符合的元素，並直接回傳該值而非 index 位置。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token parameter">x</span> <span class="token operator">=></span> x <span class="token operator">></span> <span class="token number">15</span><span class="token punctuation">)</span>
+<span class="token comment">// 16</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>此外 callback function 可以包含三個參數，分別如下：</p>
+<p><code class="watch">element</code></p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">element<span class="token punctuation">,</span> index<span class="token punctuation">,</span> array</span><span class="token punctuation">)</span> <span class="token operator">=></span> element <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span>
+<span class="token comment">// 4</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">element<span class="token punctuation">,</span> index<span class="token punctuation">,</span> array</span><span class="token punctuation">)</span> <span class="token operator">=></span> element <span class="token operator">==</span> <span class="token number">5</span><span class="token punctuation">)</span>
+<span class="token comment">// undefined</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">index</code></p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">element<span class="token punctuation">,</span> index<span class="token punctuation">,</span> array</span><span class="token punctuation">)</span> <span class="token operator">=></span> index <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token comment">// 9</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><code class="watch">array</code></p>
+<p>會指向要被 find 的 array 本身。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>同樣在 ES6 所加入並且與 find 類別的 Array Method 還有 findIndex，和 find 的使用方式類似，但差別在於回傳的結果是 Index 而非 Element。</p>
+        </div>
+    </div>
+</div>
+
+<h3 id="Array-includes"><a href="#Array-includes" class="headerlink" title="Array includes()"></a>Array includes()</h3><p>在 ES6 所加入的 includes Method 可以用於檢查 element 是否存在於 Array 當中，此外支援 Optional 參數 fromIndex 可以從特定的 Index 後開始檢查。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token comment">// true</span>
+<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span>
+<span class="token comment">// false</span>
+<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span>
+<span class="token comment">// true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Array-flat"><a href="#Array-flat" class="headerlink" title="Array flat()"></a>Array flat()</h3><p>flat Array 經常作為程式測驗的練習，要求實作能夠展開巢狀 Array 的函式，而在 ES2019 後，Array 原生內建有此 Method，可以用於展開巢狀的 Array，非常方便。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment">// [1, 2, [3]]</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment">// [1, 2, 3]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>或是可以直接指定 Depth，如果參數使用 <code class="watch">Infinity</code> 可以直接達到完全展開。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token comment">// [1, 2, 3]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Review-ES5-Array-Method"><a href="#Review-ES5-Array-Method" class="headerlink" title="Review ES5 Array Method"></a>Review ES5 Array Method</h3><p>下列 ES5 已經支援的 Array Method 都是有 functional programming 味道的 Array Method，重新溫習以增加在使用上的頻率，減少對於 lodash 的依賴。</p>
+<h4 id="every"><a href="#every" class="headerlink" title="every()"></a>every()</h4><p>every 參數為 callback function，同樣支援 element, index, array 三個參數，例如可以使用下列方式，檢查 Array 中所有的元素是否為從 1 遞增的平方 Array。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">every</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token parameter">element<span class="token punctuation">,</span>index<span class="token punctuation">,</span>array</span><span class="token punctuation">)</span> <span class="token operator">=></span> element <span class="token operator">==</span> <span class="token punctuation">(</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">**</span> <span class="token number">2</span>
+<span class="token punctuation">)</span>
+<span class="token comment">// true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>與 every() 相似 Method 有 some()，兩者的使用方式類似，參數都是接受 callback function。判斷 true or false 的差別在於，every 相同於 python 的 all 必須要 Array 中所有的元素都符合 callback 才會回傳 true；而 some 類似 python 的 any，只要有其中一個元素符合 callback 就會回傳 true。</p>
+        </div>
+    </div>
+</div>
+
+<h4 id="filter"><a href="#filter" class="headerlink" title="filter()"></a>filter()</h4><p>參數同樣是 callback，同樣支援 element, index, array 三個參數，可以使用 filter 檢查 Array 大於 5 的元素或 index 為 0 的元素：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">const</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">]</span>
+arr<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">element<span class="token punctuation">,</span> index</span><span class="token punctuation">)</span> <span class="token operator">=></span> element <span class="token operator">>=</span> <span class="token number">5</span> <span class="token operator">||</span> index <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token comment">// 1, 9, 16, 25</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="map"><a href="#map" class="headerlink" title="map()"></a>map()</h4><p>儘管我們已經曾 Array.from 學習到如何達到 map 的功能，但其實在 ES5 對於 Array 已經支援 map，而在使用上 map 的語意也比較明確，因此如果不是特別要處理 array-like 的物件並結合 map 使用，不需要特別使用 Array.from 而是應該使用 map()。</p>
+<p>參數同樣是 callback，同樣支援 element, index, array 三個參數。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">const</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
+arr<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">element<span class="token punctuation">,</span> index</span><span class="token punctuation">)</span> <span class="token operator">=></span> element <span class="token operator">**</span> <span class="token number">2</span> <span class="token operator">+</span> index<span class="token punctuation">)</span>
+<span class="token comment">// 1, 5, 11, 19, 29</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>map 也可以用於將物件陣列中的特定 Property 取出，形成新的陣列：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">const</span> arrOfObjs <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span><span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'Slime'</span><span class="token punctuation">,</span> <span class="token literal-property property">hp</span><span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span><span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'Dracky'</span><span class="token punctuation">,</span> <span class="token literal-property property">hp</span><span class="token operator">:</span> <span class="token number">15</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span><span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'Golem'</span><span class="token punctuation">,</span> <span class="token literal-property property">hp</span><span class="token operator">:</span> <span class="token number">120</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+
+arrOfObjs<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">o</span><span class="token punctuation">)</span> <span class="token operator">=></span> o<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
+<span class="token comment">// ['Slime', 'Dracky', 'Golem']</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce()"></a>reduce()</h4><p>和上述 every, some, filter, map 有所不同，reduce cabllback function 所支援的參數包含：accumulator, currentValue, currentIndex, array。除了累加數值外，很少使用到 reduce，無論是在寫 python 或者 js。但從範例學到如果要累加物件屬性的數值的時候，reduce 不失為一個好選擇：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> cart <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">&#123;</span>
+        <span class="token literal-property property">product</span><span class="token operator">:</span> <span class="token string">'Dragon Quest Builder2'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">qty</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token number">30</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token literal-property property">product</span><span class="token operator">:</span> <span class="token string">'Two Points University'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">qty</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token number">10</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token literal-property property">product</span><span class="token operator">:</span> <span class="token string">'Age of Emppire 2'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">qty</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">price</span><span class="token operator">:</span> <span class="token number">10.99</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>reduce 有一個 Optional Value <strong>initialValue</strong>，可以設定為 accmulator 的初始值，預設是 Object。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">let</span> total <span class="token operator">=</span> cart<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">accumulator<span class="token punctuation">,</span> currentValue</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> accumulator 
+    <span class="token operator">+</span> currentValue<span class="token punctuation">.</span>qty <span class="token operator">*</span> currentValue<span class="token punctuation">.</span>price<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="ECMA-JavaScript-ES20XX-系列筆記"><a href="#ECMA-JavaScript-ES20XX-系列筆記" class="headerlink" title="ECMA JavaScript ES20XX 系列筆記"></a>ECMA JavaScript ES20XX 系列筆記</h2><img src="/assets/JavaScript-Logo.svg" alt="" width="168px">
+
+<ol>
+<li><p><a href="/posts/2021/08/ECMA-JavaScript-ES20XX-Series/">Array</a></p>
+</li>
+<li><p><a href="/posts/2021/08/ECMA-JavaScript-ES20XX-Spread-Rest-Destructuring/">Spread, Rest &amp; Destructuring</a></p>
+</li>
+</ol>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://eslint.org/docs/rules/">ESLint Rules</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/airbnb/javascript#modules">Airbnb JavaScript Style Guide</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.javascripttutorial.net/es6/">JavaScript Tutorial</a></p>
+<h3 id="ES20XX"><a href="#ES20XX" class="headerlink" title="ES20XX"></a>ES20XX</h3><p><a target="_blank" rel="noopener" href="https://selvaganesh93.medium.com/javascript-whats-new-in-ecmascript-2019-es2019-es10-35210c6e7f4b">JavaScript: What’s new in ECMAScript 2019 (ES2019)/ES10?</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/xiao-T/note/blob/master/Published/10-New-JavaScript-Features-in-ES2020-That-You-Should-Know.md/">ES2020 中 Javascript 10 個你應該知道的新功能</a></p>
+<h3 id="Node-js-Dancing-with-ES20XX"><a href="#Node-js-Dancing-with-ES20XX" class="headerlink" title="Node.js Dancing with ES20XX"></a>Node.js Dancing with ES20XX</h3><p>查詢 Node.js 各版本對於 Ecma JavaScript 的支援情況。目前主要使用的 Node.js 12.10 對於 ES2019 以前都有相當高的支援情況，所以使用新 Feature 無煩惱。</p>
+<p><a target="_blank" rel="noopener" href="https://node.green/">Node.green</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/ECMA-JavaScript-ES20XX-Series/" data-id="clg3fmacv00jrs4tsfs08074i" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Windows-Event-Viewer-Security-4625/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Windows 事件檢視器 安全性事件 Event ID 4625 (Eventvwr)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/08/ECMA-JavaScript-ES20XX-Spread-Rest-Destructuring/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ES20XX Modern JS 新語言特性筆記 | Spread, Rest &amp; Destructuring
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

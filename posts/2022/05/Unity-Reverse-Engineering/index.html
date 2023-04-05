@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Unity Reverse Engineering | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於 Unity Reverse Engineering 的資源。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity Reverse Engineering">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/05/Unity-Reverse-Engineering/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於 Unity Reverse Engineering 的資源。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/dnSpy_Export_Project.png">
+<meta property="article:published_time" content="2022-05-10T13:06:15.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="Toys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Unity-Reverse-Engineering" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/05/Unity-Reverse-Engineering/" class="article-date">
+  <time datetime="2022-05-10T13:06:15.000Z" itemprop="datePublished">2022-05-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Toys/">Toys</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Unity Reverse Engineering
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Il2Cpp"><span class="toc-text">Il2Cpp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Asset-Extract"><span class="toc-text">Asset Extract</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Intermediate-Language-Decompiler"><span class="toc-text">Intermediate Language Decompiler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Analysis-Round"><span class="toc-text">Analysis Round</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於 Unity Reverse Engineering 的資源。</p>
+<a href="/posts/2022/05/Unity-Reverse-Engineering/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Il2Cpp"><a href="#Il2Cpp" class="headerlink" title="Il2Cpp"></a>Il2Cpp</h3><p>設計 Unity 支援的語言包含 C#，在跨平台的處理使用 Mono，而新的架構採用 Il2Cpp，藉由 Il2CppDumper 可以還原 Il2Cpp 相關的檔案。</p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/Perfare/Il2CppDumper" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> Il2CppDumper | Github
+  </a>
+</div>
+
+<h3 id="Asset-Extract"><a href="#Asset-Extract" class="headerlink" title="Asset Extract"></a>Asset Extract</h3><p>用於將圖片、音效、音樂等資源檔匯出的工具。一般情況可以 load 整個資料夾，但特殊情況需要明確的 load file，例如語言檔，會有不同的 Asset List 供分析。</p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/Perfare/AssetStudio" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> AssetStudio | Github
+  </a>
+</div>
+
+<p>常見的資源類別</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Info</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Texture2D</td>
+<td>圖片資源，包含 png, tga, jpeg, bmp</td>
+</tr>
+<tr>
+<td>Sprite</td>
+<td>圖片資源，包含 png, tga, jpeg, bmp</td>
+</tr>
+<tr>
+<td>AudioClip</td>
+<td>音效資源，包含 mp3, ogg, wav, m4a, fsb</td>
+</tr>
+<tr>
+<td>Font</td>
+<td>字體資源，ttf, otf</td>
+</tr>
+<tr>
+<td>Mesh</td>
+<td>遊戲圖形物件，obj</td>
+</tr>
+<tr>
+<td>MonoBehaviour</td>
+<td>json</td>
+</tr>
+<tr>
+<td>TextAsset</td>
+<td></td>
+</tr>
+<tr>
+<td>Shader</td>
+<td></td>
+</tr>
+<tr>
+<td>MovieTexture</td>
+<td></td>
+</tr>
+<tr>
+<td>VideoClip</td>
+<td></td>
+</tr>
+<tr>
+<td>Animator</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="Intermediate-Language-Decompiler"><a href="#Intermediate-Language-Decompiler" class="headerlink" title="Intermediate Language Decompiler"></a>Intermediate Language Decompiler</h3><p>處理的標的為資料夾當中的 <strong>Assembly-CSharp.dll</strong>，可以從 C# Intermediate Language 判斷系統的邏輯 (除了工具，還需要大量的耐心研究就是 😥)</p>
+<p>可以使用 <a target="_blank" rel="noopener" href="https://github.com/icsharpcode/ILSpy">ILSpy</a> 或者 <a target="_blank" rel="noopener" href="https://github.com/dnSpy/dnSpy">dnSpy</a>，dnSpy 已經在 Github Archive，但其支援字串的搜尋方式，對於搜尋與處理更為方便。</p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/icsharpcode/ILSpy" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> ILSpy | Github
+  </a>
+  <a href="https://github.com/dnSpy/dnSpy" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> dnSpy | Github
+  </a>
+</div>
+
+<div style="margin-bottom:5rem;"></div>
+
+<h2 id="Analysis-Round"><a href="#Analysis-Round" class="headerlink" title="Analysis Round"></a>Analysis Round</h2><p>想要找到 Gaming Data，使用 dnSpy 用 Gaming System 的關鍵字來尋找，例如 Character, Cook, Items 等</p>
+<p>找到一個類別為系統名稱加上 Data，例如 <code class="s">CookData.cs</code>，研究類別當中的資料。</p>
+<p>發現使用 Read Binary 資料的方式，從 textAsset 存取資料。意識到資料保存成 Binary 格式，所以參考類別讀取 Binary 資料的方式，新建一個 Console Application 使用相似的 Code。</p>
+<p>在參考的部分，引入所有 Managed 資料夾當中的 DLL，並且對 <code class="s">CookData.cs</code> 使用與客製。</p>
+<p>碰到載入 textAsset 的問題，直接使用 <strong>AssetStudio</strong> 取出所有的 textAsset，並且用明確路徑的方式進行 <strong>Setup</strong>。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> readText <span class="token operator">=</span> File<span class="token punctuation">.</span><span class="token function">ReadAllBytes</span><span class="token punctuation">(</span><span class="token string">@"C:\temp\TextAsset\CharacterData.bytes"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">MemoryStream</span> memoryStream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MemoryStream</span><span class="token punctuation">(</span>readText<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">BinaryReader</span> binaryReader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">BinaryReader</span><span class="token punctuation">(</span>memoryStream<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">try</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span> <span class="token punctuation">;</span> <span class="token punctuation">)</span>
+      <span class="token punctuation">&#123;</span>
+        <span class="token class-name">GamingData<span class="token punctuation">.</span>CharacterData</span> <span class="token keyword">value</span> <span class="token operator">=</span> <span class="token keyword">default</span><span class="token punctuation">(</span><span class="token type-expression class-name">GamingData<span class="token punctuation">.</span>CharacterData</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">value</span> <span class="token operator">=</span> <span class="token keyword">default</span><span class="token punctuation">(</span><span class="token type-expression class-name">GamingData<span class="token punctuation">.</span>CharacterData</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">int</span></span> count <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>binaryReader<span class="token punctuation">.</span><span class="token function">ReadInt16</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> readByte <span class="token operator">=</span> binaryReader<span class="token punctuation">.</span><span class="token function">ReadBytes</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">value</span><span class="token punctuation">.</span>characterInfo <span class="token operator">=</span> CharacterData<span class="token punctuation">.</span><span class="token function">Getint</span><span class="token punctuation">(</span>readByte<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">EndOfStreamException</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>語言文字檔也是使用類似的方式讀取，會有相對的 Read 類別，並且資料也是保存在 textAsset 使用 Binary 的方式保存。</p>
+<p>資料檔會需要藉由 Id 去對照語言文字檔，這個部份透過 C# 的 Dictionary 使用來完成，一個好用的 Method 是 <code class="s">TryGetValue</code>，可已處理 Id 對照不存在引發的 exception 😀</p>
+<p>想要直接透過 UnityEngine 來載入相關的 textAsset，但碰到<strong>外部元件無法呼叫</strong>的問題 😐</p>
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">未處理的例外狀況: System.Security.SecurityException: ECall 方法必須封裝在系統模組中。
+  於 UnityEngine.Object.FindObjectOfType(Type type)
+  於 SingletonMonoBehaviour`1.get_Instance()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>而如果搭配 Unity.Engine 使用資源的方式應該為：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">CharacterData<span class="token punctuation">.</span><span class="token function">Setup</span><span class="token punctuation">(</span>
+  SingletonMonoBehaviour<span class="token operator">&lt;</span>AssetBundleManager<span class="token operator">></span><span class="token punctuation">.</span>Instance<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">LoadAsset</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>TextAsset<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>
+    <span class="token string">"Binary/CharacterData"</span><span class="token punctuation">,</span>
+    Extension<span class="token punctuation">.</span>BYTES<span class="token punctuation">,</span>
+    Language<span class="token punctuation">.</span>TRADITIONAL_CHINESE
+  <span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>使用心得上，發現 dnSpy 對於搜尋很全面，不論是函式名稱、命名空間等 C# 物件都有支援，但缺點是關鍵字類型的查找較不方便，例如 Code 當中的關鍵字，而解決的方法也很簡單，可以直接使用 dnSpy 將 DLL 轉為 Visual Studio sln，如此一來搜尋功能會更方便，關鍵字的搜尋也不成問題。</p>
+        </div>
+    </div>
+</div>
+
+<p><img src="/assets/dnSpy_Export_Project.png"></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/05/Unity-Reverse-Engineering/" data-id="clg3fmalt01i8s4ts5xqb8xug" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/05/Windows-Netstat/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Windows Netstat | Display Active TCP / UDP Ports &amp; Connections</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/05/Python-Firewall-Rules-Simplifier/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python Firewall Rules Simplifier 防火牆規則簡化器
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

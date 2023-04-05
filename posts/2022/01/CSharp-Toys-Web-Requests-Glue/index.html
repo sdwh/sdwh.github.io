@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>C# Web Requests / Copy File / Uri | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何使用 C# 將檔案從 URL 進行下載，從本機複製至特定路徑以及取得 Http Response Status Code。比較 WebClient 以及 HttpClient 使用上的差異之處。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# Web Requests &#x2F; Copy File &#x2F; Uri">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/01/CSharp-Toys-Web-Requests-Glue/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何使用 C# 將檔案從 URL 進行下載，從本機複製至特定路徑以及取得 Http Response Status Code。比較 WebClient 以及 HttpClient 使用上的差異之處。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/PowerShell-System-Uri.png">
+<meta property="og:image" content="https://sdwh.dev/assets/PowerShell-System-Web-HttpUtility.png">
+<meta property="article:published_time" content="2022-01-07T12:40:54.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSharp-Toys-Web-Requests-Glue" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/CSharp-Toys-Web-Requests-Glue/" class="article-date">
+  <time datetime="2022-01-07T12:40:54.000Z" itemprop="datePublished">2022-01-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C# Web Requests / Copy File / Uri
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WebClient"><span class="toc-text">WebClient</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HttpClient"><span class="toc-text">HttpClient</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#File-Copy"><span class="toc-text">File.Copy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Uri"><span class="toc-text">Uri</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#UriBuilder"><span class="toc-text">UriBuilder</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UrlDecode"><span class="toc-text">UrlDecode</span></a></li></ol></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何使用 C# 將檔案從 URL 進行下載，從本機複製至特定路徑以及取得 Http Response Status Code。比較 WebClient 以及 HttpClient 使用上的差異之處。</p>
+<a href="/posts/2022/01/CSharp-Toys-Web-Requests-Glue/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="WebClient"><a href="#WebClient" class="headerlink" title="WebClient"></a>WebClient</h3><p>WebClient 平易近人的 API 使用上非常方便，使用 <strong>DownloadFile</strong> 可以輕鬆的將來源儲存至目標位址，來源支援 HTTP URI 或者是 Local Drive 非常方便。但使用 WebClient 無法取得 Response 的 Http Status Code，<strong>此外在 .NET 已經被列為 Deprecated</strong> 應該為使用 HttpClient。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">WebClientSaveFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WebClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        client<span class="token punctuation">.</span><span class="token function">DownloadFile</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>PDFSource<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>StoragePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>client<span class="token punctuation">.</span>ResponseHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="HttpClient"><a href="#HttpClient" class="headerlink" title="HttpClient"></a>HttpClient</h3><p>HttpClient 必須要結合 async / await 來使用，並且可以取得 Response 的 Http Status Code。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task</span> <span class="token function">HttpClientGetFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">HttpClient</span> httpclient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">HttpResponseMessage</span> response <span class="token operator">=</span> <span class="token keyword">await</span> httpclient<span class="token punctuation">.</span><span class="token function">GetAsync</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>PDFSource<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> fs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FileStream</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>StoragePath<span class="token punctuation">,</span> FileMode<span class="token punctuation">.</span>CreateNew<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">await</span> response<span class="token punctuation">.</span>Content<span class="token punctuation">.</span><span class="token function">CopyToAsync</span><span class="token punctuation">(</span>fs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"Status Code: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp"><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>response<span class="token punctuation">.</span>StatusCode</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="File-Copy"><a href="#File-Copy" class="headerlink" title="File.Copy"></a>File.Copy</h3><p>可以用於指定本機路徑來源與目的位址進行檔案複製。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">File<span class="token punctuation">.</span><span class="token function">Copy</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>PDFSource<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>StoragePath<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Uri"><a href="#Uri" class="headerlink" title="Uri"></a>Uri</h3><p>藉由 Uri 類別可以得到 LocalPath, Hosr, Query 以及 Port 等資訊，對於要解讀 Uri 相當方便。</p>
+<p><img src="/assets/PowerShell-System-Uri.png"></p>
+<h4 id="UriBuilder"><a href="#UriBuilder" class="headerlink" title="UriBuilder"></a>UriBuilder</h4><p>此外如果要組 Uri 也可以使用 UriBuilder 來輔助，但在 Query 的部分仍屬於字串相加而已，不是那麼方便。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">UriBuilder</span> builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">UriBuilder</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>Url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Query <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$"q=</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp"><span class="token number">0</span></span><span class="token punctuation">&#125;</span></span><span class="token string">&amp;msg=</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp"><span class="token keyword">this</span><span class="token punctuation">.</span>Message</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="UrlDecode"><a href="#UrlDecode" class="headerlink" title="UrlDecode"></a>UrlDecode</h4><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token namespace">[System.Web.HttpUtility]</span>::UrlDecode<span class="token punctuation">(</span>
+  <span class="token string">"https://www.google.com/search?q=%E5%BE%AE%E8%BB%9F"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>可以得到 Decode 結果</p>
+<p><img src="/assets/PowerShell-System-Web-HttpUtility.png"></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/CSharp-Toys-Web-Requests-Glue/" data-id="clg3fmabk00ehs4tshj3kesir" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/01/Vue-Draggable-With-ASPNET-MVC/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">超簡單學習 Vue.js 系列 | Vue Draggable 世界大學排名</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PowerShell RestFul API (Invoke-RestMethod)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

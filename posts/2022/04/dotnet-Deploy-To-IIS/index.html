@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>.NET Deploy To IIS Tutorial (How to Host .NET Core in IIS) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明 .NET 如何部署至 IIS，從需要安裝的 Hosting Bundle、部署過程的 Configuration Framework Dependency、Standalone 以及部署後 Application Pool 的設定。">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET Deploy To IIS Tutorial (How to Host .NET Core in IIS)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/04/dotnet-Deploy-To-IIS/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明 .NET 如何部署至 IIS，從需要安裝的 Hosting Bundle、部署過程的 Configuration Framework Dependency、Standalone 以及部署後 Application Pool 的設定。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-Bundle-Installation.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Create-Razor-Pages-Projects.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Deploy-To-Folder.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Deploy-Configuration-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Deploy-Configuration-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Deploy-Configuration-Framework-Dependency.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Deploy-Configuration-Standalone.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Deploy-Configuration-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Application-Pool-Configuration-Managed-Code.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Application-Pool-Configuration-No-Managed-Code.png">
+<meta property="article:published_time" content="2022-04-05T04:09:09.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="dotnet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dotnet-Deploy-To-IIS" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/dotnet-Deploy-To-IIS/" class="article-date">
+  <time datetime="2022-04-05T04:09:09.000Z" itemprop="datePublished">2022-04-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      .NET Deploy To IIS Tutorial (How to Host .NET Core in IIS)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hosting-Bundle"><span class="toc-text">Hosting Bundle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deployment-Configuration"><span class="toc-text">Deployment Configuration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Application-Pool"><span class="toc-text">Application Pool</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web-config"><span class="toc-text">Web.config</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows-Auth"><span class="toc-text">Windows Auth</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明 .NET 如何部署至 IIS，從需要安裝的 Hosting Bundle、部署過程的 Configuration Framework Dependency、Standalone 以及部署後 Application Pool 的設定。</p>
+<a href="/posts/2022/04/dotnet-Deploy-To-IIS/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>本次以 Windows Server 2019 使用 IIS 站台來進行 .NET Core 的網頁服務，從 .NET Core 的專案建立、部署組態設定、伺服器端的元件安裝至應用程式集區設定做一個流程的說明。</p>
+<h3 id="Hosting-Bundle"><a href="#Hosting-Bundle" class="headerlink" title="Hosting Bundle"></a>Hosting Bundle</h3><p>首先需要在 IIS Server 上安裝 Windows <a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0">Hosting Bundle</a>，這個依照使用的 .NET Core 版本選擇，本次範例是以 .NET 6 為例。</p>
+<p>安裝的過程相當快速，完成後需要重新啟動 IIS Server，但不用重新啟動作業系統。</p>
+<p><img src="/assets/dotnet-Hosting-Bundle-Installation.png"></p>
+<h3 id="Deployment-Configuration"><a href="#Deployment-Configuration" class="headerlink" title="Deployment Configuration"></a>Deployment Configuration</h3><p>首先需要建立 .NET Core 的專案，分別有 Razor Pages、MVC、Web API、Blazor 等專案類型可以選擇，本次是以 Razor Pages 作為示範。</p>
+<p>Visual Studio 中的專案選擇很容易讓人迷惑，Razor Pages 專案就是 「ASP.NET Core Web 應用程式」 😅</p>
+<p><img src="/assets/dotnet-Create-Razor-Pages-Projects.png"></p>
+<p>編譯專案無誤後，直接部署至 IIS Server，這邊選擇採用部署至資料夾的方式，以 Share Folder UNC 的方式，從 Dev Client 部署至 IIS Server。</p>
+<p><img src="/assets/dotnet-Deploy-To-Folder.png"></p>
+<p>在發佈頁面上，選擇 <strong>更多動作</strong> ，並選擇 <strong>編輯</strong> 來進行調整，這邊我們來看一下發佈上可以調整的組態選項。</p>
+<p><img src="/assets/dotnet-Deploy-Configuration-1.png"></p>
+<p>部署模式的選擇，包含 Framework Dependency 以及 Standalone。</p>
+<p><img src="/assets/dotnet-Deploy-Configuration-2.png"></p>
+<hr>
+<p>使用 Framework Dependency 會產生下列的結果</p>
+<p><img src="/assets/dotnet-Deploy-Configuration-Framework-Dependency.png"></p>
+<p>相對地，使用 Standalone 會把相關的 Namespace 都產生獨立的 DLL 檔案</p>
+<p><img src="/assets/dotnet-Deploy-Configuration-Standalone.png"></p>
+<p>但不論選擇上述兩種方式都不影響部署的正確，但依循 <strong>KISS</strong> 原則，實際在部署上如果沒有特別的考量仍是選擇 Framework Dependency 😁</p>
+<hr>
+<p>目標執行階段 (Runtime)，選擇很多元，但選擇符合本次案例要進行的平台 <code class="s">win-x64</code></p>
+<p><img src="/assets/dotnet-Deploy-Configuration-3.png"></p>
+<p>接著就可以部署至 IIS Server 囉 😃</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>在實驗的過程，反覆的發佈的動作很容易因為有其他 Process 佔據檔案而報錯不給發佈。這個時候可以從 IIS Server 先暫停集區或者站台的方式來處理。而如果在發佈的組態選項有勾選刪除既有檔案更是絕對失敗，尚沒有成功過。</p>
+        </div>
+    </div>
+</div>
+
+<h3 id="Application-Pool"><a href="#Application-Pool" class="headerlink" title="Application Pool"></a>Application Pool</h3><p>在應用程式集區的設定上，考量點就是 <strong>Managed Code Or Not</strong></p>
+<p>參考 Marcus 在 <a target="_blank" rel="noopener" href="https://marcus116.blogspot.com/2019/03/how-to-run-netcore-in-iis.html">在 IIS 執行 ASP.NET Core 應用程式</a>的說明，需要設定為 <strong>Managed Core</strong>，但 Nina Weng 在 <a target="_blank" rel="noopener" href="https://nina-weng.medium.com/%E9%BC%A0%E5%B9%B4%E5%85%A8%E9%A6%AC%E9%90%B5%E4%BA%BA%E6%8C%91%E6%88%B0-week02-%E9%83%A8%E7%BD%B2asp-net-core-3-1-%E5%B0%88%E6%A1%88%E8%87%B3iis%E4%B8%8A-c9966f6eaf59">Week02-部署ASP.NET Core 3.1 專案至IIS上</a>的示範則沒有進行這樣的設定。</p>
+<p>不知道是否與 Marcus 是使用 .NET Core 2.1 Runtime 而 Nina Weng 是使用 .NET Core 3.1 Runtime 有關係？<strong>本次示範是使用 .NET 6 Runtime，而實際實驗上設定 Managed Code 與否並不會影響。</strong></p>
+<p>而差別僅在於 IIS GUI 是否能夠使用 ASP.NET 的設定上：</p>
+<p><img src="/assets/dotnet-Application-Pool-Configuration-Managed-Code.png" alt="Managed Code"></p>
+<p><img src="/assets/dotnet-Application-Pool-Configuration-No-Managed-Code.png" alt="No Managed Code"></p>
+<h2 id="Web-config"><a href="#Web-config" class="headerlink" title="Web.config"></a>Web.config</h2><p>在 .NET Core 專案上，不同於以往的 .NET Framework 專案會需要在 Web.config 進行組態設定。因此專案本身不會有 Web.config 設定檔，取而代之的是 <code class="s">appsettings.json</code>。</p>
+<p>但若要部署在 IIS Server上，部署過程仍是會自動產生 Web.config 檔，如此 IIS 才能藉由當中的組態設定理解要如何為 .NET Core 決定 Handlers。</p>
+<p>我們可以從 Web.config 中發現，.NET Core 是將所有的 path 以及 verb 都交由 <code class="s">AspNetCoreModuleV2</code> IIS Module 接手處理，而這個 Module 正是由 Hosting Bundle 所安裝的 Module，而此 Module 的實際作用也是將 Request 交棒給 .NET Core Runtime 進行處理。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="utf-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>location</span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>.<span class="token punctuation">"</span></span> <span class="token attr-name">inheritInChildApplications</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>handlers</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>aspNetCore<span class="token punctuation">"</span></span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">verb</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> 
+          <span class="token attr-name">modules</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>AspNetCoreModuleV2<span class="token punctuation">"</span></span> <span class="token attr-name">resourceType</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Unspecified<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>handlers</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>aspNetCore</span> <span class="token attr-name">processPath</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>.\RazorPageWinAuth.exe<span class="token punctuation">"</span></span> 
+        <span class="token attr-name">stdoutLogEnabled</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> 
+        <span class="token attr-name">stdoutLogFile</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>.\logs\stdout<span class="token punctuation">"</span></span> <span class="token attr-name">hostingModel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>inprocess<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>location</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Windows-Auth"><a href="#Windows-Auth" class="headerlink" title="Windows Auth"></a>Windows Auth</h2><p>在 .NET Framework 是經由 Web.config 設定 Windows Auth 並且再搭配從 IIS 驗證方式啟用 Windows Auth。</p>
+<p><code class="watch">Web.config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>compilation</span> <span class="token attr-name">debug</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token attr-name">targetFramework</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>4.8<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpRuntime</span> <span class="token attr-name">targetFramework</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>4.8<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>authentication</span> <span class="token attr-name">mode</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Windows<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>authorization</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>deny</span> <span class="token attr-name">users</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>?<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>authorization</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而在 .NET Core 則是由 <code class="s">Program.cs</code> 搭配 <code class="s">AddNegotiate</code> 的方式來達成，但啟用 IIS 中 Windows Auth 的步驟仍不可少。</p>
+<p><code class="watch">Program.cs</code></p>
+<pre class="line-numbers language-cs" data-language="cs"><code class="language-cs"><span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>AspNetCore<span class="token punctuation">.</span>Authentication<span class="token punctuation">.</span>Negotiate</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> WebApplication<span class="token punctuation">.</span><span class="token function">CreateBuilder</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services
+       <span class="token punctuation">.</span><span class="token function">AddAuthentication</span><span class="token punctuation">(</span>NegotiateDefaults<span class="token punctuation">.</span>AuthenticationScheme<span class="token punctuation">)</span>
+       <span class="token punctuation">.</span><span class="token function">AddNegotiate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddAuthorization</span><span class="token punctuation">(</span>options <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    options<span class="token punctuation">.</span>FallbackPolicy <span class="token operator">=</span> options<span class="token punctuation">.</span>DefaultPolicy<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>本次驗證如何將 .NET Core 部署至 IIS Server，除了需要安裝 Hosting Bundle 外，還有更多的組態選項可以供設定。後續將再搭配 Azure DevOps 驗證如何使用 CI / CD 的方式進行部署作業 😎</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/dotnet-Deploy-To-IIS/" data-id="clg3fmaoc01q0s4tsgz0i484g" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dotnet/" rel="tag">dotnet</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/03/SQL-Server-Performance-Tuning-Starter-Pack/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 效能調校起手式 (Performance Tunning Starter Pack)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/04/AZ-204-Certificate-Study-Guide/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          14 天高分通過 AZ-204 證照準備心得 (Microsoft Azure Developing Solutions Study Guide)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

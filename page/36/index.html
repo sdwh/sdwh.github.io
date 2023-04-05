@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Skeptical Software Engineer">
+<meta property="og:url" content="https://sdwh.dev/page/36/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:locale">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="資訊處理">
+<meta property="article:tag" content="自我成長">
+<meta property="article:tag" content="軟體工程">
+<meta property="article:tag" content="系統管理">
+<meta property="article:tag" content="資料庫管理">
+<meta property="article:tag" content="資料分析">
+<meta property="article:tag" content="資訊安全">
+<meta property="article:tag" content="程式設計">
+<meta property="article:tag" content="政府採購法">
+<meta property="article:tag" content="資訊證照">
+<meta property="article:tag" content="DBA">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="asp">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+  
+    <article id="post-ECMA-JavaScript-Closures" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/ECMA-JavaScript-Closures/" class="article-date">
+  <time datetime="2021-08-15T03:20:00.000Z" itemprop="datePublished">2021-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/ECMA-JavaScript-Closures/">ES20XX Modern JS 新語言特性筆記 | Closures</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記從 ES2015 / ES2016 / ES2017 / ES2018 / ES2019 / ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。</p>
+<p>本篇筆記為介紹 JavaScript 令人迷惑的概念 Cloures。</p>
+<a href="/posts/2021/08/ECMA-JavaScript-Closures/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/ECMA-JavaScript-Closures/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/ECMA-JavaScript-Closures/" data-id="clg3fmacu00jns4ts6srfdrac" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-ECMA-JavaScript-Array-Swiss-Army-Knife-Splice" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/ECMA-JavaScript-Array-Swiss-Army-Knife-Splice/" class="article-date">
+  <time datetime="2021-08-14T04:52:14.000Z" itemprop="datePublished">2021-08-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/ECMA-JavaScript-Array-Swiss-Army-Knife-Splice/">JavaScript Array 的瑞士刀函式 | splice</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記從 JavaScript 令人迷惑的 slice, split 以及 splice。其中 splice 可以稱 JavaScript 中的瑞士刀函式方法，足抵數個函式方法所能提供的功能。藉由 splice 不論是要增加陣列元素、刪除特定元素，甚至是要將 Array 切段也沒有問題。</p>
+<a href="/posts/2021/08/ECMA-JavaScript-Array-Swiss-Army-Knife-Splice/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/ECMA-JavaScript-Array-Swiss-Army-Knife-Splice/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/ECMA-JavaScript-Array-Swiss-Army-Knife-Splice/" data-id="clg3fmact00jks4tsbsg0es6m" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Python-Escape-Sequence" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Python-Escape-Sequence/" class="article-date">
+  <time datetime="2021-08-12T10:11:00.000Z" itemprop="datePublished">2021-08-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/Python-Escape-Sequence/">Python 脫逸字元清單 Escape Sequence (ASCII Table)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 Python 各式脫逸字元、跳脫字元（Escape Sequence），包含 newline、return、Backspace、TAB、Octal Value、Hex Value 以及 Unicode Codepoint 以及 Unicode Name 等清單。</p>
+<a href="/posts/2021/08/Python-Escape-Sequence/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/python-logo.png" alt="logo" width="150px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/Python-Escape-Sequence/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Python-Escape-Sequence/" data-id="clg3fmah50114s4ts4tesahlm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Government-Procurement-Series-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Government-Procurement-Series-1/" class="article-date">
+  <time datetime="2021-08-11T12:21:39.000Z" itemprop="datePublished">2021-08-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/Government-Procurement-Series-1/">寫給 21 世紀軟體工程師的採購法筆記 | 巨額採購、查核金額、公告金額到底是多少錢？</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>本系列為自習政府採購法所記錄的筆記，涵蓋從政府採購法、政府採購法施行細則以及從採購法講義以及題庫中所融會貫通的觀念。經由整理成筆記的方式一來是提升個人準備基礎班證照測驗的學習成效，二來是建立未來可以供查詢的迷你等級採購知識庫。同時藉由軟體工程上的技術，破解、圖解採購法複雜、生硬的法條知識，讓整個學習過程變得更有趣 😏</p>
+<a href="/posts/2021/08/Government-Procurement-Series-1/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/Government-Procurement-Series-1/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Government-Procurement-Series-1/" data-id="clg3fmadi00mos4ts38ef6s9r" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Procurement/" rel="tag">Procurement</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-JavaScript-Cookie-LocalStorage" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/JavaScript-Cookie-LocalStorage/" class="article-date">
+  <time datetime="2021-08-10T22:07:58.000Z" itemprop="datePublished">2021-08-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/JavaScript-Cookie-LocalStorage/">ES20XX Modern JS 新語言特性筆記 | JavaScript Cookie &amp; LocalStorage</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記從 ES2015 / ES2016 / ES2017 / ES2018 / ES2019 / ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。</p>
+<p>介紹 Modern JS 如何操作 Cookie 以及 Html 5 所提供的 LocalStorage API，用以將資訊保存在用戶端。</p>
+<a href="/posts/2021/08/JavaScript-Cookie-LocalStorage/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/JavaScript-Cookie-LocalStorage/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/JavaScript-Cookie-LocalStorage/" data-id="clg3fmaf600tos4tsdhnk5ark" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-PowerShell-Get-Content-Select-String" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/PowerShell-Get-Content-Select-String/" class="article-date">
+  <time datetime="2021-08-09T22:58:14.000Z" itemprop="datePublished">2021-08-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/PowerShell-Get-Content-Select-String/">PowerShell | Get-Content &amp; Select-String 尋找檔案內容的關鍵字</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記如何使用 PowerShell 搜尋檔案中的特定關鍵字，示範的情境為對於 IIS Logs 檔進行搜尋。</p>
+<a href="/posts/2021/08/PowerShell-Get-Content-Select-String/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/powershell.svg" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/PowerShell-Get-Content-Select-String/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/PowerShell-Get-Content-Select-String/" data-id="clg3fmagk00z6s4tsgf02cupo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-JavaScript-Query-Selector-Get-Element-By" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/JavaScript-Query-Selector-Get-Element-By/" class="article-date">
+  <time datetime="2021-08-09T04:30:00.000Z" itemprop="datePublished">2021-08-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/JavaScript-Query-Selector-Get-Element-By/">Vanilla JavaScript | Get DOM Elements 使用 JS 原生語法取得 DOM 元素</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 JS 如何使用 JS 原生語法取得 DOM 元素，包含介紹 GetElementById, GetElementByName, QuerySelector, QuerySeletorAll ，並且介紹如何應用這些語法，提供將網頁上所有的 Anchor Link 擷取的解決方案 😎</p>
+<a href="/posts/2021/08/JavaScript-Query-Selector-Get-Element-By/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/JavaScript-Query-Selector-Get-Element-By/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/JavaScript-Query-Selector-Get-Element-By/" data-id="clg3fmaf700tss4tsfuofesnu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Products-And-Its-Creators" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Products-And-Its-Creators/" class="article-date">
+  <time datetime="2021-08-08T03:38:11.000Z" itemprop="datePublished">2021-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Toys/">Toys</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/Products-And-Its-Creators/">軟體與它們的創造者 List of Prodcuts And Its Creators</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記工作與生活中所用到的各種軟體與它們的創造者 🐉</p>
+<p>Linus Torvalds, Linus Torvalds, Brendan Eich, Guido van Rossum, Jeffrey Snover, Ryan Dahl, Linus Upson, Anders Hejlsberg, Wes McKinney, Kenneth Reitz, Evan You, Miško Hevery, Rasmus Lerdorf, Solomon Hykes, Igor Pavlov, Mark Russinovich, Gordon Lyon and More..</p>
+<a href="/posts/2021/08/Products-And-Its-Creators/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/Products-And-Its-Creators/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Products-And-Its-Creators/" data-id="clg3fmah0010js4ts3dcuc5sp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/List/" rel="tag">List</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Frontend-Web-Developer-Glossary" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Frontend-Web-Developer-Glossary/" class="article-date">
+  <time datetime="2021-08-08T03:34:46.000Z" itemprop="datePublished">2021-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/Frontend-Web-Developer-Glossary/">Frontend Web Developer Glossary 前端開發工具詞彙表</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>紀錄前端開發常見的各式詞彙表、新興工具名稱，讓這個每 18 至 24 個月學習難度都會倍增的領域能夠更平易近人。</p>
+<a href="/posts/2021/08/Frontend-Web-Developer-Glossary/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/Frontend-Web-Developer-Glossary/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Frontend-Web-Developer-Glossary/" data-id="clg3fmad300kws4ts194h2fiz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/List/" rel="tag">List</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Word-File-Protection" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Word-File-Protection/" class="article-date">
+  <time datetime="2021-08-07T10:31:51.000Z" itemprop="datePublished">2021-08-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Office/">Office</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/08/Word-File-Protection/">Word 使用密碼保護文件 限制只能閱讀、追蹤修改的方式</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何在 Word 進行密碼保護文件的設定，讓沒有密碼的人無法開啟檔案。或是以密碼的方式限制檔案只能夠被閱讀、被追蹤修訂、加註意見等。Word 的密碼保護機制，可以做為傳輸機密資訊上 AES 加密方式的解決方案。</p>
+<a href="/posts/2021/08/Word-File-Protection/" title="Microsoft Word" class="fancybox" rel="article0">
+  <img src="/assets/MS-WORD-ICON.svg" alt="Microsoft Word" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/08/Word-File-Protection/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Word-File-Protection/" data-id="clg3fmany01ous4ts8vaj96fs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Office/" rel="tag">Office</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Word/" rel="tag">Word</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/35/">↖ Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><a class="extend next" rel="next" href="/page/37/">Next ↘</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

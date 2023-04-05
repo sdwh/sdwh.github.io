@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>重溫《深入淺出設計模式》觀察者模式 (Book Review of Head First Design Pattern, Observer Pattern) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="設計模式不會讓直觀上開發速度變得更快，反而在開發時會需要夠多的時間進行思考，然後才動手。但它的效益應該是當要維護、要擴充時，才能夠體現的，因為有良好的設計模式，程式碼的架構是充滿彈性且易於回應需求的，相較快速完成的架構可能缺少擴充的彈性，在面對需求時只能砍掉重練，或者是提心吊膽的修改程式碼害怕牽一髮動全身。無疑地如果在有需求變動的情境，使用設計模式先苦後甘是最好的選擇。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重溫《深入淺出設計模式》觀察者模式 (Book Review of Head First Design Pattern, Observer Pattern)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/Design-Pattern-Observer/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="設計模式不會讓直觀上開發速度變得更快，反而在開發時會需要夠多的時間進行思考，然後才動手。但它的效益應該是當要維護、要擴充時，才能夠體現的，因為有良好的設計模式，程式碼的架構是充滿彈性且易於回應需求的，相較快速完成的架構可能缺少擴充的彈性，在面對需求時只能砍掉重練，或者是提心吊膽的修改程式碼害怕牽一髮動全身。無疑地如果在有需求變動的情境，使用設計模式先苦後甘是最好的選擇。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+<meta property="article:published_time" content="2020-06-29T04:07:47.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="DesignPattern">
+<meta property="article:tag" content="Example">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Design-Pattern-Observer" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/Design-Pattern-Observer/" class="article-date">
+  <time datetime="2020-06-29T04:07:47.000Z" itemprop="datePublished">2020-06-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      重溫《深入淺出設計模式》觀察者模式 (Book Review of Head First Design Pattern, Observer Pattern)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%80%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text">觀察者模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Before-Pattern"><span class="toc-text">Before Pattern</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#After-Pattern"><span class="toc-text">After Pattern</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%84%AA%E9%BB%9E"><span class="toc-text">優點</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>設計模式不會讓直觀上開發速度變得更快，反而在開發時會需要夠多的時間進行思考，然後才動手。但它的效益應該是當要維護、要擴充時，才能夠體現的，因為有良好的設計模式，程式碼的架構是充滿彈性且易於回應需求的，相較快速完成的架構可能缺少擴充的彈性，在面對需求時只能砍掉重練，或者是提心吊膽的修改程式碼害怕牽一髮動全身。無疑地如果在有需求變動的情境，使用設計模式先苦後甘是最好的選擇。</p>
+<a target="_blank" href="https://www.tenlong.com.tw/products/9789867794529" title="logo" class="fancybox" rel="article0 noopener">
+  <img src="/assets/HeadFirst-DesignPattern.jpg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="觀察者模式"><a href="#觀察者模式" class="headerlink" title="觀察者模式"></a>觀察者模式</h2><p><em>Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.</em></p>
+<p>範例是以實作 IOT (Subject) 裝置更新數據後，通知訂閱該數據的裝置 (Observer) 根據變動的數據做出更新。</p>
+<h3 id="Before-Pattern"><a href="#Before-Pattern" class="headerlink" title="Before Pattern"></a>Before Pattern</h3><p>在模式之前直觀的做法就是將更新的數據依序傳入到觀察者中，但這樣的做法會有高耦合的問題，因為有新的觀察裝置加入 WeatherData 的程式碼就必須擴充改寫。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WeatherData</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">measurementsChanged</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">float</span></span> temp <span class="token operator">=</span> <span class="token function">getTemperature</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">float</span></span> humidity <span class="token operator">=</span> <span class="token function">getHumidity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">float</span></span> pressure <span class="token operator">=</span> <span class="token function">getPressure</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    currentConditionsDisplay<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>temp<span class="token punctuation">,</span> humidity<span class="token punctuation">,</span> pressure<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    statisticsDiDisplay<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>temp<span class="token punctuation">,</span> humidity<span class="token punctuation">,</span> pressure<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    forecastDisplay<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>temp<span class="token punctuation">,</span> humidity<span class="token punctuation">,</span> pressure<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="After-Pattern"><a href="#After-Pattern" class="headerlink" title="After Pattern"></a>After Pattern</h3><p>觀察者模式首先定義 Subject Interface 與 Observer Interface，在關係上 Subject 擁有多個 Observer，並且 Subject 擁有 add, remove 方法來增減 Observer Instance，當 Subject 改變了，相依它的觀察者就會被通知並且被更新，通知及更新的動作是由 Subject 來執行的。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Subject</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> registerObserver <span class="token punctuation">(</span><span class="token class-name">Observer</span> o<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> removeObserver <span class="token punctuation">(</span><span class="token class-name">Observer</span> o<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> notifyObservers <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Observer</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">update</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">float</span></span> temp<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">float</span></span> humidity<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">float</span></span> pressure<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">DisplayElement</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>實踐介面</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WeatherData</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Subject</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">ArrayList<span class="token punctuation">&lt;</span>Observer<span class="token punctuation">></span></span> observers<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> temperature<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> humidity<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> pressure<span class="token punctuation">;</span>
+
+  <span class="token keyword">public</span> <span class="token function">WeatherData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    observers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArrayList<span class="token punctuation">&lt;</span>Observer<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">registerObserver</span><span class="token punctuation">(</span><span class="token class-name">Observer</span> o<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    observers<span class="token punctuation">.</span><span class="token keyword">add</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">removeObserver</span><span class="token punctuation">(</span><span class="token class-name">Observer</span> o<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> observers<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      observers<span class="token punctuation">.</span><span class="token function">removeAt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">notifyObservers</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> observer <span class="token keyword">in</span> observers<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    observer<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>temperature<span class="token punctuation">,</span> humidity<span class="token punctuation">,</span> pressure<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token function">setMeasutrements</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">float</span></span> temperature<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">float</span></span> humidity<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">float</span></span> pressure<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>temperature <span class="token operator">=</span> temperature<span class="token punctuation">;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>humidity <span class="token operator">=</span> humidity<span class="token punctuation">;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>pressure <span class="token operator">=</span> pressure<span class="token punctuation">;</span>
+
+  <span class="token function">notifyObservers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>實作一項觀察者類別</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CurrentConditionsDisplay</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Observer</span><span class="token punctuation">,</span> <span class="token class-name">DisplayElement</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> temperature<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> humidity<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">float</span></span> weatherData<span class="token punctuation">;</span>
+
+  <span class="token keyword">public</span> <span class="token function">CurrentConditionsDisplay</span><span class="token punctuation">(</span><span class="token class-name">Subject</span> weatherData<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>weatherData <span class="token operator">=</span> weatherData<span class="token punctuation">;</span>
+    weatherData<span class="token punctuation">.</span><span class="token function">registerObserver</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 建構時自動向 Subject 註冊</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">update</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">float</span></span> temperature<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">float</span></span> humidity<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">float</span></span> pressure<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 各觀察者類別獨特之處表現在不同的 update 邏輯上</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>temprature <span class="token operator">=</span> temprature<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>humidity <span class="token operator">=</span> humidity<span class="token punctuation">;</span>
+    <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">display</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>流程測試</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WeatherStation</span><span class="token punctuation">&#123;</span>
+  pbulic <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String<span class="token punctuation">[</span><span class="token punctuation">]</span></span> args<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token class-name">WeatherData</span> weatherData <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WeatherData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">CurrentConditionsDisplay</span> currentDisplay <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CurrentConditionsDisplay</span><span class="token punctuation">(</span>weatherData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    weatherData<span class="token punctuation">.</span><span class="token function">setMeasurements</span><span class="token punctuation">(</span><span class="token number">85</span><span class="token punctuation">,</span> <span class="token number">68</span><span class="token punctuation">,</span> <span class="token number">36</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="優點"><a href="#優點" class="headerlink" title="優點"></a>優點</h4><ol>
+<li>Subject 只知道 Observer 有實踐特定介面</li>
+<li>任何時候都可以加入新的 Observer</li>
+<li>有新類別的 Observer 出現時，不需要修改 Subject 的程式碼</li>
+<li>Subject 與 Observer 可以個別在不同的情境需求 Reuse</li>
+<li>改變　Subject 與 Observer　不會影響到對方</li>
+</ol>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>✔️將變動的部分封裝起來</p>
+<ul>
+<li>Observer 種類是會變動的</li>
+<li>Sbuject 的邏輯是會變動的 </li>
+</ul>
+<p>✔️多用合成，少用繼承</p>
+<ul>
+<li>Sbuject 擁有多個 Observer</li>
+<li>Observer 實作擁有一個 Sbuject 實作</li>
+</ul>
+<p>✔️針對介面撰寫，而非針對實踐方式撰寫。</p>
+<ul>
+<li>演算邏輯分別跟著 Subject 及 Observer 類別</li>
+</ul>
+<p>✔️讓需要互動的物件之間的關係鬆綁</p>
+<ul>
+<li>原本兩者 Subject 及 Observer 有高耦合，拆分之後自由奔放卻又合作無間</li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/Design-Pattern-Observer/" data-id="clg3fmacl00iis4ts108k6jr9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Example/" rel="tag">Example</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/Design-Pattern-Strategy/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">重溫《深入淺出設計模式》策略模式 (Book Review of Head First Design Pattern, Strategy Pattern)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/Design-Pattern-Decorator/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          重溫《深入淺出設計模式》裝飾者模式 (Book Review of Head First Design Pattern, Decorator Pattern)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

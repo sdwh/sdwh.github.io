@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ES20XX Modern JS 新語言特性筆記 | Closures | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記從 ES2015 &#x2F; ES2016 &#x2F; ES2017 &#x2F; ES2018 &#x2F; ES2019 &#x2F; ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。 本篇筆記為介紹 JavaScr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES20XX Modern JS 新語言特性筆記 | Closures">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/08/ECMA-JavaScript-Closures/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記從 ES2015 &#x2F; ES2016 &#x2F; ES2017 &#x2F; ES2018 &#x2F; ES2019 &#x2F; ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。 本篇筆記為介紹 JavaScr">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+<meta property="article:published_time" content="2021-08-15T03:20:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="F2E">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ECMA-JavaScript-Closures" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/ECMA-JavaScript-Closures/" class="article-date">
+  <time datetime="2021-08-15T03:20:00.000Z" itemprop="datePublished">2021-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ES20XX Modern JS 新語言特性筆記 | Closures
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B"><span class="toc-text">使用範例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%A6%E9%9A%9B%E6%87%89%E7%94%A8-Reuse-Function"><span class="toc-text">實際應用 | Reuse Function</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%A6%E9%9A%9B%E6%87%89%E7%94%A8-Private-Method"><span class="toc-text">實際應用 | Private Method</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#setTimeout-%E5%9C%A8%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8A%E7%9A%84%E7%B6%93%E5%85%B8%E5%95%8F%E9%A1%8C"><span class="toc-text">setTimeout 在作用域上的經典問題</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Node-js-Dancing-with-ES20XX"><span class="toc-text">Node.js Dancing with ES20XX</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記從 ES2015 / ES2016 / ES2017 / ES2018 / ES2019 / ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。</p>
+<p>本篇筆記為介紹 JavaScript 令人迷惑的概念 Cloures。</p>
+<a href="/posts/2021/08/ECMA-JavaScript-Closures/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Closures 最早是從 Python 或者是 JavaScript 認識已經不太清楚了，但在 JS 的領域討論 Closures 的人似乎較多一些。而 Closures 的中文翻譯「閉包」更是讓人困惑，音有點像細胞，但顯然兩者沒有任何關閉。而在摸索之後，其實關於 Closures 必須要看過應用的範例，再重新思索它的定義，才能夠真正明白為什麼會翻譯為閉包：</p>
+<div class="article-blockquote">
+A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function’s scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
+
+<div style="text-align:right">MDN Web Docs</div>
+</div>
+
+<p>其實閉包是有關程式語言變數作用域 (Lexical Scope) 的一個程式概念，閉包是將函式以及其所屬<strong>環境資訊</strong>記憶起來，以提供外部使用。藉由閉包可以達到函式的重複使用，以及在 JS 中以替代的方式設計物件導向設系中的 Private Method。</p>
+<h3 id="使用範例"><a href="#使用範例" class="headerlink" title="使用範例"></a>使用範例</h3><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token function-variable function">bar</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token operator">++</span>count<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> bar
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">f <span class="token operator">=</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+f2 <span class="token operator">=</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 1</span>
+<span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 2</span>
+<span class="token function">f2</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 1</span>
+<span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 3</span>
+<span class="token function">f2</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>由於 f() 及 f2() 有著不同的環境資訊 <strong>count</strong>，所以呼叫函式得到的結果不同。</p>
+<h3 id="實際應用-Reuse-Function"><a href="#實際應用-Reuse-Function" class="headerlink" title="實際應用 | Reuse Function"></a>實際應用 | Reuse Function</h3><p>首先定義函式為 Closure 的設計方式，讓程式碼可以被重複使用。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">exponential</span><span class="token punctuation">(</span><span class="token parameter">power</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">base</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> base <span class="token operator">**</span> power<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> 
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著可以重複利用程式碼，專門計算平方、三次、四次方的函數：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">square <span class="token operator">=</span> <span class="token function">exponential</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+toTheThirdPower <span class="token operator">=</span> <span class="token function">exponential</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+toTheFourthPower <span class="token operator">=</span> <span class="token function">exponential</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>使用方式：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">square</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token comment">// 9</span>
+
+<span class="token function">toTheThirdPower</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token comment">// 27</span>
+
+<span class="token function">toTheFourthPower</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token comment">// 81</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="實際應用-Private-Method"><a href="#實際應用-Private-Method" class="headerlink" title="實際應用 | Private Method"></a>實際應用 | Private Method</h3><p>…</p>
+<h3 id="setTimeout-在作用域上的經典問題"><a href="#setTimeout-在作用域上的經典問題" class="headerlink" title="setTimeout 在作用域上的經典問題"></a>setTimeout 在作用域上的經典問題</h3><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> index <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> index <span class="token operator">&lt;=</span> <span class="token number">3</span><span class="token punctuation">;</span> index<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'after '</span> <span class="token operator">+</span> index <span class="token operator">+</span> <span class="token string">' second(s):'</span> <span class="token operator">+</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> index <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果使用 var 會每間隔 1 秒回應一次下列訊息</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">after <span class="token number">4</span> seconds<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:4
+after <span class="token number">4</span> seconds<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:4
+after <span class="token number">4</span> seconds<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>原因在於 for 與 setTimeout 的搭配作用順序如下：</p>
+<ol>
+<li>index 設為 1</li>
+<li>呼叫 setTimeout() 執行時間為 1000 ms 後</li>
+<li>index 設定 2</li>
+<li>呼叫 setTimeout() 執行時間為 2000 ms 後</li>
+<li>index 設定 3</li>
+<li>呼叫 setTimeout() 執行時間為 3000 ms 後</li>
+<li>index 設定 4</li>
+</ol>
+<p>以上的動作對於 JS Runtime 來說飛快可以執行完成。</p>
+<p>而在 for-loop 中的 setTimeout callback function 會共享 global scope 的 index。 </p>
+<ol start="8">
+<li>當時間為 1000ms 時，使用 callback function，closure，顯示為 4</li>
+<li>當時間為 2000ms 時，使用 callback function，closure，顯示為 4</li>
+<li>當時間為 3000ms 時，使用 callback function，closure，顯示為 4</li>
+</ol>
+<p>改為使用 ES6 的 let 則能夠讓產生新的 lexical scope 於每一個 callback function，因此對於 setTimeout callback function 而言，每一個 index 都是獨立的。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> index <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> index <span class="token operator">&lt;=</span> <span class="token number">3</span><span class="token punctuation">;</span> index<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'after '</span> <span class="token operator">+</span> index <span class="token operator">+</span> <span class="token string">' second(s):'</span> <span class="token operator">+</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> index <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">after <span class="token number">1</span> seconds<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:1
+after <span class="token number">2</span> seconds<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:2
+after <span class="token number">3</span> seconds<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>中所收到的 callback function 會有 closure 的行為記憶處其環境資訊，因此如果是以 var 的方式宣告 index，當 callback 要執行時，此時</p>
+<p>The reason you see the same message after 4 seconds is that the callback passed to the setTimeout() a closure. It remembers the value of i from the last iteration of the loop, which is 4.</p>
+<p>In addition, all three closures created by the for-loop share the same global scope access the same value of i.</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.javascripttutorial.net/javascript-closure/">JavaScript Tutorial</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures">Closures | MDN</a></p>
+<p><a target="_blank" rel="noopener" href="https://javascript.info/closure">Variable scope, closure | JAVASCRIPT.INFO</a></p>
+<h3 id="Node-js-Dancing-with-ES20XX"><a href="#Node-js-Dancing-with-ES20XX" class="headerlink" title="Node.js Dancing with ES20XX"></a>Node.js Dancing with ES20XX</h3><p>查詢 Node.js 各版本對於 Ecma JavaScript 的支援情況。目前主要使用的 Node.js 12.10 對於 ES2019 以前都有相當高的支援情況，所以使用新 Feature 無煩惱。</p>
+<p><a target="_blank" rel="noopener" href="https://node.green/">Node.green</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/ECMA-JavaScript-Closures/" data-id="clg3fmacu00jns4ts6srfdrac" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/08/ECMA-JavaScript-Array-Swiss-Army-Knife-Splice/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript Array 的瑞士刀函式 | splice</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/08/Government-Procurement-Series-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          寫給 21 世紀軟體工程師的採購法筆記 | 底價的定義與底價訂定
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

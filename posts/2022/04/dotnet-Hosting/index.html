@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>.NET Hosting Solutions (Kestrel, HTTP.sys, IIS) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介紹 .NET Core 關於網站 Hostings 可以採用的 Solutions，包含 .NET 跨平台力推的 Kestrel Web Server 或者是在 Windows 平台獨家的 HTTP.sys Web Server 或是 Windows Ecosystem 的老朋友 IIS Web Server。 從系統的發佈、部署出發，討論各不同解決方案的效能優勢以及背後帶來的架構觀念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET Hosting Solutions (Kestrel, HTTP.sys, IIS)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/04/dotnet-Hosting/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="介紹 .NET Core 關於網站 Hostings 可以採用的 Solutions，包含 .NET 跨平台力推的 Kestrel Web Server 或者是在 Windows 平台獨家的 HTTP.sys Web Server 或是 Windows Ecosystem 的老朋友 IIS Web Server。 從系統的發佈、部署出發，討論各不同解決方案的效能優勢以及背後帶來的架構觀念。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-Solutions.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-Kestrel-Direct.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-Kestrel-Reverse-Proxy.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-Httpsys-Internet.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-Httpsys-Intranet.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-OutOfProcess.png">
+<meta property="og:image" content="https://sdwh.dev/assets/dotnet-Hosting-IIS-InProcess.png">
+<meta property="article:published_time" content="2022-04-12T12:28:39.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="dotnet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dotnet-Hosting" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/dotnet-Hosting/" class="article-date">
+  <time datetime="2022-04-12T12:28:39.000Z" itemprop="datePublished">2022-04-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      .NET Hosting Solutions (Kestrel, HTTP.sys, IIS)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kestrel"><span class="toc-text">Kestrel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-sys"><span class="toc-text">HTTP.sys</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IIS"><span class="toc-text">IIS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Out-Of-Process"><span class="toc-text">Out Of Process</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#In-Prcoess"><span class="toc-text">In Prcoess</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows-Auth"><span class="toc-text">Windows Auth</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>介紹 .NET Core 關於網站 Hostings 可以採用的 Solutions，包含 .NET 跨平台力推的 Kestrel Web Server 或者是在 Windows 平台獨家的 HTTP.sys Web Server 或是 Windows Ecosystem 的老朋友 IIS Web Server。</p>
+<p>從系統的發佈、部署出發，討論各不同解決方案的效能優勢以及背後帶來的架構觀念。</p>
+<a href="/posts/2022/04/dotnet-Hosting/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>一圖勝千言，.NET Hosting 包含三種解決方案：Kestrel、HTTP.sys 以及 IIS。其中 IIS 又可以再細分為 In Process 以及 Out of Process 兩種 Hosting Models。</p>
+<p>關於三種解決方案的比較，可以參考 learn.microsoft 的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/?view=aspnetcore-6.0&tabs=windows#korh">Web server implementations in ASP.NET Core</a></p>
+<p><img src="/assets/dotnet-Hosting-Solutions.svg" alt="圖片來源：learn.microsoft"></p>
+<h3 id="Kestrel"><a href="#Kestrel" class="headerlink" title="Kestrel"></a>Kestrel</h3><p>Kestrel 中文稱為紅隼，是一種小型猛禽，可以看得出微軟對於 Kestrel 命名，有著小巧精幹的期許，也正是 Kestrel 的特色。</p>
+<p>Kestrel 可以作為獨立的 Process 處理外部的 HTTP Request，如下圖：</p>
+<p><img src="/assets/dotnet-Hosting-Kestrel-Direct.png" alt="圖片來源：learn.microsoft"></p>
+<p>但因為 Kestrel 需要獨佔 Port，在 Multi-Tenant 的部署環境，可以結合 Reverse Proxy 例如 IIS、Nginx 以及 Apache 來處理 Http Request。</p>
+<p><img src="/assets/dotnet-Hosting-Kestrel-Reverse-Proxy.png" alt="圖片來源：learn.microsoft"></p>
+<p>關於 Kestrel 的介紹，可以參考 learn.microsoft 的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-6.0">Kestrel web server implementation in ASP.NET Core</a></p>
+<h3 id="HTTP-sys"><a href="#HTTP-sys" class="headerlink" title="HTTP.sys"></a>HTTP.sys</h3><p>正確的名稱應該稱為 HTTP.sys Web Server，不然很容易和 IIS 扮演 Listener 同的 HTTP.sys Driver 搞混 🤔</p>
+<p>HTTP.sys Web Server 是由 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/iis/get-started/introduction-to-iis/introduction-to-iis-architecture#hypertext-transfer-protocol-stack-httpsys">HTTP.sys Driver</a> 搭配 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/http/http-api-start-page">HTTP Server API</a> 所構成，可以替代 Kestrel 使用，同樣可以直接面對 Http Request。</p>
+<p>HTTP.sys 是 Windows Server 平台限定，不同於 Kestrel 可以跨平台，而使用 HTTP.sys 的主要用途是處理 Kestrel 所無法處理的工作，例如 Kernel Mode Windows Auth。</p>
+<p>但在一般情況下 Microsoft 是推薦優先使用 Kestrel 的唷 🤗</p>
+<p>HTTP.sys Web Server 的一個特色是無法搭配 IIS 使用，儘管兩者同樣是 HTTP.sys Driver 負責 Listen Http Request。</p>
+<p><img src="/assets/dotnet-Hosting-Httpsys-Internet.png" alt="圖片來源：learn.microsoft"><br><img src="/assets/dotnet-Hosting-Httpsys-Intranet.png" alt="圖片來源：learn.microsoft"></p>
+<p>關於 HTTP.sys 的介紹，可以參考 learn.microsoft 的<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/httpsys?view=aspnetcore-6.0">HTTP.sys web server implementation in ASP.NET Core</a></p>
+<h3 id="IIS"><a href="#IIS" class="headerlink" title="IIS"></a>IIS</h3><h4 id="Out-Of-Process"><a href="#Out-Of-Process" class="headerlink" title="Out Of Process"></a>Out Of Process</h4><p>Out Of Process Hosting Mode 相當於 Kestrel 使用 Proxy 的模式，對外是由 IIS 的 <code class="s">w3wp.exe</code> 來接待 Http Request，再交由 <code class="s">dotnet.exe</code> 處理。</p>
+<p>關於 Out Of Process 可以參考 learn.microsoft 的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/out-of-process-hosting?view=aspnetcore-6.0">Out-of-process hosting with IIS and ASP.NET Core</a></p>
+<p><img src="/assets/dotnet-Hosting-OutOfProcess.png" alt="圖片來源：learn.microsoft"></p>
+<h4 id="In-Prcoess"><a href="#In-Prcoess" class="headerlink" title="In Prcoess"></a>In Prcoess</h4><p>In Prcoess Hosting Mode，系統只會有獨立的 Process，並且使用的是 IISHttpServer 而非 Kestrel，這種架構免去了 Proxy 代理的往返過程，效能上更為躍進，同時 In Process 也是預設將 .NET 部署至 IIS 所採用的模式。</p>
+<p>筆者之前也實驗了<a href="/posts/2022/04/dotnet-Deploy-To-IIS/">如何將 .NET Project 部署至 IIS 上</a>，事後才發現自己使用的正式 In Process 的部署模式 (因為是預設 😄)。</p>
+<p>關於 In Process 可以參考 learn.microsoft 的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/in-process-hosting?view=aspnetcore-6.0">In-process hosting with IIS and ASP.NET Core</a> 以及 <a target="_blank" rel="noopener" href="https://weblog.west-wind.com/posts/2019/Mar/16/ASPNET-Core-Hosting-on-IIS-with-ASPNET-Core-22">ASP.NET Core In Process Hosting on IIS with ASP.NET Core</a>。</p>
+<p><img src="/assets/dotnet-Hosting-IIS-InProcess.png" alt="圖片來源：learn.microsoft"></p>
+<h3 id="Windows-Auth"><a href="#Windows-Auth" class="headerlink" title="Windows Auth"></a>Windows Auth</h3><table>
+<thead>
+<tr>
+<th>Hosting</th>
+<th>Mode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kestrel</td>
+<td>User Mode</td>
+</tr>
+<tr>
+<td>HTTP.sys</td>
+<td>Kernel Mode</td>
+</tr>
+</tbody></table>
+<p>Kestrel 與 HTTP.sys 對於 Windows Authentication 所支援的 Mode 不同，詳細可以參考 learn.microsoft 上的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/security/authentication/windowsauth?view=aspnetcore-6.0">Configure Windows Authentication in ASP.NET Core</a> 說明。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/dotnet-Hosting/" data-id="clg3fmaoa01pts4ts7wb9awi3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dotnet/" rel="tag">dotnet</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/04/Windows-Server-Check-System-Uptime/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Windows Server Check System Uptime 如何確認 Windows 開機時間 / 運行時間</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Azure Learn DP-300 The Hard Way | 實作 DP-300 Lab 01 Azure SQL Server VM
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>資料庫管理的日常工作內容 (SQL Server Routinely Maintenance) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本次筆記從 PluralSight 課程學習到的資料庫日常工作維護內容，並與目前的資料庫管理工作相比較綜合整理 📚">
+<meta property="og:type" content="article">
+<meta property="og:title" content="資料庫管理的日常工作內容 (SQL Server Routinely Maintenance)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/11/SQL-Server-DailyLife/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="本次筆記從 PluralSight 課程學習到的資料庫日常工作維護內容，並與目前的資料庫管理工作相比較綜合整理 📚">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2020-11-07T04:29:53.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-DailyLife" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/11/SQL-Server-DailyLife/" class="article-date">
+  <time datetime="2020-11-07T04:29:53.000Z" itemprop="datePublished">2020-11-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      資料庫管理的日常工作內容 (SQL Server Routinely Maintenance)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5"><span class="toc-text">基本觀念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E6%97%A5%E5%B1%A4%E7%B4%9A%E7%9A%84%E7%B6%AD%E8%AD%B7%E5%B7%A5%E4%BD%9C"><span class="toc-text">每日層級的維護工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D-Backup-History"><span class="toc-text">確認 Backup History</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D-Job-History"><span class="toc-text">確認 Job History</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D-SQL-ErrorLog"><span class="toc-text">確認 SQL ErrorLog</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AA%A2%E8%A6%96%E8%AD%A6%E5%91%8A%E8%A8%8A%E6%81%AF-Alert"><span class="toc-text">檢視警告訊息 (Alert)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D-SQL-Services-%E6%9C%8D%E5%8B%99%E9%81%8B%E8%A1%8C"><span class="toc-text">確認 SQL Services 服務運行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AA%A2%E6%9F%A5%E7%A3%81%E7%A2%9F%E7%A9%BA%E9%96%93-Drive-Space"><span class="toc-text">檢查磁碟空間 (Drive Space)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%97%E9%A4%98%E8%A4%87%E8%A3%BD%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%83%85%E5%BD%A2"><span class="toc-text">冗餘複製的可用性情形</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A4%87%E8%A3%BD%E7%9A%84%E5%BB%B6%E9%81%B2%E6%99%82%E9%96%93"><span class="toc-text">複製的延遲時間</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E9%80%B1%E5%B1%A4%E7%B4%9A%E7%9A%84%E7%B6%AD%E8%AD%B7%E5%B7%A5%E4%BD%9C"><span class="toc-text">每週層級的維護工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AA%A2%E6%9F%A5%E7%B4%A2%E5%BC%95%E7%8B%80%E6%85%8B-Index"><span class="toc-text">檢查索引狀態 (Index)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%80%E5%AF%9F%E7%B5%B1%E8%A8%88%E8%B3%87%E6%96%99-Statistics"><span class="toc-text">觀察統計資料 (Statistics)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AA%A2%E6%9F%A5%E8%B3%87%E6%96%99%E4%B8%80%E8%87%B4%E6%80%A7-Check-DB-Consistency"><span class="toc-text">檢查資料一致性 Check DB Consistency</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E6%9C%88%E5%B1%A4%E7%B4%9A%E7%9A%84%E7%B6%AD%E8%AD%B7%E5%B7%A5%E4%BD%9C"><span class="toc-text">每月層級的維護工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SQL-Server-Patching-amp-Update"><span class="toc-text">SQL Server Patching &amp; Update</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%AC%E8%A9%A6%E8%B3%87%E6%96%99%E5%BA%AB%E9%82%84%E5%8E%9F-Restore"><span class="toc-text">測試資料庫還原 (Restore)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#File-System-Cleanup"><span class="toc-text">File System Cleanup</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E6%80%A7%E7%B6%AD%E8%AD%B7%E5%B7%A5%E4%BD%9C"><span class="toc-text">定期性維護工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%BA%E6%9C%8D%E5%99%A8%E5%81%A5%E5%BA%B7%E7%8B%80%E6%85%8B"><span class="toc-text">伺服器健康狀態</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E7%9B%A4%E9%BB%9E-%E7%9B%A3%E7%9D%A3%E8%B3%87%E6%96%99%E5%BA%AB%E7%9A%84%E6%96%B0%E5%A2%9E%E3%80%81%E7%95%B0%E5%8B%95"><span class="toc-text">資料庫盤點 (監督資料庫的新增、異動)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%BA%E6%9C%8D%E5%99%A8%E4%BD%BF%E7%94%A8%E8%80%85%E6%9F%A5%E8%A9%A2"><span class="toc-text">伺服器使用者查詢</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Security-Monitor-%E7%9B%A3%E6%8E%A7%E8%A7%92%E8%89%B2%E6%AC%8A%E9%99%90"><span class="toc-text">Security Monitor 監控角色權限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Activity-Monitor"><span class="toc-text">Activity Monitor</span></a></li></ol></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>本次筆記從 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/getting-started-sql-server-maintenance/table-of-contents">PluralSight</a> 課程學習到的資料庫日常工作維護內容，並與目前的資料庫管理工作相比較綜合整理 📚</p>
+<a href="/posts/2020/11/SQL-Server-DailyLife/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="基本觀念"><a href="#基本觀念" class="headerlink" title="基本觀念"></a>基本觀念</h3><h3 id="每日層級的維護工作"><a href="#每日層級的維護工作" class="headerlink" title="每日層級的維護工作"></a>每日層級的維護工作</h3><h4 id="確認-Backup-History"><a href="#確認-Backup-History" class="headerlink" title="確認 Backup History"></a>確認 Backup History</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> msdb<span class="token punctuation">.</span>dbo<span class="token punctuation">.</span>backupmediafamily  <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/1601/script-to-retrieve-sql-server-database-backup-history-and-no-backups/">Script to retrieve SQL Server database backup history and no backups</a></p>
+<h4 id="確認-Job-History"><a href="#確認-Job-History" class="headerlink" title="確認 Job History"></a>確認 Job History</h4><h4 id="確認-SQL-ErrorLog"><a href="#確認-SQL-ErrorLog" class="headerlink" title="確認 SQL ErrorLog"></a>確認 SQL ErrorLog</h4><h4 id="檢視警告訊息-Alert"><a href="#檢視警告訊息-Alert" class="headerlink" title="檢視警告訊息 (Alert)"></a>檢視警告訊息 (Alert)</h4><h4 id="確認-SQL-Services-服務運行"><a href="#確認-SQL-Services-服務運行" class="headerlink" title="確認 SQL Services 服務運行"></a>確認 SQL Services 服務運行</h4><h4 id="檢查磁碟空間-Drive-Space"><a href="#檢查磁碟空間-Drive-Space" class="headerlink" title="檢查磁碟空間 (Drive Space)"></a>檢查磁碟空間 (Drive Space)</h4><h4 id="冗餘複製的可用性情形"><a href="#冗餘複製的可用性情形" class="headerlink" title="冗餘複製的可用性情形"></a>冗餘複製的可用性情形</h4><h4 id="複製的延遲時間"><a href="#複製的延遲時間" class="headerlink" title="複製的延遲時間"></a>複製的延遲時間</h4><h3 id="每週層級的維護工作"><a href="#每週層級的維護工作" class="headerlink" title="每週層級的維護工作"></a>每週層級的維護工作</h3><h4 id="檢查索引狀態-Index"><a href="#檢查索引狀態-Index" class="headerlink" title="檢查索引狀態 (Index)"></a>檢查索引狀態 (Index)</h4><h4 id="觀察統計資料-Statistics"><a href="#觀察統計資料-Statistics" class="headerlink" title="觀察統計資料 (Statistics)"></a>觀察統計資料 (Statistics)</h4><h4 id="檢查資料一致性-Check-DB-Consistency"><a href="#檢查資料一致性-Check-DB-Consistency" class="headerlink" title="檢查資料一致性 Check DB Consistency"></a>檢查資料一致性 Check DB Consistency</h4><h3 id="每月層級的維護工作"><a href="#每月層級的維護工作" class="headerlink" title="每月層級的維護工作"></a>每月層級的維護工作</h3><h4 id="SQL-Server-Patching-amp-Update"><a href="#SQL-Server-Patching-amp-Update" class="headerlink" title="SQL Server Patching &amp; Update"></a>SQL Server Patching &amp; Update</h4><h4 id="測試資料庫還原-Restore"><a href="#測試資料庫還原-Restore" class="headerlink" title="測試資料庫還原 (Restore)"></a>測試資料庫還原 (Restore)</h4><h4 id="File-System-Cleanup"><a href="#File-System-Cleanup" class="headerlink" title="File System Cleanup"></a>File System Cleanup</h4><h3 id="定期性維護工作"><a href="#定期性維護工作" class="headerlink" title="定期性維護工作"></a>定期性維護工作</h3><h4 id="伺服器健康狀態"><a href="#伺服器健康狀態" class="headerlink" title="伺服器健康狀態"></a>伺服器健康狀態</h4><p>sp_Blitz<br>sp_configure</p>
+<h4 id="資料庫盤點-監督資料庫的新增、異動"><a href="#資料庫盤點-監督資料庫的新增、異動" class="headerlink" title="資料庫盤點 (監督資料庫的新增、異動)"></a>資料庫盤點 (監督資料庫的新增、異動)</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span>
+<span class="token keyword">FROM</span> master<span class="token punctuation">.</span>sys<span class="token punctuation">.</span><span class="token keyword">databases</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="伺服器使用者查詢"><a href="#伺服器使用者查詢" class="headerlink" title="伺服器使用者查詢"></a>伺服器使用者查詢</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> SYS<span class="token punctuation">.</span>sql_logins
+<span class="token keyword">ORDER</span> <span class="token keyword">by</span> modify_date <span class="token keyword">desc</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="Security-Monitor-監控角色權限"><a href="#Security-Monitor-監控角色權限" class="headerlink" title="Security Monitor 監控角色權限"></a>Security Monitor 監控角色權限</h4><h4 id="Activity-Monitor"><a href="#Activity-Monitor" class="headerlink" title="Activity Monitor"></a>Activity Monitor</h4>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/11/SQL-Server-DailyLife/" data-id="clg3fmaia015ks4ts2dgo6syl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 學習資源筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/11/SQL-Server-Version-Build/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          如何判斷 SQL Server Version 以及元件所使用的版本
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

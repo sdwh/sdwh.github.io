@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>C# Object Oriented Programming SOLID Principles | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於 Object Oriented Programming SOLID Principles 的內涵與使用時機。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# Object Oriented Programming SOLID Principles">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/01/CSharp-SOLID-Principles/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於 Object Oriented Programming SOLID Principles 的內涵與使用時機。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/OOP-SOLID-Relationship.svg">
+<meta property="article:published_time" content="2023-01-04T11:08:30.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="OOP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSharp-SOLID-Principles" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/01/CSharp-SOLID-Principles/" class="article-date">
+  <time datetime="2023-01-04T11:08:30.000Z" itemprop="datePublished">2023-01-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C# Object Oriented Programming SOLID Principles
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Single-Responsibility"><span class="toc-text">Single Responsibility</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%87%89%E7%94%A8"><span class="toc-text">如何應用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Open-Closed-Principle"><span class="toc-text">Open Closed Principle</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%87%89%E7%94%A8-1"><span class="toc-text">如何應用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Liskov-Substitution-Principle"><span class="toc-text">Liskov Substitution Principle</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%87%89%E7%94%A8-2"><span class="toc-text">如何應用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Interface-Segregation-Principle"><span class="toc-text">Interface Segregation Principle</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%87%89%E7%94%A8-3"><span class="toc-text">如何應用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dependency-Inversion-Principle"><span class="toc-text">Dependency Inversion Principle</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%87%89%E7%94%A8-4"><span class="toc-text">如何應用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SOLID-Relationship"><span class="toc-text">SOLID Relationship</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於 Object Oriented Programming SOLID Principles 的內涵與使用時機。</p>
+<a href="/posts/2023/01/CSharp-SOLID-Principles/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>學習 Steve Smith 的 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/csharp-solid-principles/table-of-contents">SOLID Principles for C# Developers</a> 課後筆記。</p>
+<ul>
+<li>Single Responsibility Principle</li>
+<li>Open / Closed Principle</li>
+<li>Liskov Substitution Principle</li>
+<li>Interface Segregation Principle</li>
+<li>Dependency Inversion Principle</li>
+</ul>
+<h2 id="Single-Responsibility"><a href="#Single-Responsibility" class="headerlink" title="Single Responsibility"></a>Single Responsibility</h2><blockquote>
+<p>每一個模組都應該只有唯一的理由需要被改變<br>雖然你可以擁有一把萬用的瑞士刀，但不代表瑞士刀是唯一的選項。</p>
+</blockquote>
+<p>模組的定義可以是物件導向中的類別 (Class) 或者是方法 (Method)，不要為模組賦予過大的責任與工作，如果有不同的理由卻需要對相同的類別或者是方法進行修正時，就應該重新設計相關的程式碼，劃分更小的模組單位。</p>
+<p>而為什麼模組不要有過大的責任與工作？對開發工作而言，閱讀程式碼的比例遠勝撰寫程式碼，減少模組的工作量可以降低在變更時需要反覆閱讀的程式碼量，從而提升開發與維護的效率。此外如果模組有過大的責任與工作量，也容易發生改 A 壞 B、牽一髮動全身的問題。</p>
+<h3 id="如何應用"><a href="#如何應用" class="headerlink" title="如何應用"></a>如何應用</h3><p>原本龐大模組中的各項功能，可能包含訊息處理 (Logging)、資訊儲存 (Persistence)、資料驗證 (Validation) 以及各式的商業邏輯，這些功能可能都是以指令或是程式碼的方式存在。而為達到 Single Responsibility 可以將上述的功能拆分在不同的類別或者是方法，原本的類別則扮演組合與控制器的功能，調度相關的模組達成既有的需求功能。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Logging</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Info"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Persistence</span>
+File<span class="token punctuation">.</span><span class="token function">ReadAllText</span><span class="token punctuation">(</span><span class="token string">"data.json"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Validation</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span>userInput<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment">// Business Login</span>
+<span class="token class-name"><span class="token keyword">var</span></span> rate <span class="token operator">=</span> <span class="token number">0.5</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Today<span class="token punctuation">.</span>Year <span class="token operator">>=</span> <span class="token number">2022</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  rate <span class="token operator">+=</span> <span class="token number">0.1</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConsoleLogger</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Log</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> message<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WrteLine</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DataStorage</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">ReadFromSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> File<span class="token punctuation">.</span><span class="token function">ReadAllText</span><span class="token punctuation">(</span><span class="token string">"data.json"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RateCalculator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Rate <span class="token punctuation">&#123;</span><span class="token keyword">get</span><span class="token punctuation">;</span><span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token number">0.5</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> <span class="token function">GetRate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Today<span class="token punctuation">.</span>Year <span class="token operator">>=</span> <span class="token number">2022</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+      Rate <span class="token operator">+=</span> <span class="token number">0.1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> Rate<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Open-Closed-Principle"><a href="#Open-Closed-Principle" class="headerlink" title="Open Closed Principle"></a>Open Closed Principle</h2><blockquote>
+<p>類別對擴充開放、但對修改封閉<br>如果只是要裝新車燈，不需要動手改造整個引擎。</p>
+</blockquote>
+<p>如何能夠做到既保持對擴充開放，但又對修改進行封閉？當有需求的時候，擴充不發生在原始的類別身上，而是另於其他的類別來達成，因此為對修改封閉；而之所以能夠在其他的類別達成，就是要做到對擴充開放，不會因為有新的擴充與類別實踐而破壞既有的功能。更精細的說法是需求所帶來的新的功能 (Behavior) 需求，可以藉由擴充的方式加入，但不需要對原始碼做異動。</p>
+<p>為什麼不要對原始碼做異動？避免加入 Bug 以及新的條件判斷 (Conditions) 到原本的原始碼當中，導致未來的維護更加複雜。</p>
+<h3 id="如何應用-1"><a href="#如何應用-1" class="headerlink" title="如何應用"></a>如何應用</h3><p>在實踐 Open Closed Principle 上，可以透過物件導向的參數 (Parameters)、繼承 (Inheritance) 以及 Composition &amp; Injection 來達成。</p>
+<p>而在設計上，採取建立新類別 (New Clasess) 的方式，除達到 Open Closed 的需求外，也符合 Single Responsibility，讓類別專注一件事情的設計方式。</p>
+<h2 id="Liskov-Substitution-Principle"><a href="#Liskov-Substitution-Principle" class="headerlink" title="Liskov Substitution Principle"></a>Liskov Substitution Principle</h2><blockquote>
+<p>子型別必須可以替換取代父型別<br>看起來像鴨子、叫起來也像鴨子，但它需要電池，必然搞錯了抽象。</p>
+</blockquote>
+<p>物件導向存在 IS-A 以及 HAS-A 的關係，而 Liskov Substitution 指出 IS-A 關係的不足，相對於較為寬鬆的 IS-A Polymorphism 多形，必須要進一步限制其可以達到子型別替代父型別的 IS-Substitution。</p>
+<p>這是為了解決例如物件轉型、Null 以及 NotImplementedException 等造成程式碼功能非預期的情況。</p>
+<p>依循「Tell, Don’t Ask」原則，不需要主動的識別物件的型別，物件應該會根據 context 進行對應的處理與邏輯。</p>
+<p><a target="_blank" rel="noopener" href="https://ardalis.com/nulls-break-polymorphism/">Nulls Break Polymorphism | Ardalis.com</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jyt0532.com/2020/03/22/lsp/">深入淺出 Liskov 替換原則 Liskov Substitution Principle</a></p>
+<h3 id="如何應用-2"><a href="#如何應用-2" class="headerlink" title="如何應用"></a>如何應用</h3><p>在類別設計上，如果要實作 Interface 或者是繼承類別，必須要實作來源所有的屬性與方法，避免發生 NotImplementedException 以及避免主動檢查物件轉型的問題。</p>
+<p>而如果來源需要實作的屬性與方法太多，就可以透過下一個原則 (Interface Segregation Principle) 來處理。</p>
+<h2 id="Interface-Segregation-Principle"><a href="#Interface-Segregation-Principle" class="headerlink" title="Interface Segregation Principle"></a>Interface Segregation Principle</h2><blockquote>
+<p>避免依賴不需要的方法<br>魚缸不需要兼具筆筒的功能，對於使用者而言會很困擾</p>
+</blockquote>
+<p>Interface 包含物件導向設計的介面 (Interface) 以及類別提供外部存取的屬性與方法 (Public Access)。而在設計 Interface 上，如果 Interface 過於龐大，包含眾多的屬性與方法，則實作該 Interface 的類別可能會出現許多非必要的方法或者保持為 NotImplementedException。因此應該設計「適當」的大小的 Interface，而適當是取決於內聚 (Cohesion) 的程度，但從 Interface 所包含的方法數觀察，可以是一個直觀的數字。</p>
+<h3 id="如何應用-3"><a href="#如何應用-3" class="headerlink" title="如何應用"></a>如何應用</h3><p>將 Interface 的「大小」減少，不要龐大的 Interface 設計，而是要設計出高內聚 (Cohesion) 的輕量 Interface。</p>
+<p>而在重構程式碼的過程，可以使用 Interface 的繼承關係來從大化小，並且使用 <a href="/posts/2020/07/Design-Pattern-Adapter/">Aapter Pattern</a> 來處理。</p>
+<p>而在應用上，Interface Segregation 除了基於相容既有類別使用繼承關係外，也可以創造新的 Interface 來限制類別可以被存取的方法與屬性。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Document</span> <span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">print</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">spellCheck</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Document</span> <span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">PrintableDocument</span> <span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">print</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">SpellCheckableDocument</span> <span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">spellCheck</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Dependency-Inversion-Principle"><a href="#Dependency-Inversion-Principle" class="headerlink" title="Dependency Inversion Principle"></a>Dependency Inversion Principle</h2><blockquote>
+<p>高階模組不應該應賴低階模組，兩者都應該依賴抽象<br>你不需要把電器焊在電線上才能使用它</p>
+</blockquote>
+<p>藉由抽象，我們可以解放物件的依賴關係達到<strong>解耦</strong>，為維護與擴充帶來更大的彈性與便利。</p>
+<h3 id="如何應用-4"><a href="#如何應用-4" class="headerlink" title="如何應用"></a>如何應用</h3><p>明確 (Explicit) 的處理依賴，視為食譜的材料一般的完整呈現依賴。</p>
+<p>使用依賴注入，從 Client 來產生依賴，而不要在模組之間產生依賴，依賴注入包含 Constructors Arguments, Properties 以及 Method Arguments 等方式，最常使用的是 Constructors Arguments。</p>
+<p>使用 Constructors Arguments 來進行依賴注入的好處在於確保類別不會處於未初始化的狀態 (因為執行建構子)，此外可以結合 Inversion Of Control (依賴反轉) Container 來進行依賴注入的控制管理。</p>
+<h2 id="SOLID-Relationship"><a href="#SOLID-Relationship" class="headerlink" title="SOLID Relationship"></a>SOLID Relationship</h2><p><img src="/assets/OOP-SOLID-Relationship.svg"></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/01/CSharp-SOLID-Principles/" data-id="clg3fmabg00dws4ts8n0y33eo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OOP/" rel="tag">OOP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/12/HTTP-Content-Disposition/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">HTTP Header Content Disposition</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/01/Get-Windows-Shortcut-Target/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Get Windows Shortcut Target
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

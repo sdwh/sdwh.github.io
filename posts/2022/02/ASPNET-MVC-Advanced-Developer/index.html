@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET  MVC Advanced Developer (DI, ORM &amp; AOP) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET 現代軟體工程開發方式，整理進階與物件導向開發的結合技術，例如 Dependency Injection、 Object Relational Mapping 與 Aspect Oriented Programming 以及相關的搭配工具，例如 Autofact、Dapper 與 ASP.NET Boilerplate (ABP)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET  MVC Advanced Developer (DI, ORM &amp; AOP)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/ASPNET-MVC-Advanced-Developer/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET 現代軟體工程開發方式，整理進階與物件導向開發的結合技術，例如 Dependency Injection、 Object Relational Mapping 與 Aspect Oriented Programming 以及相關的搭配工具，例如 Autofact、Dapper 與 ASP.NET Boilerplate (ABP)">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2022-02-20T07:55:59.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Advanced-Developer" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/ASPNET-MVC-Advanced-Developer/" class="article-date">
+  <time datetime="2022-02-20T07:55:59.000Z" itemprop="datePublished">2022-02-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET  MVC Advanced Developer (DI, ORM &amp; AOP)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dependency-Injection"><span class="toc-text">Dependency Injection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object-Relational-Mapping"><span class="toc-text">Object Relational Mapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Aspect-Oriented-Programming"><span class="toc-text">Aspect Oriented Programming</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET 現代軟體工程開發方式，整理進階與物件導向開發的結合技術，例如 Dependency Injection、 Object Relational Mapping 與 Aspect Oriented Programming 以及相關的搭配工具，例如 Autofact、Dapper 與 ASP.NET Boilerplate (ABP)</p>
+<a href="/posts/2022/02/ASPNET-MVC-Advanced-Developer/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Dependency-Injection"><a href="#Dependency-Injection" class="headerlink" title="Dependency Injection"></a>Dependency Injection</h3><p>DI 又稱為依賴注入，是為了讓程式保持擴充彈性的 Coding 方式。以前曾經由 Pluralsight 學習，並整理成<a href="/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/">筆記</a>，但在真實的應用場景，如 ASP.NET MVC 的開發上仍是沒有使用 DI 的方式。但到了 .NET 6 (ASP.NET Core) 以後 DI 成為 MVC 框架預設的一環，使用上可能會更為直覺。</p>
+<p>而若真要應用 DI ，可能是要配合專案的規模提升，複雜度增加自然推動的需求，或者是改採 .NET 6 (ASP.NET Core) 後依照框架的要求主動加入使用 DI 的開發使用。</p>
+<p>延伸方向：<a target="_blank" rel="noopener" href="https://aspnetboilerplate.com/Pages/Documents/Dependency-Injection">ASP.NET Boilerplate Dependency Injection</a> &amp; <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0">Dependency injection in ASP.NET Core</a></p>
+<h3 id="Object-Relational-Mapping"><a href="#Object-Relational-Mapping" class="headerlink" title="Object Relational Mapping"></a>Object Relational Mapping</h3><p>ASP.NET MVC 預設上使用的 Entity Framework 就是 ORM 框架，讓開發人員不在需要寫 SQL Query，讓 ORM 框架負責與 DB 的溝通，開發人員僅需享受以物件操作的方式來使用資料庫。而開發流程又可以在分為 Database First 或者是 Code First (Model First 使用的情境與案例還有沒碰到過 😶)。</p>
+<p>但使用 Entity Framework 完全託付給框架負責與資料庫溝通，可能會有 Query 組合過於複雜導致的效能問題，雖然有替代的方式可採 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/ef/core/querying/raw-sql">Raw Query</a> 的方式。但另有流派主張僅善用 ORM 強型別的好處，但實際上與資料庫的互動 Query 仍是由開發者完成，而這樣的產物就是 <strong>Dapper</strong>。</p>
+<p>目前碰到的專案還沒有使用 Dapper 的經驗，但參考各界的心得覺得值得一試，同時 Entity Framework 雖然美好，但不深入其細節就使用資料庫的方式總是不太安心，若先藉由 Dapper 來學習 ORM 自行設計 Model 與 Class 並實際下 Query，再往 Entity Framework 去深入，從而統整再一起，或許會是對 ORM 有更深入的認識的一種學習方式。</p>
+<p><strong>總而言之，就先來個 Dapper 實驗吧。</strong></p>
+<p>延伸方向：<a target="_blank" rel="noopener" href="https://github.com/DapperLib/Dapper">Dapper</a>，並參考 igouist 在 <a target="_blank" rel="noopener" href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a> 關於 Dapper 的介紹。</p>
+<h3 id="Aspect-Oriented-Programming"><a href="#Aspect-Oriented-Programming" class="headerlink" title="Aspect Oriented Programming"></a>Aspect Oriented Programming</h3><p>在還不知道 AOP 之前，喜歡 ASP.NET MVC 的一個原因，就是可以利用 Action Filter 來在 Request Lifecycle 中加入程式邏輯，不論是要 Logging、Authentication 或者是其他需要再多個 Action 當中重複的業務邏輯。後來才從 Mars 的<a target="_blank" rel="noopener" href="https://blog.hungwin.com.tw/aspnet-mvc-aop-authorize/">文章</a> 看到 AOP 這個名詞。搜尋之後才發現原來 AOP 已經是軟體開發中盛行的方式，奇怪，迄今讀過的 MVC 教材怎麼都沒提過 🤔</p>
+<p>接著從 AOP 深入之後，發現其是為了補充 OOP 開發上的限制，對於紀錄 (Logging) 或者是授權檢查 (Authentication) 因為在反覆出現在各 OOP 的邏輯當中，程式碼的流程會過於複雜，也不好維護。而藉由 Aspect Oriented Programming 的方式切割關注點，在 ASP.NET MVC 框架上原生的處理方式就是藉由 Action Filter 來切割，此外還可以利用 .Net HttpModule 或者是 Request Lifecycle 當中的各式 Event (Application_Start、Application_End) 等來達到 AOP。</p>
+<p>其中關於 HttpModule 的介紹，可以參考石頭的<a target="_blank" rel="noopener" href="https://isdaniel.github.io/httphandler-httpmodule/">文章</a>，石頭用了一個很棒的比喻，對於 Request Lifecycle 而言，HttpModule 是經過的各個車站，當中都可以加入程式邏輯，但最終 Request 會到達終點也就是 HttpHandler，在 MVC 而言就是 Contoller。</p>
+<p>同時 AOP 的強大，甚至有專門的框架誕生，例如 Open Source 的 <a target="_blank" rel="noopener" href="https://aspnetboilerplate.com/Pages/Documents">ASP.NET Boilerplate</a>，或者是需要費用的 <a target="_blank" rel="noopener" href="https://www.postsharp.net/">PostSharp</a>。</p>
+<p>但以目前所遇到的專案而言，使用 Action Filter 就已經十分足夠，無論是在處理 <a href="/posts/2022/02/ASPNET-MVC-NLog/">Logging</a> 或者是 <a href="/posts/2020/06/ASPNET-MVC-Auth-POC/">Authentication</a>，同樣地等專案的規模與複雜度在提升，可能才會有深入 AOP 框架的必要。</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/ASPNET-MVC-Advanced-Developer/" data-id="clg3fma8v0022s4ts3lup8eav" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/CSS-Pseudo-Class-Image-Background/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">CSS | Pseudo Class Image Background</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/ASPNET-MVC-Content-Path/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET MVC Content Path (相對 &amp; 絕對路徑)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>程式設計者所需要知道關於 HTTPS 知識 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記身為開發者所需要關於 Https 的知識，包含加密演算法、憑證以及網頁伺服器該如何實作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程式設計者所需要知道關於 HTTPS 知識">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/03/ALL-About-HTTPS/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記身為開發者所需要關於 Https 的知識，包含加密演算法、憑證以及網頁伺服器該如何實作。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/HTTPS-SSL-Publicca-Hinet-Net.png">
+<meta property="og:image" content="https://sdwh.dev/assets/HTTPS-SSL-TWCA.png">
+<meta property="og:image" content="https://sdwh.dev/assets/HTTPS-SSL-GRCA.png">
+<meta property="article:published_time" content="2021-03-07T02:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.768Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="HTTPS">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ALL-About-HTTPS" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/03/ALL-About-HTTPS/" class="article-date">
+  <time datetime="2021-03-07T02:00:00.000Z" itemprop="datePublished">2021-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      程式設計者所需要知道關於 HTTPS 知識
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PKI"><span class="toc-text">PKI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B0%E7%81%A3%E7%9A%84%E9%A0%82%E5%B1%A4-CA"><span class="toc-text">台灣的頂層 CA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Chunghwa-Telecom"><span class="toc-text">Chunghwa Telecom</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TWCA"><span class="toc-text">TWCA</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GRCA"><span class="toc-text">GRCA</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E6%B3%95"><span class="toc-text">加密法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A6%8B%E7%9A%84%E5%B0%8D%E7%A8%B1%E5%BC%8F%E5%8A%A0%E5%AF%86%E6%B3%95"><span class="toc-text">常見的對稱式加密法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A6%8B%E7%9A%84%E9%9D%9E%E5%B0%8D%E7%A8%B1%E5%BC%8F%E5%8A%A0%E5%AF%86%E6%B3%95"><span class="toc-text">常見的非對稱式加密法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%86%91%E8%AD%89"><span class="toc-text">憑證</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%86%91%E8%AD%89%E7%9A%84%E5%8F%96%E5%BE%97"><span class="toc-text">憑證的取得</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSL-TLS"><span class="toc-text">SSL &#x2F; TLS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A9%9F%E5%88%B6"><span class="toc-text">機制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E8%AE%80-Cipher-Sutie"><span class="toc-text">解讀 Cipher Sutie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IIS-Server-%E5%A6%82%E4%BD%95%E5%95%9F%E7%94%A8-HTTPS"><span class="toc-text">IIS Server 如何啟用 HTTPS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%AF%E5%85%A5%E6%86%91%E8%AD%89"><span class="toc-text">匯入憑證</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AB%99%E5%8F%B0%E7%B9%AB%E7%B5%90"><span class="toc-text">站台繫結</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記身為開發者所需要關於 Https 的知識，包含加密演算法、憑證以及網頁伺服器該如何實作。</p>
+<a href="/posts/2021/03/ALL-About-HTTPS/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="PKI"><a href="#PKI" class="headerlink" title="PKI"></a>PKI</h2><div class="article-blockquote">
+公開金鑰基礎建設（英語：Public Key Infrastructure，縮寫：PKI），又稱公開金鑰基礎架構、公鑰基礎建設、公鑰基礎設施、公開密碼匙基礎建設或公鑰基礎架構，是一組由硬體、軟體、參與者、管理政策與流程組成的基礎架構，其目的在於創造、管理、分配、使用、儲存以及復原數位憑證。
+
+<div style="text-align:right">wikipedia</div>
+</div>
+
+<p>在 PKI 的架構中，CA (Certification Authority) 負責進行憑證的管理。<strong>憑證是個人訊息以及公開金鑰所組合的檔案</strong>，而在 PKI 架構中由從屬於 CA 的 RA (Registration Authority) 來專責公開金鑰與個人身分的對應，減少 CA 的負擔。</p>
+<p>藉由 PKI 可以做到下列資安事項：</p>
+<ol>
+<li>通訊過程的加密：將要傳輸的資料使用公開金鑰加密，持有對應私密金鑰者才能解開</li>
+<li>宣稱身分的驗證：將任意檔案藉由私鑰加密，任何人使用公開金鑰解開者能夠驗證私鑰持有者的身分</li>
+<li>內容完整性：藉由雜湊的機制，當內容被第三方竄改時，內容的雜湊值會不一致，從而保持內容的完整</li>
+<li>不可否認性：因為雙方公、私鑰驗證過彼此身分，所以發生的行為不能由任一方否認</li>
+</ol>
+<h3 id="台灣的頂層-CA"><a href="#台灣的頂層-CA" class="headerlink" title="台灣的頂層 CA"></a>台灣的頂層 CA</h3><h4 id="Chunghwa-Telecom"><a href="#Chunghwa-Telecom" class="headerlink" title="Chunghwa Telecom"></a>Chunghwa Telecom</h4><p>提供憑證的商業服務，也代為營運**政府伺服器數位憑證管理中心(GTLSCA)**的憑證業務。</p>
+<p>OU=ePKI Root Certification Authority,O=Chunghwa Telecom Co., Ltd.,C=TW</p>
+<p><a target="_blank" rel="noopener" href="https://epki.com.tw/">中華電信公開金鑰基礎建設</a></p>
+<p><img src="/assets/HTTPS-SSL-Publicca-Hinet-Net.png" alt="頂層CA發給自己服務網站的憑證 - 中華電信"></p>
+<h4 id="TWCA"><a href="#TWCA" class="headerlink" title="TWCA"></a>TWCA</h4><p>提供憑證的商業服務。</p>
+<p>CN=TWCA Global Root CA,OU=Root CA,O=TAIWAN-CA,C=TW<br>CN=TWCA Root Certification Authority,OU=Root CA,O=TAIWAN-CA,C=TW</p>
+<p><img src="/assets/HTTPS-SSL-TWCA.png" alt="頂層CA發給自己服務網站的憑證 - TWCA"></p>
+<h4 id="GRCA"><a href="#GRCA" class="headerlink" title="GRCA"></a>GRCA</h4><p>政府憑證總管理中心(Government Root Certification Authority) ，為政府機關公開金鑰基礎建設階層架構的最頂層憑證機構，同時也是PKI的信賴起源，具備最高的公信度。負責PKI內外憑證機構間的交互認證，由國家發展委員會委託中華電信數據分公司營運。</p>
+<p>O=Government Root Certification Authority,C=TW<br><a target="_blank" rel="noopener" href="https://www.checktls.com/showcas.html">Trusted Root Certificate Authority List</a></p>
+<p><img src="/assets/HTTPS-SSL-GRCA.png" alt="頂層CA發給自己服務網站的憑證 - GRCA"></p>
+<h3 id="加密法"><a href="#加密法" class="headerlink" title="加密法"></a>加密法</h3><p>分為 <strong>對稱式(Symmetric Encryption)</strong> 以及 <strong>非對稱式(Asymmetric Encryption)</strong> ，對稱式在加密以及解密使用同一把金鑰進行，所以加解密速度快，但無法公開的交換金鑰；非對稱式雙方都有一組公開金鑰以及私鑰，可以在公開傳送訊息，進行的方式如下：</p>
+<p>A 將檔案以B的公鑰進行加密；B 收到檔案後以自己的私鑰進行解密</p>
+<p>而更完善的機制是：</p>
+<p>A 將檔案以B的公鑰進行加密、並同時以自己的私鑰進行加密；<br>B 收到檔案後先以A的公鑰進行解密，確認檔案確實由是由A所提供；同時再以自己的私鑰進行解密</p>
+<p>綜合對稱式與非對稱式的優點，公開環境的溝通，就是先藉由非對稱式加密法，傳送對稱式加密法所使用的金鑰，之後的訊息溝通則都可以用對稱式金鑰來完成。</p>
+<h4 id="常見的對稱式加密法"><a href="#常見的對稱式加密法" class="headerlink" title="常見的對稱式加密法"></a>常見的對稱式加密法</h4><p>AES、RC4、3DES、Blowfish</p>
+<h4 id="常見的非對稱式加密法"><a href="#常見的非對稱式加密法" class="headerlink" title="常見的非對稱式加密法"></a>常見的非對稱式加密法</h4><p>RSA、Diffie-Hellman、ElGamal、ECC、ECDH</p>
+<p><a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/demystifying-schannel/ba-p/259233">解密 Schannel</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@clu1022/%E9%82%A3%E4%BA%9B%E9%97%9C%E6%96%BCssl-tls%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B-%E5%85%AB-%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95%E7%B0%A1%E4%BB%8B-530f0daf1351">那些關於SSL/TLS的二三事(八) — 加密演算法簡介</a></p>
+<h3 id="憑證"><a href="#憑證" class="headerlink" title="憑證"></a>憑證</h3><p>PKI 所使用的憑證格式為 X.509</p>
+<div class="article-blockquote">
+X.509是密碼學裡公鑰憑證的格式標準。X.509憑證已應用在包括TLS/SSL在內的眾多網路協定里，同時它也用在很多非線上應用場景里，比如電子簽章服務。X.509憑證里含有公鑰、身分資訊（比如網路主機名，組織的名稱或個體名稱等）和簽章資訊（可以是憑證簽發機構CA的簽章，也可以是自簽章）。
+<div style="text-align:right">wikipedia</div>
+</div>
+
+<h4 id="憑證的取得"><a href="#憑證的取得" class="headerlink" title="憑證的取得"></a>憑證的取得</h4><p>可以分為向信任第三方發出申請或者自行簽發的方式。</p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@clu1022/%E9%82%A3%E4%BA%9B%E9%97%9C%E6%96%BCssl-tls%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B-%E4%B8%89-%E7%B5%A6%E8%AA%B0%E7%B0%BD-b1741f2abc03">那些關於SSL/TLS的二三事(三) — 給誰簽?</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@clu1022/%E9%82%A3%E4%BA%9B%E9%97%9C%E6%96%BCssl-tls%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B-%E4%BA%94-%E6%95%B8%E4%BD%8D%E7%B0%BD%E7%AB%A0-326fa5347893">那些關於SSL/TLS的二三事(五) — 數位簽章</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@clu1022/%E9%82%A3%E4%BA%9B%E9%97%9C%E6%96%BCssl-tls%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B-%E4%B8%83-%E6%86%91%E8%AD%89%E7%9A%84%E7%A8%AE%E9%A1%9E-b8efc742ec9f">那些關於SSL/TLS的二三事(七) — 憑證的種類</a></p>
+<h2 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL / TLS"></a>SSL / TLS</h2><h3 id="機制"><a href="#機制" class="headerlink" title="機制"></a>機制</h3><p><a target="_blank" rel="noopener" href="https://medium.com/@clu1022/%E9%82%A3%E4%BA%9B%E9%97%9C%E6%96%BCssl-tls%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B-%E4%B9%9D-ssl-communication-31a2a8a888a6">那些關於SSL/TLS的二三事(九) — SSL (HTTPS)Communication</a></p>
+<h3 id="解讀-Cipher-Sutie"><a href="#解讀-Cipher-Sutie" class="headerlink" title="解讀 Cipher Sutie"></a>解讀 Cipher Sutie</h3><table>
+<thead>
+<tr>
+<th>加密法使用時機</th>
+<th>使用的加密法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Key Exchange 金鑰交換</td>
+<td>RSA, Diffie-Hellman, ECC, ECDH, SRP, PSK</td>
+</tr>
+<tr>
+<td>Authentication 驗證</td>
+<td>RSA, DSA, ECDSA</td>
+</tr>
+<tr>
+<td>Bulk Ciphers 內容加密</td>
+<td>RC4, 3DES, AES</td>
+</tr>
+<tr>
+<td>Message Authentication 完整性檢查</td>
+<td>HMAC-SHA256, HMAC-SHA1, HMAC-MD5</td>
+</tr>
+</tbody></table>
+<hr>
+<p>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (0xc02f)   ECDH secp256r1 (eq. 3072 bits RSA)<br><span style="color:#f88017">WEAK</span> : TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (0xc013)   ECDH secp256r1 (eq. 3072 bits RSA)<br><span style="color:#f88017">WEAK</span> : TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 (0xc027)   ECDH secp256r1 (eq. 3072 bits RSA)<br>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (0xc030)   ECDH secp256r1 (eq. 3072 bits RSA)<br><span style="color:#f88017">WEAK</span> : TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (0xc014)   ECDH secp256r1 (eq. 3072 bits RSA)<br><span style="color:#f88017">WEAK</span> : TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 (0xc028)   ECDH secp256r1 (eq. 3072 bits RSA)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_AES_128_GCM_SHA256 (0x9c)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_AES_128_CBC_SHA (0x2f)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_AES_128_CBC_SHA256 (0x3c)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_AES_256_GCM_SHA384 (0x9d)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_AES_256_CBC_SHA (0x35)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_AES_256_CBC_SHA256 (0x3d)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_CAMELLIA_128_CBC_SHA (0x41)<br><span style="color:#f88017">WEAK</span> : TLS_RSA_WITH_CAMELLIA_256_CBC_SHA (0x84)</p>
+<p><a target="_blank" rel="noopener" href="https://wiki.mozilla.org/Security/Server_Side_TLS">mozilla wiki - Security/Server Side TLS</a></p>
+<h3 id="IIS-Server-如何啟用-HTTPS"><a href="#IIS-Server-如何啟用-HTTPS" class="headerlink" title="IIS Server 如何啟用 HTTPS"></a>IIS Server 如何啟用 HTTPS</h3><h4 id="匯入憑證"><a href="#匯入憑證" class="headerlink" title="匯入憑證"></a>匯入憑證</h4><h4 id="站台繫結"><a href="#站台繫結" class="headerlink" title="站台繫結"></a>站台繫結</h4><p><a target="_blank" rel="noopener" href="https://www.hass.de/content/setup-microsoft-windows-or-iis-ssl-perfect-forward-secrecy-and-tls-12">Powershell Script For Best TLS Setup</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://howhttps.works/">HOW HTTPS WORKS</a></p>
+<p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/https-every-developer-must-know/table-of-contents">What Every Developer Must Know About HTTPS</a></p>
+<p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/play-by-play-https-what-you-need-know-about-today/table-of-contents">Play by Play: What You Need to Know About HTTPS Today</a></p>
+<p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/windows-server-2016-active-directory-certificate-services/table-of-contents">Implementing Active Directory Certificate Services in Windows Server 2016</a></p>
+<p><a target="_blank" rel="noopener" href="https://progressbar.tw/posts/98">為何HTTPS憑證有貴有便宜還更可以免費？讓我們從CA原理開始講起</a></p>
+<p><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/yc421206/2019/05/24/mmc_request_web_certificate_from_ca_server_can_trusted_by_chrome_browser">請求可被 Chrome 瀏覽器信任的 Web 憑證</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-tw/%E5%82%B3%E8%BC%B8%E5%B1%A4%E5%AE%89%E5%85%A8%E6%80%A7%E5%8D%94%E5%AE%9A">傳輸層安全性協定</a></p>
+<p><a target="_blank" rel="noopener" href="http://publicca.hinet.net/SSL-01.htm?utm_source=google&utm_medium=sdwh&utm_campaign=2020campaign&utm_content=extend&trackid=1051&gclid=CjwKCAiA8Jf-BRB-EiwAWDtEGluoGc5CepswEcNKMPdU3OByDA4mCmfcWaNyczjfpV_-HoF8uV0auRoCeysQAvD_BwE">中華電信通用憑證管理中心</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=T4Df5_cojAs&ab_channel=TraversyMedia">How does HTTPS work? What’s a CA? What’s a self-signed Certificate?</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=LRMBZhdFjDI&ab_channel=itfreetraining">What are certificates?</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/03/ALL-About-HTTPS/" data-id="clg3fma88000bs4tsajyp4pxh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTPS/" rel="tag">HTTPS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/03/ASPNET-MVC-PartialClass-DataAnnotations/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC 如何加入 PartialCLass &amp; DataAnnotations</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/IIS-Version-Mapping-OS-Version/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          從 IIS 伺服器的版本對照所使用的 Windows Server OS
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

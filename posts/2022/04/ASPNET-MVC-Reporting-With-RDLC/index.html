@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC Reporting With RDLC (使用 RDLC 作為報表解決方案) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明如何在 ASP.NET MVC 使用 RDLC 作為報表設計的解決方案，開發可供列印的電子發票、表單等設計以及將提供資料以 Excel, Word 以及 PDF 的方式進行下載。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC Reporting With RDLC (使用 RDLC 作為報表解決方案)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明如何在 ASP.NET MVC 使用 RDLC 作為報表設計的解決方案，開發可供列印的電子發票、表單等設計以及將提供資料以 Excel, Word 以及 PDF 的方式進行下載。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-Nuget-Dependency.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-0.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-Final.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-0.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-Rport-Page-Size.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-Add-Tablix.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-Report-Design.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-Result.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Reporting-With-RDLC-10.png">
+<meta property="article:published_time" content="2022-04-21T12:20:26.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Reporting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Reporting-With-RDLC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/" class="article-date">
+  <time datetime="2022-04-21T12:20:26.000Z" itemprop="datePublished">2022-04-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC Reporting With RDLC (使用 RDLC 作為報表解決方案)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E9%80%A3%E7%B7%9A"><span class="toc-text">資料連線</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%B1%E8%A1%A8%E5%BB%BA%E7%AB%8B"><span class="toc-text">報表建立</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E9%9B%86%E8%88%87%E8%B3%87%E6%96%99%E6%BA%90%E8%A8%AD%E8%A8%88"><span class="toc-text">資料集與資料源設計</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%B1%E8%A1%A8%E8%A8%AD%E8%A8%88"><span class="toc-text">報表設計</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Controller"><span class="toc-text">Controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#View"><span class="toc-text">View</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A9%97%E8%AD%89%E7%B5%90%E6%9E%9C"><span class="toc-text">驗證結果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tips"><span class="toc-text">Tips</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Table-Striped"><span class="toc-text">Table Striped</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明如何在 ASP.NET MVC 使用 RDLC 作為報表設計的解決方案，開發可供列印的電子發票、表單等設計以及將提供資料以 Excel, Word 以及 PDF 的方式進行下載。</p>
+<a href="/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="資料連線"><a href="#資料連線" class="headerlink" title="資料連線"></a>資料連線</h3><p>本次使用 <a href="/posts/2021/12/SQL-Server-Sample-Databases/">AdventureWorksLT2019</a> 做為資料庫，並使用 ASP.NET MVC 5 做為程式框架。</p>
+<hr>
+<p>首先使用 EntityFramework 連線資料庫與設定模型，本步驟詳細的設定方式可以參考 <a href="/posts/2021/03/ASPNET-MVC-EntityFramework-Model/">ASP.NET MVC EntityFramework Model (Database First)</a>。</p>
+<p>使用 Nuget 安裝 <strong>ReportViewerForMVC</strong>，使用的版本為 Armando Aguirre, rsantosdev 所提供的 140.1000.523。</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-Nuget-Dependency.png"></p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>疑？安裝完 ReportViewerForMVC 編譯會報錯？您可能是 web.config 不正確的受害者...</p>
+        </div>
+    </div>
+</div>
+
+<p>安裝完 ReportViewerForMVC，會在 web.config 新增 Handlers，但不知道為什麼，有時候會重複出現兩筆，這個時候只要註解或移除，僅保持其中一筆就可以了 😀</p>
+<p><code class="watch">web.config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>handlers</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ReportViewerWebControlHandler<span class="token punctuation">"</span></span> <span class="token attr-name">verb</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Reserved.ReportViewerWebControl.axd<span class="token punctuation">"</span></span> <span class="token attr-name">preCondition</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>integratedMode<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.Reporting.WebForms.HttpHandler, Microsoft.ReportViewer.WebForms, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845DCD8080CC91<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>handlers</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="報表建立"><a href="#報表建立" class="headerlink" title="報表建立"></a>報表建立</h3><p>建立報表資料夾 <code class="s">Report</code>，建立報表 <code class="s">Report.rdlc</code></p>
+<p>點選報表，使用檢視開啟 <strong>報表資料</strong>，快捷鍵為 <kbd class="s">Ctrl + Alt + D</kbd></p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-0.png"></p>
+<h3 id="資料集與資料源設計"><a href="#資料集與資料源設計" class="headerlink" title="資料集與資料源設計"></a>資料集與資料源設計</h3><p>加入資料集，將資料來源新增，使用先前建立的 Entites 連接</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-1.png"></p>
+<p>取消儲存連線字串</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-2.png"></p>
+<p>選擇需要使用的資料表、檢視或者是預存程序</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-3.png"></p>
+<p>儲存以保存資料集。</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-Final.png"></p>
+<p>加入完成的結果：</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-DataSource-0.png"></p>
+<h3 id="報表設計"><a href="#報表設計" class="headerlink" title="報表設計"></a>報表設計</h3><p>開始設計報表，以 A4 的尺寸進行設計，使用 <code class="s">F4</code> 開啟屬性頁面。</p>
+<p>點選報表主體，將尺寸設定為 Width 17cm、Height 25.7cm。</p>
+<p>點選空白處，確認 Interactive Size 以及 Page Size Width 為 21cm、Height 為 29.7cm。</p>
+<p>其中 Margins Left, Right, Top &amp; Bottom 都是 2cm，也因為 Margins 的關係，主體的尺寸才必須比 A4 的尺寸小。</p>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Width</th>
+<th>Height</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主體</td>
+<td>17cm</td>
+<td>25.7cm</td>
+</tr>
+<tr>
+<td>Interactive Size</td>
+<td>21cm</td>
+<td>29.7cm</td>
+</tr>
+<tr>
+<td>Page Size</td>
+<td>21cm</td>
+<td>29.7cm</td>
+</tr>
+</tbody></table>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-Rport-Page-Size.png"></p>
+<p>在報表中空白處，右鍵加入資料表：</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-Add-Tablix.png"></p>
+<p>隨興選擇幾個資料欄位，並加入一張圖片點綴 😉</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-Report-Design.png"></p>
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><p><code class="watch">Controllers/HomeController.cs</code></p>
+<pre class="line-numbers language-cs" data-language="cs"><code class="language-cs"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HomeController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Controller</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">AdventureWorksLT2019Entities</span> db <span class="token operator">=</span> 
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">AdventureWorksLT2019Entities</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Report</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">ReportViewer</span> reportViewer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ReportViewer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reportViewer<span class="token punctuation">.</span>ProcessingMode <span class="token operator">=</span> ProcessingMode<span class="token punctuation">.</span>Local<span class="token punctuation">;</span>
+
+        <span class="token comment">// 設定報表 iFrame Full Width</span>
+        reportViewer<span class="token punctuation">.</span>SizeToReportContent <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        reportViewer<span class="token punctuation">.</span>Width <span class="token operator">=</span> Unit<span class="token punctuation">.</span><span class="token function">Percentage</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reportViewer<span class="token punctuation">.</span>Height <span class="token operator">=</span> Unit<span class="token punctuation">.</span><span class="token function">Percentage</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Load Report File From Local Path</span>
+        reportViewer<span class="token punctuation">.</span>LocalReport<span class="token punctuation">.</span>ReportPath <span class="token operator">=</span> 
+            <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">Request<span class="token punctuation">.</span><span class="token function">MapPath</span><span class="token punctuation">(</span>Request<span class="token punctuation">.</span>ApplicationPath<span class="token punctuation">)</span></span><span class="token punctuation">&#125;</span></span><span class="token string">Models\\Report.rdlc"</span></span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Data Loading and Data Source Add</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> datas <span class="token operator">=</span> db<span class="token punctuation">.</span>Customer<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>
+          i <span class="token operator">=></span> i<span class="token punctuation">.</span>CompanyName<span class="token punctuation">.</span><span class="token function">StartsWith</span><span class="token punctuation">(</span><span class="token string">"A"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reportViewer<span class="token punctuation">.</span>LocalReport<span class="token punctuation">.</span>DataSources<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ReportDataSource</span><span class="token punctuation">(</span><span class="token string">"DataSet_Cumstomers"</span><span class="token punctuation">,</span> datas<span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>reportViewer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="View"><a href="#View" class="headerlink" title="View"></a>View</h3><p><code class="watch">/Views/Home/Report.cshtml</code></p>
+<pre class="line-numbers language-cs" data-language="cs"><code class="language-cs">@model Microsoft<span class="token punctuation">.</span>Reporting<span class="token punctuation">.</span>WebForms<span class="token punctuation">.</span>ReportViewer
+@<span class="token keyword">using</span> ReportViewerForMvc
+
+<span class="token operator">&lt;</span>h2<span class="token operator">></span>Report<span class="token operator">&lt;</span><span class="token operator">/</span>h2<span class="token operator">></span>
+@Html<span class="token punctuation">.</span><span class="token function">ReportViewer</span><span class="token punctuation">(</span>Model<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> style<span class="token operator">=</span><span class="token string">"width:100%"</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="驗證結果"><a href="#驗證結果" class="headerlink" title="驗證結果"></a>驗證結果</h3><p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-Result.png"></p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><h3 id="Table-Striped"><a href="#Table-Striped" class="headerlink" title="Table Striped"></a>Table Striped</h3><p>選取整個資料列後，在屬性對 <code class="s">BackgroundColor</code> 使用運算式進行設定。</p>
+<p><img src="/assets/ASPNET-MVC-Reporting-With-RDLC-10.png"></p>
+<p>運算式的部分必須使用 VB.NET 來編寫，C# 表示遺憾 😑</p>
+<pre class="line-numbers language-vb" data-language="vb"><code class="language-vb">&#x3D; IIF(RowNumber(nothing) mod 2 &#x3D; 0 ,&quot;Transparent&quot;, &quot;Silver&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/" data-id="clg3fma9p005cs4tsd52j42uo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reporting/" rel="tag">Reporting</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/04/PowerBI-Query-Data-From-Web-With-Parameter/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PowerBI Query Data From Web With Parameter</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/04/SQL-Server-Reporting-Services-Common-Knowledge/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Reporting Services Common Knowledge, SSRS Guide
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

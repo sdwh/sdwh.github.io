@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SSDLC 各階段資訊安全作業參考筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 Secure Software Development Life Cycle, SSDLC 中各階段需要進行的資訊安全作業項目 🔱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSDLC 各階段資訊安全作業參考筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/10/CyberSecurity-SSDLC/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 Secure Software Development Life Cycle, SSDLC 中各階段需要進行的資訊安全作業項目 🔱">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+<meta property="article:published_time" content="2020-10-09T08:15:35.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="SSDLC">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CyberSecurity-SSDLC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/10/CyberSecurity-SSDLC/" class="article-date">
+  <time datetime="2020-10-09T08:15:35.000Z" itemprop="datePublished">2020-10-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SSDLC 各階段資訊安全作業參考筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E6%B1%82%E9%9A%8E%E6%AE%B5"><span class="toc-text">需求階段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BB%9F%E9%AB%94%E7%9A%84%E5%AE%89%E5%85%A8%E9%9D%A2%E5%90%91"><span class="toc-text">軟體的安全面向</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E5%B7%A5%E4%BD%9C"><span class="toc-text">相關工作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E8%A8%88%E9%9A%8E%E6%AE%B5"><span class="toc-text">設計階段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87"><span class="toc-text">安全軟體設計原則</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%A8%E9%9A%AA%E8%99%95%E7%90%86"><span class="toc-text">風險處理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A8%81%E8%84%85%E5%88%86%E9%A1%9E-STRIDE"><span class="toc-text">威脅分類 STRIDE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A8%81%E8%84%85%E9%A2%A8%E9%9A%AA%E8%A9%95%E4%BC%B0-DREAD"><span class="toc-text">威脅風險評估 DREAD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E9%A2%A8%E9%9A%AA%E5%88%86%E9%A1%9E"><span class="toc-text">應用程式風險分類</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E5%B7%A5%E4%BD%9C-1"><span class="toc-text">相關工作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%96%8B%E7%99%BC%E9%9A%8E%E6%AE%B5"><span class="toc-text">開發階段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%AC%E9%A9%97%E9%9A%8E%E6%AE%B5"><span class="toc-text">測驗階段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E9%9A%8E%E6%AE%B5"><span class="toc-text">部署階段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B6%AD%E9%81%8B%E9%9A%8E%E6%AE%B5"><span class="toc-text">維運階段</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%8D%E4%B8%AD%E5%BF%83-NCCST"><span class="toc-text">技服中心 NCCST</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B0%E5%8C%97%E5%8D%80%E7%B6%B2%E4%B8%AD%E5%BF%83"><span class="toc-text">台北區網中心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A0%94%E8%A8%8E%E6%9C%83%E8%AB%96%E6%96%87"><span class="toc-text">研討會論文</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 Secure Software Development Life Cycle, SSDLC 中各階段需要進行的資訊安全作業項目 🔱</p>
+<a href="/posts/2020/10/CyberSecurity-SSDLC/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="需求階段"><a href="#需求階段" class="headerlink" title="需求階段"></a>需求階段</h3><h4 id="軟體的安全面向"><a href="#軟體的安全面向" class="headerlink" title="軟體的安全面向"></a>軟體的安全面向</h4><ol>
+<li>Confidentiality (機密性)</li>
+<li>Integrity (完整性)</li>
+<li>Availability (可用性)</li>
+<li>Authentication (驗證)</li>
+<li>Authorization (授權)</li>
+<li>Auditing (稽核)</li>
+<li>Session Management (資料傳輸機制管理)</li>
+<li>Error and Exception Handling (錯誤與例外處理)</li>
+<li>Configuration Management (組態管理)</li>
+</ol>
+<p>資料來源：Official (ISC)2 Guide to the CSSLP</p>
+<h4 id="相關工作"><a href="#相關工作" class="headerlink" title="相關工作"></a>相關工作</h4><p>安全需求萃取</p>
+<p>📝<a target="_blank" rel="noopener" href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS</a></p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>
+              <strong>OWASP ASVS
+              </strong>
+            </p>
+            <p>Application Security Verification Standard, ASVS，提供對於應用程式的安全測試基準與指南，同時也對於軟體開發人員條列說明開發上需要注意的事項。ASVS 提供了兩項功能：<br/>（一）指引組織開發與維護安全的應用程式<br/>（二）提供資安廠商、資安工具開發者、資安需求者能夠契合對於資安的需求與供給</p>
+        </div>
+    </div>
+</div>
+
+<p>📝<a href="/posts/2020/10/Security-Development-Checklist/">資通系統資安需求項目查檢表</a><br>📝需求追溯表</p>
+<h3 id="設計階段"><a href="#設計階段" class="headerlink" title="設計階段"></a>設計階段</h3><h4 id="安全軟體設計原則"><a href="#安全軟體設計原則" class="headerlink" title="安全軟體設計原則"></a>安全軟體設計原則</h4><ol>
+<li>Weakest Link：常保警覺，資訊系統中最弱的環節在那裡？程式碼、服務或者介接介面？</li>
+<li>Economy of Mechamism：保持軟體的實作上的簡單，越複雜的軟體越有可能出現漏洞</li>
+<li>Leveraging Existing Components：使用已有經過測試、可受信任的軟體元件，不要自造輪子、製造麻煩</li>
+<li>Defense in Depth：縱深防禦，透過多個環節都分別設立資安防禦機制，例如軟體、網頁伺服器、防火牆、路由器</li>
+<li>Fail Secure：確保資訊系統的故障安全，當錯誤發生時是否會影響 Confidentiality, Integrity, Availability，是否有對應的處理方式</li>
+<li>Single Point of Failure：資訊系統的攻破只需要最後一個弱點環節就足夠</li>
+<li>Least Privilege：最小權限原則，只提供必要的權限</li>
+<li>Complete Mediation：對於每一次的請求都需要進行檢查（傳入的參數與物件綁定、宣稱的權限、要求的目標）</li>
+<li>Separation Of Duties：系統應保持責任分離，不論是使用者的權限、程式的功能</li>
+<li>Psychological Acceptability：太過繁複的安全設定，反而會讓使用者感到不便而使用具有風險的使用方式</li>
+<li>Open Design</li>
+<li>Least Common Mechanism</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://github.com/OWASP/DevGuide/blob/master/02-Design/01-Principles%20of%20Security%20Engineering.md">OWASP - Secure Design Principles</a></p>
+<h4 id="風險處理"><a href="#風險處理" class="headerlink" title="風險處理"></a>風險處理</h4><ol>
+<li>降低</li>
+<li>保留</li>
+<li>避免</li>
+<li>轉移</li>
+</ol>
+<h4 id="威脅分類-STRIDE"><a href="#威脅分類-STRIDE" class="headerlink" title="威脅分類 STRIDE"></a>威脅分類 STRIDE</h4><ol>
+<li>Spoofing : 偽造身分</li>
+<li>Tampering : 惡意竄改輸入與資料</li>
+<li>Repudiation : 無法稽核使用者曾經執行的軌跡</li>
+<li>Information Dsiclosure : 機敏資訊外洩</li>
+<li>Denial of Service : 系統服務可用性被阻斷</li>
+<li>Elevation of Privilege : 未正常的取得授權</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/msp-n-p/ff648641(v=pandp.10)#stride">MSDN - STRIDE</a></p>
+<h4 id="威脅風險評估-DREAD"><a href="#威脅風險評估-DREAD" class="headerlink" title="威脅風險評估 DREAD"></a>威脅風險評估 DREAD</h4><ol>
+<li>Dangerous Potential</li>
+<li>Reproduciblity</li>
+<li>Exploitability</li>
+<li>Affected Users</li>
+<li>Discoverability</li>
+</ol>
+<p>Risk = (R + E + <strong>D</strong>iscoverability) X (<strong>D</strong>angerous + A)</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/msp-n-p/ff648644(v=pandp.10)?redirectedfrom=MSDN#high-medium-and-low-ratings">MSDN - DREAD</a></p>
+<h4 id="應用程式風險分類"><a href="#應用程式風險分類" class="headerlink" title="應用程式風險分類"></a>應用程式風險分類</h4><p><a href="/posts/2020/10/CyberSecurity-Threats-by-Application-Vulnerability-Category/">應用程式風險分類 | sdwh.dev</a></p>
+<h4 id="相關工作-1"><a href="#相關工作-1" class="headerlink" title="相關工作"></a>相關工作</h4><p>EDFD<br>Threat Modeling<br>威脅風險評估<br>發展控制措施<br>📝<a href="(/posts/2020/10/Security-Development-Checklist/)">Web 應用程式安全查檢表</a></p>
+<h3 id="開發階段"><a href="#開發階段" class="headerlink" title="開發階段"></a>開發階段</h3><p><a href="/posts/2020/10/OWASP-TOP-10-2017-Security-Developement/">OWASP Top 10</a><br>CWE / SANS Top 25<br>WASC Threat Classification (Attack List / Weaknesses List)<br>Vulnerability Database<br>📝<a href="/posts/2020/10/Security-Development-Checklist/">OWASP ASVS</a><br>📝<a href="/posts/2020/10/Security-Development-Checklist/">源碼安全檢查表</a><br>📝<a href="/posts/2021/02/Hacksplaining/">《Hacksplaining》Developer 不能錯過的安全應用程式設計觀念</a></p>
+<h3 id="測驗階段"><a href="#測驗階段" class="headerlink" title="測驗階段"></a>測驗階段</h3><p>源碼檢測, Static Application Security Testing, <a href="">Checkmarx</a> / <a href="">Fortify</a><br>弱點掃描, Vulnerability Test, <a href="">Acunetix</a> / <a href="">Nessus</a> / <a href="">WebInspect</a> / <a href="">IBM Security AppScan</a><br>📝<a href="/posts/2020/10/Security-Development-Checklist/">OWASP ASVS</a></p>
+<h3 id="部署階段"><a href="#部署階段" class="headerlink" title="部署階段"></a>部署階段</h3><p>滲透測試, Penetration Test<br>組態管理<br>變更管理<br>持續整合 CI<br>持續部署 CD<br><a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Server Test</a><br><a target="_blank" rel="noopener" href="https://securityheaders.com/">Security Headers Scan</a></p>
+<h3 id="維運階段"><a href="#維運階段" class="headerlink" title="維運階段"></a>維運階段</h3><p>SIEM</p>
+<hr>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><h3 id="技服中心-NCCST"><a href="#技服中心-NCCST" class="headerlink" title="技服中心 NCCST"></a>技服中心 NCCST</h3><p><a target="_blank" rel="noopener" href="https://download.nccst.nat.gov.tw/attachfilehandout/%E7%B3%BB%E7%B5%B1%E5%AE%89%E5%85%A8%E7%99%BC%E5%B1%95%E6%B5%81%E7%A8%8B%E5%AF%A6%E5%8B%99_20160812v2.pdf">系統安全發展流程實務_20160812v2</a></p>
+<p><a target="_blank" rel="noopener" href="https://download.nccst.nat.gov.tw/attachfilehandout/%E8%AD%B0%E9%A1%8C%E4%BA%8C%EF%BC%9A%E8%B3%87%E8%A8%8A%E7%B3%BB%E7%B5%B1%E5%AE%89%E5%85%A8%E5%BC%B7%E5%8C%96%E8%A6%81%E9%BB%9E.pdf">資訊系統安全強化要點</a></p>
+<h3 id="台北區網中心"><a href="#台北區網中心" class="headerlink" title="台北區網中心"></a>台北區網中心</h3><p><a target="_blank" rel="noopener" href="http://www.tp1rc.edu.tw/tpnet2020/training/10902.pdf">2020 - 安全軟體發展生命週期(Secure SDLC)</a></p>
+<p><a target="_blank" rel="noopener" href="http://tprc.tanet.edu.tw/tpnet2017/training/10603.pdf">2017 - 安全性軟體開發流程概論</a></p>
+<h3 id="研討會論文"><a href="#研討會論文" class="headerlink" title="研討會論文"></a>研討會論文</h3><p><a target="_blank" rel="noopener" href="https://csie.npu.edu.tw/joomla/Seminar/10/%E8%AB%96%E6%96%87%E9%9B%86/90_%E5%AE%89%E5%85%A8%E8%BB%9F%E9%AB%94%E9%96%8B%E7%99%BC%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F%E8%A8%AD%E8%A8%88%E9%9A%8E%E6%AE%B5%E6%9C%80%E4%BD%B3%E5%AF%A6%E5%8B%99%E4%B9%8B%E6%8E%A2%E8%A8%8E.pdf">安全軟體開發生命週期設計階段最佳實務之探討</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.isac.org.tw/spaw2/uploads/files/20161202/%E7%A7%91%E6%8A%80%E9%83%A8%E6%8E%A8%E5%8B%95SSDLC%E7%B6%93%E9%A9%97%E5%88%86%E4%BA%AB%E7%B0%A1%E5%A0%B1.pdf">科技部推動SSDLC經驗分享</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/10/CyberSecurity-SSDLC/" data-id="clg3fmac100gqs4tse70rdt54" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSDLC/" rel="tag">SSDLC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web/" rel="tag">Web</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/10/CyberSecurity-Threats-by-Application-Vulnerability-Category/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">應用程式風險分類 (Threats by Application Vulnerability Category)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/10/IIS-Security-Configuration/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IIS 網頁伺服器的安全設定 (IIS Security Configuration, GCB &amp; CIS)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

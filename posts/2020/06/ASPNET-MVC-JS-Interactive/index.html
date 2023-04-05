@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>如何在 ASP.NET MVC 中使用 javascript, jQuery, Ajax 來豐富互動與呈現 (AjaxHelper) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於如何在 ASP.NET MVC 中使用 javascript, jQuery，增進互動視覺效果的體驗。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在 ASP.NET MVC 中使用 javascript, jQuery, Ajax 來豐富互動與呈現 (AjaxHelper)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/ASPNET-MVC-JS-Interactive/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於如何在 ASP.NET MVC 中使用 javascript, jQuery，增進互動視覺效果的體驗。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/jQuery-Unobtrusive-Ajax-Examples.gif">
+<meta property="og:image" content="https://sdwh.dev/assets/loading.gif">
+<meta property="article:published_time" content="2020-06-23T02:01:53.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="jQuery">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-JS-Interactive" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/ASPNET-MVC-JS-Interactive/" class="article-date">
+  <time datetime="2020-06-23T02:01:53.000Z" itemprop="datePublished">2020-06-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何在 ASP.NET MVC 中使用 javascript, jQuery, Ajax 來豐富互動與呈現 (AjaxHelper)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#jQuery"><span class="toc-text">jQuery</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Ajax-%E5%91%BC%E5%8F%AB-Action-%E4%BE%86%E5%B1%80%E9%83%A8%E6%9B%B4%E6%96%B0-View"><span class="toc-text">使用 Ajax 呼叫 Action 來局部更新 View</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Ajax-Loading-Effect"><span class="toc-text">Ajax Loading Effect</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unobtrusive-jQueryval"><span class="toc-text">Unobtrusive jQueryval</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AjaxHelper-BeginForm"><span class="toc-text">AjaxHelper BeginForm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%8C%E7%AB%AF%E5%9B%9E%E5%82%B3-Json-%E5%8C%BF%E5%90%8D%E9%A1%9E%E5%9E%8B%E6%B8%85%E5%96%AE%E7%A4%BA%E4%BE%8B-Action-Return-Anonymous-Class-List-in-Json-Format"><span class="toc-text">後端回傳 Json 匿名類型清單示例 (Action Return Anonymous Class List in Json Format)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Ajax-Helper-%E5%91%BC%E5%8F%AB-Controller-Action-%E5%8F%96%E5%BE%97%E5%9B%9E%E6%87%89%E7%9A%84-Json-%E8%B3%87%E6%96%99-Fetch-Json-Data-From-Controller-Action-by-Ajax-Helper"><span class="toc-text">使用 Ajax Helper 呼叫 Controller Action 取得回應的 Json 資料 (Fetch Json Data From Controller&#x2F;Action by Ajax Helper)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Plugins-amp-Packages"><span class="toc-text">Plugins &amp; Packages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Confirm-Delete-Alert-With-SweetAlert2"><span class="toc-text">Confirm Delete Alert With SweetAlert2</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於如何在 ASP.NET MVC 中使用 <code class="watch">javascript</code>, <code class="watch">jQuery</code>，增進互動視覺效果的體驗。</p>
+<a href="/posts/2020/06/ASPNET-MVC-JS-Interactive/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="jQuery"><a href="#jQuery" class="headerlink" title="jQuery"></a>jQuery</h2><h3 id="使用-Ajax-呼叫-Action-來局部更新-View"><a href="#使用-Ajax-呼叫-Action-來局部更新-View" class="headerlink" title="使用 Ajax 呼叫 Action 來局部更新 View"></a>使用 Ajax 呼叫 Action 來局部更新 View</h3><p>可以用來與 Boostrap Modal 搭配使用，點選按鈕時即時將資料載入 Modal Content 中並顯示。需要先以 Nuget 安裝 <strong>Microsoft.jQuery.Unobtrusive.Ajax</strong>，並引用 Scripts/jquery.unobtrusive-ajax.js。</p>
+<p><strong>/View</strong></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    @Ajax.ActionLink(
+      "link", "ActionName", "ControllerName", new &#123; id = 0&#125;,
+      new AjaxOptions 
+      &#123; 
+        HttpMethod = "GET", 
+        UpdateTargetId = "elementID", 
+        InsertionMode = InsertionMode.Replace 
+      &#125;,
+      new &#123;@class = "btn btn-primary", style = "margin-right: 5px"&#125;
+    )
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>elementID<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+@section scripts&#123;
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+&#125;  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>/Controller</strong></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">AskResponse</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">PartialView</span><span class="token punctuation">(</span><span class="token string">"~/Views/Partial/_Hello.cshtml"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/jQuery-Unobtrusive-Ajax-Examples.gif"></p>
+<h4 id="Ajax-Loading-Effect"><a href="#Ajax-Loading-Effect" class="headerlink" title="Ajax Loading Effect"></a>Ajax Loading Effect</h4><p>搭配 Ajax Loading 效果，讀取前先清空資料，讀取中顯示 icon。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-12<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    @Ajax.ActionLink("載入資料", "GetData", "Home", null,
+    new AjaxOptions
+    &#123;
+        HttpMethod = "GET",
+        UpdateTargetId = "DataPanel",
+        InsertionMode = InsertionMode.Replace,
+        LoadingElementId = "loading",
+        OnBegin = "new function()&#123;document.getElementById('DataPanel').innerHTML=''&#125;"
+    &#125;
+    ,new &#123; @class = "btn btn-info mb-3" &#125;
+    )
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loading<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> none</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/Content/images/loading.gif<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>DataPanel<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">PartialViewResult</span> <span class="token function">GetData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>db<span class="token punctuation">.</span>Data<span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/loading.gif" alt="Loading Icon"></p>
+<h3 id="Unobtrusive-jQueryval"><a href="#Unobtrusive-jQueryval" class="headerlink" title="Unobtrusive jQueryval"></a>Unobtrusive jQueryval</h3><ol>
+<li><p>加入section scripts</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name">@section</span> scripts<span class="token punctuation">&#123;</span>
+    @Scripts<span class="token punctuation">.</span><span class="token function">Render</span><span class="token punctuation">(</span><span class="token string">"~/bundles/jqueryval"</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li><p>加入Html Helper, input 必須使用helper 否則必須自打data-val</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@Html<span class="token punctuation">.</span><span class="token function">ValidationMessageFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>FacetItem<span class="token punctuation">.</span>FacetOrder<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li><p>一併顯示使用</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@Html<span class="token punctuation">.</span><span class="token function">ValidationSummary</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
+<h3 id="AjaxHelper-BeginForm"><a href="#AjaxHelper-BeginForm" class="headerlink" title="AjaxHelper BeginForm"></a>AjaxHelper BeginForm</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@<span class="token keyword">using</span> <span class="token punctuation">(</span>Ajax<span class="token punctuation">.</span><span class="token function">BegingForm</span><span class="token punctuation">(</span><span class="token string">"ActionName"</span><span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">AjaxOptions</span><span class="token punctuation">&#123;</span>
+        HttpMethod <span class="token operator">=</span> <span class="token string">"GET"</span><span class="token punctuation">,</span>
+        UpdateTargetId <span class="token operator">=</span> <span class="token string">"divMessage"</span><span class="token punctuation">,</span>
+        InsertionMode <span class="token operator">=</span> InsertionMode<span class="token punctuation">.</span>Replace
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"text"</span> name<span class="token operator">=</span><span class="token string">"routeValue"</span> <span class="token keyword">value</span><span class="token operator">=</span><span class="token string">"value"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"submit"</span> <span class="token operator">/</span><span class="token operator">></span>
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="後端回傳-Json-匿名類型清單示例-Action-Return-Anonymous-Class-List-in-Json-Format"><a href="#後端回傳-Json-匿名類型清單示例-Action-Return-Anonymous-Class-List-in-Json-Format" class="headerlink" title="後端回傳 Json 匿名類型清單示例 (Action Return Anonymous Class List in Json Format)"></a>後端回傳 Json 匿名類型清單示例 (Action Return Anonymous Class List in Json Format)</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">JsonResult</span> <span class="token function">GetJson</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+
+  <span class="token class-name"><span class="token keyword">var</span></span> empList <span class="token operator">=</span> <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> empName <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">,</span> empId <span class="token operator">=</span> <span class="token string">""</span> <span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> emp <span class="token keyword">in</span> db<span class="token punctuation">.</span>Wtp_Employee<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>emp<span class="token punctuation">.</span>Title <span class="token operator">==</span> <span class="token string">"Manager"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      empList<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> empName <span class="token operator">=</span> emp<span class="token punctuation">.</span>EmployeeName<span class="token punctuation">,</span> empId <span class="token operator">=</span> emp<span class="token punctuation">.</span>EmployeeId <span class="token punctuation">&#125;</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">return</span> <span class="token function">Json</span><span class="token punctuation">(</span>empList<span class="token punctuation">.</span><span class="token function">Skip</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> JsonRequestBehavior<span class="token punctuation">.</span>AllowGet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="使用-Ajax-Helper-呼叫-Controller-Action-取得回應的-Json-資料-Fetch-Json-Data-From-Controller-Action-by-Ajax-Helper"><a href="#使用-Ajax-Helper-呼叫-Controller-Action-取得回應的-Json-資料-Fetch-Json-Data-From-Controller-Action-by-Ajax-Helper" class="headerlink" title="使用 Ajax Helper 呼叫 Controller Action 取得回應的 Json 資料 (Fetch Json Data From Controller/Action by Ajax Helper)"></a>使用 Ajax Helper 呼叫 Controller Action 取得回應的 Json 資料 (Fetch Json Data From Controller/Action by Ajax Helper)</h3><p>/Controller</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">JsonData</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> id<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> data <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span>empId <span class="token operator">=</span> id<span class="token punctuation">,</span> EmpName <span class="token operator">=</span> name<span class="token punctuation">,</span> Age <span class="token operator">=</span> <span class="token number">25</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">Json</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> JsonRequestBehavior<span class="token punctuation">.</span>AllowGet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// [GET] ~/home/jsondata/100?name=marry</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">JsonData</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> id<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>Request<span class="token punctuation">.</span><span class="token function">IsAjaxRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> data <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span>empId <span class="token operator">=</span> id<span class="token punctuation">,</span> EmpName <span class="token operator">=</span> name<span class="token punctuation">,</span> Age <span class="token operator">=</span><span class="token number">25</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">Json</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> JsonRequestBehavior<span class="token punctuation">.</span>AllowGet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>/View</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">$<span class="token punctuation">(</span><span class="token function">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    $<span class="token punctuation">(</span><span class="token string">"#button1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token function">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+            type<span class="token punctuation">:</span> <span class="token string">"GET"</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">url</span><span class="token punctuation">:</span> <span class="token string">"JsonData"</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">data</span><span class="token punctuation">:</span> <span class="token string">"id=1&amp;name=mary"</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">success</span><span class="token punctuation">:</span> <span class="token function">function</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">//data用於接住回傳值</span>
+                console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                $<span class="token punctuation">(</span><span class="token string">"#result"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">text</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>EmpName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Plugins-amp-Packages"><a href="#Plugins-amp-Packages" class="headerlink" title="Plugins &amp; Packages"></a>Plugins &amp; Packages</h2><h3 id="Confirm-Delete-Alert-With-SweetAlert2"><a href="#Confirm-Delete-Alert-With-SweetAlert2" class="headerlink" title="Confirm Delete Alert With SweetAlert2"></a>Confirm Delete Alert With SweetAlert2</h3><p>以下範例結合 SweetAlert2 與 Ajax</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">$<span class="token punctuation">(</span>'#closeCase'<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span>function <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> caseId <span class="token operator">=</span> $<span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">attr</span><span class="token punctuation">(</span><span class="token string">"data-closeId"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">swal</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+        title<span class="token punctuation">:</span> '您確定要結案嗎<span class="token punctuation">?</span>'<span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">text</span><span class="token punctuation">:</span> <span class="token string">" 確定結案後便無法再作意見編輯與檔案上傳"</span><span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">type</span><span class="token punctuation">:</span> 'question'<span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">showCancelButton</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">confirmButtonColor</span><span class="token punctuation">:</span> '#DD6B55'<span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">cancelButtonColor</span><span class="token punctuation">:</span> '#aaa'<span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">confirmButtonText</span><span class="token punctuation">:</span> '確認結案'<span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">cancelButtonText</span><span class="token punctuation">:</span> '取消'<span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">allowEnterKey</span><span class="token punctuation">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>function <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+            url<span class="token punctuation">:</span> <span class="token string">"@Url.Action("</span>Close<span class="token string">", "</span>Do<span class="token string">", null)"</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">type</span><span class="token punctuation">:</span> <span class="token string">"POST"</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">data</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span>
+                id<span class="token punctuation">:</span> caseId
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">dataType</span><span class="token punctuation">:</span> <span class="token string">"Json"</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">success</span><span class="token punctuation">:</span> function <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token function">swal</span><span class="token punctuation">(</span><span class="token string">"結案"</span><span class="token punctuation">,</span> <span class="token string">"結案完成!"</span><span class="token punctuation">,</span> <span class="token string">"success"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                toDetach<span class="token punctuation">.</span><span class="token keyword">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token named-parameter punctuation">error</span><span class="token punctuation">:</span> function <span class="token punctuation">(</span>xhr<span class="token punctuation">,</span> ajaxOptions<span class="token punctuation">,</span> thrownError<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token function">swal</span><span class="token punctuation">(</span><span class="token string">"結案過程發生錯誤!"</span><span class="token punctuation">,</span> <span class="token string">"請稍後再次執行"</span><span class="token punctuation">,</span> <span class="token string">"error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// end of ajax</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// end of then</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// end of jQuery</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://limonte.github.io/sweetalert2">SweetAlert2 Refrence</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/ASPNET-MVC-JS-Interactive/" data-id="clg3fma9e0049s4ts37kqdr7s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jQuery/" rel="tag">jQuery</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/Aspnet-Mvc-Bootstrap-4-Form/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC 5 使用 Bootstrap4 設計表單 (Design Forms With BS4)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/Udemy-Csharp-Intermediate/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Course Review - C# Intermediate Classes, Interfaces and OOP
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

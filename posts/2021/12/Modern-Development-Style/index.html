@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>當代的軟體開發與系統維運工程 Modern Application Development | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記應用程式現代化所整合的知識與工具 🐳">
+<meta property="og:type" content="article">
+<meta property="og:title" content="當代的軟體開發與系統維運工程 Modern Application Development">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/12/Modern-Development-Style/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記應用程式現代化所整合的知識與工具 🐳">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Docker-Architecture.png">
+<meta property="og:image" content="https://sdwh.dev/assets/DevOps-ToolChain.svg">
+<meta property="article:published_time" content="2021-12-27T11:12:46.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Modern-Development-Style" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/Modern-Development-Style/" class="article-date">
+  <time datetime="2021-12-27T11:12:46.000Z" itemprop="datePublished">2021-12-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      當代的軟體開發與系統維運工程 Modern Application Development
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E6%9C%8D%E5%8B%99-MicrosService"><span class="toc-text">微服務, MicrosService</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%AE%E6%9C%8D%E5%8B%99%E8%A6%81%E8%A7%A3%E6%B1%BA%E7%9A%84%E5%95%8F%E9%A1%8C"><span class="toc-text">微服務要解決的問題</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A0%98%E5%9F%9F%E9%A9%85%E5%8B%95%E8%A8%AD%E8%A8%88-DDD"><span class="toc-text">領域驅動設計, DDD</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kubernetes-K8S"><span class="toc-text">Kubernetes, K8S</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Container-Docker"><span class="toc-text">Container (Docker)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CI-CD"><span class="toc-text">CI &#x2F; CD</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Continuous-Integration-CI"><span class="toc-text">Continuous Integration, CI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Continuous-Delivery-CD"><span class="toc-text">Continuous Delivery, CD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Continuous-Deployment-CD"><span class="toc-text">Continuous Deployment, CD</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code-Analysis"><span class="toc-text">Code Analysis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unit-Test"><span class="toc-text">Unit Test</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DevOps"><span class="toc-text">DevOps</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記應用程式現代化所整合的知識與工具 🐳</p>
+<a href="/posts/2021/12/Modern-Development-Style/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>以往</th>
+<th>趨勢</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>架構</td>
+<td>單體式</td>
+<td>微服務</td>
+</tr>
+<tr>
+<td>部署</td>
+<td>實體機/虛擬機</td>
+<td>容器</td>
+</tr>
+<tr>
+<td>開發</td>
+<td>瀑布式</td>
+<td>敏捷</td>
+</tr>
+<tr>
+<td>維護</td>
+<td>瀑布式</td>
+<td>敏捷</td>
+</tr>
+<tr>
+<td>環境</td>
+<td>地端</td>
+<td>雲端 / 混合</td>
+</tr>
+<tr>
+<td>介接</td>
+<td>資料庫</td>
+<td>API</td>
+</tr>
+<tr>
+<td>規模</td>
+<td>固定</td>
+<td>彈性</td>
+</tr>
+</tbody></table>
+<p>當代開發與系統維運的進化方向</p>
+<p>軟體交付：瀑布 -&gt; 敏捷 -&gt; DevOps<br>軟體架構：單體式 -&gt; SOA / N-Tier -&gt; Microservices<br>服務設備：實體機 -&gt; 虛擬機 -&gt; 容器</p>
+<h3 id="微服務-MicrosService"><a href="#微服務-MicrosService" class="headerlink" title="微服務, MicrosService"></a>微服務, MicrosService</h3><p>相較於以往<strong>單體式 (Monolith)</strong> 將所有元件集中的設計方式，微服務將元件切割彼此溝通來達成服務，而如何決定微服務的劃分範疇？則透過<strong>領域驅動設計 (Domain Driven Design, DDD)</strong> 來達成。</p>
+<p>微服務的一個性質是由原本單一資料庫，切割為多個服務，服務本身有自己的資料模型以及資料庫。</p>
+<h4 id="微服務要解決的問題"><a href="#微服務要解決的問題" class="headerlink" title="微服務要解決的問題"></a>微服務要解決的問題</h4><p>達成分散式、高可用性、模組化的應用系統架構。</p>
+<p>微服務的模組化能夠為<strong>系統開發</strong>帶來好處，因為服務被分割、邏輯單一，同時各個服務可以採取不同的技術 (.NET &amp; JAVA)，只要保持服務之間的溝通介面一致，模組化的服務更適合快速進行部署以及易於進行安全性測試。</p>
+<p>微服務對於<strong>營運管理</strong>上，能夠帶來管理上的便利以及資源的最大使用效率，結合容器化技術 (Docker) 所達成的分散式，其虛擬化使用的資源較傳統虛擬化的方式更少，且以映像檔的部署方式更易於快速擴展部署、水平式擴大；同時微服務也更易於資源的監測 (Monitor)。</p>
+<p>微服務的挑戰在於 CAP，也就是 Consistency、Availability 以及 Partition-tolerance 三者要兼顧的困難。</p>
+<dl>
+  <dt>Consistency</dt>
+  <dd>保證所有節點的資料數據都是一致</dd>
+  <dt>Availability</dt>
+  <dd>保證每次的請求行為都能得到回應</dd>
+  <dt>Partition-tolerance</dt>
+  <dd>保證系統因網路通訊問題時，分散的架構服務仍能維持運作</dd>
+</dl>
+
+<h3 id="領域驅動設計-DDD"><a href="#領域驅動設計-DDD" class="headerlink" title="領域驅動設計, DDD"></a>領域驅動設計, DDD</h3><h3 id="Kubernetes-K8S"><a href="#Kubernetes-K8S" class="headerlink" title="Kubernetes, K8S"></a>Kubernetes, K8S</h3><p>改採容器的部署方式後，隨著容器數量的增加，藉由容器管理工具如 Kubernetes 進行系統化、自動化的管理。</p>
+<div class="article-blockquote">
+K8S is not panacea and elixir.
+</div>
+
+<h3 id="Container-Docker"><a href="#Container-Docker" class="headerlink" title="Container (Docker)"></a>Container (Docker)</h3><p>容器是新的虛擬化方式，並將軟體包裝成映像檔 (image) 並置於容器當中，容器的輕巧、快速啟動的性質特別適合用於無狀態的應用程式服務，而不同於以往虛擬化是獨立的作業系統，容器是共用作業系統的方式。</p>
+<p>容器化技術與傳統虛擬機的方式相比有下列優勢：</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>容器</th>
+<th>虛擬機</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>啟動速度</td>
+<td>Sesc</td>
+<td>Mins</td>
+</tr>
+<tr>
+<td>記憶體耗用</td>
+<td>少</td>
+<td>多</td>
+</tr>
+<tr>
+<td>儲存空間</td>
+<td>MBs</td>
+<td>GBs</td>
+</tr>
+<tr>
+<td>數量</td>
+<td>1000</td>
+<td>10</td>
+</tr>
+<tr>
+<td>隔離</td>
+<td>安全隔離</td>
+<td>完全隔離</td>
+</tr>
+<tr>
+<td>複製遷移</td>
+<td>超快</td>
+<td>快</td>
+</tr>
+</tbody></table>
+<p><img src="/assets/Docker-Architecture.png" alt="圖片來源：docker.com"></p>
+<h3 id="CI-CD"><a href="#CI-CD" class="headerlink" title="CI / CD"></a>CI / CD</h3><h4 id="Continuous-Integration-CI"><a href="#Continuous-Integration-CI" class="headerlink" title="Continuous Integration, CI"></a>Continuous Integration, CI</h4><div class="article-blockquote">
+TL;DR;
+持續整合在解決協作開發，在版本控制與合併衝突帶來的痛點，藉由持續整合以消弭痛點並為快速交付定下基礎。
+</div>
+
+<p>持續整合，強調團隊的開發人員參與合作的關係，藉由提高程式碼的整合頻率，避免大規模整合衍生的問題。在整合的過程所加入的單元測試、安全性測試，可以提升程式碼的穩定、安全性與品質。</p>
+<p>為了達到持續整合，必有由伺服器端負責版本控制維護、自動建置與測試機制、讓開發人員交流開發情況。</p>
+<p><strong>CI 的重要性</strong></p>
+<ul>
+<li>保證 Commit 的程式碼可以編譯</li>
+<li>及早發現程問題、改善問題</li>
+<li>讓協作衍生的問題降低 (衝突)</li>
+<li>提高開發者生產力 (自動化編譯、測試、程式碼分析)</li>
+<li>為快速部署與快速交付作為基礎</li>
+</ul>
+<p><strong>CI 的關鍵字</strong></p>
+<ul>
+<li>Pipelines </li>
+<li>Test</li>
+<li>Automation</li>
+<li>Source Control</li>
+<li>Build Agent</li>
+</ul>
+<h4 id="Continuous-Delivery-CD"><a href="#Continuous-Delivery-CD" class="headerlink" title="Continuous Delivery, CD"></a>Continuous Delivery, CD</h4><p>持續交付需要人為把關，經由人員核准後再將部署進入自動部署作業至正式環境。</p>
+<h4 id="Continuous-Deployment-CD"><a href="#Continuous-Deployment-CD" class="headerlink" title="Continuous Deployment, CD"></a>Continuous Deployment, CD</h4><p>持續部署是全自動的部署流程，通過整合、編譯與測試的軟體成品會自動部署到正式環境。</p>
+<h3 id="Code-Analysis"><a href="#Code-Analysis" class="headerlink" title="Code Analysis"></a>Code Analysis</h3><p>在 CI 階段，程式碼的分析是除建置與測試外另一個要達成的目標。分析包含對於程式碼的 Coding Style、Best Practices 以及 Security &amp; Vulnerability 去檢視。</p>
+<p>使用的工具包含 </p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Tool</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Coding Style &amp;&amp; Best Practices</td>
+<td>Lint, ESLint, SonatLint</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>CheckMarx, Fortify, WhiteSource</td>
+</tr>
+</tbody></table>
+<h3 id="Unit-Test"><a href="#Unit-Test" class="headerlink" title="Unit Test"></a>Unit Test</h3><p>在 CI 階段，除建置與程式碼分析外，測試也是其中一項重點。而 Unit Test 是經常使用，對於程式碼中的最小單元 (函式、模組) 進行功能正確性的檢驗。</p>
+<p>Unit Test -&gt; Integration Test -&gt; System Test</p>
+<h3 id="DevOps"><a href="#DevOps" class="headerlink" title="DevOps"></a>DevOps</h3><p>DevOps 融合開發、部署與維運三個階段，具體可以再細分為：</p>
+<ul>
+<li>規劃 Plan</li>
+<li>開發 Code</li>
+<li>建置 Build</li>
+<li>測試 Test</li>
+<li>部署 Deploy</li>
+<li>維運 Operator</li>
+<li>監控 Monitor</li>
+</ul>
+<p>其中一個觀念是融合「開發人員」、「Infra 人員」與「系統管理人員」為一體。而為達成這個融合目標，將藉由工具平台達到流程步驟自動化，並促成三方的溝通機制，在組織的結構與流程也必須有相對應的調整，最終的追求數位轉型下，資訊系統能扮演好營利與服務的重要角色。</p>
+<p>⭐<a href="/posts/2022/02/How-To-Learn-DevOps/">How To Learn DevOps 如何學習 DevOps 邁向現代化開發維運整合之路</a></p>
+<img src="/assets/DevOps-ToolChain.svg" style="width: 600px">
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/application-modernization">應用程式現代化 | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/microservices">何謂微服務 | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/devops-a-complete-guide">何謂 DevOps | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/continuous-integration">何謂持續整合 | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://aws.amazon.com/tw/devops/continuous-integration/">什麼是持續整合 | Amazon</a></p>
+<p><a target="_blank" rel="noopener" href="https://aws.amazon.com/tw/devops/continuous-delivery/">什麼是持續交付 | Amazon</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/continuous-deployment">何謂持續部署 | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/docker">何謂 Docker | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/tw-zh/cloud/learn/kubernetes">何謂 kubernetes | IBM</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.itdr.tw/dispPageBox/getFile/GetView.aspx?FileLocation=PJ-SITEVC%5CFiles%5CPrjFiles%5C139%5C&FileFullName=%E5%85%A8%E6%96%87%E5%A0%B1%E5%91%8A.pdf&FileName=FR3470361884yzNR5.PDF">微服務架構探討與建置 | 國家災害防救科技中心</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/Modern-Development-Style/" data-id="clg3fmafr00vus4ts5nytg1uu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/12/ASPNET-MVC-Know-Your-Customers/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC Know Your Customers</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/12/PowerShell-String-Padding-Zfill/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PowerShell String Padding (Zfill)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

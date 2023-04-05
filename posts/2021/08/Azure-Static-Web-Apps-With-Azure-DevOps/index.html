@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Static Web Apps With Azure DevOps | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用 Azure Static Web Apps 進行靜態網站 Hosting，原始碼專案保存於 Azrue DevOps。享受推送專案自動部署的方便性，同時也為未來 Migration Hosting Server 預做練習。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Static Web Apps With Azure DevOps">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/08/Azure-Static-Web-Apps-With-Azure-DevOps/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="使用 Azure Static Web Apps 進行靜態網站 Hosting，原始碼專案保存於 Azrue DevOps。享受推送專案自動部署的方便性，同時也為未來 Migration Hosting Server 預做練習。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/azure-static-web-apps-overview.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Static-Web-App-Create-Azure-DevOps.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Static-Web-App-Confirm.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Static-Web-App-Deployment-Token.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Import-Repo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-New-Pipeline.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Source-From-Azure-DevOps.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Select-Repo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Configure-Pipeline.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Edit-YAML.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Add-Deployment-Token.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Pipeline-Runs.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Static-Web-App-Custom-Domain.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Static-Web-App-Create-Github.png">
+<meta property="article:published_time" content="2021-08-03T11:18:21.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Static-Web-Apps-With-Azure-DevOps" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Azure-Static-Web-Apps-With-Azure-DevOps/" class="article-date">
+  <time datetime="2021-08-03T11:18:21.000Z" itemprop="datePublished">2021-08-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Static Web Apps With Azure DevOps
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Static-Web-App-In-Azure"><span class="toc-text">Create Static Web App In Azure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Azure-DevOps"><span class="toc-text">Azure DevOps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Custom-Domain"><span class="toc-text">Custom Domain</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E5%AF%A6%E9%A9%97"><span class="toc-text">後續實驗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>使用 Azure Static Web Apps 進行靜態網站 Hosting，原始碼專案保存於 Azrue DevOps。享受推送專案自動部署的方便性，同時也為未來 Migration Hosting Server 預做練習。</p>
+<a href="/posts/2021/08/Azure-Static-Web-Apps-With-Azure-DevOps/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p><img src="/assets/azure-static-web-apps-overview.png" alt="圖片來源：azure.microsoft.com"></p>
+<p>Azure Static Web App 是新興的靜態資源 Hosting 服務，類似於 Github Pages 但 Azure Static Web App 除免費層級外，另提供商業生產層級的服務，可以作為正式的營運環境用途。</p>
+<p>此外 Azure Static Web App 具有下列特色：</p>
+<ul>
+<li>靜態資源進行全球性的部署，增加使用者連線速度</li>
+<li>整合 Azure Functions 提供 API 功能</li>
+<li>與 Gituhb 或 Azure DevOps 高度整合，CI / CD 部署環境</li>
+<li>提供自動更新的 SSL 憑證</li>
+<li>預覽部署成果的機制</li>
+</ul>
+<p>相類似於 Google Firebase 的 Hosting 服務，Firebase 從 NoSQL Database 起家，並整合了 Google Analytics 等資源，對於行動裝置的開發也能夠扮演後端伺服器功能。</p>
+<p>而 Azure Static Web App 的資料庫則是以 Cosmos DB 為主，但畢竟本體是 Azure 不同於 Firebase 一個專案下分別設定 Database、Authentication、Storage 的便利性，Azure 的上手門檻則較高，需要使用不同的 Azure 資源搭建，但這個新產品仍是讓人耳目一新，並期待未來有與 Azure 資源更好的整合，讓開發者能夠享受更便利的雲端部署環境。</p>
+<hr>
+<p>本次將依照下列的微軟教學進行本次練習，並額外加上 Custom Domain 的設定，另規劃再以專文進行 Vue.js 專案練習以及再使用 Github Action 進行部署練習。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/azure/static-web-apps/publish-devops">教學課程：使用 Azure DevOps 發佈 Azure 靜態 Web Apps</a></p>
+<h3 id="Create-Static-Web-App-In-Azure"><a href="#Create-Static-Web-App-In-Azure" class="headerlink" title="Create Static Web App In Azure"></a>Create Static Web App In Azure</h3><p>首先登入 Azure Portal 後，搜尋 Static Web App 後，進行下列建立動作：</p>
+<p><img src="/assets/Azure-Static-Web-App-Create-Azure-DevOps.png"></p>
+<p><img src="/assets/Azure-Static-Web-App-Confirm.png"></p>
+<p>選擇「Manage deployment token」可以查看部署程式碼所需要的 token，稍後在 Azure DevOps 設定 pipelines 的時候會需要。</p>
+<p><img src="/assets/Azure-Static-Web-App-Deployment-Token.png"></p>
+<h3 id="Azure-DevOps"><a href="#Azure-DevOps" class="headerlink" title="Azure DevOps"></a>Azure DevOps</h3><p>使用微軟提供的示範 Repo，加入到 Azure DevOps 的 Project 當中。</p>
+<p><strong><a target="_blank" rel="noopener" href="https://github.com/staticwebdev/vanilla-api.git">https://github.com/staticwebdev/vanilla-api.git</a></strong></p>
+<p><img src="/assets/Azure-DevOps-Import-Repo.png"></p>
+<p>日後程式碼的更新則使用 git 的 commit / push 方式進行。</p>
+<hr>
+<p>接著進行 Pipeline 的設定</p>
+<p><img src="/assets/Azure-DevOps-New-Pipeline.png"></p>
+<p>首先設定原始碼的來源，本次以 Azure DevOps 為例</p>
+<p><img src="/assets/Azure-DevOps-Source-From-Azure-DevOps.png"></p>
+<p>接著選擇 Project 中的 Repo</p>
+<p><img src="/assets/Azure-DevOps-Select-Repo.png"></p>
+<p>選擇要使用的 pipeline configuratio，本次是純粹的 JS Web App，選擇 <strong>Starter Pipeline</strong></p>
+<p><img src="/assets/Azure-DevOps-Configure-Pipeline.png"></p>
+<p>接著設定 YAML，相關重要的部署設定都是由 YAML 這邊進行，例如告知專案編譯後的位置、azure function 所需要的 api 位置等等：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">trigger</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> main
+
+<span class="token key atrule">pool</span><span class="token punctuation">:</span>
+  <span class="token key atrule">vmImage</span><span class="token punctuation">:</span> ubuntu<span class="token punctuation">-</span>latest
+
+<span class="token key atrule">steps</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">checkout</span><span class="token punctuation">:</span> self
+    <span class="token key atrule">submodules</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">task</span><span class="token punctuation">:</span> AzureStaticWebApp@0
+    <span class="token key atrule">inputs</span><span class="token punctuation">:</span>
+      <span class="token key atrule">app_location</span><span class="token punctuation">:</span> <span class="token string">'/'</span>
+      <span class="token key atrule">api_location</span><span class="token punctuation">:</span> <span class="token string">'api'</span>
+      <span class="token key atrule">output_location</span><span class="token punctuation">:</span> <span class="token string">''</span>
+      <span class="token key atrule">azure_static_web_apps_api_token</span><span class="token punctuation">:</span> $(deployment_token)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/Azure-DevOps-Edit-YAML.png"></p>
+<p>再將從 Azure Portal 取得的 Deployment Token 加入到 Variable 當中，Variable 名稱設定為 <strong>deployment_token</strong></p>
+<p><img src="/assets/Azure-DevOps-Add-Deployment-Token.png"></p>
+<p>完成後進行儲存並執行，稍等一下就可以從 Runs 中觀察到結果：</p>
+<p><img src="/assets/Azure-DevOps-Pipeline-Runs.png"></p>
+<p>最後可以從 Azure Portal 中 Web Static App 的配發網址進行連線驗證成果。</p>
+<h3 id="Custom-Domain"><a href="#Custom-Domain" class="headerlink" title="Custom Domain"></a>Custom Domain</h3><p>Custom Domain 的設定相當容易，只要先從 DNS Provider 端加入一組 CNAME，分別對應要使用的 subdomain 以及 Web Static App 配發的網址，等待生效後再從 Azure Portal 的 Custom Domain 進行設定即可。</p>
+<p>Google DNS 大約十分鐘後就生效了，從 Azure Portal 設定 Custom Domain 後另等約十分鐘完成 Custom Domain 的設定。</p>
+<p><img src="/assets/Azure-Static-Web-App-Custom-Domain.png"></p>
+<h2 id="後續實驗"><a href="#後續實驗" class="headerlink" title="後續實驗"></a>後續實驗</h2><ol>
+<li><p>實作 Vue.js 專案的開發與部署</p>
+</li>
+<li><p>實作 Github Action 的部署</p>
+</li>
+</ol>
+<p><img src="/assets/Azure-Static-Web-App-Create-Github.png"></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://azure.microsoft.com/en-us/services/app-service/static/#pricing">Azure | Static Web Apps</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/azure/static-web-apps/overview">Azure | 什麼是 Azure 靜態 Web 應用程式？</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Azure-Static-Web-Apps-With-Azure-DevOps/" data-id="clg3fmaar00ars4ts8lyj1t4i" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/08/Python-PDF-Metadata-PYPDF2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python 使用 PyPDF2 存取 PDF 文件屬性 (Python Using PyPDF2 Access &amp; Edit PDF Metadata)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/08/PowerShell-Get-Unique/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PowerShell Get-Unique 陣列資料集合化 去除重複的元素
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>如何安裝 IIS (How to install IIS On Windows Server) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用 GUI 安裝已不下數十次，筆記下安裝的步驟以及使用 Powershell 指令安裝的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何安裝 IIS (How to install IIS On Windows Server)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/How-To-Install-IIS/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="使用 GUI 安裝已不下數十次，筆記下安裝的步驟以及使用 Powershell 指令安裝的方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-01-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-02-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-03-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-04-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-05-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-06-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-07-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-08-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-09-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-10-min.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-11-min.png">
+<meta property="article:published_time" content="2020-07-29T12:04:33.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-How-To-Install-IIS" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/How-To-Install-IIS/" class="article-date">
+  <time datetime="2020-07-29T12:04:33.000Z" itemprop="datePublished">2020-07-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何安裝 IIS (How to install IIS On Windows Server)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%8C%87%E4%BB%A4%E5%AE%89%E8%A3%9D"><span class="toc-text">使用指令安裝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-GUI-%E5%AE%89%E8%A3%9D"><span class="toc-text">使用 GUI 安裝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%80%8F%E8%A6%BD"><span class="toc-text">瀏覽</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>使用 GUI 安裝已不下數十次，筆記下安裝的步驟以及使用 Powershell 指令安裝的方式。</p>
+<a href="/posts/2020/07/How-To-Install-IIS/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="使用指令安裝"><a href="#使用指令安裝" class="headerlink" title="使用指令安裝"></a>使用指令安裝</h3><p>最基本的安裝指令形式如下：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Install-WindowsFeature</span> web-server <span class="token operator">-</span>IncludeManagementTools<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果相要一併安裝相關的 IIS 模組 可以藉由下列指令查詢，並加入安裝指令參數：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-WindowsFeature</span> Web*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>網頁伺服器 (IIS) Web-Server</li>
+<li>網頁伺服器 Web-WebServer<ul>
+<li>一般 HTTP 功能 Web-Common-Http<ul>
+<li>HTTP 錯誤 Web-Http-Errors</li>
+<li>預設文件 Web-Default-Doc</li>
+<li>靜態內容 Web-Static-Content</li>
+<li>瀏覽目錄 Web-Dir-Browsing</li>
+<li>HTTP 重新導向 Web-Http-Redirect</li>
+<li>WebDAV 發行 Web-DAV-Publishing</li>
+</ul>
+</li>
+<li>安全性 Web-Security<ul>
+<li>要求篩選 Web-Filtering</li>
+<li>IIS 用戶端憑證對應驗證 Web-Cert-Auth</li>
+<li>IP 及網域限制 Web-IP-Security</li>
+<li>URL 授權 Web-Url-Auth</li>
+<li>Windows 驗證 Web-Windows-Auth</li>
+<li>用戶端憑證對應驗證 Web-Client-Auth</li>
+<li>基本驗證 Web-Basic-Auth</li>
+<li>集中式 SSL 憑證支援 Web-CertProvider</li>
+<li>摘要式驗證 Web-Digest-Auth</li>
+</ul>
+</li>
+<li>狀況及診斷 Web-Health<ul>
+<li>HTTP 記錄 Web-Http-Logging</li>
+<li>ODBC 記錄 Web-ODBC-Logging</li>
+<li>自訂記錄 Web-Custom-Logging</li>
+<li>要求監視器 Web-Request-Monitor</li>
+<li>記錄工具 Web-Log-Libraries</li>
+<li>追蹤 Web-Http-Tracing</li>
+</ul>
+</li>
+<li>效能 Web-Performance<ul>
+<li>靜態內容壓縮 Web-Stat-Compression</li>
+<li>動態內容壓縮 Web-Dyn-Compression</li>
+</ul>
+</li>
+<li>應用程式開發 Web-App-Dev<ul>
+<li>.NET 擴充性 3.5 Web-Net-Ext</li>
+<li>.NET 擴充性 4.6 Web-Net-Ext45</li>
+<li>ASP Web-ASP</li>
+<li>ASP.NET 3.5 Web-Asp-Net</li>
+<li>ASP.NET 4.6 Web-Asp-Net45</li>
+<li>CGI Web-CGI</li>
+<li>ISAPI 篩選器 Web-ISAPI-Filter</li>
+<li>ISAPI 擴充程式 Web-ISAPI-Ext</li>
+<li>WebSocket 通訊協定 Web-WebSockets</li>
+<li>伺服器端包含 Web-Includes</li>
+<li>應用程式初始化 Web-AppInit</li>
+</ul>
+</li>
+<li>FTP 伺服器 Web-Ftp-Server<ul>
+<li>FTP 服務 Web-Ftp-Service</li>
+<li>FTP 擴充性 Web-Ftp-Ext</li>
+</ul>
+</li>
+<li>管理工具 Web-Mgmt-Tools<ul>
+<li>IIS 管理主控台 Web-Mgmt-Console</li>
+<li>IIS 6 管理相容性 Web-Mgmt-Compat</li>
+<li>IIS 6 Metabase 相容性 Web-Metabase</li>
+<li>IIS 6 WMI 相容性 Web-WMI</li>
+<li>IIS 6 指令碼工具 Web-Lgcy-Scripting</li>
+<li>IIS 6 管理主控台 Web-Lgcy-Mgmt-Console</li>
+<li>IIS 管理指令碼及工具 Web-Scripting-Tools</li>
+</ul>
+</li>
+<li>管理服務 Web-Mgmt-Service</li>
+<li>Web 應用程式 Proxy Web-Application-Proxy</li>
+</ul>
+</li>
+<li>WebDAV 重新導向器 WebDAV-Redirector</li>
+<li>可裝載 IIS 的網頁核心 Web-WHC</li>
+</ul>
+<h3 id="使用-GUI-安裝"><a href="#使用-GUI-安裝" class="headerlink" title="使用 GUI 安裝"></a>使用 GUI 安裝</h3><p>由 <strong>伺服器管理員</strong> 選單點選 <strong>新增角色及功能</strong> 來開始安裝步驟。</p>
+<p><img src="/assets/Install-IIS-01-min.png" alt="新增角色及功能"></p>
+<p><img src="/assets/Install-IIS-02-min.png" alt="安裝類型，直接下一步"><br><img src="/assets/Install-IIS-03-min.png" alt="目的地伺服器，直接下一步"><br><img src="/assets/Install-IIS-04-min.png" alt="伺服器角色，選取網頁伺服器 IIS"></p>
+<p>記得包含管理工具，才能夠有 IIS 管理介面使用。</p>
+<p><img src="/assets/Install-IIS-05-min.png" alt="管理工具"></p>
+<p>功能的地方依需求啟用 .NET Framework 3.5, .NET Framework 4.x</p>
+<p><img src="/assets/Install-IIS-06-min.png" alt="功能選擇"></p>
+<p><img src="/assets/Install-IIS-07-min.png" alt="伺服器角色，選取網頁伺服器 IIS"></p>
+<p>角色服務的選擇是精華所在，依據需求來做勾選，建議選取下列服務：</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> 一般 HTTP 功能 Web-Common-Http</li>
+<li><input checked="" disabled="" type="checkbox"> HTTP 錯誤 Web-Http-Errors</li>
+<li><input checked="" disabled="" type="checkbox"> 預設文件 Web-Default-Doc</li>
+<li><input checked="" disabled="" type="checkbox"> 靜態內容 Web-Static-Content</li>
+<li><input checked="" disabled="" type="checkbox"> 瀏覽目錄 Web-Dir-Browsing</li>
+<li><input checked="" disabled="" type="checkbox"> HTTP 重新導向 Web-Http-Redirect</li>
+<li><input checked="" disabled="" type="checkbox"> 安全性 Web-Security</li>
+<li><input checked="" disabled="" type="checkbox"> 要求篩選 Web-Filtering</li>
+<li><input checked="" disabled="" type="checkbox"> IP 及網域限制 Web-IP-Security</li>
+<li><input checked="" disabled="" type="checkbox"> URL 授權 Web-Url-Auth</li>
+<li><input checked="" disabled="" type="checkbox"> Windows 驗證 Web-Windows-Auth</li>
+<li><input checked="" disabled="" type="checkbox"> 基本驗證 Web-Basic-Auth</li>
+<li><input checked="" disabled="" type="checkbox"> 集中式 SSL 憑證支援 Web-CertProvider</li>
+<li><input checked="" disabled="" type="checkbox"> 狀況及診斷 Web-Health</li>
+<li><input checked="" disabled="" type="checkbox"> HTTP 記錄 Web-Http-Logging</li>
+<li><input checked="" disabled="" type="checkbox"> ODBC 記錄 Web-ODBC-Logging</li>
+<li><input checked="" disabled="" type="checkbox"> 自訂記錄 Web-Custom-Logging</li>
+<li><input checked="" disabled="" type="checkbox"> 要求監視器 Web-Request-Monitor</li>
+<li><input checked="" disabled="" type="checkbox"> 記錄工具 Web-Log-Libraries</li>
+<li><input checked="" disabled="" type="checkbox"> 追蹤 Web-Http-Tracing</li>
+<li><input checked="" disabled="" type="checkbox"> 效能 Web-Performance</li>
+<li><input checked="" disabled="" type="checkbox"> 靜態內容壓縮 Web-Stat-Compression</li>
+<li><input checked="" disabled="" type="checkbox"> 動態內容壓縮 Web-Dyn-Compression</li>
+<li><input checked="" disabled="" type="checkbox"> 應用程式開發 Web-App-Dev</li>
+<li><input checked="" disabled="" type="checkbox"> .NET 擴充性 3.5 Web-Net-Ext</li>
+<li><input checked="" disabled="" type="checkbox"> .NET 擴充性 4.6 Web-Net-Ext45</li>
+<li><input checked="" disabled="" type="checkbox"> ASP Web-ASP</li>
+<li><input checked="" disabled="" type="checkbox"> ASP.NET 3.5 Web-Asp-Net</li>
+<li><input checked="" disabled="" type="checkbox"> ASP.NET 4.6 Web-Asp-Net45</li>
+<li><input checked="" disabled="" type="checkbox"> CGI Web-CGI</li>
+<li><input checked="" disabled="" type="checkbox"> ISAPI 篩選器 Web-ISAPI-Filter</li>
+<li><input checked="" disabled="" type="checkbox"> ISAPI 擴充程式 Web-ISAPI-Ext</li>
+<li><input checked="" disabled="" type="checkbox"> WebSocket 通訊協定 Web-WebSockets</li>
+<li><input checked="" disabled="" type="checkbox"> 伺服器端包含 Web-Includes</li>
+<li><input checked="" disabled="" type="checkbox"> 應用程式初始化 Web-AppInit</li>
+<li><input checked="" disabled="" type="checkbox"> 管理工具 Web-Mgmt-Tools</li>
+<li><input checked="" disabled="" type="checkbox"> IIS 管理主控台 Web-Mgmt-Console</li>
+<li><input checked="" disabled="" type="checkbox"> IIS 6 指令碼工具 Web-Lgcy-Scripting</li>
+<li><input checked="" disabled="" type="checkbox"> IIS 6 管理主控台 Web-Lgcy-Mgmt-Console</li>
+<li><input checked="" disabled="" type="checkbox"> IIS 管理指令碼及工具 Web-Scripting-Tools</li>
+</ul>
+<p><img src="/assets/Install-IIS-08-min.png" alt="角色服務"></p>
+<p>這個步驟可以將組態匯出，其他伺服器上的 IIS 安裝只要直接將組態匯入就不用重新勾選。</p>
+<p><img src="/assets/Install-IIS-09-min.png" alt="確認後即可安裝"></p>
+<p><img src="/assets/Install-IIS-10-min.png" alt="等待安裝完成"></p>
+<h3 id="瀏覽"><a href="#瀏覽" class="headerlink" title="瀏覽"></a>瀏覽</h3><p>安裝完成後，可以使用 <a target="_blank" rel="noopener" href="http://localhost/">http://localhost</a> 都方式進行瀏覽</p>
+<p><img src="/assets/Install-IIS-11-min.png" alt="Welcome World"></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/How-To-Install-IIS/" data-id="clg3fmae900prs4ts5bi77tkc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/07/OfficeOnline-PreviewFail/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Office Online 無法正常線上瀏覽特定格式文件</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/08/Full-Stack-Open-2020/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          基於 JS 的全端工程師開放式培訓指南 (Full Stack Open 2020 )
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

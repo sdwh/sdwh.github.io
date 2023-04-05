@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>委外資安服務的考量要點 (滲透測試、弱點掃描、資安健診) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記滲透測試、弱點掃描以及資安健診服務，如果藉由委外資安廠商進行時需要考量的要點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="委外資安服務的考量要點 (滲透測試、弱點掃描、資安健診)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/10/Cyber-Security-Outsourcing-Consideration/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記滲透測試、弱點掃描以及資安健診服務，如果藉由委外資安廠商進行時需要考量的要點。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CheckListLogo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-checkmark.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-documents.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-checkmark.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-documents.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-checkmark.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-documents.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/iThome-CyberSpace-Map-Penetration-Testing-2022-09.png">
+<meta property="og:image" content="https://sdwh.dev/assets/iThome-CyberSpace-Map-WAF-Application-Security-2022-09.png">
+<meta property="og:image" content="https://sdwh.dev/assets/iThome-CyberSpace-Map-Web-Security-2022-09.png">
+<meta property="og:image" content="https://sdwh.dev/assets/iThome-CyberSpace-Map-Security-Analytics-2022-09.png">
+<meta property="og:image" content="https://sdwh.dev/assets/NCCST-2021-Security-Supplier-Evaluation.png">
+<meta property="article:published_time" content="2022-10-20T11:03:29.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CheckListLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Cyber-Security-Outsourcing-Consideration" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/10/Cyber-Security-Outsourcing-Consideration/" class="article-date">
+  <time datetime="2022-10-20T11:03:29.000Z" itemprop="datePublished">2022-10-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      委外資安服務的考量要點 (滲透測試、弱點掃描、資安健診)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BB%B2%E9%80%8F%E6%B8%AC%E8%A9%A6"><span class="toc-text">滲透測試</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B6%B2%E7%AB%99%E6%9C%8D%E5%8B%99%E6%BB%B2%E9%80%8F%E6%B8%AC%E8%A9%A6%E9%A0%85%E7%9B%AE"><span class="toc-text">網站服務滲透測試項目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8B%99%E5%A0%B1%E5%91%8A%E6%96%87%E4%BB%B6"><span class="toc-text">服務報告文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%B1%E9%BB%9E%E6%8E%83%E6%8F%8F"><span class="toc-text">弱點掃描</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%B1%E9%BB%9E%E6%8E%83%E6%8F%8F%E9%A0%85%E7%9B%AE"><span class="toc-text">弱點掃描項目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8B%99%E5%A0%B1%E5%91%8A%E6%96%87%E4%BB%B6-1"><span class="toc-text">服務報告文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E5%AE%89%E5%81%A5%E8%A8%BA"><span class="toc-text">資安健診</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%A5%E8%A8%BA%E9%A0%85%E7%9B%AE"><span class="toc-text">健診項目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B3%87%E5%AE%89%E5%81%A5%E8%A8%BA%E6%9C%8D%E5%8B%99%E5%A0%B1%E5%91%8A"><span class="toc-text">資安健診服務報告</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E5%9F%B7%E8%A1%8C%E7%B4%80%E9%8C%84%E6%AA%94"><span class="toc-text">專案執行紀錄檔</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%A0%E5%95%86%E7%9A%84%E9%81%B8%E6%93%87"><span class="toc-text">廠商的選擇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#iThome-%E8%87%BA%E7%81%A3%E8%B3%87%E5%AE%89%E5%B8%82%E5%A0%B4%E5%9C%B0%E5%9C%96"><span class="toc-text">iThome 臺灣資安市場地圖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E5%AE%89%E6%9C%8D%E5%8B%99%E5%BB%A0%E5%95%86%E8%A9%95%E9%91%91"><span class="toc-text">資安服務廠商評鑑</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記滲透測試、弱點掃描以及資安健診服務，如果藉由委外資安廠商進行時需要考量的要點。</p>
+<a href="/posts/2022/10/Cyber-Security-Outsourcing-Consideration/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CheckListLogo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>選擇適當的資安廠商與選擇適當的委外開發廠商一樣重要，前者可以驗證後者的成果是否符合資安規範以及是否存在影響系統完整性、可用性、機密性的弱點。</p>
+<p>而要如何選擇資安廠商？首先要先確定所需要的服務為何，本次的筆記討論 <strong>滲透測試</strong>、<strong>弱點掃描</strong>以及<strong>資安健診</strong>。</p>
+<h3 id="滲透測試"><a href="#滲透測試" class="headerlink" title="滲透測試"></a>滲透測試</h3><p>關於滲透測試的測試項目及交付報告文件，參考 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/SecurityRFP?lang=zh">《政府機關滲透測試服務委外服務案建議書徵求文件(範本) 》</a> 的綜合整理如下：</p>
+<h4 id="網站服務滲透測試項目"><a href="#網站服務滲透測試項目" class="headerlink" title="網站服務滲透測試項目"></a>網站服務滲透測試項目</h4><img src="/assets/openmoji-checkmark.svg" style="width: 120px;">
+
+<dl>
+  <dt>設定管理</dt>
+  <dd>至少包含應用程式設定測試、檔案類型處理測試、網站檔案爬行測試、後端管理介面測試及HTTP 協定測試等項目。</dd>
+  <dt>使用者認證</dt>
+  <dd>至少包含機敏資料是否透過加密通道進行傳送及使用者帳號列舉測試等項目。</dd>
+  <dt>連線管理</dt>
+  <dd>至少包含 Session 管理測試、Cookie 屬性測試、Session 資料更新測試、Session 變數傳遞測試及 CSRF 測試等項目。</dd>
+  <dt>使用者授權</dt>
+  <dd>至少包含目錄跨越測試、網站授權機制測試及權限控管機制測試等項目。</dd>
+  <dt>邏輯漏洞</dt>
+  <dd>至少包含網站功能測試、網站功能設計缺失測試及附件上傳測試等項目。</dd>
+  <dt>輸入驗證</dt>
+  <dd>至少包含 XSS 弱點測試、SQL Injection 測試、LDAP Injection 測試、XML Injection 測試、SSI Injection 測試、XPath Injection 測試及 Code Injection 測試、OS Commanding 測試及偽造 HTTP 協定測試等項目。</dd>
+  <dt>Web Service</dt>
+  <dd>至少包含 WSDL 測試、XML 架構測試、XML。</dd>
+</dl>
+
+<h4 id="服務報告文件"><a href="#服務報告文件" class="headerlink" title="服務報告文件"></a>服務報告文件</h4><img src="/assets/openmoji-documents.svg" style="width: 120px;">
+
+<p>應包含的內容：</p>
+<div class="article-blockquote" style="margin-bottom: 1rem">
+摘要說明
+
+<p>受測目標風險等級與數量列表/受測目標風險漏洞名稱列表/風險漏洞分布列表)、專案執行計畫(執行期間/執行項目/執行範圍/專案成員)</p>
+</div>
+
+<div class="article-blockquote" style="margin-bottom: 1rem">
+滲透測試弱點發現
+
+<p>針對服務說明之所有測試項目提出測試結果(實際測試項目視受測主機或網站所提供的服務為主)，應說明詳細過程及內容(包括檢測目標/弱點名稱/問題URL 或 IP/問題參數/測試語法/測試截圖等)，並說明可能造成的風險</p>
+</div>
+
+<div class="article-blockquote" style="margin-bottom: 1rem">
+改善與建議
+
+<p>著重於弱點修補建議，以利機關快速掌握弱點成因與影響範圍，並參考改善方式進行修復</p>
+</div>
+
+<h3 id="弱點掃描"><a href="#弱點掃描" class="headerlink" title="弱點掃描"></a>弱點掃描</h3><p>關於弱點掃描的測試項目及交付報告文件，參考 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/SecurityRFP?lang=zh">《政府機關弱點掃描服務委外服務案建議書徵求文件(範本)》</a> 的綜合整理如下：</p>
+<h4 id="弱點掃描項目"><a href="#弱點掃描項目" class="headerlink" title="弱點掃描項目"></a>弱點掃描項目</h4><img src="/assets/openmoji-checkmark.svg" style="width: 120px;">
+
+<p><strong>主機系統弱點掃描</strong></p>
+<p>針對作業系統的弱點、網路服務的弱點、作業系統或網路服務的設定、帳號密碼設定及管理方式等進行弱點掃描，系統弱點掃描的掃描項目須符合 Common Vulnerabilities and Exposures (CVE)發布的弱點內容(最新版)，至少包含以下項目：</p>
+<ol>
+<li>作業系統未修正的弱點掃描</li>
+<li>常用應用程式弱點掃描</li>
+<li>網路服務程式掃描</li>
+<li>木馬、後門程式掃描</li>
+<li>帳號密碼破解測試</li>
+<li>系統之不安全與錯誤設定掃描</li>
+<li>網路通訊埠掃描</li>
+</ol>
+<p><strong>Web 網頁弱點掃描</strong></p>
+<p>針對機關網頁安全弱點進行掃描，掃描項目須符合最新版 OWASP TOP 10 2017 的項目內容，請廠商以最新內容掃描)</p>
+<p>得標廠商應於<strong>需求訪談階段</strong>先分就本機關之網路架構及本項服務之標的設備進行了解，如設備廠牌、系統版本等，以利後續進行弱點分析及修補建議。</p>
+<p>掃描工具為取得授權使用的商用軟體，於每次弱點掃描前，<strong>將工具之弱點資料庫更新至最新版本</strong>，並應提供佐證資料，以確保本項服務之完整正確。</p>
+<h4 id="服務報告文件-1"><a href="#服務報告文件-1" class="headerlink" title="服務報告文件"></a>服務報告文件</h4><img src="/assets/openmoji-documents.svg" style="width: 120px;">
+
+<p>文件內容應包括：</p>
+<ul>
+<li>執行結果摘要說明</li>
+<li>專案執行計畫 (執行期間/執行項目/執行範圍/專案成員)</li>
+<li>掃描工具說明</li>
+<li>掃描方式</li>
+<li>弱點統計 (依風險等級、弱點類別排序)</li>
+<li>弱點清單 (弱點名稱、弱點描述、設備名稱、IP/URL、Portname、風險等級、修補建議)</li>
+<li>掃描誤判之弱點清單(說明誤判理由)</li>
+<li>弱點排除清單(說明排除理由，如無法修補原因與配套措施)</li>
+</ul>
+<h3 id="資安健診"><a href="#資安健診" class="headerlink" title="資安健診"></a>資安健診</h3><p>關於資安健診項目及交付報告文件，參考 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/SecurityRFP?lang=zh">《政府機關滲透測試服務委外服務案建議書徵求文件(範本) 》</a> 的綜合整理如下：</p>
+<h4 id="健診項目"><a href="#健診項目" class="headerlink" title="健診項目"></a>健診項目</h4><img src="/assets/openmoji-checkmark.svg" style="width: 120px;">
+
+<ol>
+<li>網路架構檢視</li>
+<li>有線網路惡意活動檢視<ol>
+<li>封包監聽與分析</li>
+<li>網路設備紀錄檔分析</li>
+</ol>
+</li>
+<li>使用者端惡意活動電腦檢視<ol>
+<li>使用者端電腦惡意程式或檔案檢視</li>
+<li>使用者電腦更新檢視</li>
+</ol>
+</li>
+<li>伺服器主機惡意活動檢視<ol>
+<li>伺服器主機惡意程式或檔案檢視</li>
+<li>伺服器主機更新檢視</li>
+</ol>
+</li>
+<li>目錄伺服器設定檢視</li>
+<li>防火牆連線設定檢視</li>
+</ol>
+<hr>
+<dl>
+  <dt>網路架構檢視</dt>
+  <dd>針對本機關網路架構圖進行安全性弱點檢視，檢視之項目包含設計邏輯是否合宜、主機網路位置是否適當及現有防護程度是否足夠。</dd>
+  <dt>封包監聽與分析</dt>
+  <dd>在本機關有線網路(內網、外網、DMZ 區或 N 個網段)適當位置架設側錄設備，觀察內部電腦或設備是否有對外之異常連線或 DNS 查詢，並比對是否連線已知惡意 IP、中繼站(Command and Control，C&C)或有符合惡意網路行為的特徵。發現異常連線之電腦或設備需確認使用狀況與用途。</dd>
+  <dt>網路設備紀錄檔分析</dt>
+  <dd>檢視網路與資安設備 (如防火牆、入侵偵測/防護系統等) 紀錄檔，分析過濾內部電腦或設備是否有對外之異常連線紀錄，發現異常連線之電腦或設備需確認使用狀況與用途。</dd>
+  <dt>使用者端電腦惡意程式或檔案檢視</dt>
+  <dd>針對個人電腦進行是否存在惡意程式或檔案檢視，檢視項目包含活動中與潛藏惡意程式、駭客工具程式及異常帳號與群組。</dd>
+  <dt>使用者電腦更新檢視</dt>
+  <dd>作業系統更新情形、各項應用程式安全性更新、是否使用已經停止支援之作業系統或軟體及防毒軟體安裝、更新及定期全系統掃描狀況進行檢視。</dd>
+  <dt>伺服器主機惡意程式或檔案檢視</dt>
+  <dd>針對伺服器主機進行是否存在惡意程式或檔案檢視，檢視項目包含活動中與潛藏惡意程式、駭客工具程式及異常帳號與群組。</dd>
+  <dt>伺服器主機更新檢視</dt>
+  <dd>作業系統更新情形、各項應用程式安全性更新、是否使用已經停止支援之作業系統或軟體及防毒軟體安裝、更新及定期全系統掃描狀況進行檢視。</dd>
+  <dt>目錄伺服器設定檢視</dt>
+  <dd>檢視目錄伺服器中，針對 AD 伺服器組態設定，依行政院國家資通安全會報技術服務中心，官方網站「政府組態基準」專區所公布安全性檢視之內容為主，以確認機關對於組態設定之落實情形。若無 AD 伺服器，可以其他目錄伺服器(如 LDAP)或以個別使用者端電腦檢視方式完成「密碼設定原則」與「帳號鎖定原則」。</dd>
+  <dt>防火牆連線設定檢視</dt>
+  <dd>檢視防火牆的連線設定規則(如外網對內網、內網對外網、內網對內網)是否有安全性弱點，確認來源與目的 IP 與通訊埠連通的適當性 (包含設置「Permit All/Any」與「Deny All/Any」等 2 項防火牆檢測規則確認)</dd>
+</dl>
+
+<h4 id="資安健診服務報告"><a href="#資安健診服務報告" class="headerlink" title="資安健診服務報告"></a>資安健診服務報告</h4><img src="/assets/openmoji-documents.svg" style="width: 120px;">
+
+<ul>
+<li>執行結果摘要說明(依照檢測類別各別摘要說明)</li>
+<li>執行計畫(執行期間/執行項目/執行範圍/專案成員)</li>
+<li>執行情形(需包含所有服務項目執行結果，不可直接以工具產生之原始結果交付)</li>
+<li>改善建議、結論</li>
+</ul>
+<h4 id="專案執行紀錄檔"><a href="#專案執行紀錄檔" class="headerlink" title="專案執行紀錄檔"></a>專案執行紀錄檔</h4><ul>
+<li>各個人電腦的資安檢測結果表</li>
+<li>各伺服器主機的資安檢測結果表</li>
+<li>網路側錄封包資料</li>
+<li>發現惡意行為或惡意程式的過程紀錄 (如果有發現)</li>
+<li>外洩資料列表 (如果有發現)</li>
+<li>惡意程式 (如果有發現) </li>
+</ul>
+<h2 id="廠商的選擇"><a href="#廠商的選擇" class="headerlink" title="廠商的選擇"></a>廠商的選擇</h2><p>如何尋找適合的廠商進行委外的資安服務？可以從 iThome 的<a target="_blank" rel="noopener" href="https://www.ithome.com.tw/news/123912">《臺灣資安市場地圖》</a>，依照各廠商的專業領域去尋找。</p>
+<p>另外也可以參考國家資通安全會報技術服務中心，每年進行的<a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/SecuritySupplier?lang=zh">資安服務廠商評鑑</a>，可以找到有參與評鑑且提供滲透測試、弱點掃描以及資安健診服務的廠商，被評鑑的等級是選擇的一項參考指標。但需要注意的是不是所有提供該資安服務的廠商都有參加評鑑，這個部分可以與臺灣資安市場地圖交互比對，互為參考資源 🙂</p>
+<h3 id="iThome-臺灣資安市場地圖"><a href="#iThome-臺灣資安市場地圖" class="headerlink" title="iThome 臺灣資安市場地圖"></a>iThome 臺灣資安市場地圖</h3><p>Penetration Testing 可以對應到<strong>滲透測試</strong>服務的提供廠商。</p>
+<p><img src="/assets/iThome-CyberSpace-Map-Penetration-Testing-2022-09.png" alt="圖片來源：Thome 臺灣資安市場地圖 2022-Sep"></p>
+<p>WAF &amp; Application Security 以及 Web Security 可以對應到<strong>弱點掃描</strong>服務的提供廠商。</p>
+<p><img src="/assets/iThome-CyberSpace-Map-WAF-Application-Security-2022-09.png" alt="圖片來源：Thome 臺灣資安市場地圖 2022-Sep"><br><img src="/assets/iThome-CyberSpace-Map-Web-Security-2022-09.png" alt="圖片來源：Thome 臺灣資安市場地圖 2022-Sep"></p>
+<p>Security Analytics 可以對應到<strong>資安健診</strong>的服務廠商。</p>
+<p><img src="/assets/iThome-CyberSpace-Map-Security-Analytics-2022-09.png" alt="圖片來源：Thome 臺灣資安市場地圖 2022-Sep"></p>
+<h3 id="資安服務廠商評鑑"><a href="#資安服務廠商評鑑" class="headerlink" title="資安服務廠商評鑑"></a>資安服務廠商評鑑</h3><p><img src="/assets/NCCST-2021-Security-Supplier-Evaluation.png" alt="資料來源：國家資通安全會報技術服務中心 - 資安服務廠商評鑑"></p>
+<p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/SecuritySupplier?lang=zh">國家資通安全會報技術服務中心 - 共同供應契約資安服務廠商評鑑機制</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/SecuritySupplier?lang=zh">國家資通安全會報技術服務中心 - 資安服務廠商評鑑結果</a></p>
+<div class="article-blockquote" style="margin-bottom:2rem;font-size:1.1rem">
+Emojis designed by <a target="_blank" rel="noopener" href="https://openmoji.org/about/">OpenMoji</a> – the open-source emoji and icon project. License: CC BY-SA 4.0
+</div>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/10/Cyber-Security-Outsourcing-Consideration/" data-id="clg3fmaby00gcs4ts1gqqhekd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/10/ASPNET-Core-Constructor-Depedency-Injection/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET Core Constructor Depedency Injection (DI)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/10/ASPNET-Core-Program-Evolution/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET Core Program.cs 設定實務
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

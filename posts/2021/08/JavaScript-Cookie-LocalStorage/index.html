@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ES20XX Modern JS 新語言特性筆記 | JavaScript Cookie &amp; LocalStorage | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記從 ES2015 &#x2F; ES2016 &#x2F; ES2017 &#x2F; ES2018 &#x2F; ES2019 &#x2F; ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。 介紹 Modern JS 如何">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES20XX Modern JS 新語言特性筆記 | JavaScript Cookie &amp; LocalStorage">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/08/JavaScript-Cookie-LocalStorage/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記從 ES2015 &#x2F; ES2016 &#x2F; ES2017 &#x2F; ES2018 &#x2F; ES2019 &#x2F; ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。 介紹 Modern JS 如何">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Chrome-View-Cookie.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Chrome-Clear-Cookie-And-Etcs.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Chrome-LocalStorage-After-Clear-Cookie.png">
+<meta property="article:published_time" content="2021-08-10T22:07:58.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="F2E">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JavaScript-Cookie-LocalStorage" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/JavaScript-Cookie-LocalStorage/" class="article-date">
+  <time datetime="2021-08-10T22:07:58.000Z" itemprop="datePublished">2021-08-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ES20XX Modern JS 新語言特性筆記 | JavaScript Cookie &amp; LocalStorage
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie"><span class="toc-text">Cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#document-cookie-to-js-object"><span class="toc-text">document.cookie to js object</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LocalStorage"><span class="toc-text">LocalStorage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lab%F0%9F%A7%AA-Browser-Clear-Behavior"><span class="toc-text">Lab🧪 Browser Clear Behavior</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E9%A9%97%E7%92%B0%E5%A2%83"><span class="toc-text">實驗環境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記從 ES2015 / ES2016 / ES2017 / ES2018 / ES2019 / ES2020 以來，JS 所加入的新語言特性。使用的情境新語言特性不僅是為了減少對第三方套件的依賴 (Lodash)，也是基於 ESLint 上 Clean Code、Best Practices 規範要求。熟悉新語言特性不僅能夠使 JS 開發更加快速也能夠提升閱讀性。</p>
+<p>介紹 Modern JS 如何操作 Cookie 以及 Html 5 所提供的 LocalStorage API，用以將資訊保存在用戶端。</p>
+<a href="/posts/2021/08/JavaScript-Cookie-LocalStorage/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h3><p>原生的 Cookie 操作方式有些笨拙，不如當代的資料結構物件有著方便操作的 method，例如要建立的 cookie 的方式：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token string">'name=loto'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果要一次加入多筆 cookie 必須分句執行，每句 cookie 只專供建立一筆 cookie 所用：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token string">'name=loto'</span><span class="token punctuation">;</span>
+document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token string">'weapon=club'</span><span class="token punctuation">;</span>
+document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token string">'spell=heal'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>❌ 錯誤的使用方式，如果使用這個方式，後面的 weapon=club 會被忽略</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token string">'name=loto; weapon=club'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>✔️ 同一句 cookie 設定分號是為了設定 <strong>expires</strong> 以及 <strong>path</strong> 等 cookie 欄位用途：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token string">'name=loto; expires=Tue, 1 Jan 1980 12:00:00 UTC; path=/'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>顯示所有的 cookie：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">document<span class="token punctuation">.</span>cookie<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用上述的方式可以令 cookie 以字串的回傳：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token string">"name=loto; weapon=club; spell=heal"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>建立的 cookie 可以從 Chrome devTools 檢視：</p>
+<p><img src="/assets/Chrome-View-Cookie.png"></p>
+<p>如果要刪除 cookie ，則必須用 expire date 的方式進行刪除：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">document<span class="token punctuation">.</span>cookie <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>key<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">=0;expires=Tue, 1 Jan 1980 12:00:00 UTC</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="document-cookie-to-js-object"><a href="#document-cookie-to-js-object" class="headerlink" title="document.cookie to js object"></a>document.cookie to js object</h4><p>如果想要列出所有的 cookie 除了以字串的方式顯示外，也可以利用下面的 snippets 轉換為 object</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">const</span> cookie <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+document<span class="token punctuation">.</span>cookie<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">'; '</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>
+  <span class="token parameter">c</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">[</span>k<span class="token punctuation">,</span> v<span class="token punctuation">]</span> <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">'='</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    cookie<span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">=</span> v<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="LocalStorage"><a href="#LocalStorage" class="headerlink" title="LocalStorage"></a>LocalStorage</h3><p>localStorage 提供 5MB的儲存空間，但僅限至於 Client-Side Script 可以存取 localStorage 的資料，相較於 Cookie 可以提供給 Server 的方式不同。LocalStorage 主要是提供 Client 應用程式所使用的程式環境資訊、快取紀錄等，而非與伺服器之間的交換資料。</p>
+<p>經驗證 5MB 的儲存空間大抵上提供 50,000 筆簡易的 object data 沒有問題。 </p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token string-property property">'39760'</span> <span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token literal-property property">ans</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token literal-property property">date</span><span class="token operator">:</span> <span class="token string">'Wed Aug 11 2021 19:30:00 GMT+0800'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>而相對於 cookie，LocalStorage 所提供的 API 方便許多，尤其是在刪除與清空的作業上：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span><span class="token string">'json'</span><span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>pseudoData<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> slime <span class="token operator">=</span> localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span><span class="token string">'monster'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+localStorage<span class="token punctuation">.</span><span class="token function">removeItem</span><span class="token punctuation">(</span><span class="token string">'monster'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+localStorage<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Lab🧪-Browser-Clear-Behavior"><a href="#Lab🧪-Browser-Clear-Behavior" class="headerlink" title="Lab🧪 Browser Clear Behavior"></a>Lab🧪 Browser Clear Behavior</h3><p>在 Chrome 的 URL 輸入下列位置，可以檢查各網站在 Chrome 所留下的 LocalStorage 以及 Cookie： </p>
+<p><strong>chrome://settings/siteData</strong></p>
+<p>接著是本次實驗的重點，已知道經由 Chrome 可以清除瀏覽器的 Cookie，但是否 localStorage 也會被一併刪除？</p>
+<p>實驗的結果如下：</p>
+<p><img src="/assets/Chrome-Clear-Cookie-And-Etcs.png" alt="首先使用 Chrome 的工具進行 Cookie 清除"></p>
+<p>觀察清除後 LocalStorage 是否消失？ <strong>答案是 Yes</strong></p>
+<p>故 LocalStorage 雖然不像 Cookie 有 Expire Date，但如果使用者主動使用瀏覽器清除 Cookie 等本機資訊，仍是會將 LocalStorage 刪除。</p>
+<p><img src="/assets/Chrome-LocalStorage-After-Clear-Cookie.png" alt="實際作業的時候是使用 Chromium 的 Edge"></p>
+<h2 id="實驗環境"><a href="#實驗環境" class="headerlink" title="實驗環境"></a>實驗環境</h2><p>本次的實驗環境：<a href="https://sdwh.dev/Vanilla-JavaScript/Cookie-LocalStorage/">https://sdwh.dev/Vanilla-JavaScript/Cookie-LocalStorage/</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/sdwh/Vanilla-JavaScript/tree/main/docs/Cookie-LocalStorage">Github Repo</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie">Cookie Web API | MDN</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-TW/docs/Web/API/Window/localStorage">LocalStorage | MDN</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/JavaScript-Cookie-LocalStorage/" data-id="clg3fmaf600tos4tsdhnk5ark" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/08/PowerShell-Get-Content-Select-String/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PowerShell | Get-Content &amp; Select-String 尋找檔案內容的關鍵字</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/08/Government-Procurement-Series-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          寫給 21 世紀軟體工程師的採購法筆記 | 巨額採購、查核金額、公告金額到底是多少錢？
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

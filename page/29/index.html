@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Skeptical Software Engineer">
+<meta property="og:url" content="https://sdwh.dev/page/29/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:locale">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="資訊處理">
+<meta property="article:tag" content="自我成長">
+<meta property="article:tag" content="軟體工程">
+<meta property="article:tag" content="系統管理">
+<meta property="article:tag" content="資料庫管理">
+<meta property="article:tag" content="資料分析">
+<meta property="article:tag" content="資訊安全">
+<meta property="article:tag" content="程式設計">
+<meta property="article:tag" content="政府採購法">
+<meta property="article:tag" content="資訊證照">
+<meta property="article:tag" content="DBA">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="asp">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+  
+    <article id="post-SQL-Server-Dynamic-Management-Objects-DMOs" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Dynamic-Management-Objects-DMOs/" class="article-date">
+  <time datetime="2021-12-17T10:15:08.000Z" itemprop="datePublished">2021-12-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/SQL-Server-Dynamic-Management-Objects-DMOs/">SQL Server Dynamic Management Objects, DMOs (DMV, DMF)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 SQL Server 實用的 SQL Server Dynamic Management Objects, DMOs 用於資料庫管理、問題處理 Trouble Shooting 所使用。</p>
+<a href="/posts/2021/12/SQL-Server-Dynamic-Management-Objects-DMOs/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/SQL-Server-Dynamic-Management-Objects-DMOs/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Dynamic-Management-Objects-DMOs/" data-id="clg3fmail016is4ts04qs104s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Vue-Toys-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/Vue-Toys-1/" class="article-date">
+  <time datetime="2021-12-16T11:44:57.000Z" itemprop="datePublished">2021-12-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue/">Vue</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/Vue-Toys-1/">超簡單學習 Vue.js 系列 | 點陣繪圖 Vue Pixel Darwer</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>Vue.js 簡單的示範專案，使用 Vue CLI 搭配常用 Vue Directive，例如 v-if、v-bind 以及 v-on 等等，並使用 Bootstrap 5 作為 CSS Frameworks，搭配 Vue Component 的設計方式，實作各式應用。</p>
+<a href="/posts/2021/12/Vue-Toys-1/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/vue-js-logo.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/Vue-Toys-1/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/Vue-Toys-1/" data-id="clg3fmamj01kds4ts52n1bsag" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Scooter-Guide" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/Scooter-Guide/" class="article-date">
+  <time datetime="2021-12-14T11:12:07.000Z" itemprop="datePublished">2021-12-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LifeHack/">LifeHack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/Scooter-Guide/">摩托車維護筆記 (Scooter Maintenance Guide)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>整理摩托車的維修以及維護注意指南，常見的零件費用及價目表以及說明摩托車的各種系統及其相關零件，例如火星塞、空氣過濾器、機油過濾器以及機油、齒輪油等用途。</p>
+<a href="/posts/2021/12/Scooter-Guide/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/openemoji-Scooter.svg" alt="SQL Server Logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/Scooter-Guide/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/Scooter-Guide/" data-id="clg3fmal701g7s4tse2le0g12" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LifeHack/" rel="tag">LifeHack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tutorial/" rel="tag">Tutorial</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Internals-DataPage" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Internals-DataPage/" class="article-date">
+  <time datetime="2021-12-11T06:06:38.000Z" itemprop="datePublished">2021-12-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/SQL-Server-Internals-DataPage/">SQL Server Internals DataPage 資料頁</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>深入 SQL Server 的內部結構，從 Table 物件至 Index 索引，到 Partition、Extent 最後抵達到 Data Page，一層一層探索 SQL Server 的內在。</p>
+<a href="/posts/2021/12/SQL-Server-Internals-DataPage/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/SQL-Server-Internals-DataPage/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Internals-DataPage/" data-id="clg3fmaj6018us4tsbhznd2t2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Internals/" rel="tag">Internals</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Instance-Stacking" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Instance-Stacking/" class="article-date">
+  <time datetime="2021-12-07T11:13:58.000Z" itemprop="datePublished">2021-12-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/SQL-Server-Instance-Stacking/">SQL Server Instance Stacking (Multiple Instances)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 SQL Server Instance Stacking 如設定不同 Port、不同 IP 作為連線區別。</p>
+<a href="/posts/2021/12/SQL-Server-Instance-Stacking/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/SQL-Server-Instance-Stacking/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Instance-Stacking/" data-id="clg3fmaj4018ns4ts5hmm0wn5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Sample-Databases" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Sample-Databases/" class="article-date">
+  <time datetime="2021-12-06T11:13:51.000Z" itemprop="datePublished">2021-12-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/SQL-Server-Sample-Databases/">SQL Server Sample Databases (經典 / 示範資料庫)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 SQL Server 熱門且實用的範例資料庫，可以用於程式開發、資料庫設計參考以及 SQL Server 功能驗證所使用，教學、自用兩相宜。</p>
+<a href="/posts/2021/12/SQL-Server-Sample-Databases/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/SQL-Server-Sample-Databases/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Sample-Databases/" data-id="clg3fmakb01d0s4ts2ujq0cps" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSIS/" rel="tag">SSIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Indexes-Maintenance" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/" class="article-date">
+  <time datetime="2021-12-02T11:15:19.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/12/SQL-Server-Indexes-Maintenance/">SQL Server Indexes Maintenance 索引維護</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 SQL Server 如何查詢資料庫下的資料表需進行維護，自動產生出索引維護指令以及其目前的碎片化及資料列數，讓管理者判斷是否執行。</p>
+<a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Indexes-Maintenance/" data-id="clg3fmaj3018gs4tsedct9l6q" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Penetration-Test" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/11/Penetration-Test/" class="article-date">
+  <time datetime="2021-11-30T13:17:49.000Z" itemprop="datePublished">2021-11-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/11/Penetration-Test/">Penetration Test 滲透測試筆記</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記滲透測試的步驟與使用工具，彙整各式的滲透測試工具與方法，綜合而成能夠自我實作的滲透測試步驟，在請滲透測試專業公司進行之前，能夠先以最少的費用來得到報告。</p>
+<a href="/posts/2021/11/Penetration-Test/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/11/Penetration-Test/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/11/Penetration-Test/" data-id="clg3fmag800xws4ts9jgd0e56" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-ASPNET-MVC-Recall-Develop-Memory" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/" class="article-date">
+  <time datetime="2021-11-29T11:56:05.000Z" itemprop="datePublished">2021-11-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/">ASP.NET MVC 回鍋開發的參考筆記</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記回鍋進行 ASP.NET MVC 開發的注意事項，重要資訊直接 Load 到頭腦的快速存取區，不用在費力回憶，掛一漏萬 😎</p>
+<a href="/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/" data-id="clg3fma9n0055s4ts39rdfe7b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Developing-SQL-Databases" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/11/SQL-Server-Developing-SQL-Databases/" class="article-date">
+  <time datetime="2021-11-27T11:58:56.000Z" itemprop="datePublished">2021-11-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2021/11/SQL-Server-Developing-SQL-Databases/">SQL Server Developing SQL Databases</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 20762 - Developing SQL Server 學習心得以及反思具體可以用於資料庫開發與管理的實踐。項目包含資料庫壓縮、索引設計、索引檢視表、In-Memory Database、FileStream 以及各種資料庫物件的靈活使用，讓系統開發能夠與資料庫應用有更好的結合。</p>
+<a href="/posts/2021/11/SQL-Server-Developing-SQL-Databases/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2021/11/SQL-Server-Developing-SQL-Databases/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/11/SQL-Server-Developing-SQL-Databases/" data-id="clg3fmaim016ps4ts7nkc90x9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/28/">↖ Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><a class="extend next" rel="next" href="/page/30/">Next ↘</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

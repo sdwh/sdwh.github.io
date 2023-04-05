@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC Export CSV (StringBuilder &amp; DataTables) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明 ASP.NET MVC 如何將各式資料來源匯出為 CSV 格式資料，比較 StringBuilder 建立字串的原生 C# 解決方案以及使用 DataTables 的 Zero Dev 解決方案 🙂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC Export CSV (StringBuilder &amp; DataTables)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/ASPNET-MVC-Export-CSV/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明 ASP.NET MVC 如何將各式資料來源匯出為 CSV 格式資料，比較 StringBuilder 建立字串的原生 C# 解決方案以及使用 DataTables 的 Zero Dev 解決方案 🙂">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/DataTables-Export-Examples.png">
+<meta property="article:published_time" content="2022-02-08T11:09:55.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Export-CSV" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/ASPNET-MVC-Export-CSV/" class="article-date">
+  <time datetime="2022-02-08T11:09:55.000Z" itemprop="datePublished">2022-02-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC Export CSV (StringBuilder &amp; DataTables)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#StringBuilder"><span class="toc-text">StringBuilder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DataTables-js"><span class="toc-text">DataTables.js</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%85%E8%A7%A3-Bugs"><span class="toc-text">待解 Bugs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明 ASP.NET MVC 如何將各式資料來源匯出為 CSV 格式資料，比較 <code class="s">StringBuilder</code> 建立字串的原生 C# 解決方案以及使用 <strong>DataTables</strong> 的 Zero Dev 解決方案 🙂</p>
+<a href="/posts/2022/02/ASPNET-MVC-Export-CSV/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="StringBuilder"><a href="#StringBuilder" class="headerlink" title="StringBuilder"></a>StringBuilder</h2><p>匯出為 CSV 使用的是 <code class="s">StringBuilder</code> 組合字串的方式。</p>
+<p>首先是從 DBContext 取得相關的資料，可以搭配 Select 的方式篩選特定的資料欄位。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> data <span class="token operator">=</span> db<span class="token punctuation">.</span>Customer
+    <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>i <span class="token operator">=></span> <span class="token keyword">new</span>
+    <span class="token punctuation">&#123;</span>
+        i<span class="token punctuation">.</span>FirstName<span class="token punctuation">,</span>
+        i<span class="token punctuation">.</span>LastName<span class="token punctuation">,</span>
+        i<span class="token punctuation">.</span>CompanyName
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著透過 <code class="s">StringBuilder</code> 來建構 CSV 內容，藉由 <code class="s">Reflection</code> 的方式可以迭代所有的 Row 匿名類型的屬性，免去逐一輸入的困擾。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Reflection</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Text</span><span class="token punctuation">;</span>
+
+<span class="token class-name">StringBuilder</span> sb <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+sb<span class="token punctuation">.</span><span class="token function">AppendLine</span><span class="token punctuation">(</span><span class="token string">"FirstName,LastName,CompanyName"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> row <span class="token keyword">in</span> data<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">PropertyInfo</span> prop <span class="token keyword">in</span> row<span class="token punctuation">.</span><span class="token function">GetType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> propertyValue <span class="token operator">=</span> prop<span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span>row<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name"><span class="token keyword">var</span></span> cellValue <span class="token operator">=</span>
+            propertyValue <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token punctuation">?</span>
+                <span class="token string">","</span> <span class="token punctuation">:</span> <span class="token string">"\""</span> <span class="token operator">+</span> prop<span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span>row<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"\""</span> <span class="token operator">+</span> <span class="token char">','</span><span class="token punctuation">;</span>
+
+        sb<span class="token punctuation">.</span><span class="token function">Append</span><span class="token punctuation">(</span>cellValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    sb<span class="token punctuation">.</span><span class="token function">Append</span><span class="token punctuation">(</span><span class="token string">"\r\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用 File 的方式回傳 ActionResult，其中 <code class="s">StringBuilder</code> 的內容為 Bytes 必須藉由 <code class="s">Encoding.GetBytes</code> 來進行編碼。</p>
+<p>這邊選擇 <code class="s">Default</code> 的編碼方式，會預設回應 <strong>ANSI 編碼的 CSV</strong>，如果希望回應 <strong>UTF-8 編碼的 CSV</strong> 可以在另行調整。但 Excel 預設會以 ANSI 的方式解碼，會先看到亂碼必須要再自行調整編碼方式，稍微不方便。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">return</span> <span class="token function">File</span><span class="token punctuation">(</span>
+        Encoding<span class="token punctuation">.</span>Default<span class="token punctuation">.</span><span class="token function">GetBytes</span><span class="token punctuation">(</span>
+            sb<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token string">"text/csv"</span><span class="token punctuation">,</span>
+            <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Format</span><span class="token punctuation">(</span><span class="token string">"Export-&#123;0&#125;.csv"</span><span class="token punctuation">,</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token string">"yyyyMMdd-HHmmss"</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="DataTables-js"><a href="#DataTables-js" class="headerlink" title="DataTables.js"></a>DataTables.js</h2><p>使用 DataTables 的方式僅需要藉由 JS Object 來設定 Library 使用就可以輕鬆進行資料的匯出，除了 CSV 外，Excel、PDF 或者是 Print 的方式都支援，同時提供使用者自行篩選資料的功能，能夠減少許多繁瑣的開發工作。</p>
+<p><img src="/assets/DataTables-Export-Examples.png"></p>
+<p>需要安裝的 Library，使用 cdnjs 搭配 libman.json 進行管理。</p>
+<p><code class="watch">libman.json</code></p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+  <span class="token property">"defaultProvider"</span><span class="token operator">:</span> <span class="token string">"cdnjs"</span><span class="token punctuation">,</span>
+  <span class="token property">"libraries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"datatables.net@2.1.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/datatables.net/"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"datatables.net-bs@2.1.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/datatables.net-bs/"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"jszip@3.7.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/jszip/"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"pdfmake@0.2.4"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/pdfmake/"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"datatables-buttons@2.2.2"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/datatables-buttons/"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"datatables.net-buttons-bs@2.2.2"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/datatables.net-buttons-bs/"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"library"</span><span class="token operator">:</span> <span class="token string">"datatables.net-buttons-dt@2.2.2"</span><span class="token punctuation">,</span>
+      <span class="token property">"destination"</span><span class="token operator">:</span> <span class="token string">"lib/datatables.net-buttons-dt"</span><span class="token punctuation">,</span>
+      <span class="token property">"files"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"buttons.dataTables.css"</span><span class="token punctuation">,</span>
+        <span class="token string">"buttons.dataTables.min.css"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">view.cshtml / style sections</code></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables.net-bs/dataTables.bootstrap.css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables.net-buttons-dt/buttons.dataTables.min.css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css">
+    <span class="token selector">.dataTables_info</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token selector">table.dataTable</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">margin-top</span><span class="token punctuation">:</span> 2rem <span class="token important">!important</span><span class="token punctuation">;</span>
+        <span class="token property">margin-bottom</span><span class="token punctuation">:</span> 2rem <span class="token important">!important</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">view.cshtml</code></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>DataTables<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>table</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>table table-bordered<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dataTable<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>thead</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span><span class="token punctuation">></span></span>
+                @Html.DisplayNameFor(model => model.FirstName)
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span>
+            ...
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>thead</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tbody</span><span class="token punctuation">></span></span>
+    @foreach (var item in Model)
+    &#123;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>td</span><span class="token punctuation">></span></span>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>td</span><span class="token punctuation">></span></span>
+            ...
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span>
+    &#125;
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tbody</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>table</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">view.cshtml / section scripts</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name">@section</span> scripts <span class="token punctuation">&#123;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>下列的 Script 都是放在 <code class="s">section scripts</code> 當中：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html">@* DataTables Cores *@
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables.net/jquery.dataTables.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables.net-bs/dataTables.bootstrap.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+@* DataTables Buttons *@
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables-buttons/js/dataTables.buttons.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables.net-buttons-bs/buttons.bootstrap.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+@* Basic *@
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables-buttons/js/buttons.html5.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+@* Excel *@
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/jszip/jszip.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+@* Print *@
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/datatables-buttons/js/buttons.print.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+@* PDF *@
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/pdfmake/pdfmake.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/lib/pdfmake/vfs_fonts.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>關於 <code class="s">DataTables</code> Init 上實際的呼叫函式。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#dataTable'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">DataTable</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+        <span class="token string-property property">"searching"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"pageLength"</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"bLengthChange"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"order"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">"desc"</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// Default Order</span>
+        <span class="token string-property property">"columnDefs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span> <span class="token string-property property">"targets"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string-property property">"orderable"</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span> <span class="token string-property property">"targets"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string-property property">"orderable"</span><span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span> <span class="token string-property property">"targets"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string-property property">"searchable"</span><span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"language"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token string-property property">"lengthMenu"</span><span class="token operator">:</span> <span class="token string">"Display _MENU_ records per page"</span><span class="token punctuation">,</span>
+            <span class="token string-property property">"zeroRecords"</span><span class="token operator">:</span> <span class="token string">"沒有任何查詢結果，請調整搜尋條件後再執行。"</span><span class="token punctuation">,</span>
+            <span class="token string-property property">"info"</span><span class="token operator">:</span> <span class="token string">"搜尋共有 _TOTAL_ 個項目"</span><span class="token punctuation">,</span>
+            <span class="token string-property property">"infoEmpty"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+            <span class="token string-property property">"infoFiltered"</span><span class="token operator">:</span> <span class="token string">"(filtered from _MAX_ total records)"</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"dom"</span><span class="token operator">:</span> <span class="token string">"Blfrtip"</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"buttons"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">'copy'</span><span class="token punctuation">,</span>
+            <span class="token string">'excel'</span><span class="token punctuation">,</span>
+            <span class="token string">'csv'</span><span class="token punctuation">,</span>
+            <span class="token string">'pdf'</span><span class="token punctuation">,</span>
+            <span class="token string">'print'</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>需要注意的 <code class="s">dom</code> 一定要加入在 DataTables 的啟動函式當中，否則 Buttons 不會正常顯示。</p>
+        </div>
+    </div>
+</div>
+
+<p>關於 DataTables 的 <code class="s">dom</code> 可以參考 <a target="_blank" rel="noopener" href="https://datatables.net/reference/option/dom">dom</a>，關於 DataTables <code class="s">buttons</code> 可以參考 <a target="_blank" rel="noopener" href="https://datatables.net/reference/option/buttons">buttons</a></p>
+<h3 id="待解-Bugs"><a href="#待解-Bugs" class="headerlink" title="待解 Bugs"></a>待解 Bugs</h3><p>使用 PDF 匯出的文件中文標題無法正常顯示 😥</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://fakestandard.github.io/post/dotnet/dotnet-5-closedxmlsimple/">將資料匯出成 CSV</a></p>
+<p><a target="_blank" rel="noopener" href="https://datatables.net/extensions/buttons/examples/html5/titleMessage.html">DataTables Export Examples</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/ASPNET-MVC-Export-CSV/" data-id="clg3fma9b003rs4ts4lbzcfqj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/SSDLC-Essentials/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SSDLC 附表十《資通系統防護基準修正規定》DSCS 的精華湯 🥣</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/CSS-Margin-Padding-Like-A-Pro/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          CSS | Margin &amp; Padding Like A Pro
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

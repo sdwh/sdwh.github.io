@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Sample Databases (經典 / 示範資料庫) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 熱門且實用的範例資料庫，可以用於程式開發、資料庫設計參考以及 SQL Server 功能驗證所使用，教學、自用兩相宜。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Sample Databases (經典 &#x2F; 示範資料庫)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/12/SQL-Server-Sample-Databases/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 熱門且實用的範例資料庫，可以用於程式開發、資料庫設計參考以及 SQL Server 功能驗證所使用，教學、自用兩相宜。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2021-12-06T11:13:51.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="SSIS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Sample-Databases" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/12/SQL-Server-Sample-Databases/" class="article-date">
+  <time datetime="2021-12-06T11:13:51.000Z" itemprop="datePublished">2021-12-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Sample Databases (經典 / 示範資料庫)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Northwind"><span class="toc-text">Northwind</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AdeventureWorks"><span class="toc-text">AdeventureWorks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wide-World-Importers"><span class="toc-text">Wide World Importers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ConsotoUniversity"><span class="toc-text">ConsotoUniversity</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 熱門且實用的範例資料庫，可以用於程式開發、資料庫設計參考以及 SQL Server 功能驗證所使用，教學、自用兩相宜。</p>
+<a href="/posts/2021/12/SQL-Server-Sample-Databases/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><table>
+<thead>
+<tr>
+<th>資料庫名稱</th>
+<th>版本</th>
+<th>下載</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Northwind</td>
+<td>英文</td>
+<td><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/microsoft/sql-server-samples/master/samples/databases/northwind-pubs/instnwnd.sql">下載</a></td>
+</tr>
+<tr>
+<td>Northwind</td>
+<td>中文</td>
+<td><a href="#">下載</a></td>
+</tr>
+<tr>
+<td>AdventureWorks</td>
+<td>Full</td>
+<td><a href="#">2014</a><span style="margin-right:30px;"></span><a href="#">2016</a><span style="margin-right:30px;"></span><a href="#">2019</a></td>
+</tr>
+<tr>
+<td>AdventureWorks</td>
+<td>DW</td>
+<td><a href="#">2014</a><span style="margin-right:30px;"></span><a href="#">2016</a><span style="margin-right:30px;"></span><a href="#">2019</a></td>
+</tr>
+<tr>
+<td>AdventureWorks</td>
+<td>LT</td>
+<td><a href="#">2014</a><span style="margin-right:30px;"></span><a href="#">2016</a><span style="margin-right:30px;"></span><a href="#">2019</a></td>
+</tr>
+<tr>
+<td>Wide World Importers</td>
+<td>Full</td>
+<td><a href="#">下載</a></td>
+</tr>
+<tr>
+<td>Wide World Importers</td>
+<td>DW</td>
+<td><a href="#">下載</a></td>
+</tr>
+<tr>
+<td>Wide World Importers</td>
+<td>Standard</td>
+<td><a href="#">下載</a></td>
+</tr>
+<tr>
+<td>Consoto University</td>
+<td></td>
+<td><a href="#">下載</a></td>
+</tr>
+</tbody></table>
+<h3 id="Northwind"><a href="#Northwind" class="headerlink" title="Northwind"></a>Northwind</h3><p>資料庫的內容是一家販售各種食品的公司，資料表包含其員工、客戶、產品以及與客戶的交易紀錄。原先是微軟規劃用於介紹 Microsoft Access 功能所使用的範例資料庫，後續陸續應用至 SQL Server 上。</p>
+<p>有使用到主鍵、外鍵、索引、非叢集索引、檢視表、預存程序等資料庫物件，可以供初入資料庫開發的學習使用。</p>
+<p>因為過於知名，還有愛好者將其資料內容翻譯為中文版的北風資料庫。但中文版的北風資料庫僅有基本的資料表，缺乏檢視、預存程序等資料庫物件。</p>
+<p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/microsoft/sql-server-samples/master/samples/databases/northwind-pubs/instnwnd.sql">Northwind | Github</a></p>
+<div class="conversation">
+  <p class="message sent message-content">Hi, Do you have a minute to talk about Northwind Database?</p>
+  <p class="message received message-content">Sure, What do you want to know?</p>
+  <p class="message sent message-content">Well, I’m curious about how it works and what kind of data it contains.</p>
+  <p class="message received message-content">OK, let me give you a brief overview. Northwind Database is a sample database that was originally created by Microsoft.</p>
+  <p class="message sent message-content">Really? What was the purpose of creating it?</p>
+  <p class="message received message-content">It was used as a basis for their tutorials in a variety of database products for decades. The database contains sales data for a fictitious company called Northwind Traders.</p>
+  <p class="message sent message-content">Wow, that sounds interesting. What kind of products does Northwind Traders sell?</p>
+  <p class="message received message-content">They sell specialty foods from around the world. You can find products like cheese, tea, seafood, spices and more in their database.</p>
+  <p class="message sent message-content">That makes me hungry. How do they import and export these products?</p>
+  <p class="message received message-content">They have suppliers and customers in different countries. The database has tables for suppliers, customers, orders, products and more.</p>
+</div>
+
+<h3 id="AdeventureWorks"><a href="#AdeventureWorks" class="headerlink" title="AdeventureWorks"></a>AdeventureWorks</h3><p>資料庫內容為一家腳踏車及零件販售公司，藉由結構描述將資料表分為五大類，分別是：人力資源、人員、產品、採購以及銷售。相較於 Northwind 更為豐富，使用到更多的資料庫物件。</p>
+<p>版本依照，並依照資料庫內容分為 Lightweight (AdventureWorksLT)、Data Warehouse (AdventureWorksDW) 以及 OLTP (AdventureWorks) 等三種版本，其中 LT 版本是輕量級的示範性資料庫，適合用於測試資料查詢、程式介接測試；DW 版本則適合用於 OLAP 的商業智慧分析應用的測試資料庫。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Microsoft/sql-server-samples/releases/tag/adventureworks">AdventureWorks sample databases | Github</a></p>
+<div class="conversation">
+  <p class="message sent message-content">Hi, Do you have some time to talk about Adventure Works Database?</p>
+  <p class="message received message-content">Hi, Sure, I do. What do you want to talk about?</p>
+  <p class="message sent message-content">Well, I’m interested in learning more about this database and how to use it.</p>
+  <p class="message received message-content">OK, let me give you some background information. Adventure Works Database is a sample database that was created by Microsoft.</p>
+  <p class="message sent message-content">Really? What was the reason for creating it?</p>
+  <p class="message received message-content">It was designed to provide an example of an online transaction processing (OLTP) database. It supports a fictitious multinational manufacturing company called Adventure Works Cycles.</p>
+  <p class="message sent message-content">Wow, that sounds cool. What kind of products does Adventure Works Cycles make?</p>
+  <p class="message received message-content">They make bicycles and bicycle components You can find products like frames, wheels, brakes and more in their database.</p>
+  <p class="message sent message-content">That sounds fun. How do they sell and deliver these products?</p>
+  <p class="message received message-content">They have customers and vendors in different countries. The database has tables for customers, vendors, sales orders, purchase orders and more.</p>
+  <p class="message sent message-content">I see. How can I access this database?</p>
+  <p class="message received message-content">Well, if you have SQL Server installed on your computer, you can download it from GitHub by following the instructions there. Or you can create it on Azure SQL Database by using the sample option.</p>
+  <p class="message sent message-content">Thanks for the tips. Do you use this database often?</p>
+  <p class="message received message-content">Yes, I do. It’s very helpful for practicing SQL queries and learning about OLTP databases.</p>
+</div>
+
+
+<h3 id="Wide-World-Importers"><a href="#Wide-World-Importers" class="headerlink" title="Wide World Importers"></a>Wide World Importers</h3><p>目前微軟示範資料庫中最為完整架構的代表，全球規模的進口公司。資料庫使用到各種 SQL Server 的功能，包含 In-Memory Table、Dynamic Data Masking、Always Encrypted、Row Level Security 等示範。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/sample-scripts">wide-world-importers/sample-scripts | Github</a></p>
+<p>完整版本的資料有使用到 FileStream 因此無法在 Express Localdb 上還原，但另有提供 Standard 版本的 bak 供於 Express Localdb 上還原使用，此外有提供 10 GB 等級的 OLAP 版本資料庫。配合 SQL Server 周邊工具，提供了 SSIS Package 專案供使用。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers">Wide World Importers | Github</a></p>
+<div class="conversation">
+  <p class="message sent message-content">Hi, Do you know what Wide World Importers is?</p>
+  <p class="message received message-content">Hi, Yes, I do. It’s a sample database for SQL Server.</p>
+  <p class="message sent message-content">Really? What kind of data does it contain?</p>
+  <p class="message received message-content">It contains data about a fictitious company that imports and sells novelty goods. The company has customers and suppliers around the world.</p>
+</div>
+
+<h3 id="ConsotoUniversity"><a href="#ConsotoUniversity" class="headerlink" title="ConsotoUniversity"></a>ConsotoUniversity</h3><p>微軟用於介紹 EntityFramework 技術所使用的資料庫，內容為一所大學所開設的課程以及學生、教師與修課資訊。</p>
+<p>資料庫的架構簡單，主要不是作為 SQL Server Query 的應用，而是介紹系統開發如何使用 EntityFramework 以 Code-First 的方式從 Code 產生 DAtabase。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/ef/ef6/resources/school-database">School Sample Database</a></p>
+<div class="conversation">
+  <p class="message sent message-content">Hi, Do you know what Consoto University is?</p>
+  <p class="message received message-content">Hi, Yes, I do. It’s a fictitious organization that Microsoft uses as an example company name and domain name.</p>
+  <p class="message sent message-content">Really? What is the purpose of using it?</p>
+  <p class="message received message-content">It’s used for demonstrating various features and technologies of Microsoft products. For example, it’s used for showing how to use ASP.NET Core and related technologies.</p>
+  <p class="message sent message-content">That sounds interesting. How can I learn more about it?</p>
+  <p class="message received message-content">Well, if you are interested in ASP.NET Core development, you can check out this GitHub repository that contains a demo application for Consoto University. It shows how to use different concepts and techniques in a larger context.</p>
+</div>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://dzone.com/articles/collection-sql-server-sample-databases">Collection: SQL Server Sample Databases</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/new-sql-server-2016-sample-database/">The new SQL Server 2016 sample database</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/12/SQL-Server-Sample-Databases/" data-id="clg3fmakb01d0s4ts2ujq0cps" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSIS/" rel="tag">SSIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Indexes Maintenance 索引維護</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/12/SQL-Server-Instance-Stacking/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Instance Stacking (Multiple Instances)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

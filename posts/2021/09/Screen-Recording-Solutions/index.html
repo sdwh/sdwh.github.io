@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>螢幕錄製的解決方案 Screen Recording Solutions (ShareX, OBS) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記經常使用的螢幕錄製軟體、軟體使用方式及使用上的設定，軟體包含 ShareX、OBS、ScreenToGif。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="螢幕錄製的解決方案 Screen Recording Solutions (ShareX, OBS)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/09/Screen-Recording-Solutions/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記經常使用的螢幕錄製軟體、軟體使用方式及使用上的設定，軟體包含 ShareX、OBS、ScreenToGif。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-monitor.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Sharex-After-Capture-Tasks.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Sharex-File-Naming.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Sharex-Disable-Uploading.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Sharex-Enable-Context-Menu-Edit.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Capture.png">
+<meta property="og:image" content="https://sdwh.dev/assets/OBS-Diablo2-Example.png">
+<meta property="article:published_time" content="2021-09-01T10:09:06.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Tools">
+<meta property="article:tag" content="Toys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/openmoji-monitor.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Screen-Recording-Solutions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/09/Screen-Recording-Solutions/" class="article-date">
+  <time datetime="2021-09-01T10:09:06.000Z" itemprop="datePublished">2021-09-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Toys/">Toys</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      螢幕錄製的解決方案 Screen Recording Solutions (ShareX, OBS)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ShareX"><span class="toc-text">ShareX</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BB%9F%E9%AB%94%E8%A8%AD%E5%AE%9A"><span class="toc-text">軟體設定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OBS"><span class="toc-text">OBS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ScreenToGif"><span class="toc-text">ScreenToGif</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記經常使用的螢幕錄製軟體、軟體使用方式及使用上的設定，軟體包含 <strong>ShareX、OBS、ScreenToGif</strong>。</p>
+<a href="/posts/2021/09/Screen-Recording-Solutions/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/openmoji-monitor.svg" alt="logo" width="128px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="ShareX"><a href="#ShareX" class="headerlink" title="ShareX"></a>ShareX</h2><p>Windows 10 內建的截圖軟體相當方便，藉由控制台調整可以 PtrScrn 一鍵將螢幕擷取為檔案，但也僅只於此。而 ShareX 則提供有更豐富截圖需求者的工具，支援多種快捷鍵的方式進行截圖：全螢幕、執行中的視窗、區域，甚至是 Gif 錄製與 Mp4 的錄製也都支援，完全是截圖軟體中的瑞士刀，小巧精美。</p>
+<p>同時 ShareX 提供了實用的編輯工具，可以對圖片繪圖後製、馬賽克化、標註步驟，非常方便！此外 ShareX 支援截圖的任務流程，可以自行客製截圖後的命名、處理、上傳等相關設定，但目前個人比較少使用到這項功能，主要使用於 ShareX 強大的截圖及編輯功能。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ShareX/ShareX">❤️ ShareX | Github</a></p>
+<h3 id="軟體設定"><a href="#軟體設定" class="headerlink" title="軟體設定"></a>軟體設定</h3><p>所以可以從附圖的方式，移除掉不需要的流程步驟：</p>
+<p><img src="/assets/Sharex-After-Capture-Tasks.png"></p>
+<p>在檔案的命名上，個人喜歡這樣的設定：</p>
+<p><img src="/assets/Sharex-File-Naming.png"></p>
+<p>而預設上 ShareX 會將圖片自動進行上傳，這個功能使用不到的話可以下列方式進行關閉：</p>
+<p><img src="/assets/Sharex-Disable-Uploading.png"></p>
+<p>另如果希望圖片直接右鍵清單使用 ShareX 的編輯工具，可以調整該項設定</p>
+<p><img src="/assets/Sharex-Enable-Context-Menu-Edit.png"></p>
+<h2 id="OBS"><a href="#OBS" class="headerlink" title="OBS"></a>OBS</h2><p>多數的時候都是以 Windows 10 內建的 <strong>Capture</strong> 來完成螢幕擷取的工作，但 <strong>Capture</strong> 無法支援桌面與檔案總管的錄製，此外特定的應用程式也不受支援。為此尋找到了 OBS 作為新的螢幕錄影解決方案。而 OBS 不僅提供了彈性的螢幕錄製設定，同時它的強項更是在影片的直播串流上。</p>
+<p><img src="/assets/Windows-Capture.png"></p>
+<p>OBS 以場景的方式<strong>管理多重來源的畫面顯示</strong>，也可以<strong>調整多重音訊的來源</strong>，因此能夠要符合遊戲遊玩的錄製情境：</p>
+<ul>
+<li>遊戲、應用程式畫面</li>
+<li>資訊圖卡、簡報</li>
+<li>子母畫面</li>
+<li>遊戲音樂</li>
+<li>麥克風輸入</li>
+</ul>
+<p>對 OBS 而言只是一片小蛋糕。</p>
+<p><img src="/assets/OBS-Diablo2-Example.png"></p>
+<p><a target="_blank" rel="noopener" href="https://obsproject.com/">❤️ OBS</a></p>
+<h2 id="ScreenToGif"><a href="#ScreenToGif" class="headerlink" title="ScreenToGif"></a>ScreenToGif</h2><p>相較於 Sharex 多了 Gif 的編輯工具，可以刪減多餘的影格、藉由縮放影格來調整影格播放速度，支援顯示所輸入的鍵盤指令並可以新增說明文字等。因此如果只是<strong>輕量的 Gif 錄製需求</strong>，可以使用 <strong>Sharex</strong> 來完成，如果<strong>有後製編輯的需求</strong>則可以使用 <strong>ScreenToGif</strong> 來作業。</p>
+<p>而對網頁空間而言，Gif 的檔案大小相對於圖片而言非常大，因此通常都會再搭配 Gif minify 讓不失真的情況下，減少 Gif 的檔案大小：<a target="_blank" rel="noopener" href="https://www.iloveimg.com/compress-image/compress-gif">Gif Minify</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/NickeManarin/ScreenToGif">❤️ ScreenToGif | Github</a></p>
+<hr>
+<p>Logo emojis designed by <a target="_blank" rel="noopener" href="https://github.com/hfg-gmuend/openmoji">OpenMoji</a> – the open-source emoji and icon project. License: CC BY-SA 4.0</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/09/Screen-Recording-Solutions/" data-id="clg3fmal901ges4tsds6w0qkr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tools/" rel="tag">Tools</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/08/Government-Procurement-True-False-Guess/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">寫給 21 世紀軟體工程師的採購法筆記 | 是非題怎麼猜</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/09/Government-Procurement-Series-9/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          寫給 21 世紀軟體工程師的採購法筆記 | 停權篇
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Windows 10 Encryption File System (加密檔案系統) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明如何使用 Windows 10 Encryption File System (加密檔案系統)，並比較與 Bitlocker 的差別，以及說明 EFS 是否能夠作為 Windows 作業系統在傳輸資料上加密的解決方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows 10 Encryption File System (加密檔案系統)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/Windows-10-Encryption-File-System/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明如何使用 Windows 10 Encryption File System (加密檔案系統)，並比較與 Bitlocker 的差別，以及說明 EFS 是否能夠作為 Windows 作業系統在傳輸資料上加密的解決方案。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-10-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Icon.PNG">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Step1.PNG">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Step2.PNG">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Step3.PNG">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Desktop-Reset.PNG">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-MMC-Cert-Management.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Deny-Access.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Choose-Cert.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Import-Cert.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-EFS-Import-Cert-2.png">
+<meta property="article:published_time" content="2021-07-26T10:16:05.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Windows-10-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows-10-Encryption-File-System" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/Windows-10-Encryption-File-System/" class="article-date">
+  <time datetime="2021-07-26T10:16:05.000Z" itemprop="datePublished">2021-07-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows 10 Encryption File System (加密檔案系統)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#EFS"><span class="toc-text">EFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFS-%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%A9%9F"><span class="toc-text">EFS 使用步驟</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E6%AA%94%E6%A1%88"><span class="toc-text">加密檔案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%81%A2%E5%BE%A9%E6%A1%8C%E9%9D%A2%E9%A0%90%E8%A8%AD%E5%8A%A0%E5%AF%86"><span class="toc-text">恢復桌面預設加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E6%AA%94%E6%A1%88%E6%86%91%E8%AD%89"><span class="toc-text">加密檔案憑證</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AA%A2%E8%A6%96%E5%8A%A0%E5%AF%86%E6%AA%94%E6%A1%88%E6%86%91%E8%AD%89"><span class="toc-text">檢視加密檔案憑證</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%AF%E5%85%A5%E5%8A%A0%E5%AF%86%E6%AA%94%E6%A1%88%E6%86%91%E8%AD%89"><span class="toc-text">匯入加密檔案憑證</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFS-VS-Bitlocker"><span class="toc-text">EFS VS Bitlocker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFS-%E7%9A%84%E9%BB%91%E6%9A%97%E9%9D%A2"><span class="toc-text">EFS 的黑暗面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B5%90%E8%AB%96"><span class="toc-text">結論</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明如何使用 Windows 10 Encryption File System (加密檔案系統)，並比較與 Bitlocker 的差別，以及說明 EFS 是否能夠作為 Windows 作業系統在傳輸資料上加密的解決方案。</p>
+<a href="/posts/2021/07/Windows-10-Encryption-File-System/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Windows-10-Logo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>發現 EFS 是來自於尋找 Windows 作業系統上是否預設資料傳輸的解決方案。例如想要將檔案傳輸給同事，但想要先將檔案進行加密，再讓同事自行解密取得資料內容。原本是想到使用 Zip、RAR 或 7z 的方式來進行。但發現 Windows 10 不支援使用 Zip 加密搭配 Password 的方式，此外個人電腦上也沒有 RAR 或者 7z 可以使用。於是就可以尋找其他的替代解決方案，過程中意外的發現了 EFS。</p>
+<h3 id="EFS"><a href="#EFS" class="headerlink" title="EFS"></a>EFS</h3><p>根據維基百科，早從 Windows 2000 就開始支援的功能，但一直是專業版、企業版的作業系統才能使用的功能，所以對於這個功能很陌生也不意外。而 EFS 就是利用產生加密檔案憑證的方式，對檔案進行加密，如果不具有憑證檔案就無法存取。</p>
+<p>EFS 使用上的限制除必須是 Windows Professional (專業版)、Enterprise (企業版)外，檔案所屬磁碟的檔案格式必須為 NTFS 才能夠使用 EFS。</p>
+<h3 id="EFS-使用步驟"><a href="#EFS-使用步驟" class="headerlink" title="EFS 使用步驟"></a>EFS 使用步驟</h3><h4 id="加密檔案"><a href="#加密檔案" class="headerlink" title="加密檔案"></a>加密檔案</h4><p>完成加密後，檔案圖示右上方會出現金色鎖頭的圖案。</p>
+<p><img src="/assets/Windows-EFS-Icon.PNG"></p>
+<p>加密的第一步為對檔案右鍵並點選<strong>內容</strong>後，依序選擇<strong>進階</strong>與<strong>加密內容，保護資料</strong>：</p>
+<p><img src="/assets/Windows-EFS-Step1.PNG"><br><img src="/assets/Windows-EFS-Step2.PNG"></p>
+<p>最後在<strong>加密警告</strong>的部分，要注意如果檔案是在桌面上使用「加密檔案及其上層資料夾」會導致日後所有新增在桌面的檔案都被自動加密，很不方便。</p>
+<p><img src="/assets/Windows-EFS-Step3.PNG"></p>
+<h4 id="恢復桌面預設加密"><a href="#恢復桌面預設加密" class="headerlink" title="恢復桌面預設加密"></a>恢復桌面預設加密</h4><p>而要恢復方法是另外建立一個桌面資料夾，並調整快速存取中<strong>桌面</strong>的位置來處理。</p>
+<p><img src="/assets/Windows-EFS-Desktop-Reset.PNG"></p>
+<h4 id="加密檔案憑證"><a href="#加密檔案憑證" class="headerlink" title="加密檔案憑證"></a>加密檔案憑證</h4><p>第一次使用加密檔案系統，會自動產生一張檔案加密憑證並儲存於 <strong>個人\憑證</strong> 當中。</p>
+<p><img src="/assets/Windows-EFS-MMC-Cert-Management.png"></p>
+<p>如果不具有權限的使用者嘗試存取檔案，會出現下列錯誤訊息：</p>
+<p><img src="/assets/Windows-EFS-Deny-Access.png"></p>
+<h4 id="檢視加密檔案憑證"><a href="#檢視加密檔案憑證" class="headerlink" title="檢視加密檔案憑證"></a>檢視加密檔案憑證</h4><p>可以使用 <strong>使用者帳戶</strong> 來檢視目前用於加密檔案的加密檔案憑證，如果<strong>個人\憑證</strong>中有多張憑證，可以從這裡切換選擇。而如果是要解密檔案，作業系統會自動從多張的加密檔案憑證中自動選擇適合的檔案。</p>
+<p>快速打開使用者帳戶的方式：執行 <code class="watch">control userpasswords</code></p>
+<p><img src="/assets/Windows-EFS-Choose-Cert.png"></p>
+<h4 id="匯入加密檔案憑證"><a href="#匯入加密檔案憑證" class="headerlink" title="匯入加密檔案憑證"></a>匯入加密檔案憑證</h4><p>如果作業系統有異動，並且有保留當初的加密檔案憑證，匯入之後就可以恢復存取加密的檔案。</p>
+<p><img src="/assets/Windows-EFS-Import-Cert.png"><br><img src="/assets/Windows-EFS-Import-Cert-2.png"></p>
+<h3 id="EFS-VS-Bitlocker"><a href="#EFS-VS-Bitlocker" class="headerlink" title="EFS VS Bitlocker"></a>EFS VS Bitlocker</h3><p>EFS 是檔案層級的加密方式，Bitlocker 則是磁碟層級的加密方式。但兩者都無法作為傳輸資料加密的解決方案，因為作為收到加密檔案的一方而言，沒有適合的解密的方式。</p>
+<p>更多的比較可以參考 <a target="_blank" rel="noopener" href="https://www.howtogeek.com/236719/whats-the-difference-between-bitlocker-and-efs-encrypting-file-system-on-windows/">What’s the Difference Between BitLocker and EFS (Encrypting File System) on Windows?</a></p>
+<h3 id="EFS-的黑暗面"><a href="#EFS-的黑暗面" class="headerlink" title="EFS 的黑暗面"></a>EFS 的黑暗面</h3><p>EFS 可能會被利用作為勒索軟體加密檔案的用途，詳見： <a target="_blank" rel="noopener" href="https://www.ithome.com.tw/news/135488">Windows EFS可被用來實作勒索軟體，防毒軟體偵測不到</a></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>關於作業系統的檔案加密，在 Pluralsight 的課程曾經有學習到，對於實體侵入的方式沒有加密的檔案基本上是任人任意存取，而課程中所推薦的是使用 Bitlocker 整個磁碟的加密方式。而 EFS 則是檔案層級的各別加密方式，使用的情境較限制。</p>
+<p>而如果要做為資料傳輸的加密解決方案，則仍是得以 RAR、7z 等支援使用 Password 作為解密金鑰的加密方案，才能夠讓傳輸的雙方達成加密傳輸的效果。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.techspot.com/guides/2069-how-to-encrypt-windows/">How to Encrypt Files, Folders and Drives on Windows 10</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/Windows-10-Encryption-File-System/" data-id="clg3fmamw01lks4ts1fpgb6rl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Procurement-Certificate-Basic-Absolutely-Correct-Answers/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">採購專業人員基礎訓練測驗準備 - 題庫分析⭐絕對正確的答案篇</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/SASS-SCSS-Note/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SASS / SCSS 使用筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

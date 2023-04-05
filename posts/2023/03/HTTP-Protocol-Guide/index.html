@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>每個 Developer 都要知道的 Http Protocol | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="作為開發人員，你可能已經聽過 HTTP 協議，它是支撐網絡傳輸的核心協議之一。HTTP 是一個標準的客戶端&#x2F;伺服器協議，用於在網絡上傳輸資料，也是現代應用程式和網站開發中的關鍵部分。本文將探討 HTTP 協議的基礎知識，以及為什麼每個開發人員都應該了解 HTTP 協議。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="每個 Developer 都要知道的 Http Protocol">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/03/HTTP-Protocol-Guide/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="作為開發人員，你可能已經聽過 HTTP 協議，它是支撐網絡傳輸的核心協議之一。HTTP 是一個標準的客戶端&#x2F;伺服器協議，用於在網絡上傳輸資料，也是現代應用程式和網站開發中的關鍵部分。本文將探討 HTTP 協議的基礎知識，以及為什麼每個開發人員都應該了解 HTTP 協議。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/globe.svg">
+<meta property="article:published_time" content="2023-03-14T11:10:32.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Generated">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/globe.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-HTTP-Protocol-Guide" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/03/HTTP-Protocol-Guide/" class="article-date">
+  <time datetime="2023-03-14T11:10:32.000Z" itemprop="datePublished">2023-03-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      每個 Developer 都要知道的 Http Protocol
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%A2%83%E5%B0%8D%E8%A9%B1"><span class="toc-text">情境對話</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-HTTP-%E5%8D%94%E8%AD%B0"><span class="toc-text">什麼是 HTTP 協議</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E5%8D%94%E8%AD%B0%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-text">HTTP 協議的工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E5%8D%94%E8%AD%B0%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-text">HTTP 協議的版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-Request-amp-Response"><span class="toc-text">HTTP Request &amp; Response</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E5%8D%94%E8%AD%B0%E7%9A%84%E5%84%AA%E9%BB%9E%E5%92%8C%E7%BC%BA%E9%BB%9E"><span class="toc-text">HTTP 協議的優點和缺點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-HTTP-%E7%8B%80%E6%85%8B%E7%A2%BC%EF%BC%9F"><span class="toc-text">什麼是 HTTP 狀態碼？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-HTTP-Header%EF%BC%9F"><span class="toc-text">什麼是 HTTP Header？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Content-Disposition"><span class="toc-text">Content Disposition</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%B6%E4%BC%B8%E5%95%8F%E9%A1%8C"><span class="toc-text">延伸問題</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-RESTful-API"><span class="toc-text">什麼是 RESTful API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-2-%E7%9A%84%E4%B8%BB%E8%A6%81%E6%94%B9%E9%80%B2%E6%98%AF%E4%BB%80%E9%BA%BC"><span class="toc-text">HTTP&#x2F;2 的主要改進是什麼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-HTTP-1-x-%E5%92%8C-HTTP-2"><span class="toc-text">什麼是 HTTP&#x2F;1.x 和 HTTP&#x2F;2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E5%8D%94%E8%AD%B0%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E5%A6%82%E4%BD%95"><span class="toc-text">HTTP 協議的安全性如何</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E5%92%8C-HTTPS-%E6%9C%89%E4%BB%80%E9%BA%BC%E5%8D%80%E5%88%A5"><span class="toc-text">HTTP 和 HTTPS 有什麼區別</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-2-%E7%9A%84%E4%B8%BB%E8%A6%81%E5%84%AA%E9%BB%9E%E6%98%AF%E4%BB%80%E9%BA%BC"><span class="toc-text">HTTP&#x2F;2 的主要優點是什麼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-%E5%8D%94%E8%AD%B0%E6%9C%89%E5%93%AA%E4%BA%9B%E5%B8%B8%E8%A6%8B%E7%9A%84%E5%95%8F%E9%A1%8C"><span class="toc-text">HTTP 協議有哪些常見的問題</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coding"><span class="toc-text">Coding</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PowerShell"><span class="toc-text">PowerShell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Curl"><span class="toc-text">Curl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C"><span class="toc-text">C#</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Python"><span class="toc-text">Python</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>作為開發人員，你可能已經聽過 HTTP 協議，它是支撐網絡傳輸的核心協議之一。HTTP 是一個標準的客戶端/伺服器協議，用於在網絡上傳輸資料，也是現代應用程式和網站開發中的關鍵部分。本文將探討 HTTP 協議的基礎知識，以及為什麼每個開發人員都應該了解 HTTP 協議。</p>
+<a href="/posts/2023/03/HTTP-Protocol-Guide/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/globe.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="情境對話"><a href="#情境對話" class="headerlink" title="情境對話"></a>情境對話</h3><div class="conversation">
+  <p class="message received message-content">嗨，小N，你有聽過 HTTP Protocol 嗎？</p>
+
+  <p class="message sent message-content">有點印象，好像是網路傳輸協議的一種？</p>
+
+  <p class="message received message-content">對的，HTTP 是一種用來在網路上傳輸資料的協議，全名叫做 Hypertext Transfer Protocol。簡單來說，就是在網路上用來傳送 HTML、CSS、JavaScript 等網頁資源的協議。</p>
+
+  <p class="message sent message-content">好像有點明白了，那HTTP是怎麼工作的呢？</p>
+
+  <p class="message received message-content">HTTP的工作方式很簡單。它的工作流程大概可以概括為以下幾個步驟：<br/>- Client 向 Server 發送一個 HTTP 請求<br/>- Server 收到這個請求後，根據請求的內容進行相應的處理</br>- Server 向Client 發送一個 HTTP 回應，內容包括請求的結果和相應的資源</p>
+
+  <p class="message sent message-content">好像很簡單，但是我還不是很理解 HTTP 的應用場景。</p>
+
+  <p class="message received message-content">HTTP的應用場景非常廣泛，它被廣泛地應用在Web應用程式開發、API開發、移動應用程式開發等領域。例如當你在網路上瀏覽網頁、下載文件或者使用 Mobile App 時，都在使用 HTTP Protocol。</p>
+</div>
+
+<h3 id="什麼是-HTTP-協議"><a href="#什麼是-HTTP-協議" class="headerlink" title="什麼是 HTTP 協議"></a>什麼是 HTTP 協議</h3><p>HTTP 指的是超文本傳輸協議，是一種通信協議，用於在網絡上傳輸超文本文檔。HTTP 協議是一種客戶端/伺服器協議，其中客戶端向伺服器發送請求，伺服器返回響應。HTTP 協議是互聯網上應用程式的基礎，包括網站、網頁、應用程式和 API 等等。</p>
+<h3 id="HTTP-協議的工作原理"><a href="#HTTP-協議的工作原理" class="headerlink" title="HTTP 協議的工作原理"></a>HTTP 協議的工作原理</h3><p>當用戶在瀏覽器中輸入網址或單擊頁面上的鏈接時，瀏覽器就會向伺服器發送 HTTP 請求。HTTP 請求包括請求方法（例如 GET 或 POST）、請求Header和請求主體等信息。伺服器接收到請求後，處理該請求並返回響應。響應包括狀態碼、響應Header和響應主體等信息。瀏覽器接收到響應後，根據響應類型顯示網頁或執行其他操作。</p>
+<h3 id="HTTP-協議的版本"><a href="#HTTP-協議的版本" class="headerlink" title="HTTP 協議的版本"></a>HTTP 協議的版本</h3><p>HTTP 協議一共有 1.0、1.1 和 2.0 三個版本。HTTP/1.0 是第一個廣泛使用的 HTTP 協議版本，HTTP/1.1 是一個更快、更安全和更可靠的版本，而 HTTP/2 則是一個全新的協議版本，它提供了更快的性能、更好的安全性和更多的功能。</p>
+<h3 id="HTTP-Request-amp-Response"><a href="#HTTP-Request-amp-Response" class="headerlink" title="HTTP Request &amp; Response"></a>HTTP Request &amp; Response</h3><p>HTTP 請求由 Request、Request Header 以及 Request Body 三部分組成。請求行包括請求方法、URL 和 HTTP 協議版本等信息。請求Header包括請求者的一些信息，如 User-Agent、Accept-Encoding 和 Accept-Language 等。請求主體通常用於傳輸較大的資料，例如 POST 請求中的表單資料。</p>
+<p>HTTP Response 由狀態行、Response Header 和 Response 主體三部分組成。狀態行包括 HTTP 協議版本、狀態碼和狀態消息等信息。Reponse Header 包括 Content-Type、Content-Length 和 Server 等資訊。Response Body 包含伺服器返回的資料，例如 HTML Page 或 JSON Data。</p>
+<p><code class="watch">HttpRequest</code></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">GET</span> /index.html HTTP/<span class="token number">1</span>.<span class="token number">1</span></span>
+<span class="token command"><span class="token keyword">Host</span>: www.example.com</span>
+<span class="token command"><span class="token keyword">User</span>-Agent: Mozilla/<span class="token number">5</span>.<span class="token number">0</span> (Windows NT <span class="token number">10</span>.<span class="token number">0</span>; Win64; x64; rv:<span class="token number">70</span>.<span class="token number">0</span></span><span class="token punctuation">)</span> Gecko/20100101 Firefox/70.0
+<span class="token command"><span class="token keyword">Accept</span>: text/html,application/xhtml+xml,application/xml;q=<span class="token number">0</span>.<span class="token number">9</span>,*/*;q=<span class="token number">0</span>.<span class="token number">8</span></span>
+<span class="token command"><span class="token keyword">Accept</span>-Language: en-US,en;q=<span class="token number">0</span>.<span class="token number">5</span></span>
+<span class="token command"><span class="token keyword">Accept</span>-Encoding: gzip, deflate</span>
+<span class="token command"><span class="token keyword">Connection</span>: keep-alive</span>
+<span class="token command"><span class="token keyword">Upgrade</span>-Insecure-Requests: <span class="token number">1</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">HttpResponse</code></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html">HTTP/1.1 200 OK
+Date: Tue, 15 Mar 2022 08:12:31 GMT
+Server: Apache/2.4.18 (Ubuntu)
+Last-Modified: Fri, 11 Mar 2022 10:30:00 GMT
+ETag: "384-5f718247ae380-gzip"
+Accept-Ranges: bytes
+Vary: Accept-Encoding
+Content-Encoding: gzip
+Content-Length: 270
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+
+<span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>歡迎來到我的網站<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>歡迎來到我的網站<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>這是一個範例網站<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="HTTP-協議的優點和缺點"><a href="#HTTP-協議的優點和缺點" class="headerlink" title="HTTP 協議的優點和缺點"></a>HTTP 協議的優點和缺點</h3><p>HTTP 協議的優點是它是一個標準的客戶端/伺服器協議，易於實現和使用。它支持多種請求方法，例如 GET、POST、PUT 和 DELETE，使開發人員能夠創建各種不同類型的應用程式。此外，HTTP 協議還支持輕量級的傳輸格式，例如 JSON 和 XML。</p>
+<p>然而，HTTP 協議也有一些缺點。例如，它是一個無狀態協議，因此它無法保持客戶端和伺服器之間的狀態信息。這使得處理某些任務，例如保持用戶登錄狀態，變得更加困難。此外，HTTP 協議還可能存在安全性問題，例如中間人攻擊和 CSRF 攻擊等。</p>
+<h3 id="什麼是-HTTP-狀態碼？"><a href="#什麼是-HTTP-狀態碼？" class="headerlink" title="什麼是 HTTP 狀態碼？"></a>什麼是 HTTP 狀態碼？</h3><p>HTTP 狀態碼是伺服器返回給客戶端的一個三位數字代碼，它表示伺服器對請求的處理結果。例如，200 狀態碼表示請求成功，404 狀態碼表示未找到所請求的資源，而 500 狀態碼表示伺服器內部錯誤。</p>
+<table>
+<thead>
+<tr>
+<th>狀態碼</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>200</td>
+<td>請求成功</td>
+</tr>
+<tr>
+<td>201</td>
+<td>已創建</td>
+</tr>
+<tr>
+<td>204</td>
+<td>無內容</td>
+</tr>
+<tr>
+<td>301</td>
+<td>永久重新導向</td>
+</tr>
+<tr>
+<td>302</td>
+<td>臨時重新導向</td>
+</tr>
+<tr>
+<td>304</td>
+<td>葉面未修改</td>
+</tr>
+<tr>
+<td>400</td>
+<td>請求無效</td>
+</tr>
+<tr>
+<td>401</td>
+<td>未授權</td>
+</tr>
+<tr>
+<td>403</td>
+<td>禁止訪問</td>
+</tr>
+<tr>
+<td>404</td>
+<td>找不到網頁</td>
+</tr>
+<tr>
+<td>500</td>
+<td>內部服務器錯誤</td>
+</tr>
+<tr>
+<td>502</td>
+<td>閘道錯誤</td>
+</tr>
+<tr>
+<td>503</td>
+<td>服務器不可用</td>
+</tr>
+<tr>
+<td>504</td>
+<td>閘道逾時</td>
+</tr>
+</tbody></table>
+<h3 id="什麼是-HTTP-Header？"><a href="#什麼是-HTTP-Header？" class="headerlink" title="什麼是 HTTP Header？"></a>什麼是 HTTP Header？</h3><p>HTTP Header是客戶端和伺服器之間進行通信時包含的元資料。它們包含諸如 User-Agent、Content-Type 和 Cookie 等信息，以及一些用於控制快取、跨域和安全性等方面的指令。</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accept</td>
+<td>指定客戶端接受哪些類型的資源</td>
+</tr>
+<tr>
+<td>Accept-Encoding</td>
+<td>指定客戶端可以接受的編碼方式</td>
+</tr>
+<tr>
+<td>Cache-Control</td>
+<td>控制快取的行為</td>
+</tr>
+<tr>
+<td>Content-Type</td>
+<td>資源的類型，如 text/html 或 image/jpeg 等</td>
+</tr>
+<tr>
+<td>Cookie</td>
+<td>請求中包含的 cookie</td>
+</tr>
+<tr>
+<td>Host</td>
+<td>請求的主機名稱或 IP 地址</td>
+</tr>
+<tr>
+<td>User-Agent</td>
+<td>客戶端的類型，如瀏覽器、手機 App 等</td>
+</tr>
+<tr>
+<td>If-Modified-Since</td>
+<td>告知伺服器上次取得資源的時間，用於條件 GET 請求</td>
+</tr>
+<tr>
+<td>Referer</td>
+<td>表示請求的來源，一般用於防盜鏈等</td>
+</tr>
+<tr>
+<td>Authorization</td>
+<td>用於在請求中傳遞身份驗證資訊，如 OAuth、JWT 等</td>
+</tr>
+<tr>
+<td>Content-Length</td>
+<td>資源內容的大小，一般用於 PUT、POST 請求等</td>
+</tr>
+<tr>
+<td>If-None-Match</td>
+<td>ETag 標籤，用於條件 GET 請求，檢查資源是否修改</td>
+</tr>
+<tr>
+<td>Connection</td>
+<td>用於指定持久連線或非持久連線，一般用於 HTTP/1.1 協議</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Header 名稱</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X-AspNet-Version</td>
+<td>標示使用的 ASP.NET 版本</td>
+</tr>
+<tr>
+<td>X-AspNetMvc-Version</td>
+<td>標示使用的 ASP.NET MVC 版本</td>
+</tr>
+<tr>
+<td>X-Frame-Options</td>
+<td>防止 Clickjacking 攻擊，指定網頁是否允許在 iframe 中顯示</td>
+</tr>
+<tr>
+<td>X-Xss-Protection</td>
+<td>防止跨站腳本攻擊，指定瀏覽器是否啟用 XSS 防護機制</td>
+</tr>
+<tr>
+<td>X-Content-Type-Options</td>
+<td>防止 MIME Sniffing 攻擊，指定瀏覽器是否應該優先使用 Content-Type 中的 MIME 類型</td>
+</tr>
+<tr>
+<td>X-Download-Options</td>
+<td>指定檔案下載的行為</td>
+</tr>
+<tr>
+<td>X-Powered-By</td>
+<td>標示網站所使用的技術和服務器類型等資訊</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>標示伺服器的類型和版本</td>
+</tr>
+</tbody></table>
+<h4 id="Content-Disposition"><a href="#Content-Disposition" class="headerlink" title="Content Disposition"></a>Content Disposition</h4><p>Content Disposition Header 是一個 HTTP 回應的 Header，用來指示如何處理回應的內容。這個 Header 最常用的用途是指定下載檔案的行為。</p>
+<p>Content Disposition Header 的值通常是一個字串，包含兩個部分：type 和 filename。其中，type 可以是 inline 或 attachment，filename 則是指定下載檔案時的檔案名稱。</p>
+<p>如果 type 為 inline，則瀏覽器會在網頁中顯示回應的內容；如果 type 為 attachment，則瀏覽器會提示使用者下載檔案，並使用 filename 指定檔案名稱。如果沒有指定 filename，則瀏覽器會使用預設的檔案名稱，通常是回應的 URL 中的檔案名稱。</p>
+<p>Content Disposition Header 的使用對於網站的檔案下載功能非常重要，可以讓使用者更清楚地知道如何下載檔案，也可以提高下載的安全性。不過，開發人員需要注意檔案名稱的安全性，以免被攻擊者利用漏洞進行攻擊。</p>
+<p>以下是 Content Disposition Header 的範例：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">Content</span>-Disposition: attachment; filename=<span class="token string">"example.pdf"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>這個 Header 表示回應的內容應該被當作下載檔案來處理，檔案名稱應該是 “example.pdf”。這樣使用者在下載這個檔案時，瀏覽器會提示使用者下載並儲存檔案，檔案名稱也會是 “example.pdf”。如果 type 為 inline，則 Header 會是以下的格式：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">Content</span>-Disposition: inline; filename=<span class="token string">"example.pdf"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>這個 Header 表示回應的內容應該在網頁中直接顯示，檔案名稱也應該是 “example.pdf”。這樣使用者在瀏覽網頁時，檔案內容會直接在網頁中顯示，而不需要下載檔案。</p>
+<p><a href="/posts/2022/12/HTTP-Content-Disposition/">HTTP Header Content Disposition</a></p>
+<h3 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h3><p>HTTP 協議是 Web 開發中不可或缺的一部分，每個開發人員都應該掌握其基本概念和使用方法。了解 HTTP 請求和響應、HTTP 協議的優點和缺點以及常見問題可以幫助開發人員更好地設計和開發 Web 應用程式。此外，隨<br>著 HTTP/2 和其他新技術的出現，開發人員應該繼續學習和更新自己的知識。</p>
+<h2 id="延伸問題"><a href="#延伸問題" class="headerlink" title="延伸問題"></a>延伸問題</h2><h3 id="什麼是-RESTful-API"><a href="#什麼是-RESTful-API" class="headerlink" title="什麼是 RESTful API"></a>什麼是 RESTful API</h3><p>RESTful API 是一種基於 HTTP 協議設計的 API，它使用 HTTP 請求方法（GET、POST、PUT、DELETE 等）來操作資源。RESTful API 的優點是它可以簡化 API 設計和使用，並提高 API 的可靠性和可擴展性。</p>
+<h3 id="HTTP-2-的主要改進是什麼"><a href="#HTTP-2-的主要改進是什麼" class="headerlink" title="HTTP/2 的主要改進是什麼"></a>HTTP/2 的主要改進是什麼</h3><p>HTTP/2 的主要改進是它使用單個 TCP 連接來處理多個 HTTP 請求。這消除了 HTTP/1.x 中存在的一些性能瓶頸，例如 TCP 建立和關閉延遲以及 HTTP 頭信息的重複傳輸等。此外，HTTP/2 還支持二進制協議，這可以更好地壓縮和傳輸資料，從而提高性能和安全性。</p>
+<h3 id="什麼是-HTTP-1-x-和-HTTP-2"><a href="#什麼是-HTTP-1-x-和-HTTP-2" class="headerlink" title="什麼是 HTTP/1.x 和 HTTP/2"></a>什麼是 HTTP/1.x 和 HTTP/2</h3><p>HTTP/1.x 和 HTTP/2 都是 HTTP 協議的版本。HTTP/1.x 是一個無狀態協議，它使用明文文本來傳輸資料。HTTP/2 則支持二進制協議和單一 TCP 連接，從而提高性能和安全性。</p>
+<h3 id="HTTP-協議的安全性如何"><a href="#HTTP-協議的安全性如何" class="headerlink" title="HTTP 協議的安全性如何"></a>HTTP 協議的安全性如何</h3><p>HTTP 協議本身不是一個安全協議，因為它的資料傳輸是明文的，容易受到中間人攻擊和 CSRF 攻擊等。為了保護資料的安全性，可以使用 HTTPS 協議來加密通信，從而防止資料被竊聽和篡改。</p>
+<h3 id="HTTP-和-HTTPS-有什麼區別"><a href="#HTTP-和-HTTPS-有什麼區別" class="headerlink" title="HTTP 和 HTTPS 有什麼區別"></a>HTTP 和 HTTPS 有什麼區別</h3><p>HTTP 和 HTTPS 都是用於在客戶端和伺服器之間進行通信的協議，但是它們之間有一個主要的區別：HTTPS 使用了 SSL/TLS 協議來加密通信，從而保護資料的安全性，而 HTTP 則沒有這種保護。</p>
+<h3 id="HTTP-2-的主要優點是什麼"><a href="#HTTP-2-的主要優點是什麼" class="headerlink" title="HTTP/2 的主要優點是什麼"></a>HTTP/2 的主要優點是什麼</h3><p>HTTP/2 的主要優點包括：支持二進制協議、多路複用、伺服器推送和優化效能等。這些功能使得 HTTP/2 能夠更好地壓縮和傳輸資料，提高 Web 應用程式的性能和安全性。</p>
+<h3 id="HTTP-協議有哪些常見的問題"><a href="#HTTP-協議有哪些常見的問題" class="headerlink" title="HTTP 協議有哪些常見的問題"></a>HTTP 協議有哪些常見的問題</h3><p>HTTP 協議的常見問題包括：明文傳輸容易受到攻擊、資料傳輸速度較慢、無法處理大量請求等。因為這些問題才衍生出後續的 HTTPS Protocol 以及 HTTP/2 Protocol 等技術 😀</p>
+<h2 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h2><p>以下是分別示範如何使用 PowerShell、Curl、C# 和 Python 發出 HTTP Request 的範例。</p>
+<h3 id="PowerShell"><a href="#PowerShell" class="headerlink" title="PowerShell"></a>PowerShell</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token comment"># GET Request</span>
+<span class="token function">Invoke-WebRequest</span> <span class="token operator">-</span>Uri <span class="token string">"https://www.example.com"</span> <span class="token operator">-</span>Method GET
+
+<span class="token comment"># POST Request</span>
+<span class="token function">Invoke-WebRequest</span> <span class="token operator">-</span>Uri <span class="token string">"https://www.example.com"</span>
+  <span class="token operator">-</span>Method POST <span class="token operator">-</span>Body @<span class="token punctuation">&#123;</span>username=<span class="token string">"user1"</span><span class="token punctuation">;</span> password=<span class="token string">"pass1"</span><span class="token punctuation">&#125;</span> <span class="token operator">-</span>ContentType <span class="token string">"application/json"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Curl"><a href="#Curl" class="headerlink" title="Curl"></a>Curl</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># GET Request</span>
+<span class="token function">curl</span> https://www.example.com
+
+<span class="token comment"># POST Request</span>
+<span class="token function">curl</span> -X POST https://www.example.com 
+  -H <span class="token string">"Content-Type: application/json"</span> -d <span class="token string">'&#123;"username": "user1", "password": "pass1"&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="C"><a href="#C" class="headerlink" title="C#"></a>C#</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token class-name"><span class="token keyword">var</span></span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// GET Request</span>
+<span class="token class-name">HttpResponseMessage</span> response <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span><span class="token function">GetAsync</span><span class="token punctuation">(</span><span class="token string">"https://www.example.com"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// POST Request</span>
+<span class="token class-name"><span class="token keyword">var</span></span> content <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringContent</span><span class="token punctuation">(</span>
+  <span class="token string">"&#123;\"username\":\"user1\",\"password\":\"pass1\"&#125;"</span><span class="token punctuation">,</span> 
+  System<span class="token punctuation">.</span>Text<span class="token punctuation">.</span>Encoding<span class="token punctuation">.</span>UTF8<span class="token punctuation">,</span> 
+  <span class="token string">"application/json"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name">HttpResponseMessage</span> response <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span><span class="token function">PostAsync</span><span class="token punctuation">(</span><span class="token string">"https://www.example.com"</span><span class="token punctuation">,</span> content<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+
+<span class="token comment"># GET Request</span>
+response <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://www.example.com"</span><span class="token punctuation">)</span>
+
+<span class="token comment"># POST Request</span>
+payload <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">"username"</span><span class="token punctuation">:</span> <span class="token string">"user1"</span><span class="token punctuation">,</span> <span class="token string">"password"</span><span class="token punctuation">:</span> <span class="token string">"pass1"</span><span class="token punctuation">&#125;</span>
+response <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span><span class="token string">"https://www.example.com"</span><span class="token punctuation">,</span> json<span class="token operator">=</span>payload<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/03/HTTP-Protocol-Guide/" data-id="clg3fmae000ots4tsc4sl5dhz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/" rel="tag">Network</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/03/CSharp-Extension-Methods/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">C# Extension Methods</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/03/English-Learning-Resources-For-Developer/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          English Learning Resources For Developer
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

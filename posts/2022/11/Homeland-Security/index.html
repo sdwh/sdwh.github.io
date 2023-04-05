@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>國土安全大作戰 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Dashboard 以及 Website Admin Panel 設計靈感。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="國土安全大作戰">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/11/Homeland-Security/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="Dashboard 以及 Website Admin Panel 設計靈感。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="article:published_time" content="2022-11-18T11:15:21.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Homeland-Security" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/11/Homeland-Security/" class="article-date">
+  <time datetime="2022-11-18T11:15:21.000Z" itemprop="datePublished">2022-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      國土安全大作戰
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%BD%E6%BA%90"><span class="toc-text">能源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B0%B4%E8%B3%87%E6%BA%90"><span class="toc-text">水資源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%A8%8A%E5%82%B3%E6%92%AD"><span class="toc-text">通訊傳播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E9%80%9A"><span class="toc-text">交通</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%91%E8%9E%8D"><span class="toc-text">金融</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B7%8A%E6%80%A5%E6%95%91%E6%8F%B4%E8%88%87%E9%86%AB%E9%99%A2"><span class="toc-text">緊急救援與醫院</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BF%E5%BA%9C%E6%A9%9F%E9%97%9C"><span class="toc-text">政府機關</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%91%E5%AD%B8%E5%9C%92%E5%8D%80%E8%88%87%E5%B7%A5%E6%A5%AD%E5%8D%80"><span class="toc-text">科學園區與工業區</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>Dashboard 以及 Website Admin Panel 設計靈感。</p>
+<a href="/posts/2022/11/Homeland-Security/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>關鍵基礎設施領域分類</p>
+<h3 id="能源"><a href="#能源" class="headerlink" title="能源"></a>能源</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bolt" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <polyline points="13 3 13 10 19 10 11 21 11 14 5 14 13 3" />
+</svg>
+
+<p>電力<br>穩定提供發電、輸電、配電、調度、監控等供電服務之重要設施或系統。<br>經濟部</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%87%BA%E7%81%A3%E7%99%BC%E9%9B%BB%E5%BB%A0%E5%88%97%E8%A1%A8">💡臺灣發電廠列表 | wikipedia</a></p>
+<table>
+<thead>
+<tr>
+<th>發電類型</th>
+<th>名稱</th>
+<th>地點</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核能</td>
+<td>第二核能發電廠</td>
+<td>新北市萬里區</td>
+</tr>
+<tr>
+<td>核能</td>
+<td>第三核能發電廠</td>
+<td>屏東縣恆春鎮</td>
+</tr>
+<tr>
+<td>火力</td>
+<td>林口發電廠</td>
+<td>新北市林口區</td>
+</tr>
+<tr>
+<td>火力</td>
+<td>台中發電廠</td>
+<td>臺中市龍井區</td>
+</tr>
+<tr>
+<td>火力</td>
+<td>和平電廠</td>
+<td>花蓮縣秀林鄉</td>
+</tr>
+<tr>
+<td>火力</td>
+<td>麥寮發電廠</td>
+<td>雲林縣麥寮鄉</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>海湖發電廠（長生電廠）</td>
+<td>桃園市蘆竹區</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>大潭發電廠</td>
+<td>桃園市觀音區</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>國光發電廠</td>
+<td>桃園市龜山區</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>新桃電廠</td>
+<td>新竹縣關西鎮</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>通霄發電廠</td>
+<td>苗栗縣通霄鎮</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>星元電廠</td>
+<td>彰化縣線西鄉</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>彰濱電廠</td>
+<td>彰化縣線西鄉</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>嘉惠電廠</td>
+<td>嘉義縣民雄鄉</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>森霸電廠</td>
+<td>臺南市山上區</td>
+</tr>
+<tr>
+<td>天然氣</td>
+<td>南部發電廠</td>
+<td>高雄市前鎮區</td>
+</tr>
+<tr>
+<td>燃油</td>
+<td>協和發電廠</td>
+<td>基隆市中山區</td>
+</tr>
+<tr>
+<td>煤、天然氣</td>
+<td>興達發電廠</td>
+<td>高雄市永安區、茄萣區</td>
+</tr>
+<tr>
+<td>煤、天然氣</td>
+<td>大林發電廠</td>
+<td>高雄市小港區</td>
+</tr>
+<tr>
+<td>抽蓄水力</td>
+<td>明湖抽蓄水力發電廠</td>
+<td>南投縣水里鄉</td>
+</tr>
+<tr>
+<td>抽蓄水力</td>
+<td>明潭抽蓄水力發電廠</td>
+<td>南投縣水里鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>尖山發電廠</td>
+<td>澎湖縣湖西鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>七美發電廠</td>
+<td>澎湖縣七美鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>桶盤里簡易發電廠</td>
+<td>澎湖縣馬公市</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>花嶼村簡易發電廠</td>
+<td>澎湖縣望安鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>東吉村簡易發電廠</td>
+<td>澎湖縣望安鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>東坪村簡易發電廠</td>
+<td>澎湖縣望安鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>西坪村簡易發電廠</td>
+<td>澎湖縣望安鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>塔山發電廠</td>
+<td>金門縣金城鎮</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>東引發電廠</td>
+<td>連江縣東引鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>蘭嶼發電廠</td>
+<td>臺東縣蘭嶼鄉</td>
+</tr>
+<tr>
+<td>輕油</td>
+<td>南竿發電廠</td>
+<td>連江縣南竿鄉</td>
+</tr>
+</tbody></table>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gas-station" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M14 11h1a2 2 0 0 1 2 2v3a1.5 1.5 0 0 0 3 0v-7l-3 -3" />
+  <path d="M4 20v-14a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v14" />
+  <line x1="3" y1="20" x2="15" y2="20" />
+  <path d="M18 7v1a1 1 0 0 0 1 1h1" />
+  <line x1="4" y1="11" x2="14" y2="11" />
+</svg>
+
+<p>石油<br>穩定供應油品，及帶動石化相關工業發展之重要設施或系統。</p>
+<table>
+<thead>
+<tr>
+<th>煉油廠名稱</th>
+<th>地點</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>桃園煉油廠</td>
+<td>桃園市龜山區</td>
+</tr>
+<tr>
+<td>大林煉油廠</td>
+<td>高雄市小港區</td>
+</tr>
+<tr>
+<td>第六套輕油裂解廠</td>
+<td>雲林縣麥寮鄉</td>
+</tr>
+</tbody></table>
+<p>天然氣<br>提供輸儲、接收、遮斷等設備，穩定供應天然氣之重要設施及控制系統。<br>經濟部</p>
+<table>
+<thead>
+<tr>
+<th>天然氣接收站</th>
+<th>地點</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>永安液化天然氣接收站</td>
+<td>高雄市永安區</td>
+</tr>
+<tr>
+<td>台中液化天然氣接收站</td>
+<td>台中市梧棲區</td>
+</tr>
+<tr>
+<td>觀塘液化天然氣接收站</td>
+<td>桃園市觀音區</td>
+</tr>
+<tr>
+<td>協和天然氣接收站</td>
+<td>基隆市中山區</td>
+</tr>
+<tr>
+<td>台中港天然氣接收站</td>
+<td>台中市梧棲區</td>
+</tr>
+</tbody></table>
+<h3 id="水資源"><a href="#水資源" class="headerlink" title="水資源"></a>水資源</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ripple" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M3 7c3 -2 6 -2 9 0s6 2 9 0" />
+  <path d="M3 17c3 -2 6 -2 9 0s6 2 9 0" />
+  <path d="M3 12c3 -2 6 -2 9 0s6 2 9 0" />
+</svg>
+
+<p>供水<br>提供質佳、量足、穩定供水之水源、水庫、淨水、供水、水質保護等重要設施或系統。<br>經濟部</p>
+<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-tw/%E8%87%BA%E7%81%A3%E6%B0%B4%E5%BA%AB">💡臺灣水庫 | wikipedia</a></p>
+<h3 id="通訊傳播"><a href="#通訊傳播" class="headerlink" title="通訊傳播"></a>通訊傳播</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-satellite" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M3.707 6.293l2.586 -2.586a1 1 0 0 1 1.414 0l5.586 5.586a1 1 0 0 1 0 1.414l-2.586 2.586a1 1 0 0 1 -1.414 0l-5.586 -5.586a1 1 0 0 1 0 -1.414z" />
+  <path d="M6 10l-3 3l3 3l3 -3" />
+  <path d="M10 6l3 -3l3 3l-3 3" />
+  <line x1="12" y1="12" x2="13.5" y2="13.5" />
+  <path d="M14.5 17a2.5 2.5 0 0 0 2.5 -2.5" />
+  <path d="M15 21a6 6 0 0 0 6 -6" />
+</svg>
+
+<p>通訊<br>支持通訊服務之重要設施或系統，例如：市內/長途/國際通信、行動通信、衛星通信、國際海纜及數據通信等。</p>
+<p><a target="_blank" rel="noopener" href="https://www.idc.hinet.net/Environment_Location.html">💡中華電信 IDC 機房地點</a></p>
+<p>傳播<br>支持傳播服務之重要設施或系統，例如：無線廣播電視及有線廣播電視。<br>數位發展部</p>
+<h3 id="交通"><a href="#交通" class="headerlink" title="交通"></a>交通</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="7" cy="17" r="2" />
+  <circle cx="17" cy="17" r="2" />
+  <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5" />
+</svg>
+
+<p>陸運<br>提供大眾陸上運輸服務之重要設施或系統，例如：公路運輸系統、鐵路運輸系統(含一般鐵路、高速鐵路、大眾捷運)。<br>交通部</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%B8%AD%E8%8F%AF%E6%B0%91%E5%9C%8B%E5%9C%8B%E9%81%93">💡中華民國國道 | wikipedia</a></p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-anchor" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M12 9v12m-8 -8a8 8 0 0 0 16 0m1 0h-2m-14 0h-2" />
+  <circle cx="12" cy="6" r="3" />
+</svg>
+
+<p>海運<br>提供航運服務之重要設施或系統，例如：商港、工業港及漁港。<br>交通部、經濟部、農委會</p>
+<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-tw/%E8%87%BA%E7%81%A3%E6%B8%AF%E5%8F%A3">💡臺灣港口 | wikipedia</a></p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plane" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2 -7h-4l-2 2h-3l2 -4l-2 -4h3l2 2h4l-2 -7h3z" />
+</svg>
+
+<p>空運<br>提供航空營運管理及航空運輸關聯服務之重要設施或系統。<br>交通部</p>
+<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-tw/%E8%87%BA%E7%81%A3%E6%A9%9F%E5%A0%B4">💡臺灣機場 | wikipedia</a></p>
+<table>
+<thead>
+<tr>
+<th>機場</th>
+<th>俗名</th>
+<th>IATA碼</th>
+<th>地點</th>
+<th>等級</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>臺灣桃園國際機場</td>
+<td>桃園機場</td>
+<td>TPE</td>
+<td>桃園市大園區</td>
+<td>特等</td>
+</tr>
+<tr>
+<td>臺北國際航空站</td>
+<td>松山機場</td>
+<td>TSA</td>
+<td>臺北市松山區</td>
+<td>甲等</td>
+</tr>
+<tr>
+<td>高雄國際航空站</td>
+<td>小港機場</td>
+<td>KHH</td>
+<td>高雄市小港區</td>
+<td>甲等</td>
+</tr>
+<tr>
+<td>臺中國際航空站</td>
+<td>清泉崗機場</td>
+<td>RMQ</td>
+<td>臺中市沙鹿區</td>
+<td>乙等</td>
+</tr>
+<tr>
+<td>臺南航空站</td>
+<td>臺南機場</td>
+<td>TNN</td>
+<td>臺南市南區</td>
+<td>乙等</td>
+</tr>
+<tr>
+<td>花蓮航空站</td>
+<td>花蓮機場</td>
+<td>HUN</td>
+<td>花蓮縣新城鄉</td>
+<td>乙等</td>
+</tr>
+<tr>
+<td>臺東航空站</td>
+<td>豐年機場</td>
+<td>TTT</td>
+<td>臺東縣臺東市</td>
+<td>乙等</td>
+</tr>
+<tr>
+<td>澎湖航空站</td>
+<td>澎湖機場</td>
+<td>MZG</td>
+<td>澎湖縣湖西鄉</td>
+<td>乙等</td>
+</tr>
+<tr>
+<td>金門航空站</td>
+<td>尚義機場</td>
+<td>KNH</td>
+<td>金門縣金湖鎮</td>
+<td>乙等</td>
+</tr>
+<tr>
+<td>嘉義航空站</td>
+<td>水上機場</td>
+<td>CYI</td>
+<td>嘉義縣水上鄉</td>
+<td>丙等</td>
+</tr>
+<tr>
+<td>恆春航空站</td>
+<td>五里亭機場</td>
+<td>HCN</td>
+<td>屏東縣恆春鎮</td>
+<td>丁等</td>
+</tr>
+<tr>
+<td>望安航空站</td>
+<td>望安機場</td>
+<td>WOT</td>
+<td>澎湖縣望安鄉</td>
+<td>丁等</td>
+</tr>
+<tr>
+<td>七美航空站</td>
+<td>七美機場</td>
+<td>CMJ</td>
+<td>澎湖縣七美鄉</td>
+<td>丁等</td>
+</tr>
+<tr>
+<td>綠島航空站</td>
+<td>綠島機場</td>
+<td>GNI</td>
+<td>臺東縣綠島鄉</td>
+<td>丁等</td>
+</tr>
+<tr>
+<td>蘭嶼航空站</td>
+<td>蘭嶼機場</td>
+<td>KYD</td>
+<td>臺東縣蘭嶼鄉</td>
+<td>丁等</td>
+</tr>
+<tr>
+<td>馬祖北竿航空站</td>
+<td>北竿機場</td>
+<td>MFK</td>
+<td>連江縣北竿鄉</td>
+<td>丁等</td>
+</tr>
+<tr>
+<td>馬祖南竿航空站</td>
+<td>南竿機場</td>
+<td>LZN</td>
+<td>連江縣南竿鄉</td>
+<td>丁等</td>
+</tr>
+</tbody></table>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sun" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="12" cy="12" r="4" />
+  <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" />
+</svg>
+
+<p>氣象<br>提供氣象觀測、氣象預報、地震測報、海象測報及相關資訊發布等相關服務之重要設施或系統。<br>交通部</p>
+<h3 id="金融"><a href="#金融" class="headerlink" title="金融"></a>金融</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-bank" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <line x1="3" y1="21" x2="21" y2="21" />
+  <line x1="3" y1="10" x2="21" y2="10" />
+  <polyline points="5 6 12 3 19 6" />
+  <line x1="4" y1="10" x2="4" y2="21" />
+  <line x1="20" y1="10" x2="20" y2="21" />
+  <line x1="8" y1="14" x2="8" y2="17" />
+  <line x1="12" y1="14" x2="12" y2="17" />
+  <line x1="16" y1="14" x2="16" y2="17" />
+</svg>
+
+<p>銀行<br>提供新臺幣跨行通匯資金調撥服務、ATM 存提款、轉帳及餘額查詢等跨行交易服務之重要設施或系統。<br>金融監督管理委員會、交通部</p>
+<p><a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/20390">💡本國銀行排名表 | data.gov</a></p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-invoice" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+  <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+  <line x1="9" y1="7" x2="10" y2="7" />
+  <line x1="9" y1="13" x2="15" y2="13" />
+  <line x1="13" y1="17" x2="15" y2="17" />
+</svg>
+
+<p>證券<br>執行全國證券、期貨市場交易及結算、交割之重要設施或系統。<br>金融監督管理委員會</p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
+  <path d="M12 6v2m0 8v2" />
+</svg>
+
+<p>金融支付<br>支持我國貨幣及支付之重要設施或系統。<br>中央銀行</p>
+<h3 id="緊急救援與醫院"><a href="#緊急救援與醫院" class="headerlink" title="緊急救援與醫院"></a>緊急救援與醫院</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-report-medical" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+  <rect x="9" y="3" width="6" height="4" rx="2" />
+  <line x1="10" y1="14" x2="14" y2="14" />
+  <line x1="12" y1="12" x2="12" y2="16" />
+</svg>
+
+<p>醫療照護<br>提供醫療照護之重要系統及醫療院所。<br>衛生福利部</p>
+<p><a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/6271">💡衛生福利部評鑑合格之醫院名單 | data.gov</a></p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-virus-search" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M17 12a5 5 0 1 0 -5 5" />
+  <path d="M12 7v-4m-1 0h2" />
+  <path d="M12 7v-4m-1 0h2" transform="rotate(45 12 12)" />
+  <path d="M12 7v-4m-1 0h2" transform="rotate(90 12 12)" />
+  <path d="M12 7v-4m-1 0h2" transform="rotate(180 12 12)" />
+  <path d="M12 7v-4m-1 0h2" transform="rotate(225 12 12)" />
+  <path d="M12 7v-4m-1 0h2" transform="rotate(270 12 12)" />
+  <path d="M12 7v-4m-1 0h2" transform="rotate(315 12 12)" />
+  <circle cx="17.5" cy="17.5" r="2.5" />
+  <line x1="19.5" y1="19.5" x2="22" y2="22" />
+</svg>
+
+<p>疾病管制<br>提供傳染病疫情監測與預警、傳染病防治與應變、傳染病邊境檢疫，以及生物病原檢驗與技術研發等重要設施或系統。<br>衛生福利部</p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shield-check" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 12l2 2l4 -4" />
+  <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+</svg>
+
+<p>緊急應變體系<br>災害或緊急應變中心、消防救災救護及政府指管等重要設施或系統。<br>內政部、海洋委員會</p>
+<h3 id="政府機關"><a href="#政府機關" class="headerlink" title="政府機關"></a>政府機關</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-skyscraper" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <line x1="3" y1="21" x2="21" y2="21" />
+  <path d="M5 21v-14l8 -4v18" />
+  <path d="M19 21v-10l-6 -4" />
+  <line x1="9" y1="9" x2="9" y2="9.01" />
+  <line x1="9" y1="12" x2="9" y2="12.01" />
+  <line x1="9" y1="15" x2="9" y2="15.01" />
+  <line x1="9" y1="18" x2="9" y2="18.01" />
+</svg>
+
+<p>機關場所與設施<br>支持政府核心業務運作及重要領導權與人員辦公之重要設施與場所。<br>中央政府機關</p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-devices-2" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M10 15h-6a1 1 0 0 1 -1 -1v-8a1 1 0 0 1 1 -1h6" />
+  <rect x="13" y="4" width="8" height="16" rx="1" />
+  <line x1="7" y1="19" x2="10" y2="19" />
+  <line x1="17" y1="8" x2="17" y2="8.01" />
+  <circle cx="17" cy="16" r="1" />
+  <line x1="9" y1="15" x2="9" y2="19" />
+</svg>
+
+<p>資通訊系統<br>支持政府核心業務運作之重要資通訊系統。<br>中央政府機關</p>
+<h3 id="科學園區與工業區"><a href="#科學園區與工業區" class="headerlink" title="科學園區與工業區"></a>科學園區與工業區</h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-math-symbols" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <line x1="3" y1="12" x2="21" y2="12" />
+  <line x1="12" y1="3" x2="12" y2="21" />
+  <line x1="16.5" y1="4.5" x2="19.5" y2="7.5" />
+  <line x1="19.5" y1="4.5" x2="16.5" y2="7.5" />
+  <line x1="6" y1="4" x2="6" y2="8" />
+  <line x1="4" y1="6" x2="8" y2="6" />
+  <line x1="18" y1="16" x2="18.01" y2="16" />
+  <line x1="18" y1="20" x2="18.01" y2="20" />
+  <line x1="4" y1="18" x2="8" y2="18" />
+</svg>
+
+<p>科學與生醫園區<br>科學園區、生物醫學園區等。<br>國家科學及技術委員會</p>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-factory" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 21c1.147 -4.02 1.983 -8.027 2 -12h6c.017 3.973 .853 7.98 2 12" />
+  <path d="M12.5 13h4.5c.025 2.612 .894 5.296 2 8" />
+  <path d="M9 5a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1" />
+  <line x1="3" y1="21" x2="22" y2="21" />
+</svg>
+
+<p>軟體園區與工業區<br>軟體園區、工業區、科技工業區等。<br>經濟部</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/11/Homeland-Security/" data-id="clg3fmae800pks4ts71bj3uim" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/11/Subdomains-Reconnaissance/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">子網域探索與偵測 Subdomains Reconnaissance</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/11/IIS-PHP-Setup/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          如何在 IIS 10 安裝 PHP 7 以及 PHP 8 (How to install PHP 8 in IIS 10)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 06 Authenticate | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用 Azure Authenticate。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 06 Authenticate">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab-06/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用 Azure Authenticate。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-Diagram.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-9.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-06-10.png">
+<meta property="article:published_time" content="2022-03-22T12:31:30.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Certification">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Certification-AZ-204-Lab-06" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-06/" class="article-date">
+  <time datetime="2022-03-22T12:31:30.000Z" itemprop="datePublished">2022-03-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 06 Authenticate
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lab06-Authenticate"><span class="toc-text">Lab06 - Authenticate</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Register"><span class="toc-text">Register</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Platform-Configure"><span class="toc-text">Platform Configure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PowerShell"><span class="toc-text">PowerShell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Single-Tenant-Web-App"><span class="toc-text">Single Tenant Web App</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Azure-Active-Directory"><span class="toc-text">Create Azure Active Directory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Multi-Tenant-Web-App"><span class="toc-text">Multi-Tenant Web App</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Azure-Authenticate-%E7%9B%B8%E9%97%9C%E7%9F%A5%E8%AD%98"><span class="toc-text">Azure Authenticate 相關知識</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E6%88%B0-Azure-Authenticate-%E5%BF%83%E5%BE%97"><span class="toc-text">實戰 Azure Authenticate 心得</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用 Azure Authenticate。</p>
+<a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-06/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Lab06-Authenticate"><a href="#Lab06-Authenticate" class="headerlink" title="Lab06 - Authenticate"></a>Lab06 - Authenticate</h2><p>詳細的實驗流程可以參考微軟在 Github上的<a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Instructions/Labs">專案</a></p>
+<p><img src="/assets/AZ-204-Lab-06-Diagram.png" alt="圖片來源：微軟"></p>
+<h3 id="Register"><a href="#Register" class="headerlink" title="Register"></a>Register</h3><p><img src="/assets/AZ-204-Lab-06-1.png"></p>
+<p><strong>Accounts in this organizational directory only (Default Directory only - Single tenant).</strong></p>
+<p><img src="/assets/AZ-204-Lab-06-2.png"></p>
+<p>取得 Application ID 並且先保存，稍後會用到</p>
+<p>f85dc8ff-4c7a-0000-0000-00000000000000</p>
+<p>取得 Directory ID (tenant Id) 先保存，稍後會用到</p>
+<p>a44bb28c-45fd-0000-0000-000000000000</p>
+<h3 id="Platform-Configure"><a href="#Platform-Configure" class="headerlink" title="Platform Configure"></a>Platform Configure</h3><p><img src="/assets/AZ-204-Lab-06-3.png"><br><img src="/assets/AZ-204-Lab-06-5.png"></p>
+<h3 id="PowerShell"><a href="#PowerShell" class="headerlink" title="PowerShell"></a>PowerShell</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Connect-AzureAD</span>
+<span class="token variable">$aadDomainName</span> = <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">Get-AzureAdTenantDetail</span><span class="token punctuation">)</span><span class="token punctuation">.</span>VerifiedDomains<span class="token punctuation">)</span><span class="token punctuation">[</span>0<span class="token punctuation">]</span><span class="token punctuation">.</span>Name
+<span class="token variable">$passwordProfile</span> = <span class="token function">New-Object</span> <span class="token operator">-</span>TypeName Microsoft<span class="token punctuation">.</span>Open<span class="token punctuation">.</span>AzureAD<span class="token punctuation">.</span>Model<span class="token punctuation">.</span>PasswordProfile
+<span class="token variable">$passwordProfile</span><span class="token punctuation">.</span>Password = <span class="token string">'Pa55w.rd1234'</span>
+<span class="token variable">$passwordProfile</span><span class="token punctuation">.</span>ForceChangePasswordNextLogin = <span class="token boolean">$false</span>
+<span class="token function">New-AzureADUser</span> <span class="token operator">-</span>AccountEnabled <span class="token boolean">$true</span>
+  <span class="token operator">-</span>DisplayName <span class="token string">'aad_lab_user1'</span>
+  <span class="token operator">-</span>PasswordProfile <span class="token variable">$passwordProfile</span>
+  <span class="token operator">-</span>MailNickName <span class="token string">'aad_lab_user1'</span>
+  <span class="token operator">-</span>UserPrincipalName <span class="token string">"aad_lab_user1@<span class="token variable">$aadDomainName</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>取得 UPN</p>
+<p><a href="mailto:&#x61;&#97;&#x64;&#x5f;&#108;&#x61;&#98;&#x5f;&#x75;&#x73;&#x65;&#x72;&#49;&#x40;&#x6d;&#115;&#97;&#99;&#99;&#x6f;&#117;&#110;&#116;&#x2e;&#111;&#x6e;&#109;&#105;&#x63;&#114;&#x6f;&#x73;&#111;&#102;&#x74;&#x2e;&#x63;&#111;&#109;">&#x61;&#97;&#x64;&#x5f;&#108;&#x61;&#98;&#x5f;&#x75;&#x73;&#x65;&#x72;&#49;&#x40;&#x6d;&#115;&#97;&#99;&#99;&#x6f;&#117;&#110;&#116;&#x2e;&#111;&#x6e;&#109;&#105;&#x63;&#114;&#x6f;&#x73;&#111;&#102;&#x74;&#x2e;&#x63;&#111;&#109;</a></p>
+<h3 id="Single-Tenant-Web-App"><a href="#Single-Tenant-Web-App" class="headerlink" title="Single Tenant Web App"></a>Single Tenant Web App</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> C:\Allfiles\Labs\<span class="token number">06</span>\Starter\OIDCClient</span>
+
+<span class="token command"><span class="token keyword">dotnet</span> new mvc <span class="token parameter attr-name">--auth</span> SingleOrg <span class="token operator">^</span>
+  <span class="token parameter attr-name">--client-id</span> f85dc8ff-4c7a<span class="token number">-0000</span><span class="token number">-0000</span><span class="token number">-000000000000</span> <span class="token operator">^</span>
+  <span class="token parameter attr-name">--tenant-id</span> a44bb28c-45fd<span class="token number">-0000</span><span class="token number">-0000</span><span class="token number">-000000000000</span> <span class="token operator">^</span>
+  <span class="token parameter attr-name">--domain</span> aad_lab_user1@msaccount.onmicrosoft.com</span>
+
+<span class="token command"><span class="token keyword">rmdir</span> .\obj <span class="token parameter attr-name">/S</span> <span class="token parameter attr-name">/Q</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>調整 <strong>Properties/launchSettings.json</strong> 的 <code class="s">sslPort</code> 為 44321 以及 <code class="s">OIDCClient</code> 下的 <code class="s">applicationUrl</code> 為 <a target="_blank" rel="noopener" href="https://localhost:44321/">https://localhost:44321</a> ，其他值不需要調整</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"iisExpress"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"sslPort"</span><span class="token operator">:</span> <span class="token number">44321</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token property">"profiles"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"OIDCClient"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"applicationUrl"</span><span class="token operator">:</span> <span class="token string">"https://localhost:44321"</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>調整 Runtime &amp; Packages Verions</p>
+<p><code class="watch">OIDCClient.csproj</code> </p>
+<p>確認 <code class="s">TargetFraomework</code> 使用 netcoreapp3.1，相關的 Packages 也必須分別使用 3.1.18 以及 0.3.1-preview。</p>
+<p>如果檔案存在 <code class="s">ImplicitUsings</code> 請直接移除，那個是 C# 10 的玩意兒，會讓 .NET Core 3.1 Build 失敗 😣</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PropertyGroup</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>TargetFramework</span><span class="token punctuation">></span></span>netcoreapp3.1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>TargetFramework</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>PropertyGroup</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ItemGroup</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.AspNetCore.Authentication.JwtBearer<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>3.1.18<span class="token punctuation">"</span></span> <span class="token attr-name">NoWarn</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>NU1605<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.AspNetCore.Authentication.OpenIdConnect<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>3.1.18<span class="token punctuation">"</span></span> <span class="token attr-name">NoWarn</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>NU1605<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.Identity.Web<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0.3.1-preview<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.Identity.Web.UI<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0.3.1-preview<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ItemGroup</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>將登出入頁面的連結由 <code class="s">MicrosoftIdentity</code> 調整為 <code class="s">AzureAD</code></p>
+<p><code class="watch">\Views\Shared_LoginPartial.cshtml</code> </p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>nav-link text-dark<span class="token punctuation">"</span></span> <span class="token attr-name">asp-area</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>AzureAD<span class="token punctuation">"</span></span> <span class="token attr-name">asp-controller</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Account<span class="token punctuation">"</span></span> <span class="token attr-name">asp-action</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>SignOut<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Sign out<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>`
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>nav-link text-dark<span class="token punctuation">"</span></span> <span class="token attr-name">asp-area</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>AzureAD<span class="token punctuation">"</span></span> <span class="token attr-name">asp-controller</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Account<span class="token punctuation">"</span></span> <span class="token attr-name">asp-action</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>SignIn<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Sign in<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>確認 <strong>appsettings.json</strong>，Domain、TenantId、ClientId 的內容是否正確，此外 Instance 以及 callbackPath 必須如下輸入：</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Instance</td>
+<td><a target="_blank" rel="noopener" href="https://login.microsoftonline.com/">https://login.microsoftonline.com/</a></td>
+</tr>
+<tr>
+<td>callbackPath</td>
+<td>/signin-oidc</td>
+</tr>
+</tbody></table>
+<p>分別將 <code class="s">Startup.cs</code> 以及 <code class="s">Program.cs</code> 進行調整：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/blob/master/Allfiles/Labs/06/Solution/OIDCClient/Startup.cs">Startup.cs</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/blob/master/Allfiles/Labs/06/Solution/OIDCClient/Program.cs">Program.cs</a></p>
+<p>進行編譯測試一切正常，接著綁定憑證後執行</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">dotnet</span> build</span>
+<span class="token command"><span class="token keyword">dotnet</span> dev-certs https <span class="token parameter attr-name">--trust</span></span>
+<span class="token command"><span class="token keyword">dotnet</span> run</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/AZ-204-Lab-06-6.png"></p>
+<h3 id="Create-Azure-Active-Directory"><a href="#Create-Azure-Active-Directory" class="headerlink" title="Create Azure Active Directory"></a>Create Azure Active Directory</h3><p><img src="/assets/AZ-204-Lab-06-7.png"><br><img src="/assets/AZ-204-Lab-06-8.png"><br><img src="/assets/AZ-204-Lab-06-9.png"></p>
+<p>這邊預期的是 aad_lab_user2 屬於不同 AAD 所以會登入失敗。但實驗進行到這邊發生一個問題，新建立的 AAD 下沒有 Subscription 可以使用，所以也沒辦法建立相關的 Azure AD User。</p>
+<p>解決的方式是透過 <code class="s">Clodushell</code> 切換 Subscription 的方式來建立帳號就可以囉 😂</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Import-Module</span> AzureAD<span class="token punctuation">.</span>Standard<span class="token punctuation">.</span>Preview
+AzureAD<span class="token punctuation">.</span>Standard<span class="token punctuation">.</span>Preview\<span class="token function">Connect-AzureAD</span> <span class="token operator">-</span>TenantID <span class="token string">'1699671e-2b54-0000-0000-000000000000'</span>
+<span class="token variable">$aadDomainName</span> = <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">Get-AzureAdTenantDetail</span><span class="token punctuation">)</span><span class="token punctuation">.</span>VerifiedDomains<span class="token punctuation">)</span><span class="token punctuation">[</span>0<span class="token punctuation">]</span><span class="token punctuation">.</span>Name
+
+<span class="token variable">$passwordProfile</span> = <span class="token function">New-Object</span> <span class="token operator">-</span>TypeName Microsoft<span class="token punctuation">.</span>Open<span class="token punctuation">.</span>AzureAD<span class="token punctuation">.</span>Model<span class="token punctuation">.</span>PasswordProfile
+<span class="token variable">$passwordProfile</span><span class="token punctuation">.</span>Password = <span class="token string">'Pa55w.rd1234'</span>
+<span class="token variable">$passwordProfile</span><span class="token punctuation">.</span>ForceChangePasswordNextLogin = <span class="token boolean">$false</span>
+<span class="token function">New-AzureADUser</span> <span class="token operator">-</span>AccountEnabled <span class="token boolean">$true</span> 
+  <span class="token operator">-</span>DisplayName <span class="token string">'aad_lab_user2'</span> 
+  <span class="token operator">-</span>PasswordProfile <span class="token variable">$passwordProfile</span> 
+  <span class="token operator">-</span>MailNickName <span class="token string">'aad_lab_user2'</span> 
+  <span class="token operator">-</span>UserPrincipalName <span class="token string">"aad_lab_user2@<span class="token variable">$aadDomainName</span>"</span>
+
+<span class="token punctuation">(</span><span class="token function">Get-AzureADUser</span> <span class="token operator">-</span><span class="token keyword">Filter</span> <span class="token string">"MailNickName eq 'aad_lab_user2'"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>UserPrincipalName<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Multi-Tenant-Web-App"><a href="#Multi-Tenant-Web-App" class="headerlink" title="Multi-Tenant Web App"></a>Multi-Tenant Web App</h3><p>將 <strong>appsettings.json</strong> 的 <code class="s">TenantId</code> 調整為 <strong>organizations</strong></p>
+<p><img src="/assets/AZ-204-Lab-06-10.png"></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">dotnet</span> run</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>這次 aad_lab_user2 屬於不同 AAD 的帳號也可以順利登入了 😄</p>
+<h2 id="Azure-Authenticate-相關知識"><a href="#Azure-Authenticate-相關知識" class="headerlink" title="Azure Authenticate 相關知識"></a>Azure Authenticate 相關知識</h2><h2 id="實戰-Azure-Authenticate-心得"><a href="#實戰-Azure-Authenticate-心得" class="headerlink" title="實戰 Azure Authenticate 心得"></a>實戰 Azure Authenticate 心得</h2><p>…</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab-06/" data-id="clg3fmaag009bs4ts61fsdl6x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-03/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 03 Storage SDK</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-07/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 07 Key Vault
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

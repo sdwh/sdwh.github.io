@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>2021 年最熱門的密碼與它的雜湊 (Popular Passwords And Its Hash) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用 .NET System.Web.Helpers 中的 Crypto 對 2021 年熱門密碼進行雜湊列表。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021 年最熱門的密碼與它的雜湊 (Popular Passwords And Its Hash)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/CyberSecurity-2021-Popular-Passwords/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="使用 .NET System.Web.Helpers 中的 Crypto 對 2021 年熱門密碼進行雜湊列表。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="article:published_time" content="2021-06-11T05:50:07.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Toys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CyberSecurity-2021-Popular-Passwords" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/CyberSecurity-2021-Popular-Passwords/" class="article-date">
+  <time datetime="2021-06-11T05:50:07.000Z" itemprop="datePublished">2021-06-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Toys/">Toys</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      2021 年最熱門的密碼與它的雜湊 (Popular Passwords And Its Hash)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Scripts"><span class="toc-text">Scripts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LookUp"><span class="toc-text">LookUp</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>使用 .NET System.Web.Helpers 中的 Crypto 對 2021 年熱門密碼進行雜湊列表。</p>
+<a href="/posts/2021/06/CyberSecurity-2021-Popular-Passwords/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Scripts"><a href="#Scripts" class="headerlink" title="Scripts"></a>Scripts</h3><pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>bg-info p-4 text-white<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin-top</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span><span class="token property">font-size</span><span class="token punctuation">:</span> 2em<span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  @foreach (var pass in new List<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span><span class="token punctuation">></span></span> &#123; ... &#125;)
+  &#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>password-block<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span>Password: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>@pass<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span>SHA1: 
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>@System.Web.Helpers.Crypto.SHA1(pass) <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span>SHA256: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sha256-style<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>@System.Web.Helpers.Crypto.SHA256(pass)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="LookUp"><a href="#LookUp" class="headerlink" title="LookUp"></a>LookUp</h3><style>
+  .password-block{
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  .password-block span{
+    font-weight:800
+  }
+  span.sha256-style{
+    font-size: 1.1rem;
+    font-weight: 500;
+    word-wrap:break-word
+  }
+</style>
+
+<div class="password-block">
+        <span>Password: </span>12345<br />
+        <span>SHA1: </span>8CB2237D0679CA88DB6464EAC60DA96345513964 <br />
+        <span>SHA256: </span><span class="sha256-style">5994471ABB01112AFCC18159F6CC74B4F511B99806DA59B3CAF5A9C173CACFC5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>123456<br />
+        <span>SHA1: </span>7C4A8D09CA3762AF61E59520943DC26494F8941B <br />
+        <span>SHA256: </span><span class="sha256-style">8D969EEF6ECAD3C29A3A629280E686CF0C3F5D5A86AFF3CA12020C923ADC6C92</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>123456789<br />
+        <span>SHA1: </span>F7C3BC1D808E04732ADF679965CCC34CA7AE3441 <br />
+        <span>SHA256: </span><span class="sha256-style">15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>test1<br />
+        <span>SHA1: </span>B444AC06613FC8D63795BE9AD0BEAF55011936AC <br />
+        <span>SHA256: </span><span class="sha256-style">1B4F0E9851971998E732078544C96B36C3D01CEDF7CAA332359D6F1D83567014</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>password<br />
+        <span>SHA1: </span>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8 <br />
+        <span>SHA256: </span><span class="sha256-style">5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>12345678<br />
+        <span>SHA1: </span>7C222FB2927D828AF22F592134E8932480637C0D <br />
+        <span>SHA256: </span><span class="sha256-style">EF797C8118F02DFB649607DD5D3F8C7623048C9C063D532CC95C5ED7A898A64F</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>zinch<br />
+        <span>SHA1: </span>1C79967E901614489DFB64458CB2A54CAF4EF0E9 <br />
+        <span>SHA256: </span><span class="sha256-style">64E19A79C63B6F5E12DA524417209BC90D3C90CA4A1870BA3D8ED4BBC18D1688</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>g_czechout<br />
+        <span>SHA1: </span>FBC879DE1B984B1B16AD87D6636B864627426A8D <br />
+        <span>SHA256: </span><span class="sha256-style">1180FEF7454E5A2FF124E57DB272A2D1C55CD93F13D7C50815F5673A16E8EAAD</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>asdf<br />
+        <span>SHA1: </span>3DA541559918A808C2402BBA5012F6C60B27661C <br />
+        <span>SHA256: </span><span class="sha256-style">F0E4C2F76C58916EC258F246851BEA091D14D4247A2FC3E18694461B1816E13B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>qwerty<br />
+        <span>SHA1: </span>B1B3773A05C0ED0176787A4F1574FF0075F7521E <br />
+        <span>SHA256: </span><span class="sha256-style">65E84BE33532FB784C48129675F9EFF3A682B27168C0EA744B2CF58EE02337C5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>1234567890<br />
+        <span>SHA1: </span>01B307ACBA4F54F55AAFC33BB06BBBF6CA803E9A <br />
+        <span>SHA256: </span><span class="sha256-style">C775E7B757EDE630CD0AA1113BD102661AB38829CA52A6422AB782862F268646</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>1234567<br />
+        <span>SHA1: </span>20EABE5D64B0E216796E834F52D61FD0B70332FC <br />
+        <span>SHA256: </span><span class="sha256-style">8BB0CF6EB9B17D0F7D22B456F121257DC1254E1F01665370476383EA776DF414</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>Aa123456.<br />
+        <span>SHA1: </span>7E54C6BD7DCD13D62D013372BAF180953AD2FD46 <br />
+        <span>SHA256: </span><span class="sha256-style">98D738ABD01713FC6497C05C62C09F5BF487907D4F8B20124FBA83A447CEE033</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>iloveyou<br />
+        <span>SHA1: </span>EE8D8728F435FD550F83852AABAB5234CE1DA528 <br />
+        <span>SHA256: </span><span class="sha256-style">E4AD93CA07ACB8D908A3AA41E920EA4F4EF4F26E7F86CF8291C5DB289780A5AE</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>1234<br />
+        <span>SHA1: </span>7110EDA4D09E062AA5E4A390B0A572AC0D2C0220 <br />
+        <span>SHA256: </span><span class="sha256-style">03AC674216F3E15C761EE1A5E255F067953623C8B388B4459E13F978D7C846F4</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>abc123<br />
+        <span>SHA1: </span>6367C48DD193D56EA7B0BAAD25B19455E529F5EE <br />
+        <span>SHA256: </span><span class="sha256-style">6CA13D52CA70C883E0F0BB101E425A89E8624DE51DB2D2392593AF6A84118090</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>111111<br />
+        <span>SHA1: </span>3D4F2BF07DC1BE38B20CD6E46949A1071F9D0E3D <br />
+        <span>SHA256: </span><span class="sha256-style">BCB15F821479B4D5772BD0CA866C00AD5F926E3580720659CC80D39C9D09802A</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>123123<br />
+        <span>SHA1: </span>601F1889667EFAEBB33B8C12572835DA3F027F78 <br />
+        <span>SHA256: </span><span class="sha256-style">96CAE35CE8A9B0244178BF28E4966C2CE1B8385723A96A6B838858CDD6CA0A1E</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>dubsmash<br />
+        <span>SHA1: </span>111AD4256C1FCA809529CDD8C20D15FB1B43B615 <br />
+        <span>SHA256: </span><span class="sha256-style">A07EF70192A08EC9941187CE5CF27F24D5FD8F79215FF7A8F38B8F7E67EBD92D</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>test<br />
+        <span>SHA1: </span>A94A8FE5CCB19BA61C4C0873D391E987982FBBD3 <br />
+        <span>SHA256: </span><span class="sha256-style">9F86D081884C7D659A2FEAA0C55AD015A3BF4F1B2B0B822CD15D6C15B0F00A08</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>princess<br />
+        <span>SHA1: </span>775BB961B81DA1CA49217A48E533C832C337154A <br />
+        <span>SHA256: </span><span class="sha256-style">04E77BF8F95CB3E1A36A59D1E93857C411930DB646B46C218A0352E432023CF2</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>qwertyuiop<br />
+        <span>SHA1: </span>B0399D2029F64D445BD131FFAA399A42D2F8E7DC <br />
+        <span>SHA256: </span><span class="sha256-style">9A900403AC313BA27A1BC81F0932652B8020DAC92C234D98FA0B06BF0040ECFD</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>sunshine<br />
+        <span>SHA1: </span>8D6E34F987851AA599257D3831A1AF040886842F <br />
+        <span>SHA256: </span><span class="sha256-style">A941A4C4FD0C01CDDEF61B8BE963BF4C1E2B0811C037CE3F1835FDDF6EF6C223</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>BvtTest123<br />
+        <span>SHA1: </span>E4E8082E980AA9E0154E3DEE3546F61AEB79FA3E <br />
+        <span>SHA256: </span><span class="sha256-style">91741409ECA8C24EEB1D663784EFEBF40C1555C4EF3980CB908E04A0487DDEDB</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>11111<br />
+        <span>SHA1: </span>7B21848AC9AF35BE0DDB2D6B9FC3851934DB8420 <br />
+        <span>SHA256: </span><span class="sha256-style">D17F25ECFBCC7857F7BEBEA469308BE0B2580943E96D13A3AD98A13675C4BFC2</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>ashley<br />
+        <span>SHA1: </span>782F9B10621E362D5BD0DEF3A279B5E0908C9EBB <br />
+        <span>SHA256: </span><span class="sha256-style">C64975BA3CF3F9CD58459710B0A42369F34B0759C9967FB5A47EEA488E8BEA79</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>00000<br />
+        <span>SHA1: </span>6934105AD50010B814C933314B1DA6841431BC8B <br />
+        <span>SHA256: </span><span class="sha256-style">E7042AC7D09C7BC41C8CFA5749E41858F6980643BC0DB1A83CC793D3E24D3F77</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>000000<br />
+        <span>SHA1: </span>C984AED014AEC7623A54F0591DA07A85FD4B762D <br />
+        <span>SHA256: </span><span class="sha256-style">91B4D142823F7D20C5F08DF69122DE43F35F057A988D9619F6D3138485C9A203</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>password1<br />
+        <span>SHA1: </span>E38AD214943DAAD1D64C102FAEC29DE4AFE9DA3D <br />
+        <span>SHA256: </span><span class="sha256-style">0B14D501A594442A01C6859541BCB3E8164D183D32937B851835442F69D5C94E</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>monkey<br />
+        <span>SHA1: </span>AB87D24BDC7452E55738DEB5F868E1F16DEA5ACE <br />
+        <span>SHA256: </span><span class="sha256-style">000C285457FC971F862A79B786476C78812C8897063C6FA9C045F579A3B2D63F</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>livetest<br />
+        <span>SHA1: </span>39E72C86C62CA9DFA865A85E9686FA42006F3C12 <br />
+        <span>SHA256: </span><span class="sha256-style">F76B1E9755CDDA93C6F9CCFA63FDC548D2CA801C7B056490BB3560B8165F7C1B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>55555<br />
+        <span>SHA1: </span>69DF79BEF9287D3BCB8F104A408B06DE6A108FD8 <br />
+        <span>SHA256: </span><span class="sha256-style">C507A68F3093E885765257ED3F176C757AAF62BB4CBC2EF94B2E7DA3406D9676</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>soccer<br />
+        <span>SHA1: </span>5C17FA03E6D5FC247565E1CD8FFA70E1BFE5B8D9 <br />
+        <span>SHA256: </span><span class="sha256-style">8F27F432FCBAA4B5180A1CC7A8FA166A93CDA3C1BCE6F19922DD519D02F4BB39</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>charlie<br />
+        <span>SHA1: </span>D8CD10B920DCBDB5163CA0185E402357BC27C265 <br />
+        <span>SHA256: </span><span class="sha256-style">B9DD960C1753459A78115D3CB845A57D924B6877E805B08BD01086CCDF34433C</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>asdfghjkl<br />
+        <span>SHA1: </span>5FA339BBBB1EEACED3B52E54F44576AAF0D77D96 <br />
+        <span>SHA256: </span><span class="sha256-style">5C80565DB6F29DA0B01AA12522C37B32F121CBE47A861EF7F006CB22922DFFA1</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>654321<br />
+        <span>SHA1: </span>DD5FEF9C1C1DA1394D6D34B248C51BE2AD740840 <br />
+        <span>SHA256: </span><span class="sha256-style">481F6CC0511143CCDD7E2D1B1B94FAF0A700A8B49CD13922A70B5AE28ACAA8C5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>family<br />
+        <span>SHA1: </span>C33F059B0CA7725FBFD6C9EA4F2F012CC7AC5A74 <br />
+        <span>SHA256: </span><span class="sha256-style">D34A569AB7AAA54DACD715AE64953455D86B768846CD0085EF4E9E7471489B7B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>michael<br />
+        <span>SHA1: </span>17B9E1C64588C7FA6419B4D29DC1F4426279BA01 <br />
+        <span>SHA256: </span><span class="sha256-style">34550715062AF006AC4FAB288DE67ECB44793C3A05C475227241535F6EF7A81B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>123321<br />
+        <span>SHA1: </span>4D9012B4A77A9524D675DAD27C3276AB5705E5E8 <br />
+        <span>SHA256: </span><span class="sha256-style">A320480F534776BDDB5CDB54B1E93D210A3C7D199E80A23C1B2178497B184C76</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>football<br />
+        <span>SHA1: </span>2D27B62C597EC858F6E7B54E7E58525E6A95E6D8 <br />
+        <span>SHA256: </span><span class="sha256-style">6382DEAF1F5DC6E792B76DB4A4A7BF2BA468884E000B25E7928E621E27FB23CB</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>baseball<br />
+        <span>SHA1: </span>A2C901C8C6DEA98958C219F6F2D038C44DC5D362 <br />
+        <span>SHA256: </span><span class="sha256-style">A01EDAD91C00ABE7BE5B72B5E36BF4CE3C6F26E8BCE3340EBA365642813AB8B6</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>q1w2e3r4t5y6<br />
+        <span>SHA1: </span>4D8B4D6E78C7A1679BCF58B4E37FF35F623C2B56 <br />
+        <span>SHA256: </span><span class="sha256-style">40F598CC76550D29043B4CE234A5E4A0F2E5951A113BAEC2831F91D520F3DB4A</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>nicole<br />
+        <span>SHA1: </span>5FEE00239940F883D4C2854E41C7F989E75278A3 <br />
+        <span>SHA256: </span><span class="sha256-style">B54A1AF8B666F61C2DD5AE8F8A543133409FD28C3B78064C5DB993BF2C8E77BC</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>jessica<br />
+        <span>SHA1: </span>99996B911567C83CCE17CDF194F314975C57DDF1 <br />
+        <span>SHA256: </span><span class="sha256-style">E1FC45F7880E0505FF0B6A079B9AF149F225E260F59B1D20225357A8CCE8FFD8</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>purple<br />
+        <span>SHA1: </span>AFAED75406BD414820CEA4A5119F90C259C05755 <br />
+        <span>SHA256: </span><span class="sha256-style">8E0A1B0ADA42172886FD1297E25ABF99F14396A9400ACBD5F20DA20289CFF02F</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>shadow<br />
+        <span>SHA1: </span>ED9D3D832AF899035363A69FD53CD3BE8F71501C <br />
+        <span>SHA256: </span><span class="sha256-style">0BB09D80600EEC3EB9D7793A6F859BEDDE2A2D83899B70BD78E961ED674B32F4</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>hannah<br />
+        <span>SHA1: </span>675DC611BAFB0B7348DD3BAF7E005B6916FB954D <br />
+        <span>SHA256: </span><span class="sha256-style">FC881AA34D44660E1012DEC26CCDA0B469D6C8359E91DC674DAB4C095B9FE832</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>chocolate<br />
+        <span>SHA1: </span>891C5FEEF171DA85AADD3FDB8130BA509B03F5EA <br />
+        <span>SHA256: </span><span class="sha256-style">7499ACED43869B27F505701E4EDC737F0CC346ADD1240D4BA86FBFA251E0FC35</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>michelle<br />
+        <span>SHA1: </span>7212A9E01329EA93A57F574BD9BF77695D5FDCA4 <br />
+        <span>SHA256: </span><span class="sha256-style">01621148306FC8FB7C2B95EEB5C37E375F90DB53CF8313EA87C9C34C05B7E0E5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>daniel<br />
+        <span>SHA1: </span>3D0F3B9DDCACEC30C4008C5E030E6C13A478CB4F <br />
+        <span>SHA256: </span><span class="sha256-style">BD3DAE5FB91F88A4F0978222DFD58F59A124257CB081486387CBAE9DF11FB879</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>maggie<br />
+        <span>SHA1: </span>019DB0BFD5F85951CB46E4452E9642858C004155 <br />
+        <span>SHA256: </span><span class="sha256-style">AAE5BE5F6474904B686F639E0FCFD2BE440121CD889FA381A94B71750758345E</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>qwerty123<br />
+        <span>SHA1: </span>5CEC175B165E3D5E62C9E13CE848EF6FEAC81BFF <br />
+        <span>SHA256: </span><span class="sha256-style">DAAAD6E5604E8E17BD9F108D91E26AFE6281DAC8FDA0091040A7A6D7BD9B43B5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>hello<br />
+        <span>SHA1: </span>AAF4C61DDCC5E8A2DABEDE0F3B482CD9AEA9434D <br />
+        <span>SHA256: </span><span class="sha256-style">2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>112233<br />
+        <span>SHA1: </span>3ACD0BE86DE7DCCCDBF91B20F94A68CEA535922D <br />
+        <span>SHA256: </span><span class="sha256-style">E0BC60C82713F64EF8A57C0C40D02CE24FD0141D5CC3086259C19B1E62A62BEA</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>jordan<br />
+        <span>SHA1: </span>1CB5BD5A9E45420321F44C72DA5D90D7F0432FFB <br />
+        <span>SHA256: </span><span class="sha256-style">136C67657614311F32238751044A0A3C0294F2A521E573AFA8E496992D3786BA</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>tigger<br />
+        <span>SHA1: </span>6C616F7C2D2FDE9018A09F06EAEFCFC7582BC7BA <br />
+        <span>SHA256: </span><span class="sha256-style">ABC529A4B673CBBBC532E584706CB8137BE876AD53269DF3B97FBD40FC76FE57</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>666666<br />
+        <span>SHA1: </span>1411678A0B9E25EE2F7C8B2F7AC92B6A74B3F9C5 <br />
+        <span>SHA256: </span><span class="sha256-style">94EDF28C6D6DA38FD35D7AD53E485307F89FBEAF120485C8D17A43F323DEEE71</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>987654321<br />
+        <span>SHA1: </span>BFE54CAA6D483CC3887DCE9D1B8EB91408F1EA7A <br />
+        <span>SHA256: </span><span class="sha256-style">8A9BCF1E51E812D0AF8465A8DBCC9F741064BF0AF3B3D08E6B0246437C19F7FB</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>superman<br />
+        <span>SHA1: </span>18C28604DD31094A8D69DAE60F1BCD347F1AFC5A <br />
+        <span>SHA256: </span><span class="sha256-style">73CD1B16C4FB83061AD18A0B29B9643A68D4640075A466DC9E51682F84A847F5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>12345678910<br />
+        <span>SHA1: </span>9048EAD9080D9B27D6B2B6ED363CBF8CCE795F7F <br />
+        <span>SHA256: </span><span class="sha256-style">63640264849A87C90356129D99EA165E37AA5FABC1FEA46906DF1A7CA50DB492</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>summer<br />
+        <span>SHA1: </span>6420ED4D831B436D1E92D25605D18297296374E3 <br />
+        <span>SHA256: </span><span class="sha256-style">E83664255C6963E962BB20F9FCFAAD1B570DDF5DA69F5444ED37E5260F3EF689</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>1q2w3e4r5t<br />
+        <span>SHA1: </span>B80A9AED8AF17118E51D4D0C2D7872AE26E2109E <br />
+        <span>SHA256: </span><span class="sha256-style">28F0116EF42BF718324946F13D787A1D41274A08335D52EE833D5B577F02A32A</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>fitness<br />
+        <span>SHA1: </span>054EA98843267852C19598BC041335DC613E44B0 <br />
+        <span>SHA256: </span><span class="sha256-style">9EBF9B5978E6D486B0A66423715469B0E96F4B04C23D5061EC6C69BB29813A3B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>bailey<br />
+        <span>SHA1: </span>B1F45ED147D6803AC1A2A91BDEA1FAB603F910A5 <br />
+        <span>SHA256: </span><span class="sha256-style">299D6631D639256A762B81EE007DEB44CDD1CBC983E025038E113A0E709D3F7B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>zxcvbnm<br />
+        <span>SHA1: </span>93EC71B22793A81569C94CA17E4D9C293D8E201F <br />
+        <span>SHA256: </span><span class="sha256-style">1DF1854015E31CA286D015345EAFF29A6C6073F70984A3A746823D4CAC16B075</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>fuckyou<br />
+        <span>SHA1: </span>DD2EDB87EA9EB7A32FD4057276D3A1FAB861C1D5 <br />
+        <span>SHA256: </span><span class="sha256-style">6161B0A284159565A0F7D5DF2DD2698B5F87906CD91FF5322CAF179B451F5A41</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>121212<br />
+        <span>SHA1: </span>48058E0C99BF7D689CE71C360699A14CE2F99774 <br />
+        <span>SHA256: </span><span class="sha256-style">3EA87A56DA3844B420EC2925AE922BC731EC16A4FC44DCBEAFDAD49B0E61D39C</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>buster<br />
+        <span>SHA1: </span>1999E4893F732BA38B948DBE8D34ED48CD54F058 <br />
+        <span>SHA256: </span><span class="sha256-style">CBEAFF314EF5AD032CAA60EE2E8D8144AE52A8572C7D6F75631F3BD4080A7B16</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>butterfly<br />
+        <span>SHA1: </span>BA856797A6ED7651C7E6965EFEEAD66CB632F0A5 <br />
+        <span>SHA256: </span><span class="sha256-style">FCFD075CBE367C158D5CFAA31FA06656A3E68F626388D96EE81B35DDA4310B58</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>dragon<br />
+        <span>SHA1: </span>AF8978B1797B72ACFFF9595A5A2A373EC3D9106D <br />
+        <span>SHA256: </span><span class="sha256-style">A9C43BE948C5CABD56EF2BACFFB77CDAA5EEC49DD5EB0CC4129CF3EDA5F0E74C</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>jennifer<br />
+        <span>SHA1: </span>E3CD9F6469FC3E1ACFB9F2BDBFC5A3D2BBB8E2AD <br />
+        <span>SHA256: </span><span class="sha256-style">9CE8DB922A8F4A7ABD859ADEE70BD8B7A63321265487DA54CF4BED6A69EB3E1B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>amanda<br />
+        <span>SHA1: </span>2394EEAC9FC3DB56189A894E221220B6089E78D3 <br />
+        <span>SHA256: </span><span class="sha256-style">52E8E47B38E854580AFCE4AADE15DBD5CE0C0464DA711AFE71DA123687D5A4CD</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>justin<br />
+        <span>SHA1: </span>0CE7911E6479995D6C346D6F03EB723B5135309E <br />
+        <span>SHA256: </span><span class="sha256-style">102CF10B5286BAD9FCFE5E275ACE3DDD7DCC23931FB0CA93DC223DAF9877CABD</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>cookie<br />
+        <span>SHA1: </span>59C826FC854197CBD4D1083BCE8FC00D0761E8B3 <br />
+        <span>SHA256: </span><span class="sha256-style">D7E83E28A04B537E64424546B14CAF9B67BAD2F28DABCE68116E0D372319FA00</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>basketball<br />
+        <span>SHA1: </span>468EE5CBD54E42B8AEAAD13C130F780F0D091173 <br />
+        <span>SHA256: </span><span class="sha256-style">F02C96357481972443A2EB6D2861C803FA7790FB7D0225B2F54B6BEBA964F4AD</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>shopping<br />
+        <span>SHA1: </span>C651445273F6C41E717155EBD14771E9756DCBBD <br />
+        <span>SHA256: </span><span class="sha256-style">1180412AF43D78604A73F14D5A7EF83D3D3A74251CE8FB7B232043A511FBF161</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>pepper<br />
+        <span>SHA1: </span>64356BCFAE350C970263C1CE575185B289F7B836 <br />
+        <span>SHA256: </span><span class="sha256-style">8CBBCF29D9CEF89675C5F5C1DCFE827D0570416A5AABA30DD0DE159661AD905B</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>joshua<br />
+        <span>SHA1: </span>D6955D9721560531274CB8F50FF595A9BD39D66F <br />
+        <span>SHA256: </span><span class="sha256-style">FC52FABE94C0E037D2DF4498E87481A6438960C9F73D517584A7A5C564535AC4</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>hunter<br />
+        <span>SHA1: </span>6E2F9E6111E77EDD0C446EA7A84E25323D137A61 <br />
+        <span>SHA256: </span><span class="sha256-style">E9A63A4EB15738AE85CD416221C8FCC4CCC0018FAC91335B42EAA016C76E87F9</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>ginger<br />
+        <span>SHA1: </span>92119E2C63E9366ACFEFE818B50537A85577E2DB <br />
+        <span>SHA256: </span><span class="sha256-style">08DDFF4EBE39249A9208CD305B7D14091B1EBABEF6ADFA897CC34675FA0E0848</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>matthew<br />
+        <span>SHA1: </span>F80D0CA101E967B50B730DDF8E8ACA0DE85E8DF6 <br />
+        <span>SHA256: </span><span class="sha256-style">68BE7550846ECD878947B4EB0AC13D3CCA3CF6C4940C94D90163E0A15E947203</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>abcd1234<br />
+        <span>SHA1: </span>7CE0359F12857F2A90C7DE465F40A95F01CB5DA9 <br />
+        <span>SHA256: </span><span class="sha256-style">E9CEE71AB932FDE863338D08BE4DE9DFE39EA049BDAFB342CE659EC5450B69AE</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>taylor<br />
+        <span>SHA1: </span>5D74AE093A16A00E5AF127763F2DC7E13988F162 <br />
+        <span>SHA256: </span><span class="sha256-style">8E924025A26C584AD4AC6365116E09B852AE6B7016DA4C0851E269348D93C228</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>samantha<br />
+        <span>SHA1: </span>EC5A7C3E21436A8E76716710CE551356F9AA745E <br />
+        <span>SHA256: </span><span class="sha256-style">C5422C052BFBD7BBD9764E0467688B62193FEC4FA32A1B13AF28D1708D5870EC</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>whatever<br />
+        <span>SHA1: </span>D869DB7FE62FB07C25A0403ECAEA55031744B5FB <br />
+        <span>SHA256: </span><span class="sha256-style">85738F8F9A7F1B04B5329C590EBCB9E425925C6D0984089C43A022DE4F19C281</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>andrew<br />
+        <span>SHA1: </span>02E0A999C50B1F88DF7A8F5A04E1B76B35EA6A88 <br />
+        <span>SHA256: </span><span class="sha256-style">D979885447A413ABB6D606A5D0F45C3B7809E6FDE2C83F0DF3426F1FC9BFED97</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>1qaz2wsx3edc<br />
+        <span>SHA1: </span>929D3BA22D02B494DD0971784A3700C3DBF1D89F <br />
+        <span>SHA256: </span><span class="sha256-style">7FD06F0E2A61FEC4B93FCF78DF8759E5E4E2A2DA2F5A627CFAD24B801416EBBB</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>thomas<br />
+        <span>SHA1: </span>5F50A84C1FA3BCFF146405017F36AEC1A10A9E38 <br />
+        <span>SHA256: </span><span class="sha256-style">D38681074467C0BC147B17A9A12B9EFA8CC10BCF545F5B0BCCCCF5A93C4A2B79</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>jasmine<br />
+        <span>SHA1: </span>5BFD08BDAC5988B8C1D14A86BF8AB736DB159E9F <br />
+        <span>SHA256: </span><span class="sha256-style">6D1C5859550824D403D8C31AF9AC673B7BA206E6F87E61E096A017299F74D63F</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>animoto<br />
+        <span>SHA1: </span>5E115D5A156A1956F75CC9194EC640DED80A6F13 <br />
+        <span>SHA256: </span><span class="sha256-style">15ADD5DF22D70AB87EC69B0091AF9F29A700C8637EF02416BE9C58B82D37E76C</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>madison<br />
+        <span>SHA1: </span>96773332455A5770CBA61B43B62383E896C09C39 <br />
+        <span>SHA256: </span><span class="sha256-style">6DBC81F0FA76157E049F9E8263AB582793EF5FA6BAA39271C3CBB29A42C551FB</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>0987654321<br />
+        <span>SHA1: </span>BD5E5EB049F3907175F54F5A571BA6B9FDEA36AB <br />
+        <span>SHA256: </span><span class="sha256-style">17756315EBD47B7110359FC7B168179BF6F2DF3646FCC888BC8AA05C78B38AC1</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>54321<br />
+        <span>SHA1: </span>348162101FC6F7E624681B7400B085EEAC6DF7BD <br />
+        <span>SHA256: </span><span class="sha256-style">20F3765880A5C269B747E1E906054A4B4A3A991259F1E16B5DDE4742CEC2319A</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>flower<br />
+        <span>SHA1: </span>5A46B8253D07320A14CACE9B4DCBF80F93DCEF04 <br />
+        <span>SHA256: </span><span class="sha256-style">C06B0CFE0CC5E900C57784484094331F095BF441995C3C31EA6C75691C786C35</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>Password<br />
+        <span>SHA1: </span>8BE3C943B1609FFFBFC51AAD666D0A04ADF83C9D <br />
+        <span>SHA256: </span><span class="sha256-style">E7CF3EF4F17C3999A94F2C6F612E8A888E5B1026878E4E19398B23BD38EC221A</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>maria<br />
+        <span>SHA1: </span>E21FC56C1A272B630E0D1439079D0598CF8B8329 <br />
+        <span>SHA256: </span><span class="sha256-style">94AEC9FBED989ECE189A7E172C9CF41669050495152BC4C1DBF2A38D7FD85627</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>babygirl<br />
+        <span>SHA1: </span>B03B74363BBB6EE42CE248C7A5344E92FFE76CC7 <br />
+        <span>SHA256: </span><span class="sha256-style">F95FC9D255314DEEBEB3E3BE8C7A926CAA4E2415C6372BEFAA8FD6F069B7C4A3</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>lovely<br />
+        <span>SHA1: </span>DE3460832EA070EFFABBC7032D7594BBDE1BB120 <br />
+        <span>SHA256: </span><span class="sha256-style">F85B43067A280D4CC40F89CB78D8EFFF6E908727BC3CB43A9AE72B400D2EECC5</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>sophie<br />
+        <span>SHA1: </span>5F50443BFE76F7279A8E0F2F0A98975CDBFF38E9 <br />
+        <span>SHA256: </span><span class="sha256-style">5E0176C9D2070A5A2A22BF74B4ABED303654690D58D64221CCBD022AF827ABC4</span><br />
+    </div>
+    <div class="password-block">
+        <span>Password: </span>Chegg123<br />
+        <span>SHA1: </span>BBDA52F8E02322F91086A938DF80C200A6A1FEB1 <br />
+        <span>SHA256: </span><span class="sha256-style">1BD976654FDD2ADAF8772916218210FC182703CB9B1709558B22C6FA73D231B0</span><br />
+    </div>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/CyberSecurity-2021-Popular-Passwords/" data-id="clg3fmac100gns4ts0yt08dy2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/SQL-Server-Memory-Monitor/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 記憶體監控 (Memory Monitor)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/ASPNET-System-Web-Helpers/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          .NET System Web Helpers 探索 (ServerInfo, Crypto, Chart)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

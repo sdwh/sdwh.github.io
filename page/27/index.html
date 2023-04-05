@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Skeptical Software Engineer">
+<meta property="og:url" content="https://sdwh.dev/page/27/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:locale">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="資訊處理">
+<meta property="article:tag" content="自我成長">
+<meta property="article:tag" content="軟體工程">
+<meta property="article:tag" content="系統管理">
+<meta property="article:tag" content="資料庫管理">
+<meta property="article:tag" content="資料分析">
+<meta property="article:tag" content="資訊安全">
+<meta property="article:tag" content="程式設計">
+<meta property="article:tag" content="政府採購法">
+<meta property="article:tag" content="資訊證照">
+<meta property="article:tag" content="DBA">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="asp">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+  
+    <article id="post-PowerShell-Get-Command-Get-Alias" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/PowerShell-Get-Command-Get-Alias/" class="article-date">
+  <time datetime="2022-01-12T12:17:06.000Z" itemprop="datePublished">2022-01-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/PowerShell-Get-Command-Get-Alias/">PowerShell 指令掌握指南 (Get-Command, Get-Alias, Get-Member)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記如何使用 PowerShell Get-Command, Get-Alias 以及 Get-Member 熟悉 PowerShell 指令以及物件使用方式。</p>
+<a href="/posts/2022/01/PowerShell-Get-Command-Get-Alias/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/powershell.svg" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/PowerShell-Get-Command-Get-Alias/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/PowerShell-Get-Command-Get-Alias/" data-id="clg3fmagj00z3s4ts0boug76b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-IP-Prefix" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-IP-Prefix/" class="article-date">
+  <time datetime="2022-01-12T11:10:58.000Z" itemprop="datePublished">2022-01-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-IP-Prefix/">SQL Server TSQL 將 IP 取網段 Prefix</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 SQL Server 在有限的函數工具下，如何使用藉由字串函數來取 IP Prefix 網段，用以分析 IIS Logs 資料。</p>
+<a href="/posts/2022/01/SQL-Server-IP-Prefix/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-IP-Prefix/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-IP-Prefix/" data-id="clg3fmaj2018ds4ts17408cuf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-BCP-Bulk-Insert" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-BCP-Bulk-Insert/" class="article-date">
+  <time datetime="2022-01-11T11:42:31.000Z" itemprop="datePublished">2022-01-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-BCP-Bulk-Insert/">SQL Server 批次資料匯入匯出 (BCP, Bulk Insert &amp; OPENROWSET)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明 SQL Server 在資料大量匯入、匯出上可以採取的三種工具：BCP、Bulk Insert 以及 OPENROWSET。</p>
+<a href="/posts/2022/01/SQL-Server-BCP-Bulk-Insert/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-BCP-Bulk-Insert/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-BCP-Bulk-Insert/" data-id="clg3fmaht013ms4ts7lj70enq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSIS/" rel="tag">SSIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Log-Parser" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/Log-Parser/" class="article-date">
+  <time datetime="2022-01-11T11:15:49.000Z" itemprop="datePublished">2022-01-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/Log-Parser/">Log Parser 工具在手 紀錄我有 | IIS W3C Logs 分析指南</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何使用 Log Parser 進行 IIS Logs 的分析，讓生活變得容易 (Make your life easier)。</p>
+<a href="/posts/2022/01/Log-Parser/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/Log-Parser/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/Log-Parser/" data-id="clg3fmafb00u5s4tsfcegg9cl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL-Server/" rel="tag">SQL Server</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/" class="article-date">
+  <time datetime="2022-01-10T13:05:26.000Z" itemprop="datePublished">2022-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/">ASP.NET MVC Ajax Add / Delete Image (MiniAlbum)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>ASP.NET MVC 使用 Ajax Helper 搭配 jQuery Ajax 實作非同步式圖片上傳與刪除。</p>
+<a href="/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/" data-id="clg3fma9f004gs4ts42m72jvg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-PowerShell-Invoke-RestMethod-RestFul-API" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/" class="article-date">
+  <time datetime="2022-01-08T08:55:58.000Z" itemprop="datePublished">2022-01-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/">PowerShell RestFul API (Invoke-RestMethod)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記如何使用 PowerShell 進行 Restful API 的 GET, PATCH, POST, DELETE, PUT。</p>
+<a href="/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/powershell.svg" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/" data-id="clg3fmago00zks4ts0vnt2ygm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-CSharp-Toys-Web-Requests-Glue" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/CSharp-Toys-Web-Requests-Glue/" class="article-date">
+  <time datetime="2022-01-07T12:40:54.000Z" itemprop="datePublished">2022-01-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/CSharp-Toys-Web-Requests-Glue/">C# Web Requests / Copy File / Uri</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記如何使用 C# 將檔案從 URL 進行下載，從本機複製至特定路徑以及取得 Http Response Status Code。比較 WebClient 以及 HttpClient 使用上的差異之處。</p>
+<a href="/posts/2022/01/CSharp-Toys-Web-Requests-Glue/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/CSharp-Toys-Web-Requests-Glue/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/CSharp-Toys-Web-Requests-Glue/" data-id="clg3fmabk00ehs4tshj3kesir" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Vue-Draggable-With-ASPNET-MVC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/Vue-Draggable-With-ASPNET-MVC/" class="article-date">
+  <time datetime="2022-01-06T11:13:35.000Z" itemprop="datePublished">2022-01-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue/">Vue</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/Vue-Draggable-With-ASPNET-MVC/">超簡單學習 Vue.js 系列 | Vue Draggable 世界大學排名</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>Vue.js 簡單的示範專案，實作所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。本次使用 CDN 的方式，在 ASP.NET MVC View 使用到 Vue Draggable 的可拖曳、拖拉互動效果。</p>
+<a href="/posts/2022/01/Vue-Draggable-With-ASPNET-MVC/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/vue-js-logo.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/Vue-Draggable-With-ASPNET-MVC/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/Vue-Draggable-With-ASPNET-MVC/" data-id="clg3fmam701jls4tsg6fub0ru" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-PowerShell-Test-NetConnection" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/PowerShell-Test-NetConnection/" class="article-date">
+  <time datetime="2022-01-05T12:03:20.000Z" itemprop="datePublished">2022-01-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Network/">Network</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/PowerShell-Test-NetConnection/">PowerShell Test NetConnection (Check is Port available)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記如何使用 PowerShell 檢查特定 Port 是否提供服務。</p>
+<a href="/posts/2022/01/PowerShell-Test-NetConnection/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/powershell.svg" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/PowerShell-Test-NetConnection/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/PowerShell-Test-NetConnection/" data-id="clg3fmags00zys4ts7tmhdore" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLI/" rel="tag">CLI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-ASPNET-MVC-With-Bootstrap5" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/ASPNET-MVC-With-Bootstrap5/" class="article-date">
+  <time datetime="2022-01-04T11:12:24.000Z" itemprop="datePublished">2022-01-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/ASPNET-MVC-With-Bootstrap5/">ASP.NET With Bootstrap 5 &amp; Scaffolding</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明將 ASP.NET MVC 專案的 Boostrap 升級至 5.x 版本的相對應設計調整。</p>
+<a href="/posts/2022/01/ASPNET-MVC-With-Bootstrap5/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/ASPNET-MVC-With-Bootstrap5/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/ASPNET-MVC-With-Bootstrap5/" data-id="clg3fma9x006es4ts4xgkbstx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bootstrap/" rel="tag">Bootstrap</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/26/">↖ Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><a class="extend next" rel="next" href="/page/28/">Next ↘</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

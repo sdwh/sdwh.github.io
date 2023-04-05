@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure AZ-104 實作實驗筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記準備 AZ-104 過程中，從 Microsoft Learn 中發現的有趣架構圖與實作課程，作為日後要使用相關雲端服務複習或者架構參考的切入點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure AZ-104 實作實驗筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/08/Azure-104-Lab/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記準備 AZ-104 過程中，從 Microsoft Learn 中發現的有趣架構圖與實作課程，作為日後要使用相關雲端服務複習或者架構參考的切入點。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ014-microsoft-certified-associate-badge.svg">
+<meta property="og:image" content="https://learn.microsoft.com/en-us/learn/modules/control-network-traffic-flow-with-routes/media/4-nva.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/6-public-private-route.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/6-private-public-route.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/3-network-topology-used-in-exercise.svg">
+<meta property="og:image" content="https://learn.microsoft.com/en-us/learn/modules/integrate-vnets-with-vnet-peering/media/2-vnet-peering.svg">
+<meta property="og:image" content="https://learn.microsoft.com/en-us/learn/modules/troubleshoot-azure-network-infrastructure/media/3-network-topology.png">
+<meta property="article:published_time" content="2020-08-16T11:44:57.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Certification">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/AZ014-microsoft-certified-associate-badge.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-104-Lab" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/08/Azure-104-Lab/" class="article-date">
+  <time datetime="2020-08-16T11:44:57.000Z" itemprop="datePublished">2020-08-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure AZ-104 實作實驗筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AZ-900"><span class="toc-text">AZ-900</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-virtual-machine"><span class="toc-text">Create a virtual machine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-virtual-network"><span class="toc-text">Create a virtual network</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-blob-storage"><span class="toc-text">Create blob storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-SQL-database"><span class="toc-text">Create a SQL database</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Web-App-Service"><span class="toc-text">Create Web App Service</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AZ-104"><span class="toc-text">AZ-104</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Manage-and-control-traffic-flow-in-your-Azure-deployment-with-routes"><span class="toc-text">Manage and control traffic flow in your Azure deployment with routes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Azure-site-to-site-VPN-gateway"><span class="toc-text">Azure site-to-site VPN gateway</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-Peering"><span class="toc-text">Network Peering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Network-Watcher"><span class="toc-text">Network Watcher</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記準備 AZ-104 過程中，從 Microsoft Learn 中發現的有趣架構圖與實作課程，作為日後要使用相關雲端服務複習或者架構參考的切入點。</p>
+<a href="/posts/2020/08/Azure-104-Lab/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/AZ014-microsoft-certified-associate-badge.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="AZ-900"><a href="#AZ-900" class="headerlink" title="AZ-900"></a>AZ-900</h2><h3 id="Create-a-virtual-machine"><a href="#Create-a-virtual-machine" class="headerlink" title="Create a virtual machine"></a>Create a virtual machine</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/learn/modules/define-core-azure-services-products/4-walkthrough-create-virtual-machine">Create a virtual machine</a></p>
+<h3 id="Create-a-virtual-network"><a href="#Create-a-virtual-network" class="headerlink" title="Create a virtual network"></a>Create a virtual network</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/learn/modules/define-core-azure-services-products/8-walkthrough-create-virtual-network">Create a virtual network</a></p>
+<h3 id="Create-blob-storage"><a href="#Create-blob-storage" class="headerlink" title="Create blob storage"></a>Create blob storage</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/learn/modules/define-core-azure-services-products/11-walkthrough-create-blob-storage">Create blob storage</a></p>
+<h3 id="Create-a-SQL-database"><a href="#Create-a-SQL-database" class="headerlink" title="Create a SQL database"></a>Create a SQL database</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/learn/modules/define-core-azure-services-products/13-walkthrough-create-sql-database">Create a SQL database</a></p>
+<h3 id="Create-Web-App-Service"><a href="#Create-Web-App-Service" class="headerlink" title="Create Web App Service"></a>Create Web App Service</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/learn/modules/control-azure-services-with-cli/5-exercise-create-website-using-the-cli">Create Web App Service</a></p>
+<h2 id="AZ-104"><a href="#AZ-104" class="headerlink" title="AZ-104"></a>AZ-104</h2><h3 id="Manage-and-control-traffic-flow-in-your-Azure-deployment-with-routes"><a href="#Manage-and-control-traffic-flow-in-your-Azure-deployment-with-routes" class="headerlink" title="Manage and control traffic flow in your Azure deployment with routes"></a>Manage and control traffic flow in your Azure deployment with routes</h3><p><img src="https://learn.microsoft.com/en-us/learn/modules/control-network-traffic-flow-with-routes/media/4-nva.svg" alt="What is an NVA?"><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/control-network-traffic-flow-with-routes/4-network-virtual-appliances">What is an NVA?</a></p>
+<p><img src="/assets/6-public-private-route.svg" alt="public route to private"><br><img src="/assets/6-private-public-route.svg" alt="private route to public"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/control-network-traffic-flow-with-routes/3-exercise-create-custom-routes">Create custom routes</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/control-network-traffic-flow-with-routes/3-exercise-create-custom-routes">Create an NVA and virtual machines</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/control-network-traffic-flow-with-routes/3-exercise-create-custom-routes">Route traffic through the NVA</a></p>
+<h3 id="Azure-site-to-site-VPN-gateway"><a href="#Azure-site-to-site-VPN-gateway" class="headerlink" title="Azure site-to-site VPN gateway"></a>Azure site-to-site VPN gateway</h3><p><img src="/assets/3-network-topology-used-in-exercise.svg" alt="site-to-site VPN gateway"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/connect-on-premises-network-with-vpn-gateway/3-exercise-prepare-azure-and-on-premises-vnets-using-azure-cli-commands">Prepare Azure and on-premises virtual networks by using Azure CLI commands</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/connect-on-premises-network-with-vpn-gateway/4-exercise-create-a-site-to-site-vpn-gateway-using-azure-cli-commands">Create a site-to-site VPN gateway by using Azure CLI commands</a></p>
+<h3 id="Network-Peering"><a href="#Network-Peering" class="headerlink" title="Network Peering"></a>Network Peering</h3><p><img src="https://learn.microsoft.com/en-us/learn/modules/integrate-vnets-with-vnet-peering/media/2-vnet-peering.svg" alt="Network Peering"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/integrate-vnets-with-vnet-peering/3-exercise-prepare-vnets-for-peering-using-azure-cli-commands">Prepare virtual networks for peering by using Azure CLI commands</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/integrate-vnets-with-vnet-peering/4-exercise-configure-vnet-peering-connections-using-azure-cli-commands">Configure virtual network peering connections by using Azure CLI commands</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/integrate-vnets-with-vnet-peering/5-exercise-verify-vnet-peering">Verify virtual network peering by using SSH between Azure virtual machines</a></p>
+<h3 id="Network-Watcher"><a href="#Network-Watcher" class="headerlink" title="Network Watcher"></a>Network Watcher</h3><p><img src="https://learn.microsoft.com/en-us/learn/modules/troubleshoot-azure-network-infrastructure/media/3-network-topology.png" alt="Network Watcher"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/troubleshoot-azure-network-infrastructure/2-troubleshoot-networking-with-network-watcher">Troubleshoot a network by using Network Watcher monitoring and diagnostic tools</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/troubleshoot-azure-network-infrastructure/3-exercise-troubleshoot-networking-with-network-watcher">Lab - Troubleshoot a network by using Network Watcher monitoring and diagnostic tools</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/learn/modules/troubleshoot-azure-network-infrastructure/5-exercise-troubleshoot-networking-with-network-watcher-metrics-logs">Troubleshoot a network by using Network Watcher metrics and logs</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/08/Azure-104-Lab/" data-id="clg3fmaaa008hs4ts3f419a9r" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/08/Taiwan-Invoice-Lottery/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">電信帳單電子發票中獎兌換流程 (台灣大哥大, 發票兌獎, ibon)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/09/PowerShell-CheatSheet/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PowerShell 常用指令筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

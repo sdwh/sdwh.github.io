@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Azure SQL Solutions | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="整理 Azure SQL Server 相關的解決方案，包含 IaaS 的 Virtual Machine 以及 PaaS 的 Azure SQL Database 以及 Azure SQL Managed Instance。並從實務應用著眼採用雲端的資料庫解決方案需要考量的項目。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Azure SQL Solutions">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/09/SQL-Server-Azure-SQL-Solutions/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="整理 Azure SQL Server 相關的解決方案，包含 IaaS 的 Virtual Machine 以及 PaaS 的 Azure SQL Database 以及 Azure SQL Managed Instance。並從實務應用著眼採用雲端的資料庫解決方案需要考量的項目。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Azure-Elastic-Pool-Setup.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Automation-Account-Setting-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Automation-Account-Setting-2.png">
+<meta property="article:published_time" content="2022-09-07T11:25:07.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="Azure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Azure-SQL-Solutions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/09/SQL-Server-Azure-SQL-Solutions/" class="article-date">
+  <time datetime="2022-09-07T11:25:07.000Z" itemprop="datePublished">2022-09-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Azure SQL Solutions
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IaaS"><span class="toc-text">IaaS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PaaS"><span class="toc-text">PaaS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cloud-Solutions"><span class="toc-text">Cloud Solutions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#High-Availability"><span class="toc-text">High Availability</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Automation"><span class="toc-text">Automation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Performance-Optimizer"><span class="toc-text">Performance Optimizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Security"><span class="toc-text">Security</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Steps"><span class="toc-text">Steps</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>整理 Azure SQL Server 相關的解決方案，包含 IaaS 的 Virtual Machine 以及 PaaS 的 Azure SQL Database 以及 Azure SQL Managed Instance。並從實務應用著眼採用雲端的資料庫解決方案需要考量的項目。</p>
+<a href="/posts/2022/09/SQL-Server-Azure-SQL-Solutions/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Azure SQL 所提供的資料庫不限於 SQL Server，另外也包括 MySQL 以及 PostgreSQL，但本次的討論主要以地端的 SQL Server 以及雲端的 Azure SQL 進行比較。</p>
+<ul>
+<li>IaaS<ul>
+<li>Virtual Machines<ul>
+<li>vCores</li>
+</ul>
+</li>
+<li>IaaS Agent extension</li>
+</ul>
+</li>
+<li>PaaS<ul>
+<li>Azure SQL Database<ul>
+<li>Single Database vs Elastic Pool</li>
+<li>DTU<ul>
+<li>Basic</li>
+<li>Standard</li>
+<li>Premium</li>
+</ul>
+</li>
+<li>vCores<ul>
+<li>General Purpose</li>
+<li>Critical Business</li>
+<li>HyperScale</li>
+</ul>
+</li>
+<li>Serverless</li>
+</ul>
+</li>
+<li>Azure SQL Managed Instance<ul>
+<li>vCores<ul>
+<li>General Purpose</li>
+<li>Critical Business</li>
+<li>HyperScale</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="IaaS"><a href="#IaaS" class="headerlink" title="IaaS"></a>IaaS</h2><p>IaaS Virtual Machine 提供了 Lift and Shift 的遷移方式，讓地端虛擬機的使用者能夠快速地將資料庫作業遷移。但原本伺服器管理的工作，仍可以藉由安裝 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/azure/azure-sql/virtual-machines/windows/sql-server-iaas-agent-extension-automate-management?view=azuresql&tabs=azure-powershell">IaaS Agent extension</a> 來簡化管理工作，並從 Azure Portal 就能夠進行多數的管理。</p>
+<h2 id="PaaS"><a href="#PaaS" class="headerlink" title="PaaS"></a>PaaS</h2><p>無論是 Azure SQL Database 以及 Azure SQL Managed Instance，所支援的資料庫還原 (Restore)，都是還原成新的資料庫名稱，需要手動移除原本的資料庫並重新命名 😶</p>
+<p>PaaS 的資料庫服務都沒有「停機」的選項，不像 IaaS 的 Virtual Machine 可以將虛擬機進行停止，暫停收費 (儲存空間仍要計費)，如果是為達到節省費用效果，只能改將 Service Tier 改為 Serverless，並藉由應用程式斷開連結使用 (或資料庫防火牆設定)，來達到無使用無產生費用的效果。</p>
+<p>Azure SQL Database 可以是單一資料庫服務 (Single Database) 或者彈性集區 (Elastic Pool)，但無論兩者任一種，仍需要一個虛擬機器單位作為其管理容器。</p>
+<p>而在效能等級 (Service Tier) 的設定上，如果是單一資料庫是設定在 Azure SQL Database 本身；如果是彈性集區則是設定在彈性集區上。</p>
+<p><img src="/assets/SQL-Server-Azure-Elastic-Pool-Setup.png" alt="建立彈性集區的方式"></p>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Azure SQL Database 因為沒有 Instance，有替代 Instance 管理需求的專門角色 dbmanager 以及 loginmanager。</p>
+  <p>dbmanager 可以用於建立與刪除資料庫；loginmanager 可以用於建立與刪除 virtual master 的 logins</p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Azure AD Server Principal default 權限包含 database backup & restore operations 以及 Set up service broker & DB mail。</p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 評估 Managed Instance 支援使用 Alert 的 metrics: IO Bytes read, Average % CPU utilizatoin over time & Storage space used by instances and databases。</p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>
+  💡 評估使用 DTU 的資源量，可以藉由:
+    <ul>
+    <li>total storage space for all databases</li>
+    <li>total number of databases × average DTU utilization per database</li>
+    <li>number of concurrently peaking database × peak DTU utilization per database</li>
+    </ul>
+  </p>
+</div>
+
+<h2 id="Cloud-Solutions"><a href="#Cloud-Solutions" class="headerlink" title="Cloud Solutions"></a>Cloud Solutions</h2><p>說明 Cloud 所能帶來的優勢以及具體技術的特色比較。</p>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Azure SQL Database Replication 僅支援 Standard Transactional 以及 Snapshot。</p>
+</div>
+
+<h3 id="High-Availability"><a href="#High-Availability" class="headerlink" title="High Availability"></a>High Availability</h3><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>Auto-Failover Groups</th>
+<th>Active-Geo Replicas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Paas</td>
+<td>Azure SQL Database &amp; Managed Instance</td>
+<td>Azure SQL Database</td>
+</tr>
+<tr>
+<td>Failover</td>
+<td>自動容錯移轉</td>
+<td>手動容錯移轉</td>
+</tr>
+<tr>
+<td>設定方式</td>
+<td>在資料庫容器機器設定</td>
+<td>在資料庫設定</td>
+</tr>
+<tr>
+<td>運作原理</td>
+<td>可用性群組</td>
+<td>在不同地點的虛擬機器</td>
+</tr>
+</tbody></table>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Invoke-AzSqlInstanceFailover with "Resource Group Name" & "Managed Instance for fail over"</p>
+</div>
+
+<h3 id="Automation"><a href="#Automation" class="headerlink" title="Automation"></a>Automation</h3><p>除了 IaaS 仍可以使用 Windows scheduler (工程排程器) 來進行自動化維護工作外，PaaS 類型的 SQL Server Service 可以藉由 Azure Automation Accounts 來作業。</p>
+<p>使用的邏輯為先建立 Automation Accounts，接著再建立 Runbook (可以使用 PowerSheel 或 Python)，發行 Runbook 後再設定排程作業。</p>
+<p><img src="/assets/Azure-Automation-Account-Setting-1.png"></p>
+<p>根據 Runbook 的腳本，可能是 PowerShell 或者是 Python，可以安裝相關的模組依賴。</p>
+<p><img src="/assets/Azure-Automation-Account-Setting-2.png"></p>
+<p>為連動受管理的資源，可能會需要帳戶身分，可以儲存在 Automation Accounts 的 Credential 當中。</p>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 SQL Server Agetn Jobs 使用 SSMS 來進行管理，無法透過 Azure Portal, ARM Template。</p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Set-AzVMSqlServerExtension for PowerShell cmdlet</p>
+</div>
+
+<h3 id="Performance-Optimizer"><a href="#Performance-Optimizer" class="headerlink" title="Performance Optimizer"></a>Performance Optimizer</h3><p>sys.dm_os_waiting_tasks<br>sys.dm_exec_requests</p>
+<p>sys.query_store_query_text<br>sys.query_store_query</p>
+<p>sys.dm_db_session_space_usage<br>sys.dm_db_task_space_usage</p>
+<p>sys.dm_db_index_physical_stats</p>
+<p>sys.dm_db_column_store_row_group_physical_stats</p>
+<p>sys.dm_db_tuning_recommendations<br>sys.database_automatic_tuning_options</p>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Automatic tuning CREATE_INDEX & DROP_INDEX 只有在 Azure SQL Database 支援，不支援 Azure SQL Managed Instance。</p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 可以藉由使用ㄒsys.database_files 來觀察資料庫 data & log files 的可用容量。</p>
+</div>
+
+
+<h3 id="Security"><a href="#Security" class="headerlink" title="Security"></a>Security</h3><p>Data in rest</p>
+<p>Transparent Database Encryption</p>
+<p>🔑 Service Master key (exists in SQL Server setup)<br>encrypt 🔑 Database Master key<br>encrypt 📑 Certificate<br>encrypt 🔑 Database Encryption key</p>
+<hr>
+<p>Azure SQL Database &amp; Azure SQL Managed Instance Default Enable. 在 Azure VM 磁碟額外受到 Azure Disk Encryption 保護，可以與 TDE 形成多層次保護。</p>
+<p>Data in transit</p>
+<p>Azure 的連線存取會優先以 Database Level 的防火牆規則判斷，其次才以 Server Level 的防火牆規則。</p>
+<p>藉由設定 TLS，並由伺服器 Instance 啟用 <strong>ForceEncryption</strong>，使用端必須使用 Encrypt connection 如果伺服器端的憑證是自簽憑證，使用者必須搭配 Trust server certificate。</p>
+<p>Data in use</p>
+<p>在記憶體當中的資料庫資料，可以透過 Always Encrypted 技術進行加密保護，讓儲存在資料庫中的資料無法被 DBA 直接檢視</p>
+<p>Microsoft Defender for SQL</p>
+<ul>
+<li>Vulnerability to SQL injection<br>  偵測脆弱的 TSQL，例如不會檢測輸入資料的 Stored Procedures。</li>
+<li>Potential SQL injection<br>偵測惡意進行中的 Injection 攻擊行為。</li>
+<li>Access from unusual location &amp; Access from unusual Azure data center<br>  警示來自異常的地區登入行為。</li>
+<li>Access from unfamiliar principal<br>警示異常使用的 principal、user &amp; login。</li>
+<li>Access from a potentially harmful application<br>  警示使用的工具為惡意行為使用的工具。</li>
+</ul>
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Change Data Capture
+    <ol>
+      <li>sys.sp_cdc_enable_db</li>
+      <li>sys.sp_cdc_enable_table</li>
+    </ol>
+  </p>
+</div>
+
+
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Azure Key Vault to store encryption keys with SQL Server PowerShell cmdlets</p>
+</div>
+
+<h2 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h2><div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Striped Virtual Disk
+    <ol>
+      <li>Attach disks to vm</li>
+      <li>Create storage pool</li>
+      <li>Striped virtual disk</li>
+      <li>Create a volume</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Database Mail
+    <ol>
+      <li>Enable database mail</li>
+      <li>Create mail account</li>
+      <li>Create profile</li>
+      <li>Set profile as default</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Failver Configuration
+    <ol>
+      <li>Disable application</li>
+      <li>Configuration to secondary</li>
+      <li>Initial failover from secondary</li>
+      <li>Configure database after recovery</li>
+      <li>Verify application integrity</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Alaways Encrypted
+    <ol>
+      <li>Create a column master key</li>
+      <li>Create a column encryption key</li>
+      <li>Encrypt column using randomized encryption</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Azure AD Authentication
+    <ol>
+      <li>Create an Azure AD Administrator for instance</li>
+      <li>Create a contained database user to mapped to Azure AD identity</li>
+      <li>Connect to database using Azure AD identity</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 ARM Template
+    <ol>
+      <li>Export Resources template from Azure Portal</li>
+      <li>Revise configuration parameters in the template</li>
+      <li>Deploy the template from Azure Portal</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Restore Database
+    <ol>
+      <li>Restore the most recent full backup</li>
+      <li>Restore the diff backup from specific Date</li>
+      <li>Restore the log backups after diff backup</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Move Secondary Server to another region
+    <ol>
+      <li>Active-Geo replication to create secondaries of Server A to C</li>
+      <li>Delete Failover Group</li>
+      <li>Create new Failover Group, same name between A and C</li>
+      <li>Add all primary databases on Server A to the new Failover Group</li>
+      <li>Drop Server B</li>
+    </ol>
+  </p>
+</div>
+
+<div style="border: 5px dotted coral;color: teal;font-weight:700;padding: 5px;font-size: 1.2rem;margin-bottom: 1rem">
+  <p>💡 Resource Governor
+    <ol>
+      <li>Create Resource Pool</li>
+      <li>Create Workload Group</li>
+      <li>Create User Defined classification function</li>
+      <li>Modify Resource Governor</li>
+    </ol>
+  </p>
+</div>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/09/SQL-Server-Azure-SQL-Solutions/" data-id="clg3fmahu013qs4ts92bj7jc5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/09/SQL-Server-Execution-Plan/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Execution Plan 執行計畫</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/09/SQL-Server-Backup-Database-With-Azure-Storage-Account/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server 使用 Azure Storage Account 備份資料庫 (Backup Database To URL)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

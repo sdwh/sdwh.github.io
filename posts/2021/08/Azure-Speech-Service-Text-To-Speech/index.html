@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Speech Service Text To Speech | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介紹如何藉接 Azure Speech Service，將文字轉換為朗讀文字的語音檔，支援多國語語言，同時在聲調、語速都可以進行調整，聲音也相當擬人，不會有很明顯的機械音感覺。本次 API 介接使用 Python 進行示範，同時示範 Zero-Coding 的 Speech Studio 的使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Speech Service Text To Speech">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/08/Azure-Speech-Service-Text-To-Speech/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="介紹如何藉接 Azure Speech Service，將文字轉換為朗讀文字的語音檔，支援多國語語言，同時在聲調、語速都可以進行調整，聲音也相當擬人，不會有很明顯的機械音感覺。本次 API 介接使用 Python 進行示範，同時示範 Zero-Coding 的 Speech Studio 的使用。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Speech-Service-Resource.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Speech-Studio.png">
+<meta property="article:published_time" content="2021-08-26T10:14:26.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Speech-Service-Text-To-Speech" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/Azure-Speech-Service-Text-To-Speech/" class="article-date">
+  <time datetime="2021-08-26T10:14:26.000Z" itemprop="datePublished">2021-08-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Speech Service Text To Speech
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Azure-Portal-%E5%BB%BA%E7%AB%8B-Speech-Service"><span class="toc-text">Azure Portal 建立 Speech Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D-Python-Speech-%E7%9B%B8%E9%97%9C%E7%9A%84-SDK"><span class="toc-text">安裝 Python Speech 相關的 SDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E8%A8%88-SSML"><span class="toc-text">設計 SSML</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Python-%E4%BB%8B%E6%8E%A5-API"><span class="toc-text">使用 Python 介接 API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Speech-Studio"><span class="toc-text">Speech Studio</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%90%E6%9E%9C"><span class="toc-text">成果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>介紹如何藉接 Azure Speech Service，將文字轉換為朗讀文字的語音檔，支援多國語語言，同時在聲調、語速都可以進行調整，聲音也相當擬人，不會有很明顯的機械音感覺。本次 API 介接使用 Python 進行示範，同時示範 Zero-Coding 的 Speech Studio 的使用。</p>
+<a href="/posts/2021/08/Azure-Speech-Service-Text-To-Speech/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Azure-Portal-建立-Speech-Service"><a href="#Azure-Portal-建立-Speech-Service" class="headerlink" title="Azure Portal 建立 Speech Service"></a>Azure Portal 建立 Speech Service</h3><p>不論是自行開發程式碼介接或者是使用 Speech Studio 都<strong>必須先於 Azure Portal 上建立 Speech Service</strong>，並在介接時使用 Key。</p>
+<p><img src="/assets/Azure-Speech-Service-Resource.png"></p>
+<h3 id="安裝-Python-Speech-相關的-SDK"><a href="#安裝-Python-Speech-相關的-SDK" class="headerlink" title="安裝 Python Speech 相關的 SDK"></a>安裝 Python Speech 相關的 SDK</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/azure/cognitive-services/speech-service/get-started-text-to-speech?tabs=script,windowsinstall&pivots=programming-language-python">開始使用文字轉換語音 | MS Docs</a></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pip <span class="token function">install</span> azure-cognitiveservices-speech<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="設計-SSML"><a href="#設計-SSML" class="headerlink" title="設計 SSML"></a>設計 SSML</h3><p><code class="watch">ssml.xml</code></p>
+<p>SSMS 是 Azure 指定文字該如何轉換為語音的標籤語言，例如定義段落、中斷沉默、使用的人聲類型、語速、音調等。目前繁體中文尚不支援角色與情緒的支援，期待未來這些功能更為完善，提供使用者更多元的語音產生選擇 😀</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>speak</span> 
+  <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/10/synthesis<span class="token punctuation">"</span></span> 
+  <span class="token attr-name"><span class="token namespace">xmlns:</span>mstts</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/mstts<span class="token punctuation">"</span></span> 
+  <span class="token attr-name"><span class="token namespace">xmlns:</span>emo</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2009/10/emotionml<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>1.0<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">xml:</span>lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>zh-CN<span class="token punctuation">"</span></span>
+<span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>voice</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>zh-TW-HsiaoChenNeural<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>       
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>prosody</span> <span class="token attr-name">rate</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>40%<span class="token punctuation">"</span></span> <span class="token attr-name">pitch</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>6%<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>該如何驗證解決方案<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>break</span> <span class="token attr-name">time</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>1500ms<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>最好的方式就是將實際的情境需求應用於解決方案當中<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>prosody</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>voice</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>speak</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://azure.microsoft.com/zh-tw/services/cognitive-services/text-to-speech/#features">線上即時測試 SSML | Azure 文字轉換語音</a></p>
+<h3 id="使用-Python-介接-API"><a href="#使用-Python-介接-API" class="headerlink" title="使用 Python 介接 API"></a>使用 Python 介接 API</h3><p><code class="watch">code.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> azure<span class="token punctuation">.</span>cognitiveservices<span class="token punctuation">.</span>speech <span class="token keyword">import</span> AudioDataStream<span class="token punctuation">,</span> SpeechConfig<span class="token punctuation">,</span> SpeechSynthesizer<span class="token punctuation">,</span> SpeechSynthesisOutputFormat
+<span class="token keyword">from</span> azure<span class="token punctuation">.</span>cognitiveservices<span class="token punctuation">.</span>speech<span class="token punctuation">.</span>audio <span class="token keyword">import</span> AudioOutputConfig
+
+speech_config <span class="token operator">=</span> SpeechConfig<span class="token punctuation">(</span>
+    subscription<span class="token operator">=</span><span class="token string">"ApiKey"</span><span class="token punctuation">,</span> 
+    region<span class="token operator">=</span><span class="token string">"eastus"</span><span class="token punctuation">)</span>
+
+audio_config <span class="token operator">=</span> AudioOutputConfig<span class="token punctuation">(</span>filename<span class="token operator">=</span><span class="token string">"file.wav"</span><span class="token punctuation">)</span>
+
+
+ssml_string <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"ssml.xml"</span><span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf8"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
+synthesizer <span class="token operator">=</span> SpeechSynthesizer<span class="token punctuation">(</span>
+  speech_config<span class="token operator">=</span>speech_config<span class="token punctuation">,</span> 
+  audio_config<span class="token operator">=</span>audio_config<span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> synthesizer<span class="token punctuation">.</span>speak_ssml_async<span class="token punctuation">(</span>ssml_string<span class="token punctuation">)</span><span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token punctuation">)</span>
+stream <span class="token operator">=</span> AudioDataStream<span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+stream<span class="token punctuation">.</span>save_to_wav_file<span class="token punctuation">(</span><span class="token string">"file.wav"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中 <strong>subscription</strong> 要輸入於 Azure 所建立的 Speech Service API Key，<strong>region</strong> 則是該 Service 建立時所選的地區。</p>
+<h3 id="Speech-Studio"><a href="#Speech-Studio" class="headerlink" title="Speech Studio"></a>Speech Studio</h3><p><a target="_blank" rel="noopener" href="https://speech.microsoft.com/portal">Speech Studio Portal</a></p>
+<p>不需要寫程式碼的語音解決方案，同樣可以支援將資料以 SSML 處理，提供 UI 介面讓語音轉換的編輯上更為平易近人，同時也支援編輯檔的保存與匯出，在匯出上服務推薦使用 Azure Blob ，如果是匯出至本機限制 10 分鐘以內的音訊檔。</p>
+<p><img src="/assets/Azure-Speech-Studio.png"></p>
+<h3 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h3><iframe width="100%" height="500" src="https://www.youtube.com/embed/JDr_7jQy6LA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://github.com/Azure-Samples/cognitive-services-speech-sdk">Cognitive-services-speech-sdk | Github</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup?tabs=csharp#adjust-speaking-styles">Synthesis Markup Language (SSML)</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support#text-to-speech">可以選擇使用的語音類型 | Language and voice support for the Speech service</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/Azure-Speech-Service-Text-To-Speech/" data-id="clg3fmaaq00aks4ts1k1i7w89" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/08/Government-Procurement-Qualification-Tips/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">【心得】政府採購專業人員基礎測驗 693題 ❤️ 高效率考取心得與準備方式</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/08/Windows-Server-Web-Server-Info-Check/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows Web Server Info Check 盤點網頁伺服器相關資訊
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

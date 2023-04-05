@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>超簡單學習 Vue.js 系列 | Vue Gym Leaders 道館排版 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Vue.js 簡單的示範專案，本次是為練習使用 Bootstrap 5, Flexbox 等 CSS 技巧，並混合資料處理以及 Vue 的框架使用，使用 Vue CLI 實作將所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超簡單學習 Vue.js 系列 | Vue Gym Leaders 道館排版">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/Vue-Gym-Leaders/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="Vue.js 簡單的示範專案，本次是為練習使用 Bootstrap 5, Flexbox 等 CSS 技巧，並混合資料處理以及 Vue 的框架使用，使用 Vue CLI 實作將所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/vue-js-logo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Vue-Poke-Gym-Leaders.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Play-Button.svg">
+<meta property="article:published_time" content="2022-02-01T12:08:40.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="F2E">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/vue-js-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue-Gym-Leaders" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/Vue-Gym-Leaders/" class="article-date">
+  <time datetime="2022-02-01T12:08:40.000Z" itemprop="datePublished">2022-02-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue/">Vue</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      超簡單學習 Vue.js 系列 | Vue Gym Leaders 道館排版
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%93%E9%A4%A8%E6%8E%92%E7%89%88-Vue-Multiway-Buttons"><span class="toc-text">道館排版 Vue Multiway Buttons</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%96%8B%E7%99%BC%E8%AA%AA%E6%98%8E"><span class="toc-text">開發說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%92%B0%E5%A2%83%E8%A8%AD%E5%AE%9A"><span class="toc-text">環境設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="toc-text">專案結構</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Google-Font-API"><span class="toc-text">Google Font API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Router-Link-Active"><span class="toc-text">Router Link Active</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Flexbox-Order"><span class="toc-text">Flexbox Order</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vue-Components"><span class="toc-text">Vue Components</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Components-%E4%BD%BF%E7%94%A8-objects-%E8%80%8C%E9%9D%9E-array"><span class="toc-text">Components 使用 objects 而非 array</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%87%E8%B3%87%E6%96%99%E5%82%B3%E5%85%A5-Componenets"><span class="toc-text">將資料傳入 Componenets</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Props-%E8%BD%89-data"><span class="toc-text">Props 轉 data</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dynamic-Image-Src"><span class="toc-text">Dynamic Image Src</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Python-Get-Images"><span class="toc-text">Python Get Images</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bootstrap-5-Layout"><span class="toc-text">Bootstrap 5 Layout</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>Vue.js 簡單的示範專案，本次是為練習使用 Bootstrap 5, Flexbox 等 CSS 技巧，並混合資料處理以及 Vue 的框架使用，使用 Vue CLI 實作將所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。</p>
+<a href="/posts/2022/02/Vue-Gym-Leaders/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/vue-js-logo.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="道館排版-Vue-Multiway-Buttons"><a href="#道館排版-Vue-Multiway-Buttons" class="headerlink" title="道館排版 Vue Multiway Buttons"></a>道館排版 Vue Multiway Buttons</h2><p><img src="/assets/Vue-Poke-Gym-Leaders.png"></p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/sdwh/Vue-Poke-Gym-Leaders" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> Github
+  </a>
+  <a href="https://pm.sdwh.dev" target="_blank">
+    <img src="/assets/Play-Button.svg" width="50px"> Demo
+  </a>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>技術關鍵字</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Vue Components</td>
+<td>Reuse Templates Pass Data By Props</td>
+</tr>
+<tr>
+<td>Flexbox Order</td>
+<td>order-md-1 搭配 Vue Dynimac CSS</td>
+</tr>
+<tr>
+<td>Vue Router Active Link</td>
+<td>.router-link-active</td>
+</tr>
+<tr>
+<td>Requests Data</td>
+<td>Python Request Get Images</td>
+</tr>
+<tr>
+<td>Google Font API</td>
+<td>Press Start 2P</td>
+</tr>
+<tr>
+<td>Dynamic Image Src</td>
+<td>Require Resources</td>
+</tr>
+<tr>
+<td>Bootstrap 5 Layout</td>
+<td>container-fluid, m-auto</td>
+</tr>
+</tbody></table>
+<h2 id="開發說明"><a href="#開發說明" class="headerlink" title="開發說明"></a>開發說明</h2><h3 id="環境設定"><a href="#環境設定" class="headerlink" title="環境設定"></a>環境設定</h3><p>本次的專案使用 Vue CLI 開發，並且另外安裝 Bootstrap 5 用於協助版面設計。Vue CLI 選用 Vue3 / Vue-Router / Babel。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">vue</span> create</span>
+<span class="token command"><span class="token keyword">npm</span> install bootstrap</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="專案結構"><a href="#專案結構" class="headerlink" title="專案結構"></a>專案結構</h3><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">├─components
+│      LeaderPokeBoxes.vue
+│
+├─data
+│      leaders.json
+│
+├─router
+│      index.js
+│
+├─views
+│       Generation1.vue
+│       Home.vue
+│       Letsgo.vue
+|  App.vue
+│  main.js
+│
+├─assets<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>主要的設計在於 LeaderPokeBoxes.vue，其中 leaders.json 是從 <a target="_blank" rel="noopener" href="https://bulbapedia.bulbagarden.net/wiki/Gym_Leader">bulbagarden</a>手工整理的資料。</p>
+<h3 id="Google-Font-API"><a href="#Google-Font-API" class="headerlink" title="Google Font API"></a>Google Font API</h3><p>為了要讓整個網頁更有電玩效果，使用 Google Font API 將網頁的字型改為 <strong>Press Start 2P</strong>，視覺效果超好 😁</p>
+<p>在 App.vue 的 Style 引入，讓全域的 Vue Componenet 都受此影響</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span><span class="token string url">'https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap'</span><span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+
+<span class="token selector">#app</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'Press Start 2P'</span><span class="token punctuation">,</span> sans-serif<span class="token punctuation">,</span> Avenir<span class="token punctuation">,</span> Helvetica<span class="token punctuation">,</span> Arial<span class="token punctuation">,</span> sans-serif<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Router-Link-Active"><a href="#Router-Link-Active" class="headerlink" title="Router Link Active"></a>Router Link Active</h3><p>要處理導覽按鈕列的按鈕 Active 效果，在 Vue-Router 點選的 Route 會自動加上 <strong>router-link-active</strong> CSS Class，因此可以直接藉由定義此 CSS Class 來達到 Active 的按鈕的效果，這邊使用的方式就是比照 Bootstrap btn-primary 的 CSS，但未針對 focus 的 pseudo selector 去做處理。</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.router-link-active:hover, .router-link-active:focus, .router-link-active</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">color</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> #0d6efd<span class="token punctuation">;</span>
+  <span class="token property">border-color</span><span class="token punctuation">:</span> #0d6efd<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Flexbox-Order"><a href="#Flexbox-Order" class="headerlink" title="Flexbox Order"></a>Flexbox Order</h3><p>為了要讓版面排版有交錯的效果，使館主與所持有的隊伍左右、右左、左右的方式交互排列。使用 Flexbox 的 order 輕鬆達成。讓道館主的 Html Tag 加上 Dynamic CSS，判斷目前 v-for 的 index，來達到交錯的效果。</p>
+<p>此外搭配 Bootstrap 的 RWD breakpoints 只又在 medium 以上才顯示交錯效果，否則在寬度小的裝置上，不會是左右排列，故不需要交錯的顯示方式。</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>(leader, index) in leadersData<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>leader<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row mb-5 align-items-center p-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-4<span class="token punctuation">"</span></span> <span class="token attr-name">:class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123; <span class="token punctuation">'</span>order-md-1<span class="token punctuation">'</span>: index % 2 === 1&#125;<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        ...
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-11 col-md-8 border shadow pb-5 m-auto rounded-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        ...
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Vue-Components"><a href="#Vue-Components" class="headerlink" title="Vue Components"></a>Vue Components</h3><p>隨著專案的規模增加，利用 Componenets 的方式切割關注點，會讓開發與維護更為方便。但實際在使用 Components 的時候卡 Bug 一小段時間，特此筆記。</p>
+<h4 id="Components-使用-objects-而非-array"><a href="#Components-使用-objects-而非-array" class="headerlink" title="Components 使用 objects 而非 array"></a>Components 使用 objects 而非 array</h4><p>因為 Componenets 是必須註冊於 Root Element 上，所以是以物件的形式進行註冊，物件的內容包含 Template, Props 等資訊。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">import</span> LeaderPokeBoxes <span class="token keyword">from</span> <span class="token string">'../components/LeaderPokeBoxes'</span>
+
+<span class="token comment">// ✔️</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Generation1"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">components</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span> LeaderPokeBoxes <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// ❌</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"Generation1"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">components</span><span class="token operator">:</span> <span class="token punctuation">[</span> LeaderPokeBoxes <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="將資料傳入-Componenets"><a href="#將資料傳入-Componenets" class="headerlink" title="將資料傳入 Componenets"></a>將資料傳入 Componenets</h4><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mb-5<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Generation 1</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LeaderPokeBoxes</span></span> <span class="token attr-name">:leadersData</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>leaders[<span class="token punctuation">'</span>Gen1<span class="token punctuation">'</span>]<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Props-轉-data"><a href="#Props-轉-data" class="headerlink" title="Props 轉 data"></a>Props 轉 data</h4><p>Props 可以直接再 Compoenents 的資料中使用，不需要透過 Data function，但如果要轉換，必須搭配 This 使用。</p>
+<p><strong>Componenets\LeaderPokeBoxes.vue</strong></p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>(leader, index) in leadersData<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>leader<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row mb-5 align-items-center p-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-4<span class="token punctuation">"</span></span> <span class="token attr-name">:class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123; <span class="token punctuation">'</span>order-md-1<span class="token punctuation">'</span>: index % 2 === 1&#125;<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        ...
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-11 col-md-8 border shadow pb-5 mx-auto rounded-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        ...
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'LeaderPokeBoxes'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'leadersData'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token punctuation">&#123;</span>
+        <span class="token literal-property property">dataFromProps</span><span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>leadersData
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>結論：使用 Vue Componenets 先用靜態 Components 再使用 Props 減少除錯時間。</p>
+        </div>
+    </div>
+</div>
+
+<h3 id="Dynamic-Image-Src"><a href="#Dynamic-Image-Src" class="headerlink" title="Dynamic Image Src"></a>Dynamic Image Src</h3><p>為了要讓圖片路徑從 Json 當中讀取，並且動態的綁訂在 Image Tag 上，並須使用 Vue Bind 語法，並且再搭配 <strong>require</strong> function 的方式將資源載入。</p>
+<p>但目前有一個問題是，如果圖片檔不存在，會直接讓 Vue CLI 專案無法通過，如果有 Missing Image 的替代圖片讓專案仍可以正常運作會是更好的方式。</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Gym Leader<span class="token punctuation">"</span></span> <span class="token attr-name">:src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>require(<span class="token punctuation">'</span>../assets/<span class="token punctuation">'</span> + leader[<span class="token punctuation">'</span>leader-name<span class="token punctuation">'</span>] + <span class="token punctuation">'</span>.png<span class="token punctuation">'</span>)<span class="token punctuation">"</span></span>
+ <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>gym-leader<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Python-Get-Images"><a href="#Python-Get-Images" class="headerlink" title="Python Get Images"></a>Python Get Images</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">import</span> os
+
+headers <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">'User-Agent'</span><span class="token punctuation">:</span> <span class="token string">"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"</span>
+<span class="token punctuation">&#125;</span>
+
+imgBanks <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'https://.../bulbasaur.png'</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+
+
+os<span class="token punctuation">.</span>chdir<span class="token punctuation">(</span><span class="token string">r'D:\pokes'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> url <span class="token keyword">in</span> imgBanks<span class="token punctuation">:</span>
+  img <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> img<span class="token punctuation">.</span>status_code <span class="token operator">!=</span> <span class="token number">200</span><span class="token punctuation">:</span>
+      <span class="token keyword">print</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+  <span class="token keyword">else</span><span class="token punctuation">:</span>
+    extension <span class="token operator">=</span> url<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+    name <span class="token operator">=</span> url<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">'.png'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>name<span class="token punctuation">&#125;</span></span><span class="token string">.</span><span class="token interpolation"><span class="token punctuation">&#123;</span>extension<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> <span class="token string">"wb"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>img<span class="token punctuation">.</span>content<span class="token punctuation">)</span>
+        f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Bootstrap-5-Layout"><a href="#Bootstrap-5-Layout" class="headerlink" title="Bootstrap 5 Layout"></a>Bootstrap 5 Layout</h3><p>利用 <code class="s">container-lg</code> 來達到 RWD 的技巧，因為 container CSS Class 會限制 Div 的最大 Width，來達到左右留白的效果，但在螢幕寬度不足的情況下，不需要這個留白，因此預設 <code class="s">container-fluid</code> 只又當螢幕尺寸達 992 px 以上時，才限制最大寬度。</p>
+<p>參考 Boostrap 5 的 Souce，Container 的留白如下</p>
+<table>
+<thead>
+<tr>
+<th>container size</th>
+<th>width</th>
+<th>max-width</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sm</td>
+<td>576</td>
+<td>540</td>
+</tr>
+<tr>
+<td>md</td>
+<td>768</td>
+<td>720</td>
+</tr>
+<tr>
+<td>lg</td>
+<td>992</td>
+<td>960</td>
+</tr>
+<tr>
+<td>xl</td>
+<td>1200</td>
+<td>1140</td>
+</tr>
+<tr>
+<td>xxl</td>
+<td>1400</td>
+<td>1320</td>
+</tr>
+</tbody></table>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container-fluid container-lg<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  ...
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>本次的 Layout 核心就是下列的 Html 以及 CSS 組合。每 Row 代表的是一位 Leader，並且用 Col 切割為 4 Col 與 8 Col，但在 Medium 寬度之下的裝置，則是單欄顯示，但是限制 PokeBox 只佔 11 Col 用以達到稍微置中與留白的效果。</p>
+<p>最外層的 Row 本身就是 Flex，使用 <code class="s">align-items-center</code> 可以讓 leader-img 與 pokeBoxs 任一方高度較少者置中對齊另一方，預設是 Stretch，另可考慮 Start 或者 End，但本次設計是採用 Center 的方式。</p>
+<p>而在 PokeBoxs 上，加上了 <code class="s">shadow</code> 讓整個版面立體起來，並且加上 <code class="s">mx-auto</code> 讓行動裝置等寬度未達 Medium 以 11 Col 顯示時，能夠自動左右 Margin 達到置中效果，以讓 Shadow 效果可以完整呈現。另外使用了 <code class="s">pb-5</code> 來向下內距撐出高度，並使用 <code class="s">rounded-3</code> 來修飾圓角 (Radius) 增加活潑的效果 🙂</p>
+<p>PokeBoxes 中採用了 Nested Row 來排版 Poke 的顯示方式，預設是 6 Col，所以行動裝置每列只會顯示兩個 Pokes，但 Large 以上螢幕寬度的裝置則可以顯示三個 Pokes。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row mb-5 align-items-center p-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-4<span class="token punctuation">"</span></span> <span class="token attr-name">:class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123; <span class="token punctuation">'</span>order-md-1<span class="token punctuation">'</span>: index % 2 === 1&#125;<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Gym Leader<span class="token punctuation">"</span></span> <span class="token attr-name">:src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>leader.img<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>gym-leader<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>gym-leader-name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; leader['leader-name'] &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-11 col-md-8 border shadow pb-5 mx-auto rounded-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>gym-name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; leader['gym-name'] &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-6 col-lg-4<span class="token punctuation">"</span></span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>poke in leader[<span class="token punctuation">'</span>pokemons<span class="token punctuation">'</span>]<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>poke<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">:src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>poke.name<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>img-fluid<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>poke-name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; poke.name &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>Lv.&#123;&#123; poke.lv &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/Vue-Gym-Leaders/" data-id="clg3fmam801jps4tsa2zm14rn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/01/Brain-Chemicals/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Brain Chemicals</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/ASPNET-MVC-NLog/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET MVC NLog Tutorial
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

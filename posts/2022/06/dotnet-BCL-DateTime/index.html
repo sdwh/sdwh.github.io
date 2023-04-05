@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>.NET BCL Series | DateTime | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 .NET Base Class Library 各式基礎函式庫的使用原理與技巧，讓開發 .NET 程式自然且流暢 🙂">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET BCL Series | DateTime">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/06/dotnet-BCL-DateTime/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 .NET Base Class Library 各式基礎函式庫的使用原理與技巧，讓開發 .NET 程式自然且流暢 🙂">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2022-06-24T08:20:35.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="dotnet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dotnet-BCL-DateTime" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/06/dotnet-BCL-DateTime/" class="article-date">
+  <time datetime="2022-06-24T08:20:35.000Z" itemprop="datePublished">2022-06-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      .NET BCL Series | DateTime
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E6%A7%8B%E5%AD%90"><span class="toc-text">建構子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kind"><span class="toc-text">Kind</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FromFileTime"><span class="toc-text">FromFileTime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Now-vs-Today-vs-UtcNow"><span class="toc-text">Now vs Today vs UtcNow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B0%91%E5%9C%8B%E5%B9%B4"><span class="toc-text">民國年</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E6%9C%AC%E6%9B%86"><span class="toc-text">日本曆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DateTime-Parse"><span class="toc-text">DateTime Parse</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%99%E7%94%A8-DateTime"><span class="toc-text">妙用 DateTime</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 .NET Base Class Library 各式基礎函式庫的使用原理與技巧，讓開發 .NET 程式自然且流暢 🙂 </p>
+<a href="/posts/2022/06/dotnet-BCL-DateTime/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="建構子"><a href="#建構子" class="headerlink" title="建構子"></a>建構子</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 1/1/0001 12:00:00 AM</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>Ticks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 637919541000000000</span>
+<span class="token comment">// 6/27/2022 7:15:00 PM</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">2022</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">27</span><span class="token punctuation">,</span> <span class="token number">19</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">00</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 7:15:00 PM</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Kind"><a href="#Kind" class="headerlink" title="Kind"></a>Kind</h3><p>每一個 DateTime 物件都有 Kind 屬性，表示日期時間所使用為 UTC 或者是 Local Time。</p>
+<p>如果要調整 DateTime 物件的 Kind，可以藉由 <code class="s">DateTime.SpecifyKind</code> 的方式來重新賦值。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>UtcNow<span class="token punctuation">.</span><span class="token function">ToLocalTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> now <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    now <span class="token operator">=</span> DateTime<span class="token punctuation">.</span><span class="token function">SpecifyKind</span><span class="token punctuation">(</span>now<span class="token punctuation">,</span> DateTimeKind<span class="token punctuation">.</span>Utc<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToLocalTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="FromFileTime"><a href="#FromFileTime" class="headerlink" title="FromFileTime"></a>FromFileTime</h3><p>藉由 LDAP 讀取 AD 中的屬性，部分屬性為 FileTime 必須藉由， <code class="s">DateTime.FromFileTime</code> 來讀取。</p>
+<p>需要增加 Reference</p>
+<ul>
+<li>System.DirectoryServices.dll</li>
+<li>System.DirectoryServices.Protocols.dll</li>
+<li>System.DirectoryServices.AccountManagement.dll</li>
+</ul>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>DirectoryServices</span><span class="token punctuation">;</span>
+
+<span class="token class-name">DirectoryEntry</span> entry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DirectoryEntry</span><span class="token punctuation">(</span><span class="token string">"LDAP://192.168.112.1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">DirectorySearcher</span> Dsearch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DirectorySearcher</span><span class="token punctuation">(</span>entry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Dsearch<span class="token punctuation">.</span>Filter <span class="token operator">=</span> <span class="token string">"(&amp;(objectClass=user)(objectClass=person)(sAMAccountName="</span> <span class="token operator">+</span> 'sdwh_1' <span class="token operator">+</span> <span class="token string">"))"</span><span class="token punctuation">;</span>
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">SearchResult</span> sResultSet <span class="token keyword">in</span> Dsearch<span class="token punctuation">.</span><span class="token function">FindAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">DateTime</span> BadPasswordTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">1600</span><span class="token punctuation">,</span> <span class="token number">01</span><span class="token punctuation">,</span> <span class="token number">01</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> DateTimeKind<span class="token punctuation">.</span>Local<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>sResultSet<span class="token punctuation">.</span>Properties<span class="token punctuation">[</span><span class="token string">"badPasswordTime"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Count <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        BadPasswordTime<span class="token operator">=</span> DateTime<span class="token punctuation">.</span><span class="token function">FromFileTime</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span>sResultSet<span class="token punctuation">.</span>Properties<span class="token punctuation">[</span><span class="token string">"badPasswordTime"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Now-vs-Today-vs-UtcNow"><a href="#Now-vs-Today-vs-UtcNow" class="headerlink" title="Now vs Today vs UtcNow"></a>Now vs Today vs UtcNow</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 7:15:00 PM</span>
+
+DateTime<span class="token punctuation">.</span>UtcNow<span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 11:15:00 AM</span>
+
+DateTime<span class="token punctuation">.</span>UtcNow<span class="token punctuation">.</span><span class="token function">ToLocalTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 7:15:00 PM</span>
+
+DateTime<span class="token punctuation">.</span>Today<span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 12:00:00 AM</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="民國年"><a href="#民國年" class="headerlink" title="民國年"></a>民國年</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Globalization</span><span class="token punctuation">;</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">111</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">27</span><span class="token punctuation">,</span> <span class="token number">19</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">00</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TaiwanCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 7:15:00 PM</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">TaiwanCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetYear</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">/// 111</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="日本曆"><a href="#日本曆" class="headerlink" title="日本曆"></a>日本曆</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> jaJp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CultureInfo</span><span class="token punctuation">(</span><span class="token string">"ja-JP"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+jaJp<span class="token punctuation">.</span>DateTimeFormat<span class="token punctuation">.</span>Calendar <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">JapaneseCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> jaJp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 令和4年6月27日 19:15:00</span>
+
+DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token string">"dddd"</span><span class="token punctuation">,</span> jaJp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 月曜日</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="DateTime-Parse"><a href="#DateTime-Parse" class="headerlink" title="DateTime Parse"></a>DateTime Parse</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">DateTime<span class="token punctuation">.</span><span class="token function">Parse</span><span class="token punctuation">(</span><span class="token string">"2022年6月27日"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 12:00:00 AM</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> jaJp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CultureInfo</span><span class="token punctuation">(</span><span class="token string">"ja-JP"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+jaJp<span class="token punctuation">.</span>DateTimeFormat<span class="token punctuation">.</span>Calendar <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">JapaneseCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+DateTime<span class="token punctuation">.</span><span class="token function">Parse</span><span class="token punctuation">(</span><span class="token string">"令和4年6月27日 19:15:00"</span><span class="token punctuation">,</span> jaJp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 6/27/2022 7:15:00 PM</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="妙用-DateTime"><a href="#妙用-DateTime" class="headerlink" title="妙用 DateTime"></a>妙用 DateTime</h3><p>星期比較，比較今天是否為星期六</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>DayOfWeek <span class="token operator">==</span> DayOfWeek<span class="token punctuation">.</span>Saturday<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>取得星期名稱 (法國)</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">CultureInfo<span class="token punctuation">.</span><span class="token function">GetCultureInfo</span><span class="token punctuation">(</span><span class="token string">"fr-FR"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>DateTimeFormat<span class="token punctuation">.</span><span class="token function">GetMonthName</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>Month<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// juin</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>年份的日數，取得 2022 年 (民國 111 年) 以及 2020 年 (民國 109 年) 共有幾日</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">new</span> <span class="token constructor-invocation class-name">GregorianCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetDaysInYear</span><span class="token punctuation">(</span><span class="token number">2022</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 365</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">GregorianCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetDaysInYear</span><span class="token punctuation">(</span><span class="token number">2020</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 366</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">TaiwanCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetDaysInYear</span><span class="token punctuation">(</span><span class="token number">111</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 365</span>
+
+<span class="token keyword">new</span> <span class="token constructor-invocation class-name">TaiwanCalendar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetDaysInYear</span><span class="token punctuation">(</span><span class="token number">109</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 366</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/dotnet/api/system.globalization.gregoriancalendar?view=netframework-4.8">GregorianCalendar | learn.microsoft</a></p>
+<p>月份的日數，取得 2022 年 6 月共有幾日</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">DateTime<span class="token punctuation">.</span><span class="token function">DaysInMonth</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>Year<span class="token punctuation">,</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>Month<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 30</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/06/dotnet-BCL-DateTime/" data-id="clg3fmao301p8s4ts0kat6kb6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dotnet/" rel="tag">dotnet</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/06/dotnet-BCL-File/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">.NET BCL Series | File</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/06/IIS-Application-Request-Routing-Setup/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IIS Application Request Routing 部署方式
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

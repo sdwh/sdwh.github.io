@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Convert File to Office, ODF &amp; PDF | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="綜整 ASP.NET 開發，如何在後端處理檔案轉換 (Convert File)，從 Microsoft Office 系列檔案 Docx, Xlsx 轉換為 ODT, ODS 以及 PDF 檔案。 使用的解決方案包含 LibreOffice SDK, Microsfot 以及開源或者是收費的第三方的元件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Convert File to Office, ODF &amp; PDF">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/05/ASPNET-Convert-File-To-ODF/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="綜整 ASP.NET 開發，如何在後端處理檔案轉換 (Convert File)，從 Microsoft Office 系列檔案 Docx, Xlsx 轉換為 ODT, ODS 以及 PDF 檔案。 使用的解決方案包含 LibreOffice SDK, Microsfot 以及開源或者是收費的第三方的元件。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/LibreOffice-SDK-Library-Reference.png">
+<meta property="og:image" content="https://sdwh.dev/assets/LibreOffice-SDK-Without-Install-LibreOffice-Error.png">
+<meta property="article:published_time" content="2022-05-04T11:15:10.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Convert-File-To-ODF" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/05/ASPNET-Convert-File-To-ODF/" class="article-date">
+  <time datetime="2022-05-04T11:15:10.000Z" itemprop="datePublished">2022-05-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Convert File to Office, ODF &amp; PDF
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%95%E7%90%86-ODF-%E6%AA%94%E6%A1%88%E6%A0%BC%E5%BC%8F"><span class="toc-text">處理 ODF 檔案格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#soffice"><span class="toc-text">soffice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Open-Office-Library"><span class="toc-text">Open Office Library</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Coding"><span class="toc-text">Coding</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>綜整 ASP.NET 開發，如何在後端處理檔案轉換 (Convert File)，從 Microsoft Office 系列檔案 Docx, Xlsx 轉換為 ODT, ODS 以及 PDF 檔案。</p>
+<p>使用的解決方案包含 LibreOffice SDK, Microsfot 以及開源或者是收費的第三方的元件。</p>
+<a href="/posts/2022/05/ASPNET-Convert-File-To-ODF/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>關於多種文件格式、轉換的 .NET 解決方案</p>
+<table>
+<thead>
+<tr>
+<th>來源</th>
+<th>目標</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Data</td>
+<td>.docx</td>
+<td>NPOI, DataTables, RDLC, SSRS</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>.xlsx</td>
+<td>NPOI, ClosedXML, DataTables, RDLC, SSRS</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>.pdf</td>
+<td>QuestPDF, iTextSharp, DataTables, RDLC, SSRS</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>.csv</td>
+<td>StringBuilder, DataTables, SSRS</td>
+</tr>
+<tr>
+<td>.docx</td>
+<td>.odt</td>
+<td>LibreOffice SDK, Independentsoft, NDC ODF API</td>
+</tr>
+<tr>
+<td>.docx</td>
+<td>.pdf</td>
+<td>LibreOffice SDK</td>
+</tr>
+<tr>
+<td>.xlsx</td>
+<td>.ods</td>
+<td>LibreOffice SDK, Independentsoft, NDC ODF API</td>
+</tr>
+<tr>
+<td>.xlsx</td>
+<td>.pdf</td>
+<td>LibreOffice SDK</td>
+</tr>
+<tr>
+<td>.ppt</td>
+<td>.pdf</td>
+<td>LibreOffice SDK, Independentsoft, NDC ODF API</td>
+</tr>
+<tr>
+<td>.ppt</td>
+<td>.pdf</td>
+<td>LibreOffice SDK</td>
+</tr>
+</tbody></table>
+<hr>
+<table>
+<thead>
+<tr>
+<th>技術</th>
+<th>技術成本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>StringBuilder</td>
+<td>C# Feauters</td>
+</tr>
+<tr>
+<td>NPOI</td>
+<td>開源軟體</td>
+</tr>
+<tr>
+<td>DataTables</td>
+<td>開源軟體，前端資料處理</td>
+</tr>
+<tr>
+<td>RDLC</td>
+<td>微軟本機報表功能</td>
+</tr>
+<tr>
+<td>SSRS</td>
+<td>微軟報表伺服器，需要 SQL Server 授權以及部署伺服器</td>
+</tr>
+<tr>
+<td>ClosedXML</td>
+<td>開源軟體</td>
+</tr>
+<tr>
+<td>LibreOffice SDK</td>
+<td>開源軟體</td>
+</tr>
+<tr>
+<td>Independentsoft</td>
+<td>付費授權</td>
+</tr>
+<tr>
+<td>NDC ODF API</td>
+<td>開源軟體，需要部署伺服器</td>
+</tr>
+<tr>
+<td>GemBox</td>
+<td>付費授權</td>
+</tr>
+</tbody></table>
+<h2 id="處理-ODF-檔案格式"><a href="#處理-ODF-檔案格式" class="headerlink" title="處理 ODF 檔案格式"></a>處理 ODF 檔案格式</h2><p>說明如何使用 LibreOffice SDK 來處理轉檔為 ODF 以及 PDF 的方式。</p>
+<h3 id="soffice"><a href="#soffice" class="headerlink" title="soffice"></a>soffice</h3><p>作業系統安裝 LibreOffice 並使用 <code class="s">soffice.exe</code> 進行轉檔</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> C:\Program Files (x86</span><span class="token punctuation">)</span>\NDC ODF Application Tools 6\program
+
+<span class="token command"><span class="token keyword">soffice</span> <span class="token parameter attr-name">--headless</span> <span class="token parameter attr-name">--convert-to</span> odt <span class="token string">"c:\tmp\temp.docx"</span> <span class="token parameter attr-name">--outdir</span> <span class="token string">"c:\tmp"</span></span>
+<span class="token command"><span class="token keyword">soffice</span> <span class="token parameter attr-name">--headless</span> <span class="token parameter attr-name">--convert-to</span> pdf <span class="token string">"c:\tmp\temp.docx"</span> <span class="token parameter attr-name">--outdir</span> <span class="token string">"c:\tmp"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Open-Office-Library"><a href="#Open-Office-Library" class="headerlink" title="Open Office Library"></a>Open Office Library</h3><p>伺服器端需要安裝 LibreOffice 以及 LibreOffice SDK。</p>
+<p>但藉由下列方式將 cli.dll 抽出，可以不需要安裝 LibreOffice SDK，參考威廉蕭在 <a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10229600">Excel檔轉PDF產生的問題與解決方法</a> 以及 Abdul Munim 在 <a target="_blank" rel="noopener" href="https://abdulmunim.com/how-to-convert-office-documents-to-pdf-using-open-office-in-csharp/">HOW TO: Convert office documents to PDF using Open Office/LibreOffice in C#</a> 所分享的方式。</p>
+<p>將下列的 dll 複製到 VS 專案的 <code class="s">Library</code> 資料夾，並且加入到 VS 專案的參考。</p>
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">C:\Windows\Microsoft.NET\assembly\GAC_MSIL\cli_basetypes\v4.0_1.0.20.0__ce2cb7e279207b9e\cli_basetypes.dll
+C:\Windows\Microsoft.NET\assembly\GAC_MSIL\cli_oootypes\v4.0_1.0.9.0__ce2cb7e279207b9e\cli_oootypes.dll
+C:\Windows\Microsoft.NET\assembly\GAC_MSIL\cli_ure\v4.0_1.0.23.0__ce2cb7e279207b9e\cli_ure.dll
+C:\Windows\Microsoft.NET\assembly\GAC_MSIL\cli_uretypes\v4.0_1.0.9.0__ce2cb7e279207b9e\cli_uretypes.dll
+C:\Windows\Microsoft.NET\assembly\GAC_64\cli_cppuhelper\v4.0_1.0.23.0__ce2cb7e279207b9e\cli_cppuhelper.dll<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/LibreOffice-SDK-Library-Reference.png"></p>
+<p>如果只複製 LibreOffice SDK 但沒有安裝 LibreOffice 在伺服器端，會發生以下錯誤</p>
+<p><img src="/assets/LibreOffice-SDK-Without-Install-LibreOffice-Error.png"></p>
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">未處理的例外狀況: System.Runtime.InteropServices.SEHException: 外部元件傳回例外狀況。
+   於 cppu.bootstrap(Reference&lt;com::sun::star::uno::XComponentContext>* )
+   於 uno.util.Bootstrap.bootstrap()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h3><p>專案會需要使用到下列的 Library。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">uno</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">uno<span class="token punctuation">.</span>util</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">unoidl<span class="token punctuation">.</span>com<span class="token punctuation">.</span>sun<span class="token punctuation">.</span>star<span class="token punctuation">.</span>beans</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">unoidl<span class="token punctuation">.</span>com<span class="token punctuation">.</span>sun<span class="token punctuation">.</span>star<span class="token punctuation">.</span>frame</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">unoidl<span class="token punctuation">.</span>com<span class="token punctuation">.</span>sun<span class="token punctuation">.</span>star<span class="token punctuation">.</span>lang</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">unoidl<span class="token punctuation">.</span>com<span class="token punctuation">.</span>sun<span class="token punctuation">.</span>star<span class="token punctuation">.</span>uno</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Convert</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Convert</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> source<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> target<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> format<span class="token punctuation">,</span> <span class="token keyword">ref</span> <span class="token class-name"><span class="token keyword">string</span></span> error<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    error <span class="token operator">=</span> <span class="token keyword">string</span><span class="token punctuation">.</span>Empty<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>File<span class="token punctuation">.</span><span class="token function">Exists</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        error <span class="token operator">=</span> <span class="token string">"輸入的檔案不存在"</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">GetFilterType</span><span class="token punctuation">(</span>Path<span class="token punctuation">.</span><span class="token function">GetExtension</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">,</span> format<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        error <span class="token operator">=</span> <span class="token string">"不正確的副檔名"</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token class-name">FileInfo</span> fileInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FileInfo</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    fileInfo<span class="token punctuation">.</span>IsReadOnly <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">XComponentContext</span> context <span class="token operator">=</span> Bootstrap<span class="token punctuation">.</span><span class="token function">bootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">XMultiServiceFactory</span> factory <span class="token operator">=</span> <span class="token punctuation">(</span>XMultiServiceFactory<span class="token punctuation">)</span>context<span class="token punctuation">.</span><span class="token function">getServiceManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">XComponentLoader</span> aLoader <span class="token operator">=</span>
+        <span class="token punctuation">(</span>XComponentLoader<span class="token punctuation">)</span>factory<span class="token punctuation">.</span><span class="token function">createInstance</span><span class="token punctuation">(</span><span class="token string">"com.sun.star.frame.Desktop"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">XComponent</span> document <span class="token operator">=</span> <span class="token function">InitDocument</span><span class="token punctuation">(</span>
+        aLoader<span class="token punctuation">,</span>
+        <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Format</span><span class="token punctuation">(</span><span class="token string">"file:///&#123;0&#125;"</span><span class="token punctuation">,</span>
+        source<span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"\\"</span><span class="token punctuation">,</span> <span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"_blank"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">int</span></span> seconds <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>document <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>seconds <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            error <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$"LibreOffice 文件逾時 </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">seconds</span><span class="token punctuation">&#125;</span></span><span class="token string"> 秒"</span></span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        Thread<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        seconds<span class="token operator">--</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    target <span class="token operator">=</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span>target <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> target<span class="token punctuation">.</span>Length <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">?</span>
+        <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Format</span><span class="token punctuation">(</span><span class="token string">"file:///&#123;0&#125;"</span><span class="token punctuation">,</span> target<span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"\\"</span><span class="token punctuation">,</span> <span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">:</span>
+        <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Format</span><span class="token punctuation">(</span><span class="token string">"file:///&#123;0&#125;/&#123;1&#125;.&#123;2&#125;"</span><span class="token punctuation">,</span>
+        Path<span class="token punctuation">.</span><span class="token function">GetDirectoryName</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"\\"</span><span class="token punctuation">,</span> <span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        Path<span class="token punctuation">.</span><span class="token function">GetFileNameWithoutExtension</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">,</span> format<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">SaveAsDocument</span><span class="token punctuation">(</span>document<span class="token punctuation">,</span> source<span class="token punctuation">,</span> target<span class="token punctuation">,</span> format<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    document<span class="token punctuation">.</span><span class="token function">dispose</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">SaveAsDocument</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SaveAsDocument</span><span class="token punctuation">(</span>
+    <span class="token class-name">XComponent</span> xComponent<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> sourceFile<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> destinationFile<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> format<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">PropertyValue<span class="token punctuation">[</span><span class="token punctuation">]</span></span> array <span class="token operator">=</span> <span class="token punctuation">(</span>PropertyValue<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">object</span><span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">PropertyValue</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">(</span>PropertyValue<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">object</span><span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">PropertyValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">default</span><span class="token punctuation">(</span><span class="token type-expression class-name">PropertyValue</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Name <span class="token operator">=</span> <span class="token string">"FilterName"</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Any</span><span class="token punctuation">(</span><span class="token function">GetFilterType</span><span class="token punctuation">(</span>Path<span class="token punctuation">.</span><span class="token function">GetExtension</span><span class="token punctuation">(</span>sourceFile<span class="token punctuation">)</span><span class="token punctuation">,</span> format<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">(</span><span class="token punctuation">(</span>XStorable<span class="token punctuation">)</span>xComponent<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">storeToURL</span><span class="token punctuation">(</span>destinationFile<span class="token punctuation">,</span> array<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span>PropertyValue<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">object</span><span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">PropertyValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Name <span class="token operator">=</span> <span class="token string">"Overwrite"</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Any</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">InitDocument</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name">XComponent</span> <span class="token function">InitDocument</span><span class="token punctuation">(</span><span class="token class-name">XComponentLoader</span> aLoader<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> file<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> target<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">PropertyValue<span class="token punctuation">[</span><span class="token punctuation">]</span></span> array <span class="token operator">=</span> <span class="token punctuation">(</span>PropertyValue<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">object</span><span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">PropertyValue</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">(</span>PropertyValue<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">object</span><span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">PropertyValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Name <span class="token operator">=</span> <span class="token string">"Hidden"</span><span class="token punctuation">;</span>
+    array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Any</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> aLoader<span class="token punctuation">.</span><span class="token function">loadComponentFromURL</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> target<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> array<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">GetFilterType</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">GetFilterType</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> extension<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> format<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span>extension<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">case</span> <span class="token string">".doc"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".docx"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".txt"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".rtf"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".html"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".htm"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".xml"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".odt"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".wps"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".wpd"</span><span class="token punctuation">:</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>format<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">case</span> <span class="token string">"pdf"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"writer_pdf_Export"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"odf"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"writer8"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"doc"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"MS Word 97"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"html"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"HTML (StarWriter)"</span><span class="token punctuation">;</span>
+                <span class="token keyword">default</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token keyword">case</span> <span class="token string">".xls"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".xlsx"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".ods"</span><span class="token punctuation">:</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>format<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">case</span> <span class="token string">"pdf"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"calc_pdf_Export"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"odf"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"calc8"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"html"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"HTML (StarCalc)"</span><span class="token punctuation">;</span>
+                <span class="token keyword">default</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token keyword">case</span> <span class="token string">".ppt"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".pptx"</span><span class="token punctuation">:</span>
+        <span class="token keyword">case</span> <span class="token string">".odp"</span><span class="token punctuation">:</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>format<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">case</span> <span class="token string">"pdf"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"impress_pdf_Export"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"odf"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"draw8"</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">"html"</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token string">"impress_html_Export"</span><span class="token punctuation">;</span>
+                <span class="token keyword">default</span><span class="token punctuation">:</span>
+                    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token keyword">default</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Program.cs</code></p>
+<pre class="line-numbers language-cs" data-language="cs"><code class="language-cs"><span class="token function">Convert</span><span class="token punctuation">(</span>
+    <span class="token string">@"C:\tmp\temp.docx"</span><span class="token punctuation">,</span>
+    <span class="token string">@"c:\tmp\temp.odt"</span><span class="token punctuation">,</span> <span class="token string">"odf"</span><span class="token punctuation">,</span>
+    <span class="token keyword">ref</span> error
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/05/ASPNET-Convert-File-To-ODF/" data-id="clg3fma8o001es4ts8of9c9m1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/05/SQL-Server-Cannot-Generate-SSPI/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Cannot Generate SSPI &amp; 目標主體名稱不正確。無法產生 SSPI 內容</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/05/PowerShell-Loop-Command-Infinitely/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PowerShell Loop Command Infinitely
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

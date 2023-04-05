@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>實踐 SSDLC 與《資通安全稽核計畫及稽核作業》⏳ | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="實踐 SSDLC 與《資通安全稽核計畫及稽核作業》⏳">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/07/SSDLC-Gov-Audit/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+<meta property="article:published_time" content="2022-07-09T05:02:22.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="SSDLC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SSDLC-Gov-Audit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/07/SSDLC-Gov-Audit/" class="article-date">
+  <time datetime="2022-07-09T05:02:22.000Z" itemprop="datePublished">2022-07-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      實踐 SSDLC 與《資通安全稽核計畫及稽核作業》⏳
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%BD%E6%A0%B8%E6%BA%96%E5%89%87"><span class="toc-text">稽核準則</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%BD%E6%A0%B8%E8%BE%A6%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-text">稽核辦理方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E5%AE%89%E5%85%A8%E6%AA%A2%E6%B8%AC"><span class="toc-text">資料庫安全檢測</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B5%84%E6%85%8B%E8%A8%AD%E5%AE%9A%E5%AE%89%E5%85%A8%E6%AA%A2%E6%B8%AC-GCB"><span class="toc-text">組態設定安全檢測 GCB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E8%B3%87%E9%80%9A%E7%B3%BB%E7%B5%B1%E5%AE%89%E5%85%A8%E6%AA%A2%E6%B8%AC"><span class="toc-text">核心資通系統安全檢測</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%A6%E5%9C%B0%E7%A8%BD%E6%A0%B8%E6%8A%80%E8%A1%93%E9%9D%A2%E9%87%8D%E9%BB%9E"><span class="toc-text">實地稽核技術面重點</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSDLC"><span class="toc-text">SSDLC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E7%A8%BD%E6%A0%B8%E8%A8%88%E7%95%AB%E5%8F%8A%E7%A8%BD%E6%A0%B8%E4%BD%9C%E6%A5%AD-%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E5%AF%A6%E5%9C%B0%E7%A8%BD%E6%A0%B8%E9%A0%85%E7%9B%AE%E6%AA%A2%E6%A0%B8%E8%A1%A8-%E9%81%A9%E7%94%A8%E5%85%AC%E5%8B%99%E6%A9%9F%E9%97%9C"><span class="toc-text">資通安全稽核計畫及稽核作業 (資通安全實地稽核項目檢核表 - 適用公務機關)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A5%AD%E5%8B%99%E5%8F%8A%E5%85%B6%E9%87%8D%E8%A6%81%E6%80%A7"><span class="toc-text">核心業務及其重要性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E6%94%BF%E7%AD%96%E5%8F%8A%E6%8E%A8%E5%8B%95%E7%B5%84%E7%B9%94"><span class="toc-text">資通安全政策及推動組織</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E8%B2%AC%E4%BA%BA%E5%8A%9B%E5%8F%8A%E7%B6%93%E8%B2%BB%E9%85%8D%E7%BD%AE"><span class="toc-text">專責人力及經費配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E8%A8%8A%E5%8F%8A%E8%B3%87%E9%80%9A%E7%B3%BB%E7%B5%B1%E7%9B%A4%E9%BB%9E%E5%8F%8A%E9%A2%A8%E9%9A%AA%E8%A9%95%E4%BC%B0"><span class="toc-text">資訊及資通系統盤點及風險評估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E7%B3%BB%E7%B5%B1%E6%88%96%E6%9C%8D%E5%8B%99%E5%A7%94%E5%A4%96%E8%BE%A6%E7%90%86%E4%B9%8B%E7%AE%A1%E7%90%86%E6%8E%AA%E6%96%BD"><span class="toc-text">資通系統或服務委外辦理之管理措施</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E7%B6%AD%E8%AD%B7%E8%A8%88%E7%95%AB%E8%88%87%E5%AF%A6%E6%96%BD%E6%83%85%E5%BD%A2%E4%B9%8B%E6%8C%81%E7%BA%8C%E7%B2%BE%E9%80%B2%E5%8F%8A%E7%B8%BE%E6%95%88%E7%AE%A1%E7%90%86%E6%A9%9F%E5%88%B6"><span class="toc-text">資通安全維護計畫與實施情形之持續精進及績效管理機制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E9%98%B2%E8%AD%B7%E5%8F%8A%E6%8E%A7%E5%88%B6%E6%8E%AA%E6%96%BD"><span class="toc-text">資通安全防護及控制措施</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E7%B3%BB%E7%B5%B1%E7%99%BC%E5%B1%95%E5%8F%8A%E7%B6%AD%E8%AD%B7%E5%AE%89%E5%85%A8"><span class="toc-text">資通系統發展及維護安全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E4%BA%8B%E4%BB%B6%E9%80%9A%E5%A0%B1%E6%87%89%E8%AE%8A%E5%8F%8A%E6%83%85%E8%B3%87%E8%A9%95%E4%BC%B0%E5%9B%A0%E6%87%89"><span class="toc-text">資通安全事件通報應變及情資評估因應</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <a href="/posts/2022/07/SSDLC-Gov-Audit/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="稽核準則"><a href="#稽核準則" class="headerlink" title="稽核準則"></a>稽核準則</h3><p><a target="_blank" rel="noopener" href="https://nicst.ey.gov.tw/Page/EB237763A1535D65">資通安全管理法及其子法</a><br><a target="_blank" rel="noopener" href="https://nicst.ey.gov.tw/Page/296DE03FA832459B/e5eb620d-dae2-40ae-85d5-264955863506">國家資通安全發展方案(110年至113年)</a><br><a target="_blank" rel="noopener" href="https://www.cnsonline.com.tw/?node=detail&generalno=27001&locale=zh_TW">資訊安全管理系統國家標準 CNS 27001:2014</a><br><a target="_blank" rel="noopener" href="https://www.iso.org/standard/54534.html">資訊安全管理系統國際標準 ISO 27001:2013</a><br><a target="_blank" rel="noopener" href="https://www.iso.org/standard/70636.html">服務管理系統國際標準 ISO 20000-1:2018</a><br><a target="_blank" rel="noopener" href="https://www.google.com/search?q=%E8%B3%87%E9%80%9A%E5%AE%89%E5%85%A8%E7%B6%AD%E8%AD%B7%E8%A8%88%E7%95%AB+filetype:pdf">受稽機關之資通安全維護計畫</a></p>
+<h2 id="稽核辦理方式"><a href="#稽核辦理方式" class="headerlink" title="稽核辦理方式"></a>稽核辦理方式</h2><p>包含機關自評、技術檢測與實地稽核。</p>
+<h3 id="資料庫安全檢測"><a href="#資料庫安全檢測" class="headerlink" title="資料庫安全檢測"></a>資料庫安全檢測</h3><p>受稽核對象以核心系統資料庫為主。</p>
+<div class="article-blockquote">
+
+<p>透過訪談及實際檢視方式，抽測 10 項資料庫安全檢測項目，包含特權帳號管理、資料加密、備份保護、弱點管理、存取授權、稽核紀錄及委外管理等安全機制，確認資料庫安全管理與防護狀<br>況。</p>
+<div style="text-align:right">資通安全稽核計畫</div>
+</div>
+
+<p>資料庫版本<br>資料庫類型：正式、備援<br>資料庫作業系統版本<br>資料庫是否含有個資：特種、一般<br>資料庫架構：資料庫伺服器中的各資料庫用途<br>官方預設帳號：sa<br>是否停用或變更官方預設帳號：yes<br>啟用帳號鎖定次數：否 (SQL Server 無此功能)<br>啟用「密碼複雜度」原則：It depends<br>啟用「最小密碼長度」原則：It depends<br>啟用「密碼最常有效期限」原則：否<br>資料保護機制：資料庫加密、資料庫欄位加密<br>採用第三方加解密：第三方工具名稱<br>資料庫備份週期：It depends<br>資料庫備份執行方式：完整、差異、交易紀錄、增量<br>資料庫備份儲存方式：本地、異地<br>資料庫備份保護方式：備份檔案加密、硬體加密、實體保護<br>資料庫備份回復測試：測試頻率<br>資料庫伺服器弱點掃描：掃描頻率、執行廠商、掃描工具<br>資料庫伺服器弱點修補<br>資料庫伺服器安全性更新：派送或管理者手動更新、更新頻率<br>限制資料庫伺服器服務埠：1433<br>限制遠端存取 IP 來源：<br>限制遠端存取帳號：資料庫管理者帳號<br>資料庫帳號權限最小化：是<br>資料庫資料傳輸安全機制：TLS 1.2<br>啟用資料庫帳號變更稽核：針對資料庫帳號變更紀錄、DCL Trigger<br>啟用資料庫存取稽核：登出及登入行為<br>啟用資料庫結構變更稽核：DDL Trigger<br>建立稽核紀錄備份週期：<br>稽核紀錄備份儲存方式：本機、異地備份<br>設定校時主機：校時主機 IP<br>定期分析稽核紀錄：頻率、分析工具</p>
+<h3 id="組態設定安全檢測-GCB"><a href="#組態設定安全檢測-GCB" class="headerlink" title="組態設定安全檢測 GCB"></a>組態設定安全檢測 GCB</h3><div class="article-blockquote">
+
+<p>針對已公告之政府組態基準 (GCB) 項目進行抽測。</p>
+<div style="text-align:right">資通安全稽核計畫</div>
+</div>
+
+<p>需要導入組態設定的設備數量 (SQL Server, IIS)<br>導入進度：測試中、部分導入以及預訂導入完成時間<br>導入方式：逐台設定或其他<br>例外管理項目</p>
+<p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/GCB">政府組態基準 | nccst.gov</a></p>
+<h3 id="核心資通系統安全檢測"><a href="#核心資通系統安全檢測" class="headerlink" title="核心資通系統安全檢測"></a>核心資通系統安全檢測</h3><p>受稽核的核心資通系統：機關自行擇選提報 3 個具資料庫之核心資通系統；以近 2 年新建置之重要系統為優先，原則 2 年內已提報過之系統不重複提報。</p>
+<div class="article-blockquote">
+
+<p>針對核心資通系統進行內網滲透測試，包括檢測資通系統之權限存取、應用程式及系統弱點、系統通訊保護等項目，若資通系統使用單一簽入進行權限管控，則亦納入檢測範圍。</p>
+<p>依據系統等級(普、中、高)，針對核心資通系統之存取控制、識別與鑑別、系統與服務獲得、系統與資訊完整性及系統與通訊保護等控制措施進行檢測，並檢視源碼掃描、弱點掃描及滲透測試等檢測報告及修補紀錄，以及安全需求檢核結果。</p>
+<div style="text-align:right">資通安全稽核計畫</div>
+</div>
+
+<p>系統性質：本地端程式、正式網站、測試網站、正式備援網站<br>系統網址<br>系統主機開放埠口以及開放原因<br>多重因素認證<br>用戶端限制條件：作業系統、瀏覽器、加入網域、元件、讀卡機、自然人憑證<br>預設密碼登入，應於登入後要求立即變更<br>身分驗證相關資訊不以明文傳輸<br>帳戶鎖定機制：登入失敗 X 次後，鎖定 15 分鐘以上<br>密碼複雜度要求<br>密碼變更不可與過去 3 次歷程相同<br>系統主動遮蔽鑑別過程中的資訊<br>發生錯誤時，顯示檢端錯誤訊息及代碼<br>執行弱點掃描，提供檢測報告與<strong>修補紀錄</strong><br>執行源碼檢測，提供檢測報告與<strong>修補紀錄</strong><br>執行滲透測試，提供檢測報告與<strong>修補紀錄</strong><br>部署環境安全性更新、弱點修補、關閉埠必要服務與埠口<br>存取控制採最小權限原則<br>身分驗證防範自動化程式登入<br>密碼重設機制，確認身分後以一次性及時限性 Token 實作<br>使用者輸入資料合法性，於伺服器端檢查<br>系統閒置 X 分鐘，自動將使用者登出<br>系統採用加密機制、防止未授權資訊揭露<br>使用公開、國際機構驗證且未遭破解之演算法<br>加密金鑰及憑證應定期更換</p>
+<h3 id="實地稽核技術面重點"><a href="#實地稽核技術面重點" class="headerlink" title="實地稽核技術面重點"></a>實地稽核技術面重點</h3><div class="article-blockquote">
+
+<p>資通安全防護及控制措施：確認安全性檢測及資通安全健診實施情形、政府組態基準／資通安全弱點通報機制／端點偵測及應變機制／資通安全防護實施情形、電子資料(含防疫個資)安全管理機制、網路規劃及管理、電腦機房及重要區域管理、資料處理、儲存及傳輸安全、電子資料相關設備管理、行動裝置安全、軟體使用安全、網路即時通訊安全及電子郵件安全等。</p>
+<p>資通系統發展及維護安全：確認資通系統之防護需求、SSDLC 各個階段之安全檢核，包括系統需求、設計、開發、測試、驗收時應注意之安全措施、資通系統之變更管制程序等。</p>
+<p>資通安全事件通報應變及情資評估因應：確認情資分享機制、資通安全威脅偵測管理機制實施情形、資通系統及相關設備監控事件日誌管理、資安事件通報及應變作業規範及落實、資安事件改善措施之有效性、資通安全演練作業實施情形。</p>
+<div style="text-align:right">資通安全稽核計畫</div>
+</div>
+
+<h2 id="SSDLC"><a href="#SSDLC" class="headerlink" title="SSDLC"></a>SSDLC</h2><p><a href="/posts/2022/02/SSDLC-Essentials/">SSDLC 附表十《資通系統防護基準修正規定》DSCS 的精華湯 🥣</a></p>
+<p><a href="/posts/2022/01/SSDLC-Dev/">實踐 SSDLC 深入附表十《資通系統防護基準修正規定》DSCS 的饗宴 🍱</a></p>
+<h2 id="資通安全稽核計畫及稽核作業-資通安全實地稽核項目檢核表-適用公務機關"><a href="#資通安全稽核計畫及稽核作業-資通安全實地稽核項目檢核表-適用公務機關" class="headerlink" title="資通安全稽核計畫及稽核作業 (資通安全實地稽核項目檢核表 - 適用公務機關)"></a>資通安全稽核計畫及稽核作業 (資通安全實地稽核項目檢核表 - 適用公務機關)</h2><h3 id="核心業務及其重要性"><a href="#核心業務及其重要性" class="headerlink" title="核心業務及其重要性"></a>核心業務及其重要性</h3><p>1.1 是否界定機關之核心業務，完成資通系統之盤點及分級，且每年至少檢視 1 次分級之妥適性？<br>1.2 是否將全部核心資通系統納入資訊安全管理系統(ISMS)適用範圍？(A、B 級機關：全部核心資通系統 2年內完成 ISMS 導入，3 年內通過公正第三方驗證，第三方核發之驗證證書應有 TAF 認證標誌；C 級機關：全部核心資通系統 2 年內完成 ISMS導入)<br>1.3 是否盤點核心資通系統，鑑別可能造成營運中斷事件之機率及衝擊影響，且進行營運衝擊分析(BIA)？是否明確訂定核心資通系統之系統復原時間目標(RTO)及資料復原時間點目標(RPO)？<br>1.4 是否設置資通系統之備援設備，當系統服務中斷時，於可容忍時間內由備援設備取代提供服務？(資通系統等級中/高等級者適用)<br>1.5 是否定期執行重要資料之備份作業，且備份資料異地存放？存放處所環境是否符合實體安全防護？<br>1.6 是否訂定備份資料之復原程序，且定期執行回復測試，以確保備份資料之有效性？復原程序是否定期檢討及修正？<br>1.7 是否針對核心資通系統制定業務持續運作計畫，並定期辦理全部核心資通系統之業務持續運作演練，包含人員職責應變、作業程序、資源調配及檢討改善等？(A 級機關：每年1 次；B、C 級機關：每 2 年 1 次)<br>1.8 是否針對重要業務訂定適當之變更管理程序，且落實執行，並定期檢視、審查及更新程序(如業務調整後對外資訊更新等)？<br>1.9 是否每年落實辦理資安治理成熟度評估？(A、B 級機關適用)</p>
+<h3 id="資通安全政策及推動組織"><a href="#資通安全政策及推動組織" class="headerlink" title="資通安全政策及推動組織"></a>資通安全政策及推動組織</h3><p>2.1 是否訂定資通安全政策及目標，由管理階層核定，並定期檢視且有效傳達其重要性？<br>2.2 是否訂定資通安全之績效評估方式(如績效指標等)，且定期監控、量測、分析及檢視？<br>2.3 是否有文件或紀錄佐證管理階層(如機關首長、資通安全長等)對於 ISMS建立、實作、維持及持續改善之承諾及支持？<br>2.4 是否成立資通安全推動組織，負責推動、協調監督及審查資通安全管理事項？推動組織層級之適切性，且業務單位是否積極參與？<br>2.5 是否指派副首長或適當人員兼任資通安全長，負責推動及督導機關內資通安全相關事務？<br>2.6 是否訂定機關人員辦理業務涉及資通安全事項之考核機制及獎懲基準？<br>2.7 是否建立機關內、外部利害關係人清單，並定期檢討其適宜性？</p>
+<h3 id="專責人力及經費配置"><a href="#專責人力及經費配置" class="headerlink" title="專責人力及經費配置"></a>專責人力及經費配置</h3><p>3.1 資安經費占資訊經費比例？資訊經費占機關經費比例？資安經費編列是否符合業務需要？<br>3.2 資安專職人員配置情形？是否有適切分工？(A 級機關：4 人；B 級機關：2 人；C 級機關：1 人)<br>3.3 是否指定專人或專責單位負責資訊服務請求/事件處理、維運及檢討，且有適切分工？<br>3.4 是否訂定人員之資通安全作業程序及權責？是否明確告知保密事項，且簽署保密協議？<br>3.5 人員是否瞭解機關之資通安全政策，以及應負之資安責任？<br>3.6 資通安全專職人員是否每年接受 12小時以上之資通安全專業課程訓練或資通安全職能訓練？(A、B、C 級機關適用)<br>3.7 資通安全專職人員以外之資訊人員是否每 2 年接受 3 小時以上之資通安全專業課程訓練或資通安全職能訓練，且每年接受 3 小時以上之資通安全通識教訓練？(A、B、C 級機關適用)<br>3.8 一般使用者及主管是否每年接受 3小時以上之資通安全通識教育訓練？<br>3.9 資通安全專職人員是否分別各自持有資通安全專業證照 1 張以上，且維持證照之有效性？<br>3.10 資通安全專職人員是否分別各自持有資通安全職能訓練證書 1 張以上，且維持證書之有效性？</p>
+<h3 id="資訊及資通系統盤點及風險評估"><a href="#資訊及資通系統盤點及風險評估" class="headerlink" title="資訊及資通系統盤點及風險評估"></a>資訊及資通系統盤點及風險評估</h3><p>4.1 是否確實盤點資產建立清冊(如識別擁有者及使用者等)，且鑑別其資產價值？<br>4.2 是否訂定資產異動管理程序，定期更新資產清冊，且落實執行？<br>4.3 是否建立風險準則且執行風險評估作業，並針對重要資訊資產鑑別其可能遭遇之風險，分析其喪失機密性、完整性及可用性之衝擊？<br>4.4 是否訂定風險處理程序，選擇適合之資通安全控制措施，且相關控制措施經權責人員核可？<br>4.5 是否訂定資通安全風險處理計畫，且妥善處理剩餘之資通安全風險？<br>4.6 是否配合新增業務或組織調整時，適時檢視原風險評估作業，以確保相關控制措施之有效性？<br>4.7 針對公務用之資通訊產品，包含軟體、硬體及服務等，是否已禁止使用大陸廠牌資通訊產品？<br>4.8 是否列冊管理大陸廠牌資通訊產品，並已於 110 年底前將該產品自公務環境中移除？如該產品仍有與公務環境介接之情況，是否經行政院核定評估同意？</p>
+<h3 id="資通系統或服務委外辦理之管理措施"><a href="#資通系統或服務委外辦理之管理措施" class="headerlink" title="資通系統或服務委外辦理之管理措施"></a>資通系統或服務委外辦理之管理措施</h3><p>5.1 是否訂定資訊作業委外安全管理程序，包含委外選商及監督相關規定，確保委外廠商執行委外作業時，具備完善之資通安全管理措施或通過第三方驗證？<br>5.2 機關及委外廠商是否皆已指定專案管理人員，負責推動、協調及督導委外作業之資通安全管理事項？<br>5.3 委外廠商是否配置充足且經適當之資格訓練、擁有資通安全專業證照或具有類似業務經驗之資通安全專業人員？<br>5.4 是否針對委外業務項目進行風險評估，包含可能影響資產、流程、作業環境或特殊對機關之威脅等，以強化委外安全管理？<br>5.5 是否依委外業務項目之性質允許委外廠商就委外業務項目分(轉)包？如允許分(轉)包，是否注意分(轉)包之範圍，以及分(轉)包之廠商是否具備資通安全維護措施？<br>5.6 是否依資通系統分級，於徵求建議書文件(RFP)相關採購文件中明確規範防護基準需求？<br>5.7 對於核心資通系統之委外廠商，是否針對其人員(如能力、背景等)及開發維運環境之資通安全管理進行評估？<br>5.8 委外客製化資通系統開發者，是否要求委外廠商提供資通系統之安全性檢測證明，並針對非委外廠商自行開發之系統或資源，標示非自行開發之內容與其來源及提供授權證明？若該資通系統屬核心資通系統或委託金額達新臺幣一千萬元以上者，是否自行或另行委託第三方進行安全性檢測之複測？<br>5.9 是否訂定委外廠商對於機關委外業務之資安事件通報及相關處理規範？委外廠商執行委外業務，違反資通安全相關法令或知悉資通安全事件時，是否立即通知機關並採行補救措施？<br>5.10 委外關係終止或解除時，是否確認委外廠商返還、移交、刪除或銷毀履行契約而持有之資料？<br>5.11 是否訂定委外廠商之資通安全責任及保密規定，且落實執行？<br>5.12 是否定期或於知悉委外廠商發生可能影響委外作業之資通安全事件時，對委外廠商所提供之服務、報告及紀錄等進行管理及安全檢視(如廠商端實地稽核、要求廠商提供異常報告、要求廠商提供相關安全檢測紀錄等)，以利後續追蹤及管理？<br>5.13 委外廠商專案成員進出機關範圍是否被限制？對於委外廠商駐點人員使用之資訊設備(如個人、筆記型、平板電腦、行動電話及智慧卡等)是否建立相關安全管控措施？<br>5.14 是否訂定委外廠商系統存取程序及授權規定(如限制其可接觸之系統、檔案及資料範圍等)？委外廠商專案人員調整及異動，是否依系統存取授權規定，調整其權限？<br>5.15 是否定期檢視並分析資訊作業委外之人員安全、媒體保護管控、使用者識別及鑑別、組態管控等相關紀錄？<br>5.16 針對涉及資通訊軟體、硬體或服務相關之採購案，契約範圍內之委外廠商是否為大陸廠商或所涉及之人員是否有陸籍身分？是否允許委外廠商使用大陸廠牌之資通訊產品，包含軟體、硬體及服務等？</p>
+<h3 id="資通安全維護計畫與實施情形之持續精進及績效管理機制"><a href="#資通安全維護計畫與實施情形之持續精進及績效管理機制" class="headerlink" title="資通安全維護計畫與實施情形之持續精進及績效管理機制"></a>資通安全維護計畫與實施情形之持續精進及績效管理機制</h3><p>6.1 是否訂定、修正及實施機關資通安全維護計畫，且每年向上級或監督/主管機關提出資通安全維護計畫實施情形？<br>6.2 是否落實管理階層(如機關首長、資通安全長等)定期(每年至少 1 次)審查 ISMS，以確保其運作之適切性及有效性？<br>6.3 是否訂定內部資通安全稽核計畫，包含稽核目標、範圍、時間、程序、人員等，且落實執行？(A 級機關：每年 2 次；B 級機關：每年 1 次；C 級機關：每 2 年 1 次)<br>6.4 是否規劃及執行稽核發現事項改善措施，且定期追蹤改善情形？<br>6.5 是否針對特定非公務機關之資通安全維護計畫必要事項、實施情形之提出、稽核之頻率、內容與方法、改善報告提出及其他應遵行事項，訂定相關辦法？【中央目的事業主管機關適用】<br>6.6 是否針對所屬/監督之公務機關及所管之 CI 提供者稽核其資通安全維護計畫實施情形，包含訂定稽核計畫、稽核相關紀錄及提出稽核報告等？且針對實施有缺失或待改善者追蹤其改善情形？<br>6.7 是否針對所屬/監督之公務機關及所管之特定非公務機關通報之事件於規定時間內完成審核，且於 1 小時內依指定之方式向上通報？(第一級或第二級事件：8 小時內完成審核；第三級或第四級事件：2 小時內完成審核)<br>6.8 是否定期針對所屬/監督之公務機關辦理下列演練，且於演練完成後 1 個月內，送交執行情形及成果報告？(1)每半年規劃及辦理 1 次社交工程演練？(2)每年規劃及辦理 1 次資安事件通報及應變演練？</p>
+<h3 id="資通安全防護及控制措施"><a href="#資通安全防護及控制措施" class="headerlink" title="資通安全防護及控制措施"></a>資通安全防護及控制措施</h3><p>7.1 是否針對全部核心資通系統定期辦理弱點掃描？(A 級機關：每年 2 次；B 級機關：每年 1 次；C 級機關：每 2 年 1 次)<br>7.2 是否針對全部核心資通系統定期辦理滲透測試？(A 級機關：每年 1 次；B、C 級機關：每 2 年 1 次)<br>7.3 是否定期辦理資通安全健診，包含網路架構檢視、網路惡意活動檢視、使用者端電腦惡意活動檢視、伺服器主機惡意活動檢視、目錄伺服器設定及防火牆設定檢視等？(A 級機關：每年 1 次；B、C 級機關：每 2年 1 次)<br>7.4 是否針對安全性檢測及資通安全健診結果執行修補作業，且於修補完成後驗證是否完成改善？<br>7.5 是否完成政府組態基準導入作業？(A、B 級機關適用)<br>7.6 是否完成資通安全弱點通報機制導入作業，並持續維運及依主管機關指定方式提交資訊資產盤點資料？(A、B 級公務機關應於核定後 1 年內完成；C 級公務機關應於核定後 2 年內完成)<br>7.7 是否完成端點偵測及應變機制導入作業，並持續維運及依主管機關指定方式提交偵測資料？(A、B 級公務機關應於核定後 2 年內完成)<br>7.8 是否完成下列資通安全防護措施？</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>等級要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>防毒軟體</td>
+<td>D</td>
+</tr>
+<tr>
+<td>網路防火牆</td>
+<td>D</td>
+</tr>
+<tr>
+<td>電子郵件過濾機制</td>
+<td>C</td>
+</tr>
+<tr>
+<td>入侵偵測及防禦機制</td>
+<td>B</td>
+</tr>
+<tr>
+<td>應用程式防火牆(具有對外服務之核心資通系統者)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>進階持續性威脅攻擊防禦</td>
+<td>A</td>
+</tr>
+</tbody></table>
+<p>7.9 是否針對電子郵件進行過濾，且定期檢討及更新郵件過濾規則？是否針對電子郵件進行分析，主動發現異常行為且進行改善(如針對大量異常電子郵件來源之 IP 位址，於防火牆進行阻擋等)？<br>7.10 是否建立電子資料(含防疫個資)安全管理機制，包含分級規則(如機密性、敏感性及一般性等)、存取權限、資料安全、人員管理及處理規範等，且落實執行？<br>7.11 是否建立網路服務安全控制措施，且定期檢討？是否定期檢測網路運作環境之安全漏洞？<br>7.12 是否已確實設定防火牆並定期檢視防火牆規則，有效掌握與管理防火牆連線部署？<br>7.13 針對機關內部同仁及委外廠商進行遠端維護資通系統，是否採「原則禁止、例外允許」方式辦理，並有適當之防護措施？<br>7.14 網路架構設計是否符合業務需要及資安要求？是否依網路服務需要區隔獨立的邏輯網域(如 DMZ、內部或外部網路等)，且建立適當之防護措施，以管制過濾網域間之資料存取？<br>7.15 是否針對機關內無線網路服務之存取及應用訂定安全管控程序，且落實執行？<br>7.16 資通系統重要組態設定檔案及其他具保護需求之資訊是否加密或其他適當方式儲存(如實體隔離、專用電腦作業環境、資料加密等)？是否針對系統與資料傳輸之機密性與完整性建立適當之防護措施？<br>7.17 使用預設密碼登入資通系統時，是否於登入後要求立即變更密碼，並限制使用弱密碼？<br>7.18 是否訂定電子郵件之使用規則，且落實執行？是否依郵件內容之機密性、敏感性規範傳送限制？<br>7.19 是否針對電腦機房及重要區域之安全控制、人員進出管控、環境維護(如溫溼度控制)等項目建立適當之管理措施，且落實執行？<br>7.20 是否定期評估及檢查重要資通設備之設置地點可能之危害因素(如火、煙、水、震動、化學效應、電力供應、電磁輻射或人為入侵破壞等)？<br>7.21 是否針對電腦機房及重要區域之公用服務(如水、電、消防及通訊等)建立適當之備援方案？<br>7.22 是否針對資訊之交換，建立適當之交換程序及安全保護措施，以確保資訊之完整性及機密性(如採行識別碼通行碼管制、電子資料加密或電子簽章認證等)？是否針對重要資料的交換過程，保存適當之監控紀錄？<br>7.23 是否訂定資訊處理設備作業程序、變更管理程序及管理責任，且落實執行？<br>7.24 是否針對電子資料相關設備進行安全管理(如相關儲存媒體、設備是否有安全處理程序及分級標示、報廢程序等)？<br>7.25 是否訂定資訊設備回收再使用及汰除之安全控制作業程序，以確保任何機密性或敏感性資料已確實刪除？<br>7.26 是否針對使用者電腦訂定軟體安裝管控規則？是否確認授權軟體及免費軟體之使用情形，且定期檢查？<br>7.27 是否針對個人行動裝置及可攜式媒體訂定管理程序，且落實執行，並定期審查、監控及稽核？</p>
+<h3 id="資通系統發展及維護安全"><a href="#資通系統發展及維護安全" class="headerlink" title="資通系統發展及維護安全"></a>資通系統發展及維護安全</h3><p>8.1 針對自行或委外開發之資通系統是否依<strong>資通系統防護需求分級原則完成資通系統分級</strong>，且依<strong>資通系統防護基準執行控制措施</strong>？<br>8.2 資通系統開發過程請是否依<strong>安全系統發展生命週期</strong> (Secure Software Development Life Cycle, SSDLC) 納入資安要求？<br>8.3 資通系統<strong>開發前，是否設計安全性要求</strong>，包含機敏資料存取、用戶登入資訊檢核及用戶輸入輸出之檢查過濾等，且檢討執行情形？<br>8.4 資通系統設計階段，是否依系統功能及要求，<strong>識別可能影響系統之威脅，進行風險分析及評估</strong>？<br>8.5 資通系統<strong>開發階段，是否避免常見漏洞(如 OWASP Top 10 等)<strong>？且針對防護需求等級高者，執行</strong>源碼掃描</strong>安全檢測？<br>8.6 資通系統測試階段，是否執行<strong>弱點掃描</strong>安全檢測？且針對防護需求等級高者，執行<strong>滲透測試</strong>安全檢測？<br>8.7 資通系統<strong>上線或更版前，是否執行安全性要求測試</strong>，包含邏輯及安全性驗測、機敏資料存取、用戶登入資訊檢核及用戶輸入輸出之檢查過濾測試等，且檢討執行情形？<br>8.8 資通系統開發如<strong>委外辦理</strong>，是否將系統發展生命週期各階段依等級將<strong>安全需求(含機密性、可用性、完整性)納入委外契約</strong>？<br>8.9 是否將<strong>開發、測試及正式作業環境區隔</strong>，且針對不同作業環境建立適當之資安保護措施？<br>8.10 是否<strong>儲存及管理資通系統發展相關文件</strong>？儲存方式及管理方式為何？<br>8.11 資通系統測試如使用正式作業環境之<strong>測試資料，是否針對測試資料建立保護措施</strong>，且留存相關作業紀錄？<br>8.12 是否針對資通系統所使用之<strong>外部元件或軟體，注意其安全漏洞通告，且定期評估更新</strong>？</p>
+<h3 id="資通安全事件通報應變及情資評估因應"><a href="#資通安全事件通報應變及情資評估因應" class="headerlink" title="資通安全事件通報應變及情資評估因應"></a>資通安全事件通報應變及情資評估因應</h3><p>9.1 是否訂定資安事件通報作業規範，包含判定事件等級之流程及權責、事件影響及損害評估、內部通報流程、通知其他受影響機關之方式、通報窗口及聯繫方式等，並規範於知悉資通安全事件後 1 小時內進行通報，若事件等級變更時應續行通報？相關人員是否熟悉相關程序，且落實執行？<br>9.2 是否訂定資安事件應變作業規範，包含應變小組組織、事前之演練作業、事中之損害控制機制、事後之復原、鑑識、調查及改善機制、相關紀錄保全等，且落實執行？<br>9.3 是否每年進行 1 次資安事件通報及應變演練？是否將新興資安議題納入演練情境，以驗證各種資安事件之安全防護及應變程序？<br>9.4 機關參與本院資安會報對外資通系統實兵演練，是否就相關系統弱點訂定資安防護改善計畫，並落實執行？<br>9.5 是否每半年進行 1 次社交工程演練？是否針對開啟郵件、點閱郵件附件或連結之人員加強資安意識教育訓練？<br>9.6 是否建立資安事件相關證據資料保護措施，以作為問題分析及法律必要依據？<br>9.7 近 3 年重大資安事件之通報時間、過程、因應處理及改善措施，是否依程序落實執行？<br>9.8 是否訂定資安事件處理過程之內部及外部溝通程序？<br>9.9 針對所有資安事件，是否保留完整紀錄，並與其他相關管理流程連結，且落實執行後續檢討及改善？<br>9.10 是否建置資通安全威脅偵測管理(SOC)機制？監控範圍是否包括「端點偵測及應變機制」與「資通安全防護」之辦理內容、目錄服務系統與機關核心資通系統之資通設備紀錄及資訊服務或應用程式紀錄？(A、B 級機關適用)<br>9.11 是否依指定方式提交 SOC 監控管理資料？(A、B 級機關適用)<br>9.12 是否訂定應記錄之特定資通系統事件(如身分驗證失敗、存取資源失敗、重要行為、重要資料異動、功能錯誤及管理者行為等)、日誌內容、記錄時間週期及留存政策，且保留日誌至少 6 個月？<br>9.13 是否依日誌儲存需求，配置所需之儲存容量，並於日誌處理失效時採取適當行動及提出告警？<br>9.14 針對日誌之是否進行存取控管，並有適當之保護控制措施？<br>9.15 知悉資通安全事件後，是否於規定時間內完成損害控制或復原作業，並持續進行調查及處理，於 1 個月內送交調查、處理及改善報告，且落實執行？(第一級或第二級事件：72 小時內完成損害控制或復原作業；第三級或第四級事件：36 小時內完成損害控制或復原作業)<br>9.16 知悉第三級或第四級資通安全事件後，是否由資通安全長召開會議研商相關事宜，並得請相關機關提供協助？<br>9.17 是否建立資通安全情資之評估及因應機制，針對所接受之情資，辨識其來源之可靠性及時效性，及時進行威脅與弱點分析及研判潛在風險，並採取對應之預防或應變措施？<br>9.18 是否適時進行資通安全情資分享？分享哪些資訊？</p>
+<p><a href="/assets/111年資通安全稽核計畫及稽核作業.pdf" target="_blank">111年資通安全稽核計畫及稽核作業</a>：<a target="_blank" rel="noopener" href="https://isms.ntut.edu.tw/p/406-1119-119118,r2318.php">資料來源</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a target="_blank" rel="noopener" href="https://isms.ntut.edu.tw/p/406-1119-119902,r2318.php">試行 資通系統籌獲各階段資安強化措施</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/07/SSDLC-Gov-Audit/" data-id="clg3fmal501g0s4tsfa190jlw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSDLC/" rel="tag">SSDLC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/07/SQL-Server-Installation-On-Server-Core-With-Setup/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 安裝使用 Setup.exe (Windows Server Core)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/07/Windows-Server-Core-Installation/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows Server Core Installation
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

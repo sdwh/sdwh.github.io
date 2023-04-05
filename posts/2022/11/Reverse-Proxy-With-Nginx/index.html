@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>使用 Nginx 作為反向代理伺服器 (Reverse Proxy) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明如何使用 Nginx for Windows 作為反向代理伺服器。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Nginx 作為反向代理伺服器 (Reverse Proxy)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/11/Reverse-Proxy-With-Nginx/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明如何使用 Nginx for Windows 作為反向代理伺服器。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2022-11-05T10:17:30.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Reverse-Proxy-With-Nginx" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/11/Reverse-Proxy-With-Nginx/" class="article-date">
+  <time datetime="2022-11-05T10:17:30.000Z" itemprop="datePublished">2022-11-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Network/">Network</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 Nginx 作為反向代理伺服器 (Reverse Proxy)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nginx-conf"><span class="toc-text">nginx.conf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%83%E5%BE%97"><span class="toc-text">心得</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明如何使用 Nginx for Windows 作為反向代理伺服器。</p>
+<a href="/posts/2022/11/Reverse-Proxy-With-Nginx/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Nginx 分為 <a target="_blank" rel="noopener" href="https://nginx.org/en/">Open Source</a> 以及需要付費，有著更為完善功能及有支援服務的 <a target="_blank" rel="noopener" href="https://www.nginx.com/products/nginx/compare-models">Nginx Plus</a>。</p>
+<p>目前 Nginx 是屬於 F5 公司的解決方案與產品，而開源版本則可以從 <a target="_blank" rel="noopener" href="https://nginx.org/en/">https://nginx.org/en/</a> 下載，或從 Nginx 於 Github 所提供的 <a target="_blank" rel="noopener" href="https://github.com/nginx/nginx-releases">Release Repos</a> 進行下載。</p>
+<p>本次的測試環境使用 Nginx Open Source 1.23.2，並且在 Windows Server 2019 上進行測試。</p>
+<hr>
+<p>下載後解壓縮就可以使用，藉由執行 <code class="s">nginx.exe</code> 啟動執行。</p>
+<p>設定上則是藉由調整 <code class="s">nginx.conf</code>，執行 nginx 後，如果有互動的需求可以藉由 cmd 透過 <code class="s">nginx.exe</code> 使用參數進行控制</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">nginx</span> <span class="token parameter attr-name">-s</span> stop</span>
+<span class="token command"><span class="token keyword">nginx</span> <span class="token parameter attr-name">-s</span> quit</span>
+
+<span class="token comment">rem Reload  nginx.conf</span>
+<span class="token command"><span class="token keyword">nginx</span> <span class="token parameter attr-name">-s</span> reload</span>
+<span class="token comment">rem Reopen Log files</span>
+<span class="token command"><span class="token keyword">nginx</span> <span class="token parameter attr-name">-s</span> reopen</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="nginx-conf"><a href="#nginx-conf" class="headerlink" title="nginx.conf"></a>nginx.conf</h3><p><code class="watch">/conf/nginx.conf</code></p>
+<pre class="line-numbers language-editorconfig" data-language="editorconfig"><code class="language-editorconfig"><span class="token comment">#user  nobody;</span>
+worker_processes  1<span class="token comment">;</span>
+
+<span class="token comment">#error_log  logs/error.log;</span>
+<span class="token comment">#error_log  logs/error.log  notice;</span>
+<span class="token comment">#error_log  logs/error.log  info;</span>
+
+<span class="token comment">#pid        logs/nginx.pid;</span>
+
+events &#123;
+    worker_connections  1024<span class="token comment">;</span>
+&#125;
+
+
+http &#123;
+    include       mime.types<span class="token comment">;</span>
+    default_type  application/octet-stream<span class="token comment">;</span>
+
+    <span class="token comment">#log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</span>
+    <span class="token comment">#                  '$status $body_bytes_sent "$http_referer" '</span>
+    <span class="token comment">#                  '"$http_user_agent" "$http_x_forwarded_for"';</span>
+
+    <span class="token comment">#access_log  logs/access.log  main;</span>
+
+    sendfile        on<span class="token comment">;</span>
+    <span class="token comment">#tcp_nopush     on;</span>
+
+    <span class="token comment">#keepalive_timeout  0;</span>
+    keepalive_timeout  65<span class="token comment">;</span>
+
+    <span class="token comment">#gzip  on;</span>
+
+    server &#123;
+        listen       8080<span class="token comment">;</span>
+        server_name  sdwh.dev<span class="token comment">;</span>
+
+        <span class="token comment">#charset koi8-r;</span>
+        <span class="token comment">#access_log  logs/host.access.log  main;</span>
+
+        location / &#123;
+            proxy_pass https://sdwh.dev/<span class="token comment">;</span>
+        &#125;
+    &#125;
+
+    server &#123;
+        listen       80<span class="token comment">;</span>
+        server_name  hostname<span class="token comment">;</span>
+
+        <span class="token comment">#charset koi8-r;</span>
+        <span class="token comment">#access_log  logs/host.access.log  main;</span>
+
+        location / &#123;
+            root   html<span class="token comment">;</span>
+            index  index.html index.htm<span class="token comment">;</span>
+        &#125;
+
+        location /www &#123;
+            proxy_pass http://192.168.112.152:8080/<span class="token comment">;</span>
+        &#125;
+        location /tour &#123;
+            proxy_pass https://tour.sdwh.dev/<span class="token comment">;</span>
+            sub_filter '/assets/'  '/tour/assets/'<span class="token comment">;</span>
+            sub_filter 'assets/'  '/tour/assets/'<span class="token comment">;</span>
+            sub_filter_once off<span class="token comment">;</span>
+        &#125;
+
+        <span class="token comment">#error_page  404              /404.html;</span>
+
+        <span class="token comment"># redirect server error pages to the static page /50x.html</span>
+        <span class="token comment">#</span>
+        error_page   500 502 503 504  /50x.html<span class="token comment">;</span>
+        <span class="token key attr-name">location</span> <span class="token value attr-value"><span class="token punctuation">=</span> /50x.html &#123;</span>
+            root   html<span class="token comment">;</span>
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在 conf 的設定當中，server 用於設定要監聽的 port，搭配 location 由子目錄判斷回應的內容。</p>
+<p>而要進行反向代理，就是設定 <strong>proxy_pass</strong> 的位址，但在回應上可能會有代理錯誤 (<a target="_blank" rel="noopener" href="https://www.app-scope.com/tutorial/prevent-website-from-being-copied.html">可能被各種原因阻擋</a>)，因此仍是有相關的問題要去克服。</p>
+<p>而縱使成功進行反向代理，相關的資源檔案可能因為網頁本身的絕對路徑或者相對路徑無法成功載入，這個時候可以利用多個 location 或者是使用 <code class="s">sub_filter</code> 的方式將回應內容強制取代，當然，這會是一個不斷測試的手工過程 😅</p>
+<h3 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h3><p>Nginx 的 conf 設定直觀易懂，並且有第三方套件可以擴充功能。然而在一些討論中有看到 Nginx 在 Windows 環境穩定度仍有提升的空間，此外由於有 Nginx Plus 的選項，在正式營運環境，如果採用 Nginx 應仍會以 Nginx Plus 作為選擇。Open Source 的 Nginx 較為適合作為 POC 或者個人用途的反向代理伺服器工具 😃</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://blog.kkbruce.net/2018/06/nginx-basic-for-windows-based.html">KingKong Bruce記事 - NGINX 基礎入門(WINDOWS 版)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.app-scope.com/tag/nginx/">App-Scope - Nginx 學習筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/11/Reverse-Proxy-With-Nginx/" data-id="clg3fmahk012rs4tsf5lqdgkv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/" rel="tag">Network</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/11/Check-Server-In-Intranet-And-Internet-With-DNS-Server/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">藉由內外部 DNS 判斷服務是否對外提供</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/11/Reverse-Proxy-With-IIS-ARR/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用 IIS ARR 作為反向代理伺服器 (Reverse Proxy)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

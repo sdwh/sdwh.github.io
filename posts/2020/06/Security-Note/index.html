@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>CyberSecurity 資安筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="無恃其不來，恃吾有以待之；無恃其不攻，恃吾有所不可攻也。孫子兵法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CyberSecurity 資安筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/Security-Note/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="無恃其不來，恃吾有以待之；無恃其不攻，恃吾有所不可攻也。孫子兵法">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CheckListLogo.svg">
+<meta property="article:published_time" content="2020-06-05T00:54:13.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="LearningNote">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CheckListLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Security-Note" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/Security-Note/" class="article-date">
+  <time datetime="2020-06-05T00:54:13.000Z" itemprop="datePublished">2020-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CyberSecurity 資安筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%B8%E7%BF%92%E6%AD%A5%E9%A9%9F"><span class="toc-text">學習步驟</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B3%87%E5%AE%89%E7%9A%84%E5%8E%9F%E5%89%87"><span class="toc-text">資安的原則</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%BA%90"><span class="toc-text">參考資源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%9C%E8%81%AF%E7%AD%86%E8%A8%98"><span class="toc-text">關聯筆記</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AA%B2%E7%A8%8B"><span class="toc-text">課程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E9%A1%8C%E7%B6%B2%E7%AB%99"><span class="toc-text">主題網站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%B8%E8%A1%93%E7%B6%B2%E7%AB%99"><span class="toc-text">學術網站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0-%F0%9F%93%91"><span class="toc-text">文章 📑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B0%A1%E5%A0%B1-%F0%9F%93%9C"><span class="toc-text">簡報 📜</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7-%F0%9F%94%A8"><span class="toc-text">工具 🔨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%B6%E6%A9%9F-%E7%B7%B4%E7%BF%92%E7%B6%B2%E7%AB%99"><span class="toc-text">靶機 &#x2F; 練習網站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E4%B8%BB%E6%8E%A2%E6%B8%AC%E4%BC%BA%E6%9C%8D%E5%99%A8%E7%9A%84%E8%B3%87%E8%A8%8A-%F0%9F%95%B5%EF%B8%8F%E2%80%8D%E2%99%82%EF%B8%8F"><span class="toc-text">自主探測伺服器的資訊 🕵️‍♂️</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%91%81%EF%B8%8F-%E6%89%8B%E5%B7%A5%E4%BD%BF%E7%94%A8-Nmap-%E9%80%B2%E8%A1%8C%E6%8E%83%E6%8F%8F%E7%9A%84%E6%96%B9%E5%BC%8F-%F0%9F%91%81%EF%B8%8F"><span class="toc-text">👁️ 手工使用 Nmap 進行掃描的方式 👁️</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7"><span class="toc-text">工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AD%89%E7%85%A7"><span class="toc-text">證照</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <blockquote>
+<p>無恃其不來，恃吾有以待之；無恃其不攻，恃吾有所不可攻也。<br><span style="text-align: right;display: block"><a target="_blank" rel="noopener" href="https://zh.wikisource.org/wiki/%E5%AD%AB%E5%AD%90%E5%85%B5%E6%B3%95#%E4%B9%9D%E8%AE%8A%E7%AC%AC%E5%85%AB">孫子兵法</a></span></p>
+</blockquote>
+<a href="/posts/2020/06/Security-Note/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CheckListLogo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="學習步驟"><a href="#學習步驟" class="headerlink" title="學習步驟"></a>學習步驟</h2><ul>
+<li>整理如何個人資安防護 (win10, linux)</li>
+<li>整理資安觀念名詞</li>
+<li>加密法、雜湊、編碼比較</li>
+<li>如何檢視網路環境 (nmap, wireshark)</li>
+<li>檢視作業系統行為 (prcoess explorer / monitor / event logs)</li>
+<li>滲透測試入門</li>
+<li>實作 CTF 題目</li>
+</ul>
+<h2 id="資安的原則"><a href="#資安的原則" class="headerlink" title="資安的原則"></a>資安的原則</h2><ul>
+<li>攻擊者會從整個架構的短板進行攻擊；防禦者必須兼顧網路、系統、開發，才能夠全面防禦</li>
+</ul>
+<h2 id="參考資源"><a href="#參考資源" class="headerlink" title="參考資源"></a>參考資源</h2><h3 id="關聯筆記"><a href="#關聯筆記" class="headerlink" title="關聯筆記"></a>關聯筆記</h3><p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+<p><a href="/posts/2021/01/OutSourcing-System-Development-Guide/">資訊系統委外開發參考規範</a></p>
+<p><a href="/posts/2020/10/CyberSecurity-SSDLC/">SSDLC 各階段資訊安全作業參考筆記</a></p>
+<p><a href="/posts/2020/10/NIST-NVD-CVE-CPE/">如何識別與確認第三方軟體是否存在弱點 🛡️ (NIST NVC / CVE / CPE)</a></p>
+<h3 id="課程"><a href="#課程" class="headerlink" title="課程"></a>課程</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.udemy.com/course/the-complete-internet-security-privacy-course-volume-1/">The Complete Cyber Security Course : Hackers Exposed!</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.udemy.com/course/network-security-course/">The Complete Cyber Security Course : Network Security!</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.udemy.com/course/complete-networking-fundamentals-course-ccna-start/">The Complete Networking Fundamentals Course. Your CCNA start</a></li>
+</ul>
+<h3 id="主題網站"><a href="#主題網站" class="headerlink" title="主題網站"></a>主題網站</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://isip.moe.edu.tw/wordpress/">教育部資訊安全人才培育計畫</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.acw.org.tw/">新興資安產業生態系推動計畫網站 ACW</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://hackercollege.nctu.edu.tw/?page_id=44">交通大學亥客書院</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/Handout?lang=zh">技服中心教材</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/CommonSpecification?lang=zh">技服中心共通規範</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://ctts.nccst.nat.gov.tw/Download">資安職能教材</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://atic-tw.blogspot.com/">雅技資訊日誌</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20108446/ironman/1980?page=1">飛飛 2019 資訊安全大補帖</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20108446/ironman/3463">飛飛 2020 資安這條路─以自建漏洞環境學習資訊安全</a></p>
+</li>
+</ul>
+<h3 id="學術網站"><a href="#學術網站" class="headerlink" title="學術網站"></a>學術網站</h3><p><a target="_blank" rel="noopener" href="https://cert.tanet.edu.tw/prog/Document.php">TANET Computer Emergency Response Team</a><br>臺灣學術網路危機處理中心，豐富的個案分析以及防禦指南參考 🎁</p>
+<p><a target="_blank" rel="noopener" href="https://noc.tanet.edu.tw/index.php/download/seminar">TANET - 研討會</a><br><a target="_blank" rel="noopener" href="https://tanet2019.nsysu.edu.tw/thesises.php">TANET 成果發表會論文集 2019</a><br><a target="_blank" rel="noopener" href="http://tanetsys.mcu.edu.tw/eform/node/8">TANET 成果發表會論文集 1995 - 2017</a></p>
+<p><a target="_blank" rel="noopener" href="https://tacert.mis.nsysu.edu.tw/app/index.php">TACERT - 研討會報名網站</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.tp1rc.edu.tw/">台北區域網路中心</a><br>豐富的教育訓練文件以及定期的資安案例分享 🎁</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.tp1rc.edu.tw/d2.php">區網會議</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.tp1rc.edu.tw/d3.php">研討會</a></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://tp2rc.tanet.edu.tw/seminar">台北第二區域網路中心</a><br>資料豐富 👍</p>
+<p><a target="_blank" rel="noopener" href="https://www.tcrc.edu.tw/other-server/data/data">台中區域網路中心</a><br><a target="_blank" rel="noopener" href="https://www.tcrc.edu.tw/component/sppagebuilder/10-goodpeople">台中區域網路中心 - 優良網管選拔</a><br>資料豐富 👍</p>
+<p><a target="_blank" rel="noopener" href="http://tnrc.edu.tw/p/412-1081-1469.php">台南區域網路中心</a><br>部分資料可供參考 ✔️</p>
+<p><a target="_blank" rel="noopener" href="https://www.twcert.org.tw/">台灣電腦網路危機處理暨協調中心</a><br>每月電子報追蹤資安情資 📰</p>
+<p><a target="_blank" rel="noopener" href="https://www.twcert.org.tw/tw/lp-106-1.html">TWCERT - 電子報</a></p>
+<h3 id="文章-📑"><a href="#文章-📑" class="headerlink" title="文章 📑"></a>文章 📑</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20112085/ironman/1850">CTF入門學習</a></li>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20108446/ironman/1980">資訊安全大補帖</a></li>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20060971/ironman/1603">利用開源軟體打造企業內部資安環境 </a></li>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20107304/ironman/2006">資安補漏洞，越補越大洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20107304/ironman/1258">鯊魚咬電纜：30天玩Wireshark</a></li>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20103688/ironman/3627">點錯遊戲的我也只好硬著頭皮上了 - picoCTF 2019</a></li>
+<li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20103434/ironman/1225?page=2">資料安全與簡單加密演算法見面會</a></li>
+</ul>
+<h3 id="簡報-📜"><a href="#簡報-📜" class="headerlink" title="簡報 📜"></a>簡報 📜</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.slideshare.net/HacksInTaiwan/presentations">Hitcon Slides</a></li>
+</ul>
+<h2 id="工具-🔨"><a href="#工具-🔨" class="headerlink" title="工具 🔨"></a>工具 🔨</h2><h3 id="靶機-練習網站"><a href="#靶機-練習網站" class="headerlink" title="靶機 / 練習網站"></a>靶機 / 練習網站</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/WebGoat/WebGoat">OWASP Web Goat</a></li>
+<li><a target="_blank" rel="noopener" href="https://owasp.org/www-project-juice-shop/">OWASP Juice Shop</a></li>
+<li><a target="_blank" rel="noopener" href="https://owasp.org/www-project-security-shepherd/">OWASP Security Shepherd</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.dvwa.co.uk/">DVWA</a></li>
+<li><a target="_blank" rel="noopener" href="https://demo.testfire.net/">AltoroMutual</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentesterlab.com/bootcamp/">PentesterLab</a></li>
+<li><a target="_blank" rel="noopener" href="https://web.ctflearn.com/web4/">CTFLearn</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.itsecgames.com/index.htm">bWAPP</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jerryhoff/WebGoat.NET">WebGoat.NET</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/s4n7h0/xvwa">XVWA</a></li>
+</ul>
+<h3 id="自主探測伺服器的資訊-🕵️‍♂️"><a href="#自主探測伺服器的資訊-🕵️‍♂️" class="headerlink" title="自主探測伺服器的資訊 🕵️‍♂️"></a>自主探測伺服器的資訊 🕵️‍♂️</h3><p><a target="_blank" rel="noopener" href="https://securityheaders.com/">Http Headers Scan</a><br>檢查 Http 標頭的安全性，是否暴露不相關的資訊提供給惡意偵測。</p>
+<p><a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Server Test</a><br>檢查所使用的 SSL 加密法是否不安全，有時候 SSL 不安全的因為網頁伺服器，而是伺服器前面的 WebApplication Firewall 😂</p>
+<p><a target="_blank" rel="noopener" href="https://mxtoolbox.com/SuperTool.aspx">DNS Lookup</a><br>查詢 DNS 相關資訊，是否暴露可以供社交工程所運用的資訊。</p>
+<p><a target="_blank" rel="noopener" href="https://who.is/">DNS Query - Whois</a><br>查詢 DNS 相關資訊，是否暴露可以供社交工程所運用的資訊。</p>
+<p><a target="_blank" rel="noopener" href="https://dnsdumpster.com/">DNSDUMPSTER</a><br>查詢 DNS 伺服器下各 Record 紀錄。</p>
+<p><a target="_blank" rel="noopener" href="https://hackertarget.com/whatweb-scan/">Passive Web Site Analysis - Wappalyzer</a></p>
+<p><a target="_blank" rel="noopener" href="https://hackertarget.com/nmap-online-port-scanner/">Port scan - Nmap</a><br>掃描伺服器是否開啟了可以被惡意利用的 Port。</p>
+<p><a target="_blank" rel="noopener" href="https://www.sslchecker.com/sslchecker">SSL Checker</a></p>
+<p>檢測 SSL 憑證的相關資訊。</p>
+<p><a target="_blank" rel="noopener" href="https://whatsmychaincert.com/">What’s My Chain Cert</a></p>
+<p>檢測 SSL 憑證鏈的有效性。</p>
+<hr>
+<h4 id="👁️-手工使用-Nmap-進行掃描的方式-👁️"><a href="#👁️-手工使用-Nmap-進行掃描的方式-👁️" class="headerlink" title="👁️ 手工使用 Nmap 進行掃描的方式 👁️"></a>👁️ 手工使用 Nmap 進行掃描的方式 👁️</h4><p><a target="_blank" rel="noopener" href="https://nmap.org/download.html">📁 Nmap Download - Latest stable command-line zipfile</a></p>
+<p>下載後，需要安裝 NPCAP 才能讓 Nmap 發揮最大功能。</p>
+<p><strong>掃描不安全的加密法 (SSL-Enum-Ciphers)</strong></p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">nmap <span class="token operator">--</span>script ssl-cert<span class="token punctuation">,</span>ssl-enum-ciphers 
+  <span class="token operator">-</span>p 80<span class="token punctuation">,</span>443<span class="token punctuation">,</span>465<span class="token punctuation">,</span>993<span class="token punctuation">,</span>995<span class="token punctuation">,</span>1433<span class="token punctuation">,</span>3389 www<span class="token punctuation">.</span>websiteDomain<span class="token punctuation">.</span>domainName<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><p><a target="_blank" rel="noopener" href="https://canarytokens.org/generate">CanaryTokens</a><br>防護金絲雀，藉由檔案存取的風吹草動通報惡意行為的發生。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/">Sysinternals</a><br>微軟 Windows 生態系瑞士刀。</p>
+<p><a href="">Process Explorer</a><br>查詢作用中的 Process 可以搭配 VirusTotal 掃描特徵碼是否惡意。</p>
+<p><a href="">Process Monitor</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">sqlmap</a><br>檢查網站是否有 sql injection 問題，因為有侵略性，必須取得受測單位同意 ⚠️。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/hahwul/a2sv">A2SV</a><br>自動檢測目標網站 SSL 弱點的工具，因為有侵略性，必須取得受測單位同意 ⚠️。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/s0md3v/XSStrike">XSStrike</a><br>XSS 弱點偵測與攻擊的工具，因為有侵略性，必須取得受測單位同意 ⚠️。</p>
+<p><a href="">Burp Suite</a><br>攔截封包，從而分析可以作為攻擊點的資訊。</p>
+<p><a href="">OWASP ZAP</a></p>
+<p><a href="">Kali linux</a><br>Linux 資安 Distro 豐富的應用工具。</p>
+<p><a href="">NMAP</a><br>可以用於 Port Scan, SSL Weakness Cipher Scan 用途。</p>
+<p><a href="">Wireshark</a><br>蒐集底層網路傳訊封包分析用途，沒有加密的封包一目瞭然。</p>
+<p><a target="_blank" rel="noopener" href="https://www.asciitohex.com/">ASCII to Hex 字串轉換</a></p>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://github.com/sundowndev/hacker-roadmap">Github - hacker-roadmap</a><br>豐富的 PenTest Tools 介紹。</p>
+<h2 id="證照"><a href="#證照" class="headerlink" title="證照"></a>證照</h2><p><a target="_blank" rel="noopener" href="https://nicst.ey.gov.tw/Page/EB237763A1535D65?page=1&K=%E8%AD%89%E7%85%A7&M=S">科技會報 - 資通安全專業證照清單</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.mis.npu.edu.tw/zh_tw/copl/lig">澎湖科技大學資管系對於資訊證照的介紹</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/300/EC-Council-CEH%E9%A7%AD%E5%AE%A2%E6%8A%80%E8%A1%93%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CEH</a><br>EC-Council 的白帽駭客證照，難度中等，另可以搭配 <a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/1609/CEH%E5%A4%A7%E5%B8%AB%E9%9B%99%E8%AA%8D%E8%AD%89%E5%AF%A6%E6%88%B0%E8%80%83%E8%A9%A6%E7%B8%BD%E8%A4%87%E7%BF%92%E7%8F%AD">CEH-Practical</a> 進行報考。</p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/1501/EC-Council-CASE-NET%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E5%AE%89%E5%85%A8%E5%B7%A5%E7%A8%8B%E5%B8%AB%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CASE.NET</a><br>EC-Council 針對 .NET應用程式安全開發的專精課程。</p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/696/EC-Council-ECSA%E8%B3%87%E5%AE%89%E5%88%86%E6%9E%90%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">ECSA</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/1249/EC-Council-CND%E7%B6%B2%E8%B7%AF%E9%98%B2%E7%A6%A6%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CND</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/515/EC-Council-CHFI%E8%B3%87%E5%AE%89%E9%91%91%E8%AD%98%E8%AA%BF%E6%9F%A5%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CHFI</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/698/EC-Council-ECIH%E8%B3%87%E5%AE%89%E5%8D%B1%E6%A9%9F%E8%99%95%E7%90%86%E5%93%A1%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">ECIH</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/697/EC-Council-EDRP%E8%B3%87%E5%AE%89%E7%81%BD%E5%AE%B3%E5%BE%A9%E5%8E%9F%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">EDRP</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/48/CSSLP%E8%B3%87%E5%AE%89%E8%BB%9F%E9%AB%94%E9%96%8B%E7%99%BC%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CSSLP</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/47/CISSP%E8%B3%87%E5%AE%89%E7%B3%BB%E7%B5%B1%E5%B0%88%E5%AE%B6%E8%AA%8D%E8%AD%89%E8%AA%B2%E7%A8%8B">CISSP</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/1607/CompTIA-Security-%E5%9C%8B%E9%9A%9B%E7%B6%B2%E8%B7%AF%E8%B3%87%E5%AE%89%E8%AA%8D%E8%AD%89%E7%8F%AD">Secuirty+</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.uuu.com.tw/Course/Show/1672/CompTIA-Network-%E5%9C%8B%E9%9A%9B%E7%B6%B2%E8%B7%AF%E8%AA%8D%E8%AD%89%E7%8F%AD">Network+</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/Security-Note/" data-id="clg3fmalc01gos4tsd1i9cz9e" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/Python-Pandas/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python Pandas 學習筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/Microsoft-Retire-Course/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          2020 年 6 月 30 日起微軟停止的認證與課程 (MCSA, MCSD, MCSE)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

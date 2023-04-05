@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Nuts 堅果的堅持 Day2 (SQLOS) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="SQL Server 堅果的堅持學習筆記系列，不中斷的連續學習，深入 SQL Server 核心知識 🥜">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Nuts 堅果的堅持 Day2 (SQLOS)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/10/SQL-Server-Nuts-SQLOS/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="SQL Server 堅果的堅持學習筆記系列，不中斷的連續學習，深入 SQL Server 核心知識 🥜">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Nuts-Learning-Series.jpg">
+<meta property="article:published_time" content="2022-10-01T03:21:07.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="Series">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Nuts-Learning-Series.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Nuts-SQLOS" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/10/SQL-Server-Nuts-SQLOS/" class="article-date">
+  <time datetime="2022-10-01T03:21:07.000Z" itemprop="datePublished">2022-10-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Nuts 堅果的堅持 Day2 (SQLOS)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Best-Practice-Checklist"><span class="toc-text">Best Practice Checklist</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%B0%E8%AA%AA-SQLOS"><span class="toc-text">細說 SQLOS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TDS-Protocl"><span class="toc-text">TDS Protocl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Query-Processor"><span class="toc-text">Query Processor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Storage-Engine"><span class="toc-text">Storage Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQLOS"><span class="toc-text">SQLOS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#UMS"><span class="toc-text">UMS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Task-Steps"><span class="toc-text">Task Steps</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Useful-DMVs-For-TroubleShooting"><span class="toc-text">Useful DMVs For TroubleShooting</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>SQL Server 堅果的堅持學習筆記系列，不中斷的連續學習，深入 SQL Server 核心知識 🥜</p>
+<a href="/posts/2022/10/SQL-Server-Nuts-SQLOS/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Nuts-Learning-Series.jpg" alt="SQL Server Nuts Logo" width="600px" style="border-radius: 10px;">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Execution Model and Wait Statistics</p>
+<h2 id="Best-Practice-Checklist"><a href="#Best-Practice-Checklist" class="headerlink" title="Best Practice Checklist"></a>Best Practice Checklist</h2><p>掌握資料庫伺服器的 Wait statistics </p>
+<p>分析 signal waits 與 resource waits 的百分比關係</p>
+<p>學習設定 Resource Governor configuration</p>
+<h2 id="細說-SQLOS"><a href="#細說-SQLOS" class="headerlink" title="細說 SQLOS"></a>細說 SQLOS</h2><p>SQL Server 資料傳輸是透過 TDS Protocol，在傳輸層級下包含 Query Processor。Query Processor 可以在分為負責執行計畫產生、成本計算與資料表統計資訊的 Query Optimization 以及負責平行化 (Parallelism) 以及記憶體分配的 Query Execution。</p>
+<p>在往底層深入則包含 Storage Engine 及 In-Memory OLTP Engine，最後則是負責資源管理、偵測死結 (Deadlock Dectection) 與排程 (Scheduling) 的 SQLOS。</p>
+<h3 id="TDS-Protocl"><a href="#TDS-Protocl" class="headerlink" title="TDS Protocl"></a>TDS Protocl</h3><p>Tabular Data Stream (TDS)，負責在 SQL Server 與應用程式端進行溝通的協定。 TDS 在跨伺服器的的使用是可以基於網路層的傳輸協定 TCP/IP 及 Named Pipe，如果在同一台伺服器則可以用 Shared Memory。</p>
+<h3 id="Query-Processor"><a href="#Query-Processor" class="headerlink" title="Query Processor"></a>Query Processor</h3><p>負責查詢 (Query) 的優化 (Optimization) 以及執行 (Execution)，分析、優化與管理查詢所需的執行計畫 (Plan)。</p>
+<h3 id="Storage-Engine"><a href="#Storage-Engine" class="headerlink" title="Storage Engine"></a>Storage Engine</h3><p>負責 SQL Server 與 Disk 的資料存取與管理，並且負責處理交易紀錄 (Transaction Logs) 與鎖定 (Locking)。</p>
+<h3 id="SQLOS"><a href="#SQLOS" class="headerlink" title="SQLOS"></a>SQLOS</h3><p>與作業系統分工，負責管理與調度資料庫的元件 (Components)，進行資源管理、偵測死結 (Deadlock Dectection) 與排程 (Scheduling) 等工作，各資料庫元件 (Components) 不會直接向作業系統取得資源，而是經由 SQLOS 來取得資源 (例如 Memory)。在 SQLOS 的角度，包含下列三者：</p>
+<ul>
+<li>Scheduler (CPUs)</li>
+<li>Worker (Threads)</li>
+<li>Task (Thread Hnadle)</li>
+</ul>
+<h4 id="UMS"><a href="#UMS" class="headerlink" title="UMS"></a>UMS</h4><p>User Mode Scheduler 是 SQL Server 所採用的 Scheduler 演算法，屬於 cooperative scheduling 而非 preemptive scheduling。</p>
+<p>在啟用 SQL Server 時，SQLOS <strong>會啟用一組的 schedulers 藉此代表來自各 CPU 的資源</strong>以進行各種工作的處理。從簡化的角度，可以直接將 schedulers 視作 CPUs。</p>
+<p>Schedulers 負責管理 Work Threads (簡稱為 Workers)，在 SQL Server 的伺服器組態設定，可以設定 <strong>Max Worker</strong>, maximum number of workers，預設值為 0 表示 SQL Server 是根據 Schedulers 的數量來決定 Worker Trheads 最大數量。</p>
+<p>每當有 Task 被進行，會將 Task 分配給閒置的 Worker 負責，當沒有閒置的 Worker 時，Schedulers 會建立新的 Worker 因應需求。此外當 Worker 閒置 15 分鐘 或者在記憶體使用壓力的情況下，會將 Worker 消滅。每個 Worker 在 32位元架構下，使用 512 KB，在 64 位元架構下則使用 2 MB。</p>
+<p>可以將 <strong>Workers</strong> 視為作業系統 Threads，而將 <strong>Tasks</strong> 視為工作的單位，即 Threads Handle。</p>
+<h4 id="Task-Steps"><a href="#Task-Steps" class="headerlink" title="Task Steps"></a>Task Steps</h4><dl>
+  <dt>PENDING</dt>
+  <dd>Task 被創造後等待 Worker 以執行</dd>
+  <dt>RUNNING</dt>
+  <dd>Task 正在被 Scheduler 執行</dd>
+  <dt>RUNNABLE</dt>
+  <dd>等待 Scheduler 以執行</dd>
+  <dt>SUSPENDED</dt>
+  <dd>等待外部事件或資源</dd>
+  <dt>SPINLOOP</dt>
+  <dd>Task is processing 正在處理 Spinlock</dd>
+  <dt>DONE</dt>
+  <dd>Task 已完成</dd>
+</dl>
+
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_os_spinlock_stats<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>提升效能之一，減少 RUNNING time，藉由提升硬體等級，使用最好的 CPUs，減少 Tasks 數。<br>提升效能之二，減少 RUNNABLE time，增加 CPUs 資源，減少系統負擔。<br>提升效能之三，減少 SUSPENDED time，避免讓 Task 處於等待資源的狀態，是提升效能最有效的方式。</p>
+<p>根據 <a target="_blank" rel="noopener" href="https://mvp.microsoft.com/zh-tw/PublicProfile/4039717?fullName=Dmitri%20Korotkevitch">Korotkevitch</a> 所說明的 Query 方式，可以藉由 <code class="s">sys.dm_os_wait_stats</code> 觀察 SUSPENDED time 及發生的各種 wait type。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token punctuation">;</span><span class="token keyword">WITH</span> Waits
+<span class="token keyword">AS</span>
+<span class="token punctuation">(</span>
+    <span class="token keyword">SELECT</span> 
+    wait_type<span class="token punctuation">,</span> wait_time_ms<span class="token punctuation">,</span> waiting_tasks_count<span class="token punctuation">,</span>signal_wait_time_ms
+    <span class="token punctuation">,</span>wait_time_ms <span class="token operator">-</span> signal_wait_time_ms <span class="token keyword">AS</span> resource_wait_time_ms
+    <span class="token punctuation">,</span><span class="token number">100.</span> <span class="token operator">*</span> wait_time_ms <span class="token operator">/</span> <span class="token function">SUM</span><span class="token punctuation">(</span>wait_time_ms<span class="token punctuation">)</span> <span class="token keyword">OVER</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> Pct
+    <span class="token punctuation">,</span><span class="token number">100.</span> <span class="token operator">*</span> <span class="token function">SUM</span><span class="token punctuation">(</span>wait_time_ms<span class="token punctuation">)</span> <span class="token keyword">OVER</span><span class="token punctuation">(</span><span class="token keyword">ORDER</span> <span class="token keyword">BY</span> wait_time_ms <span class="token keyword">DESC</span><span class="token punctuation">)</span> <span class="token operator">/</span>
+        <span class="token keyword">NULLIF</span><span class="token punctuation">(</span><span class="token function">SUM</span><span class="token punctuation">(</span>wait_time_ms<span class="token punctuation">)</span> <span class="token keyword">OVER</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> RunningPct
+    <span class="token punctuation">,</span>ROW_NUMBER<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">OVER</span><span class="token punctuation">(</span><span class="token keyword">ORDER</span> <span class="token keyword">BY</span> wait_time_ms <span class="token keyword">DESC</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> RowNum
+    <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_os_wait_stats <span class="token keyword">WITH</span> <span class="token punctuation">(</span>NOLOCK<span class="token punctuation">)</span>
+    <span class="token keyword">WHERE</span> 
+    wait_type <span class="token operator">NOT</span> <span class="token operator">IN</span> <span class="token comment">/* 移除不需要觀察的系統等待資訊 */</span>
+    <span class="token punctuation">(</span>N<span class="token string">'BROKER_EVENTHANDLER'</span><span class="token punctuation">,</span>N<span class="token string">'BROKER_RECEIVE_WAITFOR'</span><span class="token punctuation">,</span>N<span class="token string">'BROKER_TASK_STOP'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'BROKER_TO_FLUSH'</span><span class="token punctuation">,</span>N<span class="token string">'BROKER_TRANSMITTER'</span><span class="token punctuation">,</span>N<span class="token string">'CHECKPOINT_QUEUE'</span><span class="token punctuation">,</span>N<span class="token string">'CHKPT'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'CLR_SEMAPHORE'</span><span class="token punctuation">,</span>N<span class="token string">'CLR_AUTO_EVENT'</span><span class="token punctuation">,</span>N<span class="token string">'CLR_MANUAL_EVENT'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'DBMIRROR_DBM_EVENT'</span><span class="token punctuation">,</span>N<span class="token string">'DBMIRROR_EVENTS_QUEUE'</span><span class="token punctuation">,</span>N<span class="token string">'DBMIRROR_WORKER_QUEUE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'DBMIRRORING_CMD'</span><span class="token punctuation">,</span>N<span class="token string">'DIRTY_PAGE_POLL'</span><span class="token punctuation">,</span>N<span class="token string">'DISPATCHER_QUEUE_SEMAPHORE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'EXECSYNC'</span><span class="token punctuation">,</span>N<span class="token string">'FSAGENT'</span><span class="token punctuation">,</span>N<span class="token string">'FT_IFTS_SCHEDULER_IDLE_WAIT'</span><span class="token punctuation">,</span>N<span class="token string">'FT_IFTSHC_MUTEX'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'HADR_CLUSAPI_CALL'</span><span class="token punctuation">,</span>N<span class="token string">'HADR_FILESTREAM_IOMGR_IOCOMPLETION'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'HADR_LOGCAPTURE_WAIT'</span><span class="token punctuation">,</span>N<span class="token string">'HADR_NOTIFICATION_DEQUEUE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'HADR_TIMER_TASK'</span><span class="token punctuation">,</span>N<span class="token string">'HADR_WORK_QUEUE'</span><span class="token punctuation">,</span>N<span class="token string">'KSOURCE_WAKEUP'</span><span class="token punctuation">,</span>N<span class="token string">'LAZYWRITER_SLEEP'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'LOGMGR_QUEUE'</span><span class="token punctuation">,</span>N<span class="token string">'ONDEMAND_TASK_QUEUE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PARALLEL_REDO_WORKER_WAIT_WORK'</span><span class="token punctuation">,</span>N<span class="token string">'PARALLEL_REDO_DRAIN_WORKER'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PARALLEL_REDO_LOG_CACHE'</span><span class="token punctuation">,</span>N<span class="token string">'PARALLEL_REDO_TRAN_LIST'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PARALLEL_REDO_WORKER_SYNC'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_SP_SERVER_DIAGNOSTICS'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_LIBRARYOPS'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_COMOPS'</span><span class="token punctuation">,</span> N<span class="token string">'PREEMPTIVE_OS_PIPEOPS'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_GENERICOPS'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_VERIFYTRUST'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_FILEOPS'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_DEVICEOPS'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_OS_QUERYREGISTRY'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_XE_CALLBACKEXECUTE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_XE_DISPATCHER'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_XE_GETTARGETSTATE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_XE_SESSIONCOMMIT'</span><span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_XE_TARGETINIT'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PREEMPTIVE_XE_TARGETFINALIZE'</span><span class="token punctuation">,</span>N<span class="token string">'PWAIT_ALL_COMPONENTS_INITIALIZED'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'PWAIT_DIRECTLOGCONSUMER_GETNEXT'</span><span class="token punctuation">,</span>N<span class="token string">'PWAIT_EXTENSIBILITY_CLEANUP_TASK'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'QDS_PERSIST_TASK_MAIN_LOOP_SLEEP'</span><span class="token punctuation">,</span>N<span class="token string">'QDS_ASYNC_QUEUE'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'REQUEST_FOR_DEADLOCK_SEARCH'</span><span class="token punctuation">,</span>N<span class="token string">'RESOURCE_QUEUE'</span><span class="token punctuation">,</span>N<span class="token string">'SERVER_IDLE_CHECK'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'SLEEP_BPOOL_FLUSH'</span><span class="token punctuation">,</span>N<span class="token string">'SLEEP_DBSTARTUP'</span><span class="token punctuation">,</span>N<span class="token string">'SLEEP_DCOMSTARTUP'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'SLEEP_MASTERDBREADY'</span><span class="token punctuation">,</span>N<span class="token string">'SLEEP_MASTERMDREADY'</span><span class="token punctuation">,</span>N<span class="token string">'SLEEP_MASTERUPGRADED'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'SLEEP_MSDBSTARTUP'</span><span class="token punctuation">,</span>N<span class="token string">'SLEEP_SYSTEMTASK'</span><span class="token punctuation">,</span>N<span class="token string">'SLEEP_TASK'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'SLEEP_TEMPDBSTARTUP'</span><span class="token punctuation">,</span>N<span class="token string">'SNI_HTTP_ACCEPT'</span><span class="token punctuation">,</span>N<span class="token string">'SOS_WORK_DISPATCHER'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'SP_SERVER_DIAGNOSTICS_SLEEP'</span><span class="token punctuation">,</span>N<span class="token string">'SQLTRACE_BUFFER_FLUSH'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'SQLTRACE_INCREMENTAL_FLUSH_SLEEP'</span><span class="token punctuation">,</span>N<span class="token string">'SQLTRACE_WAIT_ENTRIES'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'STARTUP_DEPENDENCY_MANAGER'</span><span class="token punctuation">,</span>N<span class="token string">'WAIT_FOR_RESULTS'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'WAITFOR'</span><span class="token punctuation">,</span>N<span class="token string">'WAITFOR_TASKSHUTDOWN'</span><span class="token punctuation">,</span>N<span class="token string">'WAIT_XTP_HOST_WAIT'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'WAIT_XTP_OFFLINE_CKPT_NEW_LOG'</span><span class="token punctuation">,</span>N<span class="token string">'WAIT_XTP_CKPT_CLOSE'</span><span class="token punctuation">,</span>N<span class="token string">'WAIT_XTP_RECOVERY'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'XE_BUFFERMGR_ALLPROCESSED_EVENT'</span><span class="token punctuation">,</span>N<span class="token string">'XE_DISPATCHER_JOIN'</span><span class="token punctuation">,</span>N<span class="token string">'XE_DISPATCHER_WAIT'</span>
+    <span class="token punctuation">,</span>N<span class="token string">'XE_LIVE_TARGET_TVF'</span><span class="token punctuation">,</span>N<span class="token string">'XE_TIMER_EVENT'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span>
+    w1<span class="token punctuation">.</span>wait_type <span class="token keyword">AS</span> <span class="token punctuation">[</span>Wait <span class="token keyword">Type</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span>w1<span class="token punctuation">.</span>waiting_tasks_count <span class="token keyword">AS</span> <span class="token punctuation">[</span>Wait Count<span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>wait_time_ms <span class="token operator">/</span> <span class="token number">1000.0</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Wait <span class="token keyword">Time</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>wait_time_ms <span class="token operator">/</span> w1<span class="token punctuation">.</span>waiting_tasks_count<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Avg Wait <span class="token keyword">Time</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>signal_wait_time_ms <span class="token operator">/</span> <span class="token number">1000.0</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Signal Wait <span class="token keyword">Time</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>signal_wait_time_ms <span class="token operator">/</span> w1<span class="token punctuation">.</span>waiting_tasks_count<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Avg Signal Wait <span class="token keyword">Time</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>resource_wait_time_ms <span class="token operator">/</span> <span class="token number">1000.0</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Resource Wait <span class="token keyword">Time</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>resource_wait_time_ms <span class="token operator">/</span> w1<span class="token punctuation">.</span>waiting_tasks_count<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Avg Resource Wait <span class="token keyword">Time</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>Pct<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span><span class="token keyword">Percent</span><span class="token punctuation">]</span>
+    <span class="token punctuation">,</span><span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> w1<span class="token punctuation">.</span>RunningPct<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>Running <span class="token keyword">Percent</span><span class="token punctuation">]</span>
+<span class="token keyword">FROM</span>
+    Waits w1
+<span class="token keyword">WHERE</span>
+    w1<span class="token punctuation">.</span>RunningPct <span class="token operator">&lt;=</span> <span class="token number">99</span> <span class="token operator">OR</span> w1<span class="token punctuation">.</span>RowNum <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+    w1<span class="token punctuation">.</span> RunningPct  
+<span class="token keyword">OPTION</span> <span class="token punctuation">(</span>RECOMPILE<span class="token punctuation">,</span> MAXDOP <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Useful-DMVs-For-TroubleShooting"><a href="#Useful-DMVs-For-TroubleShooting" class="headerlink" title="Useful DMVs For TroubleShooting"></a>Useful DMVs For TroubleShooting</h3><p><code class="watch">sys.dm_os_wait_stats</code></p>
+<p>藉由觀察 signal wait time (RUNNABLE wait) 與 resource wait time (SUSPEND wait) 的比率，一般而言 signal wait time 會屆於 10% 至 15%。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+	<span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">100.0</span> <span class="token operator">*</span> <span class="token function">SUM</span> <span class="token punctuation">(</span>signal_wait_time_ms<span class="token punctuation">)</span> 
+		<span class="token operator">/</span> <span class="token function">SUM</span><span class="token punctuation">(</span>wait_time_ms<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span><span class="token operator">%</span> Signal waits<span class="token punctuation">]</span>
+	<span class="token punctuation">,</span><span class="token keyword">CONVERT</span> <span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">100.0</span> <span class="token operator">*</span> <span class="token function">sum</span><span class="token punctuation">(</span>wait_time_ms <span class="token operator">-</span> signal_wait_time_ms<span class="token punctuation">)</span> 
+		<span class="token operator">/</span> <span class="token function">SUM</span><span class="token punctuation">(</span>wait_time_ms<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span><span class="token operator">%</span> Resource waits<span class="token punctuation">]</span>
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_os_wait_stats <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">sys.dm_exec_session_wait_stats</code></p>
+<p>從 Session 的層級，進行各種等待的統計，當 Session 被結束，統計就會歸零。欄位與 <strong>sys.dm_os_wait_stats</strong> 相似，同樣可以觀察 signal wait time 與 resource wait time 的比率。</p>
+<p><code class="watch">sys.dm_os_waiting_tasks</code></p>
+<p>列出所有正在 <span class="keywords">SUSPENDED</span> 的 Tasks，可以用於處理資料庫伺服器效能不佳以及確認查詢的 Blocking 情形。</p>
+<p><code class="watch">sys.dm_exec_request</code></p>
+<p>列出所有執行中的 Request，可以藉由欄位 <strong>sql_handle</strong> 以及 <strong>plan_handle</strong> 取得 Request 的執行內容。</p>
+<p><code class="watch">sys.dm_os_schedulers</code></p>
+<p>觀察 SQL Server Schedulers (CPUs) 的資訊，同時可以藉由 parent_node_id 來觀察伺服器的 NUMA 節點數。可以觀察 current_tasks_count 所代表的 RUNNING 以及 runnable_tasks_count 所代表的 RUNNABLE Task 數。</p>
+<hr>
+<p>主動清除統計資料，而不需要重新啟動 SQL Server Service 的方式：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SQLPERF<span class="token punctuation">(</span><span class="token string">'sys.dm_os_wait_stats'</span><span class="token punctuation">,</span> CLEAR<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.tenlong.com.tw/products/9781098101923">SQL Server Advanced Troubleshooting and Performance Tuning: Best Practices and Techniques</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.tenlong.com.tw/products/9781803242620">SQL Server Query Tuning and Optimization: Optimize Microsoft SQL Server 2022 queries and applications</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.brentozar.com/blog/">Brent OZAR</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/10/SQL-Server-Nuts-SQLOS/" data-id="clg3fmaji01a4s4ts5u6j3sh7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Series/" rel="tag">Series</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/09/SQL-Server-T-SQL-Pivot/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server T-SQL Pivot</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/10/Document-For-Newbie/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          讓文件營造友善的共同作業環境 (Documents for newbies)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

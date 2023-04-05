@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Ownership Chaining | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server Ownership Chaining 的原理以及應用，並說明如何確認 SQL Server Objects Ownership。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Ownership Chaining">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/11/SQL-Server-Ownership-Chaining/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server Ownership Chaining 的原理以及應用，並說明如何確認 SQL Server Objects Ownership。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Ownership-Chaning.png">
+<meta property="og:image" content="https://i.imgur.com/ungc6RI.png">
+<meta property="og:image" content="https://i.imgur.com/Eiii8JG.png">
+<meta property="og:image" content="https://i.imgur.com/uUPjvjE.png">
+<meta property="og:image" content="https://i.imgur.com/GkWpCxa.png">
+<meta property="og:image" content="https://i.imgur.com/qZntp7j.png">
+<meta property="og:image" content="https://i.imgur.com/NF4Ib7b.png">
+<meta property="og:image" content="https://i.imgur.com/j6quB49.png">
+<meta property="og:image" content="https://i.imgur.com/N5JNA2j.png">
+<meta property="og:image" content="https://i.imgur.com/8F9WiJc.png">
+<meta property="article:published_time" content="2021-11-01T12:31:20.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Ownership-Chaining" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/11/SQL-Server-Ownership-Chaining/" class="article-date">
+  <time datetime="2021-11-01T12:31:20.000Z" itemprop="datePublished">2021-11-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Ownership Chaining
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D-Schemas-Table-Ownership"><span class="toc-text">確認 Schemas, Table Ownership</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D-Logins-Users-%E7%9A%84-Script"><span class="toc-text">確認 Logins, Users 的 Script</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%87%89%E7%94%A8-Ownership-Chaining"><span class="toc-text">應用 Ownership Chaining</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E9%A9%97%E8%AD%89%E8%88%87%E8%A3%9C%E5%85%85"><span class="toc-text">後續驗證與補充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Change-Table-Authorization"><span class="toc-text">Change Table Authorization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Change-Table-Schema"><span class="toc-text">Change Table Schema</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Grant-Permissions-to-dbo-After-Authorization-by-U2"><span class="toc-text">Grant Permissions to dbo After Authorization by U2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server Ownership Chaining 的原理以及應用，並說明如何確認 SQL Server Objects Ownership。</p>
+<a href="/posts/2021/11/SQL-Server-Ownership-Chaining/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Ownership Chaining 是指當 Stored Procedures Object 的 Ownership 與 Table Object 的 Ownership 相同時（例如 Ownership 都是 dbo），對於沒有 Select 資料表權限的 User 而言，仍可以透過 Stored Procedures 來完成 Select。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">USER</span> U1 WITHOUT LOGIN
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> T1
+  <span class="token punctuation">(</span>
+      C1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+      C2 <span class="token keyword">INT</span>
+  <span class="token punctuation">)</span>
+
+<span class="token keyword">Insert</span> T1 <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+GO
+
+<span class="token keyword">CREATE</span> <span class="token operator">OR</span> <span class="token keyword">ALTER</span> <span class="token keyword">proc</span> SP
+<span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> C1 <span class="token keyword">FROM</span> T1
+
+<span class="token keyword">GRANT</span> <span class="token keyword">EXEC</span> <span class="token keyword">ON</span> SP <span class="token keyword">TO</span> U1
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span>
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User,* FROM T1'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span> <span class="token comment">-- Permission Deny</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>一般而言 Ownership 都會是 dbo，除非刻意將 Table Ownership 進行設定，這樣就會打破 Ownership Chaining。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">USER</span> U2 WITHOUT LOGIN
+<span class="token keyword">ALTER</span> <span class="token keyword">Authorization</span> <span class="token keyword">on</span> T1 <span class="token keyword">TO</span> U2
+
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span>
+
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'GRANT SELECT ON T1 TO U1'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U2'</span>
+
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT USER; EXEC SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span>
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT USER,* FROM T1'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="確認-Schemas-Table-Ownership"><a href="#確認-Schemas-Table-Ownership" class="headerlink" title="確認 Schemas, Table Ownership"></a>確認 Schemas, Table Ownership</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- Check Schemas Ownership</span>
+<span class="token keyword">SELECT</span> S<span class="token punctuation">.</span>name <span class="token keyword">AS</span> schema_name<span class="token punctuation">,</span>USER_NAME<span class="token punctuation">(</span>S<span class="token punctuation">.</span>principal_id<span class="token punctuation">)</span> <span class="token keyword">AS</span> owner_name
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>schemas <span class="token keyword">AS</span> S
+
+<span class="token comment">-- Check Table Ownership</span>
+<span class="token keyword">SELECT</span> T<span class="token punctuation">.</span>name <span class="token keyword">AS</span> table_name<span class="token punctuation">,</span>
+USER_NAME<span class="token punctuation">(</span>T<span class="token punctuation">.</span>principal_id<span class="token punctuation">)</span> <span class="token keyword">AS</span> owner_name<span class="token punctuation">,</span>
+SCHEMA_NAME<span class="token punctuation">(</span>T<span class="token punctuation">.</span>schema_id<span class="token punctuation">)</span> <span class="token keyword">AS</span> schema_name
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span><span class="token keyword">tables</span> <span class="token keyword">AS</span> T<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="確認-Logins-Users-的-Script"><a href="#確認-Logins-Users-的-Script" class="headerlink" title="確認 Logins, Users 的 Script"></a>確認 Logins, Users 的 Script</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>syslogins
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>sysusers
+<span class="token keyword">SELECT</span> <span class="token keyword">User</span><span class="token punctuation">,</span> SUSER_SNAME<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> DB_NAME<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="應用-Ownership-Chaining"><a href="#應用-Ownership-Chaining" class="headerlink" title="應用 Ownership Chaining"></a>應用 Ownership Chaining</h3><p><img src="/assets/SQL-Server-Ownership-Chaning.png" alt="左圖為 Ownership Chaining；右圖為 Ownership Chaining Broken"></p>
+<p>藉由 Ownership Chaining 能夠嚴謹的結合資料庫與應用程式開發設計，讓開發者遵循一致的程式設計模式，形成嚴謹的資料存取架構。其原則在於任何應用程式對於資料庫的存取，都是透過 Stored Procedures 來完成。</p>
+<h2 id="後續驗證與補充"><a href="#後續驗證與補充" class="headerlink" title="後續驗證與補充"></a>後續驗證與補充</h2><h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> dbo<span class="token punctuation">.</span>T1
+<span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> U3<span class="token punctuation">.</span>T1
+<span class="token keyword">DROP</span> <span class="token keyword">SCHEMA</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> U3
+<span class="token keyword">DROP</span> <span class="token keyword">USER</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> U1
+<span class="token keyword">DROP</span> <span class="token keyword">USER</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> U2
+<span class="token keyword">DROP</span> <span class="token keyword">USER</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> U3
+<span class="token keyword">DROP</span> <span class="token keyword">PROC</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> SP
+<span class="token keyword">DROP</span> <span class="token keyword">PROC</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> SP2
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> T1
+  <span class="token punctuation">(</span>
+      C1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+      C2 <span class="token keyword">INT</span>
+  <span class="token punctuation">)</span>
+
+<span class="token keyword">Insert</span> T1 <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">USER</span> U1 WITHOUT LOGIN
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token operator">OR</span> <span class="token keyword">ALTER</span> <span class="token keyword">proc</span> SP
+<span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> C1 <span class="token keyword">FROM</span> T1
+GO
+<span class="token keyword">GRANT</span> <span class="token keyword">EXEC</span> <span class="token keyword">ON</span> SP <span class="token keyword">TO</span> U1
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/ungc6RI.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User,* FROM T1'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Msg 229, Level 14, State 5, Line 53
+The SELECT permission was denied on the object 'T1', 
+database 'MarketDev', schema 'dbo'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://i.imgur.com/Eiii8JG.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span> sp_table_privileges <span class="token string">'T1'</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/uUPjvjE.png"></p>
+<h3 id="Change-Table-Authorization"><a href="#Change-Table-Authorization" class="headerlink" title="Change Table Authorization"></a>Change Table Authorization</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">USER</span> U2 WITHOUT LOGIN
+<span class="token keyword">ALTER</span> <span class="token keyword">Authorization</span> <span class="token keyword">on</span> T1 <span class="token keyword">TO</span> U2
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Msg 229, Level 14, State 5, Procedure SP, Line 3 [Batch Start Line 58]
+The SELECT permission was denied on the object 'T1', 
+database 'MarketDev', schema 'dbo'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/GkWpCxa.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">Authorization</span> <span class="token keyword">on</span> T1 <span class="token keyword">TO</span> dbo
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><strong>It works again.</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">SCHEMA</span> U3
+<span class="token keyword">CREATE</span> <span class="token keyword">USER</span> U3 WITHOUT LOGIN
+<span class="token keyword">ALTER</span> <span class="token keyword">AUTHORIZATION</span> <span class="token keyword">ON</span> <span class="token keyword">SCHEMA</span>::<span class="token punctuation">[</span>U3<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>U3<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Change-Table-Schema"><a href="#Change-Table-Schema" class="headerlink" title="Change Table Schema"></a>Change Table Schema</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">SCHEMA</span> U3 TRANSFER dbo<span class="token punctuation">.</span>T1<span class="token punctuation">;</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Msg 208, Level 16, State 1, Procedure SP, Line 3 [Batch Start Line 71]
+Invalid object name 'dbo.T1'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token operator">OR</span> <span class="token keyword">ALTER</span> <span class="token keyword">proc</span> SP2
+<span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> C1 <span class="token keyword">FROM</span> U3<span class="token punctuation">.</span>T1
+GO
+<span class="token keyword">GRANT</span> <span class="token keyword">EXEC</span> <span class="token keyword">ON</span> SP2 <span class="token keyword">TO</span> U1
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP2'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Even schema is not <strong>dbo</strong>, Ownership Chaning still works.</p>
+<p><img src="https://i.imgur.com/qZntp7j.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span> sp_table_privileges <span class="token string">'T1'</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/NF4Ib7b.png"></p>
+<h3 id="Grant-Permissions-to-dbo-After-Authorization-by-U2"><a href="#Grant-Permissions-to-dbo-After-Authorization-by-U2" class="headerlink" title="Grant Permissions to dbo After Authorization by U2"></a>Grant Permissions to dbo After Authorization by U2</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> T1 <span class="token keyword">TO</span> dbo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Cannot grant, deny, or revoke permissions to sa, dbo, 
+entity owner, information_schema, sys, or yourself.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>結論：真正會打破 Ownership Chaining 的是 <strong>GRANTEE</strong>，Table Owner 與 Schema 是不是 dbo 並不重要，重要的是 GRANTEE 是不是 dbo。</p>
+<p>如果是的話，User 只要有 EXEC 對於 StoredProcedures 的權限，StoredProcedures 下面所需的關聯物件如果 GRANTEE 為 dbo 則可以正常使用。</p>
+<p>驗證：</p>
+<p>SCHEMA: <strong>Weired</strong><br>SCHEMA Owner: <strong>Weired1</strong><br>StoredProcedure: SP_W<br>SP_W Owner: <strong>Weired2</strong><br>U1 with Execute to SP_W</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">USER</span> Weired1 WITHOUT LOGIN
+<span class="token keyword">CREATE</span> <span class="token keyword">SCHEMA</span> Weired
+<span class="token keyword">ALTER</span> <span class="token keyword">AUTHORIZATION</span> <span class="token keyword">ON</span> <span class="token keyword">SCHEMA</span>::<span class="token punctuation">[</span>Weired<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>Weired1<span class="token punctuation">]</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> Weired<span class="token punctuation">.</span>T2
+  <span class="token punctuation">(</span>
+      C1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+      C2 <span class="token keyword">INT</span>
+  <span class="token punctuation">)</span>
+<span class="token keyword">Insert</span> Weired<span class="token punctuation">.</span>T2 <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此時 T2 的 GRANTEE 是屬於 Weired1</p>
+<p><img src="https://i.imgur.com/j6quB49.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">PROC</span> SP_W
+<span class="token keyword">AS</span>
+	<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Weired<span class="token punctuation">.</span>T2
+GO
+<span class="token keyword">GRANT</span> <span class="token keyword">EXEC</span> <span class="token keyword">ON</span> SP_W <span class="token keyword">TO</span> U1
+<span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP_W'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>U1 執行 SP_W 會因權限不足而失敗</strong></p>
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Msg 229, Level 14, State 5, Procedure SP_W, Line 3 [Batch Start Line 114]
+The SELECT permission was denied on the object 'T2', 
+database 'MarketDev', schema 'Weired'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>將 T2 的 GRANTEE 授權給 dbo</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">Authorization</span> <span class="token keyword">on</span> Weired<span class="token punctuation">.</span>T2 <span class="token keyword">TO</span> dbo
+<span class="token keyword">EXEC</span> sp_table_privileges <span class="token string">'T2'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/N5JNA2j.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span><span class="token punctuation">(</span><span class="token string">'SELECT User;Exec SP_W'</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">USER</span> <span class="token operator">=</span> <span class="token string">'U1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/8F9WiJc.png"></p>
+<p>這次就可以順利查到結果囉，結論重點是 StoredProcedures 所使用到的物件之 GRANTEE 是否屬於 dbo，如果不是問題可大。而這個原因是來自於 SCHEMA Owner 不是 dbo，因此最好將 SCHEMA Owner 都保持在 dbo 上，除非這個 SCHEMA 有強烈的排他使用性，刻意要打破 Owership Chaining。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.mssqltips.com/sqlservertip/6394/understanding-sql-server-ownership-chaining/">Understanding SQL Server Ownership Chaining</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/11/SQL-Server-Ownership-Chaining/" data-id="clg3fmajn01ahs4tshvta8bup" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/10/Windows-11-Installation-On-Vmware/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用 VMware 安裝 Windows 11</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/11/SQL-Server-Forget-SA-Password/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server 忘記 / 重設 / 重置 / 無法登入 SA 密碼
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

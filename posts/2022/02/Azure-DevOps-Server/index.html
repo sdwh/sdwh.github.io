@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure DevOps Server License &amp; Price 授權與計價方式 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="比較在地端建置 Azure DevOps Server 的計價方式並與雲端使用 Azure DevOps Services 相比，同時說明 Vistual Studio Subscription 能夠為 Azure DevOps 使用所帶來的優勢。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure DevOps Server License &amp; Price 授權與計價方式">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/Azure-DevOps-Server/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="比較在地端建置 Azure DevOps Server 的計價方式並與雲端使用 Azure DevOps Services 相比，同時說明 Vistual Studio Subscription 能夠為 Azure DevOps 使用所帶來的優勢。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-DevOps-Logo.png">
+<meta property="article:published_time" content="2022-02-14T05:45:01.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-DevOps-Logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-DevOps-Server" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/Azure-DevOps-Server/" class="article-date">
+  <time datetime="2022-02-14T05:45:01.000Z" itemprop="datePublished">2022-02-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure DevOps Server License &amp; Price 授權與計價方式
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%88%E6%AC%8A"><span class="toc-text">授權</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Microsoft-Visual-Studio-Licensing"><span class="toc-text">Microsoft Visual Studio Licensing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#General-Guidance-for-Licensing-Azure-DevOps-Server"><span class="toc-text">General Guidance for Licensing Azure DevOps Server</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E9%9C%80%E8%A6%81-User-CAL-Device-CAL-%E7%9A%84%E6%83%85%E5%BD%A2"><span class="toc-text">不需要 User CAL &#x2F; Device CAL 的情形</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%8D%E7%89%88%E4%BD%BF%E7%94%A8-Downgrade-Rights"><span class="toc-text">降版使用 Downgrade Rights</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Build-Server"><span class="toc-text">Build Server</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Connecting-Azure-DevOps-to-a-Local-Build-Server"><span class="toc-text">Connecting Azure DevOps to a Local Build Server</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Azure-Build-Services"><span class="toc-text">Azure Build Services</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Licensing-Visual-Studio-and-Azure-DevOps"><span class="toc-text">Licensing Visual Studio and Azure DevOps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%A8%88%E5%83%B9"><span class="toc-text">使用計價</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E8%BB%9F%E6%8E%88%E6%AC%8A%E9%A1%9E%E5%9E%8B%E6%A6%82%E8%AB%96"><span class="toc-text">微軟授權類型概論</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B5%90%E8%AB%96"><span class="toc-text">結論</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>比較在地端建置 Azure DevOps Server 的計價方式並與雲端使用 Azure DevOps Services 相比，同時說明 Vistual Studio Subscription 能夠為 Azure DevOps 使用所帶來的優勢。</p>
+<a href="/posts/2022/02/Azure-DevOps-Server/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-DevOps-Logo.png" alt="logo" width="500px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="授權"><a href="#授權" class="headerlink" title="授權"></a>授權</h2><p>這邊來一張簡單的圖片，說明 Server, Database, Build Agent, Deployment, User 是否需要授權 🍧</p>
+<h3 id="Microsoft-Visual-Studio-Licensing"><a href="#Microsoft-Visual-Studio-Licensing" class="headerlink" title="Microsoft Visual Studio Licensing"></a>Microsoft Visual Studio Licensing</h3><p>2020 Aug <a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/wp-content/uploads/2020/09/Visual-Studio-Licensing-Whitepaper-Aug-2020.pdf">Microsoft Visual Studio Licensing</a></p>
+<p>Azure DevOps 的授權模式為 Server/CAL licensing model，換言之每一個執行 Azure DevOps instance 的 Server 以及存取 Azure DevOps 的 (User 或者 Device) 都必須具備授權。</p>
+<p><a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/zh-hant/license-terms/">Visual Studio 授權目錄</a></p>
+<h3 id="General-Guidance-for-Licensing-Azure-DevOps-Server"><a href="#General-Guidance-for-Licensing-Azure-DevOps-Server" class="headerlink" title="General Guidance for Licensing Azure DevOps Server"></a>General Guidance for Licensing Azure DevOps Server</h3><p>Azure DevOps 環境中的每一台伺服器都需要 Azure DevOps Server License (p23)</p>
+<p>每一份 Azure DevOps Server license 可以在一台實體機或虛擬機執行一份 Azure DevOps Server Instance (p25)</p>
+<p>可以使用 SQL Server 2019 Standard 一個 Instance 授權供 Azure DevOps Server 授權使用 (p24)</p>
+<p>基於 Azure DevOps Server License 下使用的 SQL Server Reporting Services 被使用不需要額外的 SQL Server CAL (p24)</p>
+<p>若除非特定情況，否則每一個使用者都需要授權，Device CAL 或者 User CAL (p25)</p>
+<p>Azure DevOps Server Express 是<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/azure/devops/server/download/azuredevopsserver?view=azure-devops">免費版本</a>，但僅限 5 個以下的使用者，第 6 個需要付費。</p>
+<p>使用 Test Management 不僅需要 User CAL 還需要額外的 Visual Studio Subscription 才能夠使用 (p25)</p>
+<p>Device CAL 雖然允許多個使用者共用一個裝置授權的方式使用 Azure DevOps Server，但一次僅能有一個使用者正在使用 (p26)</p>
+<p>Azure DevOps Server 授權包含允許 Release Management 一個 concurrent deployment 進行 deploy 作業。擁有每個 Visual Studio Subscription 可以有額外的每個 concurrent deployment，或可以用購買 Private Pipelines 的方式增加 concurrent deployment。</p>
+<h4 id="不需要-User-CAL-Device-CAL-的情形"><a href="#不需要-User-CAL-Device-CAL-的情形" class="headerlink" title="不需要 User CAL / Device CAL 的情形"></a>不需要 User CAL / Device CAL 的情形</h4><ul>
+<li>僅對 Work Itesm CRUD</li>
+<li>存取 Azure DevOps Server Reports</li>
+<li>兩個使用者上限、僅進行 Projects 以及 Project Collections 等作業的系統管理者</li>
+<li>五個使用者上限，從零售管道 (Retail Channel) 所購買的 Azure DevOps Server 授權</li>
+<li>Release Pipelines 階段負責審核允許 (Providing Approval) 的使用者 (Stakeholder)</li>
+</ul>
+<h3 id="降版使用-Downgrade-Rights"><a href="#降版使用-Downgrade-Rights" class="headerlink" title="降版使用 Downgrade Rights"></a>降版使用 Downgrade Rights</h3><p>允許使用降早版本的 Azure DevOps Server 或 TFS Server 並且搭配 SQL Server Standard 2016 作為獨立提供 Azure DevOps Server 所使用的資料庫。降版使用的權限包含 User CAL 的對應。</p>
+<p>其他幾項不需要的情形比較少見 (Microsoft System Center Operation Manager, TFS Feedback clients …)，就不提了，詳細可以參考文件</p>
+<h3 id="Build-Server"><a href="#Build-Server" class="headerlink" title="Build Server"></a>Build Server</h3><div class="article-blockquote">
+
+<p>The Azure DevOps Server license also includes certain additional software which can be run on any number of machines (physical or virtual). Additional software includes:</p>
+<ul>
+<li>Team Foundation Build Services (for running a build server)</li>
+<li>Team Explorer (for installing with Visual Studio to connect to Azure DevOps Server) </li>
+</ul>
+<div style="text-align:right">Microsoft Visual Studio Licensing 2020 Aug p.23</div>
+</div>
+
+<p>摘要：Azure DevOps Server 提供的授權包含不限安裝機器數量的 Team Foundation Build Services 安裝使用</p>
+<h4 id="Connecting-Azure-DevOps-to-a-Local-Build-Server"><a href="#Connecting-Azure-DevOps-to-a-Local-Build-Server" class="headerlink" title="Connecting Azure DevOps to a Local Build Server"></a>Connecting Azure DevOps to a Local Build Server</h4><div class="article-blockquote">
+
+<p>It is possible to set up your Azure DevOps account to run builds on a local server running Team Foundation Build Services.</p>
+<p>The licensing requirements for the server running the Build server are no different whether it is receiving commands from a local Azure DevOps Server or from Azure DevOps—at a minimum it requires a Azure DevOps Server license, an operating system license (plus potentially CALs), and all users whose actions cause builds to run require Azure DevOps Server CALs. Therefore, users who check in code to Azure DevOps which in turn kicks off a build to the local Build server need Azure DevOps Server CALs. A Azure DevOps Server CAL is provided for each paid Azure DevOps user. </p>
+<div style="text-align:right">Microsoft Visual Studio Licensing 2020 Aug p.28</div>
+</div>
+
+<p>摘要：使用 Local Build Server 符合的前提為最少一份 Azure DevOps Server 授權、Azure DevoOps Server 所處伺服器的作業系統授權，以及相關觸發 Build 的每一位 User CAL 授權。</p>
+<h4 id="Azure-Build-Services"><a href="#Azure-Build-Services" class="headerlink" title="Azure Build Services"></a>Azure Build Services</h4><div class="article-blockquote">
+
+<p>Build automation functionality in Azure DevOps Server enables the software to run automated builds on the same server or a separate system, along with the ability to run quality or performance tests as part of the build process.</p>
+<p>Implementing a “build server” is accomplished using the build agent which is included with Azure DevOps Server. The build server can be separate from the server running Azure DevOps Server, and no Azure DevOps Server CAL or server license is required for the build server.</p>
+<div style="text-align:right">Microsoft Visual Studio Licensing 2020 Aug p.29</div>
+</div>
+
+<p>摘要：安裝在 Azure DevOps Server 伺服器本身或其他裝置上，藉由 agent 進行 build, quality or performance 測試，該伺服器稱為 Build Server，Build Server 所需要的授權包含於 Azure DevOps Server 授權當中，不需要額外的 User CAL 或者 Server License。</p>
+<h3 id="Licensing-Visual-Studio-and-Azure-DevOps"><a href="#Licensing-Visual-Studio-and-Azure-DevOps" class="headerlink" title="Licensing Visual Studio and Azure DevOps"></a>Licensing Visual Studio and Azure DevOps</h3><p><a target="_blank" rel="noopener" href="https://www.licensingschool.co.uk/wp-content/uploads/2021/06/Licensing-Visual-Studio-and-Azure-DevOps-v21.40.pdf">Licensing Visual Studio and Azure DevOps</a></p>
+<h3 id="使用計價"><a href="#使用計價" class="headerlink" title="使用計價"></a>使用計價</h3><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>價格</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Azure DevOps Server</td>
+<td>19,818</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure DevOps User CAL</td>
+<td>112,524</td>
+<td>五人</td>
+</tr>
+<tr>
+<td>Azure DevOps Device CAL</td>
+<td>98,306</td>
+<td>五裝置</td>
+</tr>
+<tr>
+<td>SQL Server Standard</td>
+<td>139,434</td>
+<td>2Core 不含 SA</td>
+</tr>
+<tr>
+<td>Azure DevOps Server Express</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td>SQL Server Express</td>
+<td>0</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="微軟授權類型概論"><a href="#微軟授權類型概論" class="headerlink" title="微軟授權類型概論"></a>微軟授權類型概論</h2><p><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/licensing/product-licensing/client-access-license">Client Access Licenses and Management Licenses</a></p>
+<p>Microsoft Licensing 關於 Azure DevOps Server 授權資訊的參考 <a target="_blank" rel="noopener" href="https://www.microsoft.com/licensing/terms/productoffering/AzureDevOpsServer/OL">Azure DevOps Server | Microsoft Licensing</a></p>
+<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>有關本文所討論的 Azure DevOps Server 授權方式，資料整理自上述各相關連結，惟正確性仍請以微軟官方與業務代表的說明為準。另如有任何疏漏之處，也請不吝<a target="_blank" rel="noopener" href="https://github.com/sdwh/sdwh.github.io/discussions">告知</a> 😃</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/Azure-DevOps-Server/" data-id="clg3fmaao00ads4tsdl7e8us0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/Vue-Toys-Converter/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">超簡單學習 Vue.js 系列 | Vue-Toys-Converter</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/JavaScript-OnHashChange/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript OnHashChange / Get Hash tag value
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

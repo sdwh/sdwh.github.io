@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server You Don&#39;t Need Database Owner (db_owner) Role | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="資料庫層級的授權不應該預設選擇 Database Owner，因為 Database Owner 所具有的 Permissions 過高，應該根據使用者的實際會使用到的權限授予，依循最小權限原則 (Least Privilege)。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server You Don&#39;t Need Database Owner (db_owner) Role">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/SQL-Server-You-Dont-Need-Database-Owner-Role/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="資料庫層級的授權不應該預設選擇 Database Owner，因為 Database Owner 所具有的 Permissions 過高，應該根據使用者的實際會使用到的權限授予，依循最小權限原則 (Least Privilege)。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Database-Roles-From-Microsoft-Docs.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Database-Permission-For-Developer.png">
+<meta property="article:published_time" content="2021-07-21T10:09:45.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-You-Dont-Need-Database-Owner-Role" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/SQL-Server-You-Dont-Need-Database-Owner-Role/" class="article-date">
+  <time datetime="2021-07-21T10:09:45.000Z" itemprop="datePublished">2021-07-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server You Don&#39;t Need Database Owner (db_owner) Role
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%80%E5%8F%96%E8%B3%87%E6%96%99%E5%BA%AB"><span class="toc-text">讀取資料庫</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E5%AE%9A%E8%B3%87%E6%96%99%E8%A1%A8"><span class="toc-text">特定資料表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E5%AE%9A%E6%AC%84%E4%BD%8D"><span class="toc-text">特定欄位</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%AB%E5%85%A5%E8%B3%87%E6%96%99%E5%BA%AB"><span class="toc-text">寫入資料庫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%99%82%E5%85%B7%E5%82%99%E8%AE%80%E5%8F%96%E3%80%81%E5%AF%AB%E5%85%A5%E7%9A%84%E6%AC%8A%E9%99%90"><span class="toc-text">同時具備讀取、寫入的權限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AA%E8%83%BD%E5%AF%AB%E4%B8%8D%E8%83%BD%E6%9B%B4%E6%96%B0%E5%88%AA%E9%99%A4"><span class="toc-text">只能寫不能更新刪除</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%B7%E8%A1%8C-Stored-Procedures"><span class="toc-text">執行 Stored Procedures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%80%E5%8F%96%E8%B3%87%E6%96%99%E5%BA%AB%E7%89%A9%E4%BB%B6%E5%AE%9A%E7%BE%A9-VIEW-Definition"><span class="toc-text">讀取資料庫物件定義 VIEW Definition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#db-ddladmin"><span class="toc-text">db_ddladmin</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9D%8C-%E4%B8%8D%E6%87%89%E8%A9%B2%E7%B5%A6%E4%BA%88%E7%9A%84-Roles"><span class="toc-text">❌ 不應該給予的 Roles</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#db-accessadmin-db-securityadmin"><span class="toc-text">db_accessadmin, db_securityadmin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#db-backoperator"><span class="toc-text">db_backoperator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#db-owner"><span class="toc-text">db_owner</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>資料庫層級的授權不應該預設選擇 Database Owner，因為 Database Owner 所具有的 Permissions 過高，應該根據使用者的實際會使用到的權限授予，依循最小權限原則 (Least Privilege)。</p>
+<a href="/posts/2021/07/SQL-Server-You-Dont-Need-Database-Owner-Role/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p><img src="/assets/SQL-Server-Database-Roles-From-Microsoft-Docs.png"></p>
+<h3 id="讀取資料庫"><a href="#讀取資料庫" class="headerlink" title="讀取資料庫"></a>讀取資料庫</h3><p>db_datareader 會給與全部資料表、檢視的讀取權限。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> ROLE <span class="token punctuation">[</span>db_datareader<span class="token punctuation">]</span> <span class="token keyword">ADD</span> MEMBER <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="特定資料表"><a href="#特定資料表" class="headerlink" title="特定資料表"></a>特定資料表</h4><p>如果只想要授權特定資料表中，可以使用下列方式授權：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">DELETE</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">UPDATE</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">INSERT</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">VIEW</span> DEFINITION <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="特定欄位"><a href="#特定欄位" class="headerlink" title="特定欄位"></a>特定欄位</h4><p>如果只想要授權資料表中的特定欄位，可以使用下列方式授權：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">use</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>TableName<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Col1<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>TableName<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Col2<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>TableName<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Col3<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="寫入資料庫"><a href="#寫入資料庫" class="headerlink" title="寫入資料庫"></a>寫入資料庫</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">INSERT</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">UPDATE</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">DELETE</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> ROLE <span class="token punctuation">[</span>db_datawriter<span class="token punctuation">]</span> <span class="token keyword">ADD</span> MEMBER <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="同時具備讀取、寫入的權限"><a href="#同時具備讀取、寫入的權限" class="headerlink" title="同時具備讀取、寫入的權限"></a>同時具備讀取、寫入的權限</h3><p>最常見的應用程式授權情境，應用程式的使用者僅須具備讀取以及寫入、更新、刪除資料的權限，可以藉由提供 datareader 及 datawriter 的權限來授予充分的權限。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> ROLE <span class="token punctuation">[</span>db_datareader<span class="token punctuation">]</span> <span class="token keyword">ADD</span> MEMBER <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> ROLE <span class="token punctuation">[</span>db_datawriter<span class="token punctuation">]</span> <span class="token keyword">ADD</span> MEMBER <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>⚠️ truncate table 的權限不包含在 datawriter 之中，而 truncate table 也無法單獨 grant 給使用者，必須包裝成 stored_proceduers 或者 function 的方式來提供使用者使用。</p>
+<h4 id="只能寫不能更新刪除"><a href="#只能寫不能更新刪除" class="headerlink" title="只能寫不能更新刪除"></a>只能寫不能更新刪除</h4><p>如果想要進一步排除使用者更新、刪除資料的權限，可以使用 <code class="watch">DENY</code></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">DENY</span> <span class="token keyword">UPDATE</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span>
+<span class="token keyword">DENY</span> <span class="token keyword">DELETE</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>DBName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="執行-Stored-Procedures"><a href="#執行-Stored-Procedures" class="headerlink" title="執行 Stored Procedures"></a>執行 Stored Procedures</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">ON</span> OBJECT::dbo<span class="token punctuation">.</span>uspSP1 <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>授權使用者執行所有的 Stored Procedures。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="讀取資料庫物件定義-VIEW-Definition"><a href="#讀取資料庫物件定義-VIEW-Definition" class="headerlink" title="讀取資料庫物件定義 VIEW Definition"></a>讀取資料庫物件定義 VIEW Definition</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">VIEW</span> DEFINITION <span class="token keyword">on</span> <span class="token keyword">SCHEMA</span>::dbo <span class="token keyword">to</span> <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="db-ddladmin"><a href="#db-ddladmin" class="headerlink" title="db_ddladmin"></a>db_ddladmin</h3><p>如果應用系統有動態設計 Table、View 的需求，可以評估提供 db_ddladmin 的權限。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>demoDB<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> ROLE <span class="token punctuation">[</span>db_ddladmin<span class="token punctuation">]</span> <span class="token keyword">ADD</span> MEMBER <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>取消角色授權的方法：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> ROLE <span class="token punctuation">[</span>db_ddladmin<span class="token punctuation">]</span> <span class="token keyword">DROP</span> MEMBER <span class="token punctuation">[</span>userName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/Database-Permission-For-Developer.png" alt="適用應用系統開發環境的授權"></p>
+<h2 id="❌-不應該給予的-Roles"><a href="#❌-不應該給予的-Roles" class="headerlink" title="❌ 不應該給予的 Roles"></a>❌ 不應該給予的 Roles</h2><h3 id="db-accessadmin-db-securityadmin"><a href="#db-accessadmin-db-securityadmin" class="headerlink" title="db_accessadmin, db_securityadmin"></a>db_accessadmin, db_securityadmin</h3><p>這兩個角色具備會允許使用者可以自行調整安全性的授權，相當於授予了完整的資料庫管理權限。</p>
+<h3 id="db-backoperator"><a href="#db-backoperator" class="headerlink" title="db_backoperator"></a>db_backoperator</h3><p>backoperator 可以對資料庫進行備份、還原以及建立 CheckPoint，使用者不正確的使用這些行為會影響資料庫排程的正常進行。</p>
+<h3 id="db-owner"><a href="#db-owner" class="headerlink" title="db_owner"></a>db_owner</h3><p>應用程式只是 Data Owner 而不是 Database Owner，很多資料庫的層級的工作是由資料庫管理者所負責，因此不應授權 db_owner 的角色。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver15">Database-Level Roles</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/relational-databases/stored-procedures/grant-permissions-on-a-stored-procedure?view=sql-server-ver15">授與預存程序的權限</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/microsoft/sql-server-samples/tree/master/samples/features/security/permissions-posters">SQL Server Permissions Poster</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/SQL-Server-You-Dont-Need-Database-Owner-Role/" data-id="clg3fmal201fps4ts10on4oqf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Windows-Batch-Rename-Files/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Windows 批次修改檔案名稱的方法 (Batch Rename Files)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/Powershell-Objects-Data-Structures/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Powershell 使用物件與資料結構 (Array, Hash)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

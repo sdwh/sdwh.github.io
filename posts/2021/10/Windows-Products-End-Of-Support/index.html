@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Windows Products 微軟產品生命週期 (End Of Support, EOS) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="整理微軟的軟體產品生命週期原則，規劃在產品屆於 End Of Sercie (EOS) 官方終止支援前，能夠及早進行移轉、升級的規劃，避免既有的產品部署淪為孤立無援。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows Products 微軟產品生命週期 (End Of Support, EOS)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/10/Windows-Products-End-Of-Support/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="整理微軟的軟體產品生命週期原則，規劃在產品屆於 End Of Sercie (EOS) 官方終止支援前，能夠及早進行移轉、升級的規劃，避免既有的產品部署淪為孤立無援。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2021-10-31T10:27:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="WinServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows-Products-End-Of-Support" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/10/Windows-Products-End-Of-Support/" class="article-date">
+  <time datetime="2021-10-31T10:27:00.000Z" itemprop="datePublished">2021-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows Products 微軟產品生命週期 (End Of Support, EOS)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Windos-Server"><span class="toc-text">Windos Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server"><span class="toc-text">SQL Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SharePoint"><span class="toc-text">SharePoint</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Azure-DevOps-Server"><span class="toc-text">Azure DevOps Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NET-Framework"><span class="toc-text">.NET Framework</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NET-amp-NET-Core"><span class="toc-text">.NET &amp; .NET Core</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>整理微軟的軟體產品生命週期原則，規劃在產品屆於 End Of Sercie (EOS) 官方終止支援前，能夠及早進行移轉、升級的規劃，避免既有的產品部署淪為孤立無援。</p>
+<a href="/posts/2021/10/Windows-Products-End-Of-Support/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="250px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>一般而言微軟的軟體生命週期包含<strong>主要支援結束日期 (Mainstream End Date)</strong> 以及 <strong>延伸支援結束日期 (Extended End Date)</strong> ，以下表格所整理的皆為最大支援年限：<strong>延伸支援結束日期 (Extended End Date)</strong> 。</p>
+<h3 id="Windos-Server"><a href="#Windos-Server" class="headerlink" title="Windos Server"></a>Windos Server</h3><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>EOS</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WinServer 2022</td>
+<td>2031-10-14</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>WinServer 2019</td>
+<td>2029-01-09</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>WinServer 2016</td>
+<td>2027-01-12</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>WinServer 2012R2</td>
+<td>2023-10-10</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>WinServer 2012</td>
+<td>2023-10-10</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>WinServer 2008R2</td>
+<td>2020-01-14</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>WinServer 2008</td>
+<td>2020-01-14</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>WinServer 2003R2</td>
+<td>2015-07-14</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>WinServer 2003</td>
+<td>2015-07-14</td>
+<td>🔴</td>
+</tr>
+</tbody></table>
+<h3 id="SQL-Server"><a href="#SQL-Server" class="headerlink" title="SQL Server"></a>SQL Server</h3><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>EOS</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SQL Server 2019</td>
+<td>2030-01-08</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>SQL Server 2017</td>
+<td>2027-10-12</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>SQL Server 2016</td>
+<td>2026-07-14</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>SQL Server 2014</td>
+<td>2024-07-09</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>SQL Server 2012</td>
+<td>2022-07-12</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>SQL Server 2008R2</td>
+<td>2019-07-09</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>SQL Server 2008</td>
+<td>2019</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>SQL Server 2005</td>
+<td>2016</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>SQL Server 2000</td>
+<td>2013</td>
+<td>🔴</td>
+</tr>
+</tbody></table>
+<p>註 SQL Server 2012 有 <strong>Extended Security Update</strong> Version 最多可以展延支援至 2025-07-08。</p>
+<h3 id="SharePoint"><a href="#SharePoint" class="headerlink" title="SharePoint"></a>SharePoint</h3><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>EOS</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SharePoint Server 2019</td>
+<td><strong>2026-07-14</strong></td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>SharePoint Server 2016</td>
+<td>2026-07-14</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>SharePoint Server 2013</td>
+<td>2023-04-11</td>
+<td>🟡</td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/lifecycle/products/sharepoint-server-2019">SharePoint Server 2019 Lifecycle</a></p>
+<h3 id="Azure-DevOps-Server"><a href="#Azure-DevOps-Server" class="headerlink" title="Azure DevOps Server"></a>Azure DevOps Server</h3><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>EOS</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Azure DevOps Server 2020</td>
+<td>2030-10-08</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2019</td>
+<td>2029-04-10</td>
+<td>🟢</td>
+</tr>
+</tbody></table>
+<h3 id="NET-Framework"><a href="#NET-Framework" class="headerlink" title=".NET Framework"></a>.NET Framework</h3><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>EOS</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.NET Framework 4.8</td>
+<td><span style="font-weight:900;font-size:21px;vertical-align:middle">*</span></td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET Framework 4.7.2</td>
+<td><span style="font-weight:900;font-size:21px;vertical-align:middle">*</span></td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET Framework 4.7.1</td>
+<td><span style="font-weight:900;font-size:21px;vertical-align:middle">*</span></td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET Framework 4.7</td>
+<td><span style="font-weight:900;font-size:21px;vertical-align:middle">*</span></td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET Framework 4.6.2</td>
+<td><span style="font-weight:900;font-size:21px;vertical-align:middle">*</span></td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET Framework 3.5 Service Pack 1</td>
+<td>2029年1月9日</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET Framework 4.6.1</td>
+<td>2022年4月26日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 4.6</td>
+<td>2022年4月26日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 4.5.2</td>
+<td>2022年4月26日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 4.5.1</td>
+<td>2016年1月12日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 4.5</td>
+<td>2016年1月12日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 4.0</td>
+<td>2016年1月12日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 3.0</td>
+<td>2011年7月12日</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Framework 2.0</td>
+<td>2011年7月12日</td>
+<td>🔴</td>
+</tr>
+</tbody></table>
+<p><span style="font-weight:900;font-size:21px;vertical-align:middle">*</span> <em>原則跟隨 Windows Server EOS 期限。</em></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/lifecycle/products/microsoft-net-framework">Microsoft .NET Framework</a></p>
+<h3 id="NET-amp-NET-Core"><a href="#NET-amp-NET-Core" class="headerlink" title=".NET &amp; .NET Core"></a>.NET &amp; .NET Core</h3><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>EOS</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.NET 6</td>
+<td>2024-11-12</td>
+<td>🟢</td>
+</tr>
+<tr>
+<td>.NET 5</td>
+<td>2022-05-10</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Core 3.1</td>
+<td>2022-12-13</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>.NET Core 3.0</td>
+<td>2020-03-03</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Core 2.2</td>
+<td>2019-12-23</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Core 2.1</td>
+<td>2021-08-21</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Core 2.0</td>
+<td>2018-10-01</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Core 1.1</td>
+<td>2019-06-27</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>.NET Core 1.0</td>
+<td>2019-06-24</td>
+<td>🔴</td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core">.NET and .NET Core Support Policy</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://endoflife.software/operating-systems/windows/windows-server">Windows Server | End Of Life</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/10/Windows-Products-End-Of-Support/" data-id="clg3fman801mqs4ts4pzg2pmi" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WinServer/" rel="tag">WinServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/10/SQL-Server-Cluster/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">AlwaysOn Failover Cluster Instance, FCI (SQL Server Cluster)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/10/Windows-11-Installation-On-Vmware/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用 VMware 安裝 Windows 11
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

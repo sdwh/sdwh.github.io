@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Python Pandas 學習筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一陣子沒有用 Python ，會使用的機會大多是用來編輯 Scripts 或者作為資料的 ETF 用途。而每當要 ETF 的時候都會回憶起 Stata 的便利，肌肉隱約就可以呼喚出各式操作資料的指令。只是離開學術環境後就不再使用過 Stata，取而代之的是 Python 的 Pandas ，儘管指令上兩者有著極大的差別，但因為 Python 有著更多更方便的 Library，同時語法上也更適合寫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Pandas 學習筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/06/Python-Pandas/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="一陣子沒有用 Python ，會使用的機會大多是用來編輯 Scripts 或者作為資料的 ETF 用途。而每當要 ETF 的時候都會回憶起 Stata 的便利，肌肉隱約就可以呼喚出各式操作資料的指令。只是離開學術環境後就不再使用過 Stata，取而代之的是 Python 的 Pandas ，儘管指令上兩者有著極大的差別，但因為 Python 有著更多更方便的 Library，同時語法上也更適合寫">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/pandas.svg">
+<meta property="article:published_time" content="2020-06-02T12:43:48.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Pandas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/pandas.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Python-Pandas" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/06/Python-Pandas/" class="article-date">
+  <time datetime="2020-06-02T12:43:48.000Z" itemprop="datePublished">2020-06-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python Pandas 學習筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Quickly-Test-Data"><span class="toc-text">Quickly Test Data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AD%89%E6%9C%9F%E6%9C%83%E9%96%8B%E6%94%BE%E8%B3%87%E6%96%99"><span class="toc-text">證期會開放資料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Python-Metasyntactic-variable"><span class="toc-text">Python Metasyntactic variable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ipython-Magic"><span class="toc-text">Ipython Magic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-Filter-%E8%B3%87%E6%96%99%E7%AF%A9%E9%81%B8"><span class="toc-text">DataFrame Filter 資料篩選</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E4%B8%B2%E6%AF%94%E8%BC%83"><span class="toc-text">字串比較</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Chceck-Column-match-list-elements"><span class="toc-text">Chceck Column match list elements</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E4%B8%B2%E8%B3%87%E6%96%99%E8%BD%89%E7%82%BA%E6%95%B8%E5%AD%97-astype"><span class="toc-text">字串資料轉為數字 (astype)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A2%E7%94%9F-DataFrame"><span class="toc-text">產生 DataFrame</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-%E5%8F%96%E5%87%BA-Cell-Value-at"><span class="toc-text">DataFrame 取出 Cell Value (at)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%99%82%E9%81%B8%E5%8F%96-Row-%E8%88%87-Col-%E7%AF%84%E5%9C%8D-DataFrame-loc"><span class="toc-text">同時選取 Row 與 Col 範圍 DataFrame (loc)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-Row-%E6%96%B0%E5%A2%9E%E8%B3%87%E6%96%99-loc"><span class="toc-text">DataFrame Row 新增資料 (loc)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-Row-%E4%BF%AE%E6%94%B9%E8%B3%87%E6%96%99-loc"><span class="toc-text">DataFrame Row 修改資料 (loc)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-Column-%E6%A0%B9%E6%93%9A%E7%89%B9%E5%AE%9A%E6%A2%9D%E4%BB%B6%E5%AF%AB%E5%85%A5%E8%B3%87%E6%96%99-loc"><span class="toc-text">DataFrame Column 根據特定條件寫入資料 (loc)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Map-Value-from-DataFrame-Series-to-Series-apply"><span class="toc-text">Map Value from DataFrame, Series to Series (apply)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-Rename-Column-rename"><span class="toc-text">DataFrame Rename Column (rename)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-%E5%9F%BA%E7%A4%8E%E6%95%98%E8%BF%B0%E6%80%A7%E7%B5%B1%E8%A8%88-descrbie"><span class="toc-text">DataFrame 基礎敘述性統計 (descrbie)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-%E6%9C%80%E5%A4%A7%E5%80%BC%E5%89%8D-n-%E7%AD%86-nlargest-nsmallest"><span class="toc-text">DataFrame 最大值前 n 筆 (nlargest, nsmallest)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataFrame-Column-to-Numpy-Array-values"><span class="toc-text">DataFrame Column to Numpy Array (values)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AC%84%E4%BD%8D%E8%B3%87%E6%96%99%E5%88%86%E5%B8%83%E6%AA%A2%E8%A6%96-value-counts"><span class="toc-text">欄位資料分布檢視 (value_counts)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%88%86%E7%B5%84%E8%B3%87%E6%96%99%E5%88%86%E5%B8%83%E6%AA%A2%E8%A6%96-groupyby-size"><span class="toc-text">資料分組資料分布檢視 (groupyby , size)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E8%A8%AD%E5%AE%9A%E7%B4%A2%E5%BC%95-reindex"><span class="toc-text">重新設定索引 (reindex)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E7%B4%A2%E5%BC%95%E5%A1%AB%E8%A3%9C%E8%B3%87%E6%96%99-ffill-bfill"><span class="toc-text">利用索引填補資料 (ffill, bfill)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F%E8%B3%87%E6%96%99-Order-DataFrame-By-Specific-Column-sort-values"><span class="toc-text">排序資料 Order DataFrame By Specific Column (sort_values)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Filter-Column-Name-By-Regex-filter"><span class="toc-text">Filter Column Name By Regex (filter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%AA%E9%99%A4%E9%87%8D%E8%A4%87%E6%AC%84%E4%BD%8D%E5%80%BC%E7%9A%84%E5%88%97-Delete-Row-by-duplicated-column-value-drop-duplicates"><span class="toc-text">刪除重複欄位值的列 Delete Row by duplicated column value (drop_duplicates</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%AA%E9%99%A4%E7%89%B9%E5%AE%9A%E5%88%97-Delete-Row-by-index-value-drop"><span class="toc-text">刪除特定列 Delete Row by index value (drop)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%AA%E9%99%A4%E7%89%B9%E5%AE%9A%E6%AC%84-Delete-Row-by-column-index-value-drop"><span class="toc-text">刪除特定欄 Delete Row by column index value (drop)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E6%AC%84%E5%8A%A0%E7%B8%BD-Sum-of-Column-sum"><span class="toc-text">各欄加總 Sum of Column (sum)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E5%88%97%E5%8A%A0%E7%B8%BD-Sum-of-Row-sum"><span class="toc-text">各列加總 Sum of Row (sum)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-ipynb-file-with-terminal"><span class="toc-text">Run ipynb file with terminal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%84%B2%E5%AD%98%E7%82%BA-csv-%E6%AA%94%E6%A1%88%E4%B8%A6%E4%B8%94%E4%B8%8D%E5%8C%85%E5%90%AB-index-%E6%AC%84"><span class="toc-text">儲存為 csv 檔案並且不包含 index 欄</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#csv-with-quoting-to-csv-quoting-QUOTE-NONNUMERIC"><span class="toc-text">csv with quoting (to_csv, quoting, QUOTE_NONNUMERIC)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E-column-create-new-column"><span class="toc-text">新增 column, create new column</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a>
+    </div>
+  
+  
+        <hr/>
+        <p>一陣子沒有用 Python ，會使用的機會大多是用來編輯 Scripts 或者作為資料的 ETF 用途。而每當要 ETF 的時候都會回憶起 Stata 的便利，肌肉隱約就可以呼喚出各式操作資料的指令。只是離開學術環境後就不再使用過 Stata，取而代之的是 Python 的 Pandas ，儘管指令上兩者有著極大的差別，但因為 Python 有著更多更方便的 Library，同時語法上也更適合寫 Scripts，何況還是 OpenSource 的，既然如果也沒有什麼好念舊的，認分的學習 Pandas吧。</p>
+<a href="/posts/2020/06/Python-Pandas/" title="pandas logo" class="fancybox" rel="article0">
+  <img src="/assets/pandas.svg" alt="pandas logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h3 id="Quickly-Test-Data"><a href="#Quickly-Test-Data" class="headerlink" title="Quickly Test Data"></a>Quickly Test Data</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>
+  np<span class="token punctuation">.</span>resize<span class="token punctuation">(</span>np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+  index <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'d'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+  columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'c1'</span><span class="token punctuation">,</span> <span class="token string">'c2'</span><span class="token punctuation">,</span> <span class="token string">'c3'</span><span class="token punctuation">,</span> <span class="token string">'c4'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="證期會開放資料"><a href="#證期會開放資料" class="headerlink" title="證期會開放資料"></a>證期會開放資料</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+df <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">'http://www.twse.com.tw/exchangeReport/STOCK_DAY_ALL?response=open_data'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># https://data.gov.tw/dataset/11549</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Python-Metasyntactic-variable"><a href="#Python-Metasyntactic-variable" class="headerlink" title="Python Metasyntactic variable"></a>Python Metasyntactic variable</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">spam <span class="token operator">=</span> ham <span class="token operator">=</span> eggs <span class="token operator">=</span> <span class="token number">42</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Metasyntactic_variable#Python">Wiki</a><br><a target="_blank" rel="noopener" href="http://www.catb.org/jargon/html/M/metasyntactic-variable.html">catb</a></p>
+<h3 id="Ipython-Magic"><a href="#Ipython-Magic" class="headerlink" title="Ipython Magic"></a>Ipython Magic</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token operator">%</span>cd
+<span class="token operator">%</span>run
+<span class="token operator">%</span>timeit
+<span class="token operator">%</span>matplotlib inline<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="DataFrame-Filter-資料篩選"><a href="#DataFrame-Filter-資料篩選" class="headerlink" title="DataFrame Filter 資料篩選"></a>DataFrame Filter 資料篩選</h3><p>Pandas 的資料篩選是利用 mask 技巧，mask 其實就是 Pandas 中的 Series 物件，只是對應著各列的 True 與 False，藉由 mask 對資料就可以做篩選。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+df <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_excel<span class="token punctuation">(</span><span class="token string">'data.xlsx'</span><span class="token punctuation">)</span>
+
+mask <span class="token operator">=</span> df<span class="token punctuation">[</span><span class="token string">'score'</span><span class="token punctuation">]</span> <span class="token operator">>=</span> <span class="token number">50</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">[</span>mask<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="字串比較"><a href="#字串比較" class="headerlink" title="字串比較"></a>字串比較</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">mask <span class="token operator">=</span> df<span class="token punctuation">[</span><span class="token string">'category'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">'drinks'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>要在 Pandas 中進行一連串的字串可以是利用 <code class="watch">|</code> 來 join 字串。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">categories <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'drinks'</span><span class="token punctuation">,</span> <span class="token string">'foods'</span><span class="token punctuation">,</span> <span class="token string">'eletronics'</span><span class="token punctuation">]</span>
+mask <span class="token operator">=</span> df<span class="token punctuation">[</span><span class="token string">'category'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span>contains<span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>categories<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.html?highlight=str">Series str</a></p>
+<h3 id="Chceck-Column-match-list-elements"><a href="#Chceck-Column-match-list-elements" class="headerlink" title="Chceck Column match list elements"></a>Chceck Column match list elements</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">[</span><span class="token string">'column'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>isin<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'keyword1'</span><span class="token punctuation">,</span> <span class="token string">'keyword2'</span><span class="token punctuation">,</span> <span class="token string">'keyword3'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+df<span class="token punctuation">[</span><span class="token string">'證券名稱'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>isin<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'兆豐金'</span><span class="token punctuation">,</span> <span class="token string">'中鋼'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<h3 id="字串資料轉為數字-astype"><a href="#字串資料轉為數字-astype" class="headerlink" title="字串資料轉為數字 (astype)"></a>字串資料轉為數字 (astype)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">[</span><span class="token string">'StringColumn'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span>astype<span class="token punctuation">(</span><span class="token string">'int'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="產生-DataFrame"><a href="#產生-DataFrame" class="headerlink" title="產生 DataFrame"></a>產生 DataFrame</h3><p>利用 namedtuple 可以用物件的角度來產生 DataFrame。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+<span class="token keyword">from</span> collections <span class="token keyword">import</span> namedtuple
+EntryClass <span class="token operator">=</span> namedtuple<span class="token punctuation">(</span><span class="token string">'EntryClass'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'col1'</span><span class="token punctuation">,</span> <span class="token string">'col2'</span><span class="token punctuation">,</span> <span class="token string">'col3'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span>EntryClass<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">,</span> EntryClass<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">,</span> EntryClass<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="DataFrame-取出-Cell-Value-at"><a href="#DataFrame-取出-Cell-Value-at" class="headerlink" title="DataFrame 取出 Cell Value (at)"></a>DataFrame 取出 Cell Value (at)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>at<span class="token punctuation">[</span><span class="token string">'rowName'</span><span class="token punctuation">,</span> <span class="token string">'colName'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="同時選取-Row-與-Col-範圍-DataFrame-loc"><a href="#同時選取-Row-與-Col-範圍-DataFrame-loc" class="headerlink" title="同時選取 Row 與 Col 範圍 DataFrame (loc)"></a>同時選取 Row 與 Col 範圍 DataFrame (loc)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#df.loc[rowRange, colRange]</span>
+df<span class="token punctuation">.</span>loc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token string">'x2'</span><span class="token punctuation">:</span><span class="token string">'x4'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="DataFrame-Row-新增資料-loc"><a href="#DataFrame-Row-新增資料-loc" class="headerlink" title="DataFrame Row 新增資料 (loc)"></a>DataFrame Row 新增資料 (loc)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>newIndex<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>col1<span class="token punctuation">,</span> col2<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="DataFrame-Row-修改資料-loc"><a href="#DataFrame-Row-修改資料-loc" class="headerlink" title="DataFrame Row 修改資料 (loc)"></a>DataFrame Row 修改資料 (loc)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>IndexName<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>col1<span class="token punctuation">,</span> col2<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span>
+df<span class="token punctuation">.</span>iloc<span class="token punctuation">[</span>indexValue<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>col1<span class="token punctuation">,</span> col2<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="DataFrame-Column-根據特定條件寫入資料-loc"><a href="#DataFrame-Column-根據特定條件寫入資料-loc" class="headerlink" title="DataFrame Column 根據特定條件寫入資料 (loc)"></a>DataFrame Column 根據特定條件寫入資料 (loc)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>mask<span class="token punctuation">,</span> <span class="token string">'ColumnName'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Map-Value-from-DataFrame-Series-to-Series-apply"><a href="#Map-Value-from-DataFrame-Series-to-Series-apply" class="headerlink" title="Map Value from DataFrame, Series to Series (apply)"></a>Map Value from DataFrame, Series to Series (apply)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">[</span><span class="token string">'Column'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">apply</span><span class="token punctuation">(</span><span class="token keyword">lambda</span> x <span class="token punctuation">:</span> <span class="token string">'T'</span> <span class="token keyword">if</span> x <span class="token keyword">else</span> <span class="token string">'F'</span><span class="token punctuation">)</span>
+<span class="token comment"># Return Series According to lambda</span>
+
+df<span class="token punctuation">.</span><span class="token builtin">apply</span><span class="token punctuation">(</span><span class="token keyword">lambda</span> row <span class="token punctuation">:</span> row<span class="token punctuation">[</span><span class="token string">'Column'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> axis <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token comment"># Return Series According to lambda</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="DataFrame-Rename-Column-rename"><a href="#DataFrame-Rename-Column-rename" class="headerlink" title="DataFrame Rename Column (rename)"></a>DataFrame Rename Column (rename)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>rename<span class="token punctuation">(</span>columns <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token string">'c2'</span><span class="token punctuation">:</span> <span class="token string">'c2!'</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="DataFrame-基礎敘述性統計-descrbie"><a href="#DataFrame-基礎敘述性統計-descrbie" class="headerlink" title="DataFrame 基礎敘述性統計 (descrbie)"></a>DataFrame 基礎敘述性統計 (descrbie)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>describe<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="DataFrame-最大值前-n-筆-nlargest-nsmallest"><a href="#DataFrame-最大值前-n-筆-nlargest-nsmallest" class="headerlink" title="DataFrame 最大值前 n 筆 (nlargest, nsmallest)"></a>DataFrame 最大值前 n 筆 (nlargest, nsmallest)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>nlargest<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token string">'c2'</span><span class="token punctuation">)</span>
+<span class="token comment"># 最小值</span>
+<span class="token comment"># df.nsmallest(5, 'c2')</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="DataFrame-Column-to-Numpy-Array-values"><a href="#DataFrame-Column-to-Numpy-Array-values" class="headerlink" title="DataFrame Column to Numpy Array (values)"></a>DataFrame Column to Numpy Array (values)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">[</span><span class="token string">'c1'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>values<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="欄位資料分布檢視-value-counts"><a href="#欄位資料分布檢視-value-counts" class="headerlink" title="欄位資料分布檢視 (value_counts)"></a>欄位資料分布檢視 (value_counts)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">[</span><span class="token string">'columnName'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>value_counts<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="資料分組資料分布檢視-groupyby-size"><a href="#資料分組資料分布檢視-groupyby-size" class="headerlink" title="資料分組資料分布檢視 (groupyby , size)"></a>資料分組資料分布檢視 (groupyby , size)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>groupby<span class="token punctuation">(</span><span class="token string">'columnName'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>size<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html?highlight=groupby#pandas.DataFrame.groupby">groupby</a></p>
+<h3 id="重新設定索引-reindex"><a href="#重新設定索引-reindex" class="headerlink" title="重新設定索引 (reindex)"></a>重新設定索引 (reindex)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>reindex<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="利用索引填補資料-ffill-bfill"><a href="#利用索引填補資料-ffill-bfill" class="headerlink" title="利用索引填補資料 (ffill, bfill)"></a>利用索引填補資料 (ffill, bfill)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df <span class="token operator">=</span> pd<span class="token punctuation">.</span>Series<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">,</span> <span class="token string">'g'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> index <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+df<span class="token punctuation">.</span>reindex<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span> method<span class="token operator">=</span><span class="token string">'ffill'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="排序資料-Order-DataFrame-By-Specific-Column-sort-values"><a href="#排序資料-Order-DataFrame-By-Specific-Column-sort-values" class="headerlink" title="排序資料 Order DataFrame By Specific Column (sort_values)"></a>排序資料 Order DataFrame By Specific Column (sort_values)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span><span class="token string">'col2'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Filter-Column-Name-By-Regex-filter"><a href="#Filter-Column-Name-By-Regex-filter" class="headerlink" title="Filter Column Name By Regex (filter)"></a>Filter Column Name By Regex (filter)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span><span class="token builtin">filter</span><span class="token punctuation">(</span>regex <span class="token operator">=</span> <span class="token string">'c[2|3]'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="刪除重複欄位值的列-Delete-Row-by-duplicated-column-value-drop-duplicates"><a href="#刪除重複欄位值的列-Delete-Row-by-duplicated-column-value-drop-duplicates" class="headerlink" title="刪除重複欄位值的列 Delete Row by duplicated column value (drop_duplicates"></a>刪除重複欄位值的列 Delete Row by duplicated column value (drop_duplicates</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>drop_duplicates<span class="token punctuation">(</span><span class="token string">'c3'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="刪除特定列-Delete-Row-by-index-value-drop"><a href="#刪除特定列-Delete-Row-by-index-value-drop" class="headerlink" title="刪除特定列 Delete Row by index value (drop)"></a>刪除特定列 Delete Row by index value (drop)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>drop<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'100201'</span><span class="token punctuation">,</span> <span class="token string">'100205'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="刪除特定欄-Delete-Row-by-column-index-value-drop"><a href="#刪除特定欄-Delete-Row-by-column-index-value-drop" class="headerlink" title="刪除特定欄 Delete Row by column index value (drop)"></a>刪除特定欄 Delete Row by column index value (drop)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>drop<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'col1'</span><span class="token punctuation">,</span> <span class="token string">'col2'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> axis <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="各欄加總-Sum-of-Column-sum"><a href="#各欄加總-Sum-of-Column-sum" class="headerlink" title="各欄加總 Sum of Column (sum)"></a>各欄加總 Sum of Column (sum)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="各列加總-Sum-of-Row-sum"><a href="#各列加總-Sum-of-Row-sum" class="headerlink" title="各列加總 Sum of Row (sum)"></a>各列加總 Sum of Row (sum)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>axis <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Run-ipynb-file-with-terminal"><a href="#Run-ipynb-file-with-terminal" class="headerlink" title="Run ipynb file with terminal"></a>Run ipynb file with terminal</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">jupyter</span> nbconvert <span class="token parameter attr-name">--to</span> python nb.ipynb</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/35545402/how-to-run-an-ipynb-jupyter-notebook-from-terminal">StackOverFlow</a></p>
+<h3 id="儲存為-csv-檔案並且不包含-index-欄"><a href="#儲存為-csv-檔案並且不包含-index-欄" class="headerlink" title="儲存為 csv 檔案並且不包含 index 欄"></a>儲存為 csv 檔案並且不包含 index 欄</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>to_csv<span class="token punctuation">(</span><span class="token string">'filename.csv'</span><span class="token punctuation">,</span> index <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="csv-with-quoting-to-csv-quoting-QUOTE-NONNUMERIC"><a href="#csv-with-quoting-to-csv-quoting-QUOTE-NONNUMERIC" class="headerlink" title="csv with quoting (to_csv, quoting, QUOTE_NONNUMERIC)"></a>csv with quoting (to_csv, quoting, QUOTE_NONNUMERIC)</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> csv
+df<span class="token punctuation">.</span>to_csv<span class="token punctuation">(</span><span class="token string">'filename.csv'</span><span class="token punctuation">,</span> quoting<span class="token operator">=</span>csv<span class="token punctuation">.</span>QUOTE_NONNUMERIC<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="新增-column-create-new-column"><a href="#新增-column-create-new-column" class="headerlink" title="新增 column, create new column"></a>新增 column, create new column</h3><p>可能會發生：</p>
+<p><strong>SettingWithCopyWarning:</strong><br><strong>A value is trying to be set on a copy of a slice from a DataFrame.</strong></p>
+<p><strong>method 1</strong></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">[</span><span class="token string">'newCol'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">'String'</span> <span class="token operator">+</span> df<span class="token punctuation">.</span>col1<span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span><span class="token builtin">slice</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>method 2</strong></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">df<span class="token punctuation">.</span>loc<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token string">'newCol'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">'String'</span> <span class="token operator">+</span> gs<span class="token punctuation">.</span>col1<span class="token punctuation">.</span><span class="token builtin">str</span><span class="token punctuation">.</span><span class="token builtin">slice</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf">Pandas Chearsheet</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/06/Python-Pandas/" data-id="clg3fmaha011ps4ts8xnfbkua" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/06/VisualStudio-Git/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Visual Studio 使用 Git 版本控制</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/06/Security-Note/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          CyberSecurity 資安筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

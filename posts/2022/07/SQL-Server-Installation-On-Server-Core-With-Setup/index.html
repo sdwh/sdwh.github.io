@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server 安裝使用 Setup.exe (Windows Server Core) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 如何在 Windows Server Core 環境使用 Setup.exe 進行安裝，除對應 GUI 的各種安裝步驟與組態設定外，一併也加入安裝上的優化設定方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 安裝使用 Setup.exe (Windows Server Core)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/07/SQL-Server-Installation-On-Server-Core-With-Setup/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 如何在 Windows Server Core 環境使用 Setup.exe 進行安裝，除對應 GUI 的各種安裝步驟與組態設定外，一併也加入安裝上的優化設定方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Windows-Server-Core-Remote-Services-Management.png">
+<meta property="article:published_time" content="2022-07-07T11:15:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.940Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Installation-On-Server-Core-With-Setup" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/07/SQL-Server-Installation-On-Server-Core-With-Setup/" class="article-date">
+  <time datetime="2022-07-07T11:15:00.000Z" itemprop="datePublished">2022-07-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 安裝使用 Setup.exe (Windows Server Core)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D-Command"><span class="toc-text">安裝 Command</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E9%99%A4-Command"><span class="toc-text">移除 Command</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D%E5%BE%8C%E7%9B%B8%E9%97%9C%E8%A8%AD%E5%AE%9A"><span class="toc-text">安裝後相關設定</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D-CU"><span class="toc-text">安裝 CU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lock-pages-in-memory"><span class="toc-text">Lock pages in memory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Database-Instant-File-Initialization"><span class="toc-text">Database Instant File Initialization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86-Service"><span class="toc-text">如何管理 Service</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 如何在 Windows Server Core 環境使用 Setup.exe 進行安裝，除對應 GUI 的各種安裝步驟與組態設定外，一併也加入安裝上的優化設定方式。</p>
+<a href="/posts/2022/07/SQL-Server-Installation-On-Server-Core-With-Setup/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="安裝-Command"><a href="#安裝-Command" class="headerlink" title="安裝 Command"></a>安裝 Command</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\setup.exe /Q /ACTION="install" /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,Conn /INSTANCENAME=MSSQLSERVER /SQLSYSADMINACCOUNTS="Domain\ACCOUNT" /INSTALLSQLDATADIR="D:\Program Files\Microsoft SQL Server" /PID="*****-*****-*****-*****-*****" /SQLTEMPDBFILESIZE=512 /SQLTEMPDBFILEGROWTH=128 /SQLTEMPDBLOGFILESIZE=512 /SQLCOLLATION="Chinese_Taiwan_Stroke_CI_AS" /SQLSVCINSTANTFILEINIT<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>好讀換行版本</strong></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\setup.exe 
+/Q 
+/ACTION="install" 
+/IACCEPTSQLSERVERLICENSETERMS 
+/FEATURES=SQLEngine,Conn 
+/INSTANCENAME=MSSQLSERVER 
+/SQLSYSADMINACCOUNTS="Domain\ACCOUNT" 
+/INSTALLSQLDATADIR="D:\Program Files\Microsoft SQL Server" 
+/PID="*****-*****-*****-*****-*****" 
+/SQLTEMPDBFILESIZE=512 
+/SQLTEMPDBFILEGROWTH=128 
+/SQLTEMPDBLOGFILESIZE=512 
+/SQLCOLLATION="Chinese_Taiwan_Stroke_CI_AS"
+/SQLSVCINSTANTFILEINIT<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>參數</th>
+<th>用途</th>
+<th>範例值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Q</td>
+<td>安靜安裝</td>
+<td></td>
+</tr>
+<tr>
+<td>ACTION</td>
+<td>要執行的動作</td>
+<td>&quot;install&quot;</td>
+</tr>
+<tr>
+<td>IACCEPTSQLSERVERLICENSETERMS</td>
+<td>接受合約</td>
+<td></td>
+</tr>
+<tr>
+<td>FEATURES</td>
+<td>要安裝的功能</td>
+<td>SQLEngine,Conn</td>
+</tr>
+<tr>
+<td>INSTANCENAME</td>
+<td>實體名稱</td>
+<td>MSSQLSERVER</td>
+</tr>
+<tr>
+<td>SQLSYSADMINACCOUNTS</td>
+<td>SysAdmin 設定</td>
+<td>&quot;Domain\ACCOUNT&quot;</td>
+</tr>
+<tr>
+<td>INSTALLSQLDATADIR</td>
+<td>資料檔的根目錄</td>
+<td>&quot;D:\Program Files\Microsoft SQL Server&quot;</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>授權序號</td>
+<td>&quot;*****-*****-*****-*****-*****&quot;</td>
+</tr>
+<tr>
+<td>SQLTEMPDBFILESIZE</td>
+<td>tempdb 預設大小</td>
+<td>512</td>
+</tr>
+<tr>
+<td>SQLTEMPDBFILEGROWTH</td>
+<td>tempdb 成長大小</td>
+<td>128</td>
+</tr>
+<tr>
+<td>SQLTEMPDBLOGFILESIZE</td>
+<td>tempdb log 預設大小</td>
+<td>512</td>
+</tr>
+<tr>
+<td>SQLCOLLATION</td>
+<td>預設定序</td>
+<td>&quot;Chinese_Taiwan_Stroke_CI_AS&quot;</td>
+</tr>
+<tr>
+<td>SQLSVCINSTANTFILEINIT</td>
+<td>資料庫立即檔案初始化 (效能強化)</td>
+<td>True</td>
+</tr>
+</tbody></table>
+<p><a href="/posts/2022/01/SQL-Server-Installation-Detailed/">SQL Server Installation Detailed 安裝流程與規劃詳細說明</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Installation/">SQL Server 2019 Developer 安裝教學與步驟流程</a></p>
+<h3 id="移除-Command"><a href="#移除-Command" class="headerlink" title="移除 Command"></a>移除 Command</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\setup /qs /ACTION=Uninstall /FEATURES=SQLEngine /INSTANCENAME=MSSQLSERVER /IACCEPTSQLSERVERLICENSETERMS<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="安裝後相關設定"><a href="#安裝後相關設定" class="headerlink" title="安裝後相關設定"></a>安裝後相關設定</h2><h3 id="安裝-CU"><a href="#安裝-CU" class="headerlink" title="安裝 CU"></a>安裝 CU</h3><p>首先前往 SQL Server CU 網站進行下載，解壓縮後透過 Command 的方式進行安裝：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\SQLServer2019-KB5014353-x64.exe /x:d:\sqlserver_cu
+.\sqlserver_cu\SETUP.EXE /action=patch /instancename=mssqlserver /q /IAcceptSQLServerLicenseTerms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>使用 PowerShell Module <a target="_blank" rel="noopener" href="https://www.powershellgallery.com/packages/cUserRightsAssignment/1.0.2">cUserRightsAssignment</a> 進行授權管理，用以優化資料庫組態設定。</p>
+<h3 id="Lock-pages-in-memory"><a href="#Lock-pages-in-memory" class="headerlink" title="Lock pages in memory"></a>Lock pages in memory</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Import-Module</span> C:\temp\cUserRight<span class="token punctuation">.</span>psm1
+<span class="token function">Get-UserRight</span> <span class="token string">"NT SERVICE\MSSQLSERVER"</span> <span class="token punctuation">|</span> <span class="token operator">%</span> <span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>UserRights<span class="token punctuation">&#125;</span>
+<span class="token function">Grant-UserRight</span> <span class="token string">"NT SERVICE\MSSQLSERVER"</span> <span class="token string">"SeLockMemoryPrivilege"</span>
+<span class="token function">Get-UserRight</span> <span class="token string">"NT SERVICE\MSSQLSERVER"</span> <span class="token punctuation">|</span> <span class="token operator">%</span> <span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>UserRights<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>驗證 <strong>Lock pages in memory</strong> 啟用的方式</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> a<span class="token punctuation">.</span>memory_node_id<span class="token punctuation">,</span> node_state_desc<span class="token punctuation">,</span> a<span class="token punctuation">.</span>locked_page_allocations_kb
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>dm_os_memory_nodes a
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>dm_os_nodes b <span class="token keyword">ON</span> a<span class="token punctuation">.</span>memory_node_id <span class="token operator">=</span> b<span class="token punctuation">.</span>memory_node_id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>💡 觀察 Locked_page_allocation_kb 不等於 0</p>
+<h3 id="Database-Instant-File-Initialization"><a href="#Database-Instant-File-Initialization" class="headerlink" title="Database Instant File Initialization"></a>Database Instant File Initialization</h3><p>如果再安裝過程忘記加入 <strong>SQLSVCINSTANTFILEINIT</strong> 可以另外以授權的方式處理。</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Import-Module</span> C:\temp\cUserRight<span class="token punctuation">.</span>psm1
+<span class="token function">Get-UserRight</span> <span class="token string">"NT SERVICE\MSSQLSERVER"</span> <span class="token punctuation">|</span> <span class="token operator">%</span> <span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>UserRights<span class="token punctuation">&#125;</span>
+<span class="token function">Grant-UserRight</span> <span class="token string">"NT SERVICE\MSSQLSERVER"</span> <span class="token string">"SeManageVolumePrivilege"</span>
+<span class="token function">Get-UserRight</span> <span class="token string">"NT SERVICE\MSSQLSERVER"</span> <span class="token punctuation">|</span> <span class="token operator">%</span> <span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>UserRights<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>驗證 <strong>資料庫立即檔案初始化</strong> 的方式</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> instant_file_initialization_enabled <span class="token punctuation">,</span><span class="token operator">*</span> <span class="token keyword">from</span> sys<span class="token punctuation">.</span>dm_server_services
+<span class="token keyword">where</span> servicename <span class="token operator">like</span> <span class="token string">'SQL Server%'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>💡 觀察 instant_file_initialization_enabled 為 Y</p>
+<h3 id="如何管理-Service"><a href="#如何管理-Service" class="headerlink" title="如何管理 Service"></a>如何管理 Service</h3><p>使用其他伺服器端環境的 <code class="s">compmgmt.msc</code> 進行 SQL Server Service 管理</p>
+<p><img src="/assets/Windows-Server-Core-Remote-Services-Management.png"></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/an-overview-of-instant-file-initialization-in-sql-server/">An Overview of Instant File Initialization in SQL Server | SQLShack</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.darkthread.net/blog/userright-admin-powershell/">使用 PowerShell 設定使用者權限(User Right) |  黑暗執行緒</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/07/SQL-Server-Installation-On-Server-Core-With-Setup/" data-id="clg3fmaj4018ks4ts1y03fat1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/07/SQL-Server-DBA-Monitor-Database-FileSize/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server DBA Monitor Database FileSize</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/07/SSDLC-Gov-Audit/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          實踐 SSDLC 與《資通安全稽核計畫及稽核作業》⏳
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

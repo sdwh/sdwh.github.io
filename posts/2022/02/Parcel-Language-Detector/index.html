@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Parcel 零配置打包工具入門教學 | 當代網頁開發沉浸心流之術 🐱‍👤 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="相較於 Webpack 需要繁複前置設定的缺點，同樣是打包工具的 Parcel 優點在於可以零配置馬上使用，同時不同於 WebPack 需要準備相關的 Loader，使用 Parcel 已經有內建對於 SCSS、JS Modules 以及 Babel 的處理，同時提供內建的 Dev Server 簡直是小型整合工具。對於延伸進階功能的需求，也可以透過 Plugins 來擴充。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Parcel 零配置打包工具入門教學 | 當代網頁開發沉浸心流之術 🐱‍👤">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/Parcel-Language-Detector/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="相較於 Webpack 需要繁複前置設定的缺點，同樣是打包工具的 Parcel 優點在於可以零配置馬上使用，同時不同於 WebPack 需要準備相關的 Loader，使用 Parcel 已經有內建對於 SCSS、JS Modules 以及 Babel 的處理，同時提供內建的 Dev Server 簡直是小型整合工具。對於延伸進階功能的需求，也可以透過 Plugins 來擴充。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/sdwh/Parcel-Language-Detector/master/assets/Parcel-Demo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="article:published_time" content="2022-02-04T11:09:22.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.909Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="F2E">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Parcel-Language-Detector" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/Parcel-Language-Detector/" class="article-date">
+  <time datetime="2022-02-04T11:09:22.000Z" itemprop="datePublished">2022-02-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Parcel 零配置打包工具入門教學 | 當代網頁開發沉浸心流之術 🐱‍👤
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%92%B0%E5%A2%83%E8%A8%AD%E5%AE%9A"><span class="toc-text">環境設定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dev"><span class="toc-text">Dev</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#index-html"><span class="toc-text">index.html</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#index-js"><span class="toc-text">index.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#custom-scss"><span class="toc-text">custom.scss</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NPM-Scripts"><span class="toc-text">NPM Scripts</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%83%E5%BE%97"><span class="toc-text">心得</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Html-Partials"><span class="toc-text">使用 Html Partials</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E8%A1%8C%E5%8B%95"><span class="toc-text">後續行動</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>相較於 Webpack 需要繁複前置設定的缺點，同樣是打包工具的 Parcel 優點在於可以零配置馬上使用，同時不同於 WebPack 需要準備相關的 Loader，使用 Parcel 已經有內建對於 SCSS、JS Modules 以及 Babel 的處理，同時提供內建的 Dev Server 簡直是小型整合工具。對於延伸進階功能的需求，也可以透過 Plugins 來擴充。</p>
+<a href="/posts/2022/02/Parcel-Language-Detector/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>本次為 Parcel 使用初體驗，規劃設計使用 Bootsrap 5 作為 CSS Framework 並且不使用 CDN 的方式，而是採用 NPM Pacakges 的方式載入 Bootstrap 使用，同時加入其他用途的 Packages 藉由 JS Modules 的設計方式 並藉由 Parcel 來進行打包成靜態檔案成品。</p>
+<p>專案的情境是設計為<strong>判斷使用者輸入內容語言的網頁</strong>，判斷語言的核心功能是藉由 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/franc">franc</a> 以及 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/iso-639-3">iso-639-3</a> 所完成。</p>
+<p><img src="https://raw.githubusercontent.com/sdwh/Parcel-Language-Detector/master/assets/Parcel-Demo.png"></p>
+<div style="display: flex; justify-content:center;margin-top: 30px;">
+  <a href="https://github.com/sdwh/Parcel-Language-Detector" target="_blank">
+    <img src="/assets/openmoji-github.svg" width="50px">Github
+  </a>
+</div>
+
+<h3 id="環境設定"><a href="#環境設定" class="headerlink" title="環境設定"></a>環境設定</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">npm</span> init <span class="token parameter attr-name">-y</span></span>
+<span class="token command"><span class="token keyword">npm</span> install parcel</span>
+
+<span class="token comment">rem BS5</span>
+<span class="token command"><span class="token keyword">npm</span> install bootstrap</span>
+<span class="token command"><span class="token keyword">npm</span> install @popperjs<span class="token parameter attr-name">/core</span></span>
+
+<span class="token comment">rem Lang Detect Tech</span>
+<span class="token command"><span class="token keyword">npm</span> install franc</span>
+<span class="token command"><span class="token keyword">npm</span> install iso<span class="token number">-639</span><span class="token number">-3</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Dev"><a href="#Dev" class="headerlink" title="Dev"></a>Dev</h2><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">│   .gitignore
+│   package-lock.json
+│   package.json
+│   README.md
+│
+├───.vscode
+│       settings.json
+│
+├───assets
+│       openmoji-nerd-face.svg
+│
+├───scss
+│       custom.scss
+│
+└───src
+        <span class="token command"><span class="token keyword">index</span>.html</span>
+        <span class="token command"><span class="token keyword">index</span>.js</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>開發的主力分別為 <code class="s">index.html</code>、<code class="s">index.js</code> 及 <code class="s">custom.scss</code>。</p>
+<p>本次的開發沒有使用 HTML Template 以及 HTML Partials 技術，所以網頁的內容都是設計在 <code class="s">index.html</code>。</p>
+<p>而關於 JS Modules 的使用以及 input 事件的偵測則是寫在 <code class="s">index.js</code>。</p>
+<p>主要的 Style 設計，都透過 Bootstrap Class 完成，所以 <code class="s">custom.scss</code> 只是負責從 Boostrap 載入相關的 Bootstrap Source，沒有進行其他的 Custom Style 設計。</p>
+<h3 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h3><pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">doctype</span> <span class="token name">html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>utf-8<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/scss/custom.scss<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+    ...
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/src/index.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>html 除了網頁內容主體外，分別在 head 以及 body 將 scss 以及 js 載入，而在 scss 或者 js 當中的各種魔幻模組調用，就是 Parcel 打包的事情了。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>Script 引入 index.js 的部分，必須要加註 <code class="s">type="module"</code></p>
+        </div>
+    </div>
+</div>
+
+<h3 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h3><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> bootstrap <span class="token keyword">from</span> <span class="token string">'bootstrap'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>franc<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'franc'</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>iso6393<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'iso-639-3'</span>
+
+<span class="token keyword">let</span> get <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'langInput'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+get<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'keyup'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> langGuess <span class="token operator">=</span> <span class="token function">franc</span><span class="token punctuation">(</span>
+      document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'langInput'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>value<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token literal-property property">minLength</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">&#125;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">let</span> langFullName <span class="token operator">=</span> iso6393<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
+      <span class="token parameter">i</span> <span class="token operator">=></span> i<span class="token punctuation">.</span>iso6393 <span class="token operator">===</span> langGuess<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>name<span class="token punctuation">;</span>
+
+    document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'lang-display'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>textContent <span class="token operator">=</span> langFullName<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="s">index.js</code> 是見證 Parcel 偉大之所在，除了使用 ESM 引入 Bootstrap Components 所需的 JS Code 外，結合調用 franc 以及 iso-639-3 Library 用於處理語言的判斷。</p>
+<p>藉由 Vanilla JS 來設定 Keyup Event Listener 只要使用者輸入內容就可以進行判斷，並將判斷結果以更新 DOM Text Content 的方式進行顯示。</p>
+<h3 id="custom-scss"><a href="#custom-scss" class="headerlink" title="custom.scss"></a>custom.scss</h3><pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token keyword">@import</span> <span class="token string">"../node_modules/bootstrap/scss/bootstrap"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>啊，那個 <code class="s">custom.scss</code> 這邊沒有太多閣下的事情，你引入完 bootstrap 就先下去吧 😶</p>
+<p>🎵 謎之音 引入 bootstrap 的事情交給 <code class="s">index.js</code> 去辦理也是可行的 😋</p>
+<h3 id="NPM-Scripts"><a href="#NPM-Scripts" class="headerlink" title="NPM Scripts"></a>NPM Scripts</h3><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">"dev"</span><span class="token operator">:</span> <span class="token string">"parcel ./src/index.html"</span><span class="token punctuation">,</span>
+  <span class="token property">"prebuild"</span><span class="token operator">:</span> <span class="token string">"npx rimraf build &amp;&amp; rmdir public /s /q"</span><span class="token punctuation">,</span>
+  <span class="token property">"build"</span><span class="token operator">:</span> <span class="token string">"parcel build ./src/index.html --dist-dir ./public"</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>平常在開發的時候使用 <code class="s">npm run dev</code>，要產生 Production Files 的時候則使用 <code class="s">npm run build</code>，這邊在 build 的目的是自定義為 public 資料夾，同時在 <code class="s">prebuild</code> 加入清除 public 的前置動作。</p>
+<h2 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h2><p>Parcel 的簡單好用經由這次使用案例就可以看出，幾乎沒有特別使用任何設定，幾乎是按照 Boostrap 中關於 Parcel 打包教學的<a target="_blank" rel="noopener" href="https://getbootstrap.com/docs/5.0/getting-started/parcel/#build-app">文件</a>就完成所有的前置作業。</p>
+<p>馬上就能夠享受模組化的 JS 開發方式，並且綜合 NPM 豐富的函式庫，站在巨人的肩膀上進行開發，大呼過癮，好不快樂 😁</p>
+<h3 id="使用-Html-Partials"><a href="#使用-Html-Partials" class="headerlink" title="使用 Html Partials"></a>使用 Html Partials</h3><p>Parcel 支援使用 <a target="_blank" rel="noopener" href="https://github.com/posthtml/posthtml">PostHTML</a>，只要在專案加入 <code class="s">.posthtmlrc</code> 設定檔，並於設定檔鍵入下列內容</p>
+<p><code class="watch">.posthtmlrc</code></p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"plugins"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"posthtml-include"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>就可以在 Html Files 中使用 <code class="s">include</code> Tag 來引入其他 Html Files。</p>
+<p><code class="watch">index.html</code></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./src/head.html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>Hello World<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">head.html</code></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>home<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>links<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>about<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">index.html (compiled)</code></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>home<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>links<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>about<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>Hello World<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="後續行動"><a href="#後續行動" class="headerlink" title="後續行動"></a>後續行動</h3><p>加入 Html Template (EJS / Pug) ，參考 <a target="_blank" rel="noopener" href="https://getbootstrap.com/docs/5.0/examples/">Bootstrap Examples</a> 及 <a target="_blank" rel="noopener" href="https://startbootstrap.com/themes?showPro=false&showAngular=false">startbootstrap</a> 的 template 設計 HTML 網頁開發的模板，回應當年使用 Gulp <a href="https://sdwh.dev/posts/2020/04/Gulp/">未盡的野望</a>。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://dev.to/aileenr/blazing-fast-frontend-development-with-parcel-21dc#separating-html-into-partials-with-posthtmlinclude">Let’s Build a HTML and CSS Landing Page with Parcel</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/Parcel-Language-Detector/" data-id="clg3fmag700xps4ts0so036f4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/NodeJS-CommonJS-Modules/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Node.js CommonJS Modules</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/SSDLC-Essentials/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SSDLC 附表十《資通系統防護基準修正規定》DSCS 的精華湯 🥣
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

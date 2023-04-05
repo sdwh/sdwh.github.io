@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Interfaces 介面使用筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET 進行物件導向程式設計時，如何使用 Interface 提升程式的維護與擴充性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Interfaces 介面使用筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/ASPNET-OOP-Interfaces/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET 進行物件導向程式設計時，如何使用 Interface 提升程式的維護與擴充性。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-OOP-Interface-Examples-1.png">
+<meta property="article:published_time" content="2021-06-17T12:00:30.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="OOP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-OOP-Interfaces" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/ASPNET-OOP-Interfaces/" class="article-date">
+  <time datetime="2021-06-17T12:00:30.000Z" itemprop="datePublished">2021-06-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Interfaces 介面使用筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Concrete-Class-Inheritance"><span class="toc-text">Concrete Class Inheritance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Abstract-Class-Inheritance"><span class="toc-text">Abstract Class Inheritance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Interfaces-Implement"><span class="toc-text">Interfaces Implement</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B5%90%E5%90%88%E6%A8%A1%E5%BC%8F%E4%BD%BF%E7%94%A8"><span class="toc-text">結合模式使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Repository-Pattern-Simple-Factory-Pattern"><span class="toc-text">Repository Pattern &#x2F; Simple Factory Pattern</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Repository-Interface"><span class="toc-text">Repository Interface</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Concrete-Class"><span class="toc-text">Concrete Class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Repository-Factory"><span class="toc-text">Repository Factory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Usage"><span class="toc-text">Usage</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dynamic-Factory"><span class="toc-text">Dynamic Factory</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RepositoryDynamicFactory"><span class="toc-text">RepositoryDynamicFactory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#App-config"><span class="toc-text">App.config</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Usage-1"><span class="toc-text">Usage</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reference-%E7%9A%84%E8%A8%AD%E5%AE%9A"><span class="toc-text">Reference 的設定</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%8E%E7%A2%BA%E7%9A%84%E5%AF%A6%E4%BD%9C%E4%BB%8B%E9%9D%A2-Explicit-Interface-Implementation"><span class="toc-text">明確的實作介面, Explicit Interface Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Usage-2"><span class="toc-text">Usage</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET 進行物件導向程式設計時，如何使用 Interface 提升程式的維護與擴充性。</p>
+<a href="/posts/2021/06/ASPNET-OOP-Interfaces/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>首先回顧在物件導向設計中，如何重複使用程式碼的設計方式。</p>
+<h3 id="Concrete-Class-Inheritance"><a href="#Concrete-Class-Inheritance" class="headerlink" title="Concrete Class Inheritance"></a>Concrete Class Inheritance</h3><p>Without Compiler Check</p>
+<p>High Coupling</p>
+<h3 id="Abstract-Class-Inheritance"><a href="#Abstract-Class-Inheritance" class="headerlink" title="Abstract Class Inheritance"></a>Abstract Class Inheritance</h3><p>One or More Properties / Methods are Abstract</p>
+<p>Compiler Check</p>
+<p>Unable new Object</p>
+<h3 id="Interfaces-Implement"><a href="#Interfaces-Implement" class="headerlink" title="Interfaces Implement"></a>Interfaces Implement</h3><p>Contract, All Property And Method is <strong>Public</strong></p>
+<p>Without Implementation Details</p>
+<p>Compiler Check</p>
+<p>Code Reuse Not In Inheritance, In Runtime Class</p>
+<p>Unable new Object</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>Interface 不能有預設實作的規範、所有成員都是 Public，在 C# 8.0 後有了改變， C# 8.0 提供了 Default Interface Methods。同時也支援在 Interface 中增加存取修飾子，以提供 Default Interface Method 所使用。</p><br/>
+            <a target="_blank" rel="noopener" href="https://www.talkingdotnet.com/default-implementations-in-interfaces-in-c-sharp-8/">Interfaces in C# 8.0 gets a makeover</a>
+        </div>
+    </div>
+</div>
+
+
+<h2 id="結合模式使用"><a href="#結合模式使用" class="headerlink" title="結合模式使用"></a>結合模式使用</h2><h3 id="Repository-Pattern-Simple-Factory-Pattern"><a href="#Repository-Pattern-Simple-Factory-Pattern" class="headerlink" title="Repository Pattern / Simple Factory Pattern"></a>Repository Pattern / Simple Factory Pattern</h3><p>Repository Interface 約定提供存取資料的屬性與方法。</p>
+<h4 id="Repository-Interface"><a href="#Repository-Interface" class="headerlink" title="Repository Interface"></a>Repository Interface</h4><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IRecordRepository</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name">IEnumerable<span class="token punctuation">&lt;</span>Record<span class="token punctuation">></span></span> <span class="token function">GetRecord</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Concrete-Class"><a href="#Concrete-Class" class="headerlink" title="Concrete Class"></a>Concrete Class</h4><p>實作的 Interface 的類別，提供在不同需求下的演算邏輯。</p>
+<p>EntityFrameworkCore 自帶存取 SQLite 的方法，太棒了 😋</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CSVRepository</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IRecordRepository</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">string</span></span> path<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">CSVRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> filename <span class="token operator">=</span> ConfigurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">[</span><span class="token string">"CSVFileName"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        path <span class="token operator">=</span> AppDomain<span class="token punctuation">.</span>CurrentDomain<span class="token punctuation">.</span>BaseDirectory <span class="token operator">+</span> filename<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">IEnumerable<span class="token punctuation">&lt;</span>Record<span class="token punctuation">></span></span> <span class="token function">GetRecord</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SQLRepository</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IRecordRepository</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">DbContextOptions<span class="token punctuation">&lt;</span>RecordContext<span class="token punctuation">></span></span> options<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">SQLRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> optionsBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DbContextOptionsBuilder<span class="token punctuation">&lt;</span>RecordContext<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        optionsBuilder<span class="token punctuation">.</span><span class="token function">UseSqlite</span><span class="token punctuation">(</span><span class="token string">"Data Source=Record.db"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        options <span class="token operator">=</span> optionsBuilder<span class="token punctuation">.</span>Options<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">IEnumerable<span class="token punctuation">&lt;</span>Record<span class="token punctuation">></span></span> <span class="token function">GetRecord</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RecordContext</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> context<span class="token punctuation">.</span>Record<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Repository-Factory"><a href="#Repository-Factory" class="headerlink" title="Repository Factory"></a>Repository Factory</h4><p>使用工廠模式減少物件產生上的耦合。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">RepositoryFactory</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IRecordRepository</span> <span class="token function">GetRepository</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> repositoryType<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name">IRecordRepository</span> repo <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>repositoryType<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">case</span> <span class="token string">"CSV"</span><span class="token punctuation">:</span> 
+                repo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CSVRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"SQL"</span><span class="token punctuation">:</span> 
+                repo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">SQLRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token punctuation">:</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentException</span><span class="token punctuation">(</span><span class="token string">"repository type not exists"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">return</span> repo<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h4><p>實際使用時，分別提供不同的方法 (CSVDataFetch, SQLDataFetch)，但都對應到相同的 PopulateList 方法的執行邏輯，只因傳入的字串不同，由工廠模式負責產生 repository。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">CSVDataFetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">PopulateList</span><span class="token punctuation">(</span><span class="token string">"CSV"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SQLDataFetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">PopulateList</span><span class="token punctuation">(</span><span class="token string">"SQL"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">PopulateList</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> repositoryType<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">IRecordRepository</span> repository <span class="token operator">=</span>
+      RepositoryFactory<span class="token punctuation">.</span><span class="token function">GetRepository</span><span class="token punctuation">(</span>repositoryType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> records <span class="token operator">=</span> repository<span class="token punctuation">.</span><span class="token function">GetRecord</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token keyword">var</span> <span class="token keyword">record</span> <span class="token class-name"><span class="token keyword">in</span></span> records<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token keyword">record</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Dynamic-Factory"><a href="#Dynamic-Factory" class="headerlink" title="Dynamic Factory"></a>Dynamic Factory</h3><p>上述結合 Repository Pattern 與 Factory Pattern 的方式是在 Comppile 的期間決定使用的 Repository 類別，而藉由 Dynamic Factory 的設計方式，可以轉為由 Runtime 決定使用的 Repository 類別，易於程式的變動與擴充，但不容易 Debug。特別適用的情境是不希望程式異動就要重新編譯所有程式，並且要更換所有端點設備程式的情況。</p>
+<p>Dynamic Factory 將 Repository 類別的使用由 App.config / Web.config 決定，只要提供執行環境對應的 DLL 檔案，就可以動態的使用各 Repository 類別。</p>
+<h4 id="RepositoryDynamicFactory"><a href="#RepositoryDynamicFactory" class="headerlink" title="RepositoryDynamicFactory"></a>RepositoryDynamicFactory</h4><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">RepositoryDynamicFactory</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IRecordRepository</span> <span class="token function">GetRepository</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">string</span></span> repositoryType <span class="token operator">=</span> ConfigurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">[</span><span class="token string">"RepositoryType"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token class-name">Type</span> repositoryType <span class="token operator">=</span> Type<span class="token punctuation">.</span><span class="token function">GetType</span><span class="token punctuation">(</span>repositoryType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">object</span></span> repository <span class="token operator">=</span> Activator<span class="token punctuation">.</span><span class="token function">CreateInstance</span><span class="token punctuation">(</span>repositoryType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">IRecordRepository</span> recordRepository <span class="token operator">=</span> repository <span class="token keyword">as</span> <span class="token class-name">IRecordRepository</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> recordRepository<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="App-config"><a href="#App-config" class="headerlink" title="App.config"></a>App.config</h4><p>config 中的 repositoryType 是以 assembly 的方式賦值，其中 RecordRepository.CSV.CSVRepository 為 namespace + class name，RecordRepository.CSV 為 namespace，Version=1.0.0.0 表示 assmebly 的版本。</p>
+<p>CSV Repository 或 SQL Repository　以註解與否的方式作為選擇。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token comment">&lt;!-- Settings for CSV Repository --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appSettings</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>RepositoryType<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>RecordRepository.CSV.CSVRepository, 
+        RecordRepository.CSV, Version=1.0.0.0, Culture=neutral<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CSVFileName<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Records.txt<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>appSettings</span><span class="token punctuation">></span></span>
+
+<span class="token comment">&lt;!-- Settings for SQL Repository --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appSettings</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>RepositoryType<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>RecordRepository.SQL.SQLRepository,
+        RecordRepository.SQL, Version=1.0.0.0, Culture=neutral<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>appSettings</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Usage-1"><a href="#Usage-1" class="headerlink" title="Usage"></a>Usage</h4><p>改為使用 DynamicFactory</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">PopulateList</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> repositoryType<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">IRecordRepository</span> repository <span class="token operator">=</span>
+      RepositoryDynamicFactory<span class="token punctuation">.</span><span class="token function">GetRepository</span><span class="token punctuation">(</span>repositoryType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> records <span class="token operator">=</span> repository<span class="token punctuation">.</span><span class="token function">GetRecord</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token keyword">var</span> <span class="token keyword">record</span> <span class="token class-name"><span class="token keyword">in</span></span> records<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token keyword">record</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Reference-的設定"><a href="#Reference-的設定" class="headerlink" title="Reference 的設定"></a>Reference 的設定</h4><p>RepositoryDynamicFactory 需要將 RecordRepository.CSV、RecordRepository.SQL 專案加入參考。</p>
+<p>而主要執行的程式則僅需將 RepositoryDynamicFactory 專案加入參考。</p>
+<p>在編譯的時候藉由建置事件將 RecordRepository.CSV、RecordRepository.SQL 等 DLL 複製到主程式編譯結果中。</p>
+<p><img src="/assets/ASPNET-OOP-Interface-Examples-1.png"></p>
+<h2 id="明確的實作介面-Explicit-Interface-Implementation"><a href="#明確的實作介面-Explicit-Interface-Implementation" class="headerlink" title="明確的實作介面, Explicit Interface Implementation"></a>明確的實作介面, Explicit Interface Implementation</h2><p>如果 Class 實作兩個以上的 Interface，而這些 Interface 有相同簽章的方法時，可以藉由<strong>明確的實作介面</strong>來區隔不同 Interface 所使用的方法邏輯。</p>
+<p>從 Microsoft Documents 的範例可以看到，在沒有明確實作介面的情況下，不論是以 concrete type (SampleClass) 或者任一種 interface (IControl, ISurface) ，相同 signature 方法所呼叫的都是同一個方法 (paint)。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IControl</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ISurface</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SampleClass</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IControl</span><span class="token punctuation">,</span> <span class="token class-name">ISurface</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Paint method in SampleClass"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">SampleClass</span> sample <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">SampleClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">IControl</span> control <span class="token operator">=</span> sample<span class="token punctuation">;</span>
+<span class="token class-name">ISurface</span> surface <span class="token operator">=</span> sample<span class="token punctuation">;</span>
+
+sample<span class="token punctuation">.</span><span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+control<span class="token punctuation">.</span><span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+surface<span class="token punctuation">.</span><span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>藉由明確的實作，則可以區別 SampleClass type 的 sample, IControl type 的 control 以及 ISurface type 的 surface 所使用的方法。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SampleClass</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IControl</span><span class="token punctuation">,</span> <span class="token class-name">ISurface</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Paint method in SampleClass"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> IControl<span class="token punctuation">.</span><span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Paint method in IControl"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> ISurface<span class="token punctuation">.</span><span class="token function">Paint</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Paint method in ISurface"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Usage-2"><a href="#Usage-2" class="headerlink" title="Usage"></a>Usage</h3><p>在實作 IEnumerable&lt;T&gt; 的時候，因為 IEnumerable&lt;T&gt; 必須實作 IEnumerable，因此 Concrete Class 會需要實作同簽名 GetEnumerator Method。</p>
+<p>而在設計上會重複使用程式碼，讓 IEnumerable 也使用 IEnumerable&lt;int&gt; 的 GetEnumerator Method，因此先以 public 的方式宣告 IEnumerable&lt;int&gt; GetEnumerator，另在明確的實作 IEnumerable 的 GetEnumerator ，並且以呼叫類別中的 GetEnumerator 表示是使用 IEnumerable&lt;int&gt; 的 GetEnumerator Method。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p><strong>為什麼 IEnumerable&lt;int&gt; 不使用明確的實作方式？</strong></p>
+            <p>對 Compiler 而言，只要有時做 IEnumerable&lt;T&gt; 與 IEnumrable 的 GetEnumerator Method 即可，至於是否要明確的實作並不影響。此外如果 IEnumerable&lt;T&gt; 明確實作的方式，IEnumrable 就無法對其呼叫重複使用程式碼。</p>
+            <p><strong>為什麼需要實作兩次 GetEnumerator？如果要提供的方法都是相同的演算邏輯。</strong></p>
+            <p>對 Compiler 而言，因為 IEnumerable&lt;T&gt; 以及 IEnumerable 的 GetEnumerator 回傳型別是不同的(分別是IEnumerator&lt;T&gt; 以及 IEnumerator)，因此需要有不同的實作。</p>
+        </div>
+    </div>
+</div>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OddGenerator</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">IEnumerator<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> <span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">yield</span> <span class="token keyword">return</span> i<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            i <span class="token operator">+=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+            <span class="token keyword">yield</span> <span class="token keyword">return</span> i<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token return-type class-name">IEnumerator</span> IEnumerable<span class="token punctuation">.</span><span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">GetEnumerator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/using-csharp-interfaces/table-of-contents">Pluralsight - C# Interfaces</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/ASPNET-OOP-Interfaces/" data-id="clg3fma9y006ls4tsa9knhi5c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OOP/" rel="tag">OOP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Dependency Injection 初探筆記 (DI &amp; IOC)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/ASPNET-Coding-Conventions/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET C# Coding Conventions
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

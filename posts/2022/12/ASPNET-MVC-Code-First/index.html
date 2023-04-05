@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC 使用 Entity Framework Code First | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何使用 Entity Framework 在 ASP.NET MVC 專案下使用 Code First 進行開發。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 使用 Entity Framework Code First">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/12/ASPNET-MVC-Code-First/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何使用 Entity Framework 在 ASP.NET MVC 專案下使用 Code First 進行開發。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2022-12-10T10:11:15.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="ADONET">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Code-First" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/12/ASPNET-MVC-Code-First/" class="article-date">
+  <time datetime="2022-12-10T10:11:15.000Z" itemprop="datePublished">2022-12-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 使用 Entity Framework Code First
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%9D-Entity-Framework"><span class="toc-text">安裝 Entity Framework</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-POCO-%E9%A1%9E%E5%88%A5"><span class="toc-text">建立 POCO 類別</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-DBContext"><span class="toc-text">建立 DBContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DatabaseCreate-amp-Database-Initialization-Strategies"><span class="toc-text">DatabaseCreate &amp; Database Initialization Strategies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Migrations"><span class="toc-text">Migrations</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Auto-Migrations"><span class="toc-text">Auto Migrations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Code-Based-Migration"><span class="toc-text">Code-Based Migration</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何使用 Entity Framework 在 ASP.NET MVC 專案下使用 Code First 進行開發。</p>
+<a href="/posts/2022/12/ASPNET-MVC-Code-First/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="安裝-Entity-Framework"><a href="#安裝-Entity-Framework" class="headerlink" title="安裝 Entity Framework"></a>安裝 Entity Framework</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Install-Package</span> EntityFramework<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="建立-POCO-類別"><a href="#建立-POCO-類別" class="headerlink" title="建立 POCO 類別"></a>建立 POCO 類別</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">EF_CodeFirst<span class="token punctuation">.</span>Models</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Person</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">DateTime<span class="token punctuation">?</span></span> BirthDate <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="建立-DBContext"><a href="#建立-DBContext" class="headerlink" title="建立 DBContext"></a>建立 DBContext</h3><p><code class="watch">SqlDbContext.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Data<span class="token punctuation">.</span>Entity</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">EF_CodeFirst<span class="token punctuation">.</span>Models</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">EF_CodeFirst<span class="token punctuation">.</span>DAL</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SqlDbContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token function">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> People <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>完成上述的設定，Entity Framework 就已經能夠被啟動了，而這個時候資料庫會被建立在那裡？</p>
+<p>預設上當 <code class="s">DbContext</code> 的建構子繼承沒有提供任何參數時，預設就會以 namespace 命名資料庫，並且建立在 <code class="s">(LocalDB)\MSSQLLocalDB</code> 當中。</p>
+<p>而如果想要指定資料庫名稱，可以藉由提供建構子參數來達成：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SqlDbContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token string">"DatabaseName"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> People <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此外也可以指定為 <code class="s">Web.config</code> 當中的連線字串名稱或者是直接提供連線字串的方式，讓 Entity Framework 直接在目標資料庫伺服器進行資料庫的建立：</p>
+<p><code class="watch">Web.config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>connectionStrings</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CodeFirstDB<span class="token punctuation">"</span></span>
+        <span class="token attr-name">connectionString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Data Source=.;Initial Catalog=DabaseName;Integrated Security=True;
+        Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;
+        ApplicationIntent=ReadWrite;MultiSubnetFailover=False<span class="token punctuation">"</span></span>
+        <span class="token attr-name">providerName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Data.SqlClient<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>connectionStrings</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">SqlDbContext.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SqlDbContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token string">"name=CodeFirstDB"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> People <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="DatabaseCreate-amp-Database-Initialization-Strategies"><a href="#DatabaseCreate-amp-Database-Initialization-Strategies" class="headerlink" title="DatabaseCreate &amp; Database Initialization Strategies"></a>DatabaseCreate &amp; Database Initialization Strategies</h3><p><code class="watch">HomeController.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HomeController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Controller</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">SqlDbContext</span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Index</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span>People<span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">AddPerson</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span>People<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"Alice"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"Index"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在 IISExpress 啟動後，資料庫就會自行建立，配合 Controller 可以測試資料的呈現。</p>
+<p>而如果 POCO 類別發生改變，預設上資料庫只會在不存在時重建，因此 POCO 類別的改變不會讓資料庫的綱要重新建立。</p>
+<p>這時可以搭配 <code class="s">Database.SetInitializer</code> 來指定資料庫初始化的策略。</p>
+<dl>
+  <dt>CreateDatabaseIfNotExists</dt>
+  <dd>預設的行為，當資料庫不存在時建立，EF 1.0 加入。</dd>
+  <dt>DropCreateDatabaseAlways</dt>
+  <dd>每次重新啟動 IISExpress 時，自動重新建立資料庫，適合使用在模擬與測試環境，EF 1.0 加入。</dd>
+  <dt>DropCreateDatabaseIfModelChanges</dt>
+  <dd>當模型 (POCO 類別) 發生改變時，自動重新建立資料庫，適合在設計類別的開發情境，EF 4.1 加入</dd>
+</dl>
+
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>上述的 Initialization Strategies 最大的限制就是可能誤對正式環境的資料造成影響，因此在 EF 4.3 加入的 <strong>Migrations</strong>成為了資料庫異動的最優先適用技術，能夠使用類似於 Git 的方式達到對資料庫的異動版本控制化，並且更具資料庫異動上的彈性。</p>
+        </div>
+    </div>
+</div>
+
+<p><code class="watch">SqlDbContext.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SqlDbContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token string">"name=CodeFirstDB"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Database<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">SetInitializer</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">DropCreateDatabaseAlways<span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Database<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">SetInitializer</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">CreateDatabaseIfNotExists<span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Database<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">SetInitializer</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">DropCreateDatabaseIfModelChanges<span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> People <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此外也能基於上述的資料庫初始化策略，客製化資料庫初始化，結合自動加入測試資料的應用方式：</p>
+<p><code class="watch">SqlDbContext.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SqlDbContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">SqlDbContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span><span class="token string">"name=CodeFirstDB"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+            Database<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">SetInitializer</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Initializer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> People <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Initializer.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Initializer</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DropCreateDatabaseIfModelChanges<span class="token punctuation">&lt;</span>SqlDbContext<span class="token punctuation">></span></span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Seed</span><span class="token punctuation">(</span><span class="token class-name">SqlDbContext</span> context<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">base</span><span class="token punctuation">.</span><span class="token function">Seed</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        context<span class="token punctuation">.</span>People<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+          <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"Alice"</span><span class="token punctuation">,</span> BirthDate <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">System<span class="token punctuation">.</span>DateTime</span><span class="token punctuation">(</span><span class="token number">1995</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        context<span class="token punctuation">.</span>People<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+          <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span> BirthDate <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">System<span class="token punctuation">.</span>DateTime</span><span class="token punctuation">(</span><span class="token number">1995</span><span class="token punctuation">,</span> <span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Database Initialized Done."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述填入初始資料的動作稱為 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Database_seeding">Database seeding</a>。</p>
+<h3 id="Migrations"><a href="#Migrations" class="headerlink" title="Migrations"></a>Migrations</h3><p>而雖然有了資料庫初始化策略，但隨著開發過程的深入，使用者可能在資料庫已經留下許多的測試資料，不適合再貿然重置整個資料庫，這個時候就可以加入 <code class="s">Migrations</code> 機制，為資料庫的異動建立版本控制，兼顧開發過程中，資料庫的升版與退版功能。</p>
+<p>而在 Migrations 的使用，可以分為 Auto Migrations 以及 Code-Based Migrations。</p>
+<h4 id="Auto-Migrations"><a href="#Auto-Migrations" class="headerlink" title="Auto Migrations"></a>Auto Migrations</h4><p>使用 Auto Migrations 後，當 POCO 以及 Model 發生變化時，會自動進行資料庫綱要的變更，同時會在資料庫的 <code class="s">__MigrationHistory</code> 資料表加上紀錄。</p>
+<p>要使用 Auto Migrations 需要在 Package Manager Console 執行 <code class="s">Enable-Migrations</code></p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Enable-Migrations</span> <span class="token operator">-</span>EnableAutomaticMigration:<span class="token boolean">$true</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>執行後，會自動加入 Migrations 資料夾以及 <code class="s">COnfiguration.cs</code>：</p>
+<p><code class="watch">Migrations/Configuration.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">internal</span> <span class="token keyword">sealed</span> <span class="token keyword">class</span> <span class="token class-name">Configuration</span> <span class="token punctuation">:</span> 
+  <span class="token type-list"><span class="token class-name">DbMigrationsConfiguration<span class="token punctuation">&lt;</span>EF_CodeFirst<span class="token punctuation">.</span>DAL<span class="token punctuation">.</span>SqlDbContext<span class="token punctuation">></span></span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        AutomaticMigrationsEnabled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        ContextKey <span class="token operator">=</span> <span class="token string">"EF_CodeFirst.DAL.SqlDbContext"</span><span class="token punctuation">;</span>
+        AutomaticMigrationDataLossAllowed <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Seed</span><span class="token punctuation">(</span><span class="token class-name">EF_CodeFirst<span class="token punctuation">.</span>DAL<span class="token punctuation">.</span>SqlDbContext</span> context<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>預設不會加入 <code class="s">AutomaticMigrationDataLossAllowed</code>，啟用才能夠允許當 POCO 變更如果會造成資料移除的情境。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>需要注意的是當使用 Auto Migratinos 後，雖然只有在POCO 以及 Model 發生變化時，才會在 <code class="s">__MigrationHistory</code>  加入異動紀錄，但 <code class="s">Seed</code> 的部分則是每次應用程式啟用都會被執行。因此如果有 Seeding Database 的需求，需要在 Seed 的部分檢查資料是否已經存在，而非直接重複性的加入資料，詳細可以參考 Stackoverflow 的討論 <a href="https://stackoverflow.com/questions/10822618/confusion-over-ef-auto-migrations-and-seeding-seeding-every-program-start" target="_blank">Confusion over EF Auto Migrations and seeding - seeding every program start</a></p>
+        </div>
+    </div>
+</div>
+
+<h4 id="Code-Based-Migration"><a href="#Code-Based-Migration" class="headerlink" title="Code-Based Migration"></a>Code-Based Migration</h4><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">enable</span>-migrations</span>
+<span class="token command"><span class="token keyword">add</span>-migrations -name Description</span>
+<span class="token command"><span class="token keyword">update</span>-database</span>
+<span class="token command"><span class="token keyword">Update</span>-Database</span>
+<span class="token command"><span class="token keyword">Update</span>-Database -Script -SourceMigration:<span class="token number">0</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.entityframeworktutorial.net/code-first/what-is-code-first.aspx">Entity Framework Tutorial</a></p>
+<p><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/supershowwei/2016/04/11/000015">[料理佳餚] Entity Framework Code First 不算太難用 | 軟體主廚的程式料理廚房</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">Creating an Entity Framework Data Model for an ASP.NET MVC Application</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/12/ASPNET-MVC-Code-First/" data-id="clg3fma92002ss4tsfe84fkhj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ADONET/" rel="tag">ADONET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/12/WebForms-And-MVC/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WebForms And MVC</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/12/Web-Application-Architecture/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Web Application Architecture (Repository Pattern)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

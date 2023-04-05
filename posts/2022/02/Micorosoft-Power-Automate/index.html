@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Micorosoft Power Automate | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明 Microsoft Power Automate 的用途以及使用方式。Power Automate 是微軟的 RPA 解決方案，原名為 Microsoft FLow，屬於 Software as a service 的服務，支援雲端線上與桌面使用 (Desktop)。在使用的價格上 Power Automate 提供有限功能的免費使用，並且使用訂閱制每人月費計價的方式，價格依照方案的不同從">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Micorosoft Power Automate">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/Micorosoft-Power-Automate/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明 Microsoft Power Automate 的用途以及使用方式。Power Automate 是微軟的 RPA 解決方案，原名為 Microsoft FLow，屬於 Software as a service 的服務，支援雲端線上與桌面使用 (Desktop)。在使用的價格上 Power Automate 提供有限功能的免費使用，並且使用訂閱制每人月費計價的方式，價格依照方案的不同從">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Microsoft-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Power-Automate-Languages.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Power-Automate-GUI.png">
+<meta property="article:published_time" content="2022-02-25T07:05:44.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Toys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Microsoft-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Micorosoft-Power-Automate" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/Micorosoft-Power-Automate/" class="article-date">
+  <time datetime="2022-02-25T07:05:44.000Z" itemprop="datePublished">2022-02-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Microsoft/">Microsoft</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Micorosoft Power Automate
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%8E%88%E6%AC%8A"><span class="toc-text">使用授權</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%80%8F%E8%A6%BD%E5%99%A8%E7%9A%84-Agent"><span class="toc-text">瀏覽器的 Agent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Setting-Language"><span class="toc-text">Setting Language</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#User-Experience"><span class="toc-text">User Experience</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UI-Elements"><span class="toc-text">UI Elements</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OCR"><span class="toc-text">OCR</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#You-Don%E2%80%99t-Need-Power-Automate-%F0%9F%A4%94"><span class="toc-text">You Don’t Need Power Automate 🤔</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明 Microsoft Power Automate 的用途以及使用方式。Power Automate 是微軟的 RPA 解決方案，原名為 Microsoft FLow，屬於 Software as a service 的服務，支援雲端線上與桌面使用 (Desktop)。在使用的價格上 Power Automate 提供有限功能的免費使用，並且使用訂閱制每人月費計價的方式，價格依照方案的不同從 450 到 1200 元等。</p>
+<a href="/posts/2022/02/Micorosoft-Power-Automate/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Microsoft-Logo.svg" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Mircosoft Power Automate 是 RPA (Robotic Process Automation) 解決方案工具，針對的使用族群是辦公室人員，能夠將例行且變化不大的電腦文書工作，使用 GUI 工具將流程設計成自動化作業，釋放人力去做更有價值的事情 😃</p>
+<h3 id="使用授權"><a href="#使用授權" class="headerlink" title="使用授權"></a>使用授權</h3><p>定價上分為依照使用者授權或者流程授權，最基本方案的使用者授權價格為每人每月 450 元新台幣、進階方案則是每人每月 1200 元新台幣，另外有依照流程數計費的方式可以選擇。</p>
+<p>在價格上 Microsoft Power Autmoate 可能不是最有競爭力的，但絕對是最透明的價格方案，相較於其他方案複雜的授權與計費方式，Power Automate 就是直白的每人每年成本約 14400 元新台幣 (進階方案計價)，如果有使用 Microsoft 365 (Office 365) 則是另外的授權計價。</p>
+<p><a target="_blank" rel="noopener" href="https://powerautomate.microsoft.com/zh-tw/pricing/">Power Automate 定價 | Microsoft</a></p>
+<p><strong>Power Automate 支援有限功能的免費使用，不論是在雲端線上或者是桌面使用，只需要以 Microsoft 的帳號登入即可。</strong></p>
+<h3 id="瀏覽器的-Agent"><a href="#瀏覽器的-Agent" class="headerlink" title="瀏覽器的 Agent"></a>瀏覽器的 Agent</h3><p>本次測試是以 Power Automate Desktop，安裝完成後就可以設計流程來自動化作業系統上的作業。而要支配瀏覽器則需要為瀏覽器安裝 Agent，授予 Agent 使用瀏覽器的權限，否則在執行瀏覽器相關作業的時候會發生問題。</p>
+<h3 id="Setting-Language"><a href="#Setting-Language" class="headerlink" title="Setting Language"></a>Setting Language</h3><p>Power Automate Desktop 的語言設定是依照作業系統的慣用語言順序，而非自由調整。</p>
+<p><img src="/assets/Power-Automate-Languages.png"></p>
+<h3 id="User-Experience"><a href="#User-Experience" class="headerlink" title="User Experience"></a>User Experience</h3><p>本次使用的桌面環境，必須在連網的情況下使用，流程的設計也都是保存在雲端上，桌面只是提供了設計的介面以及與本機作業系統互動的環境。</p>
+<p>左側的面板依照 SYSTEM, Browser, File, OCR, Azure 等分類，在細分各個可以做為流程的動作，動作會再以視窗提供調整的參數，並且可以導出變數。</p>
+<p>右側的面板分為三大類，分別是輸出入及流程中的變數、UI Elements 與截圖管理。</p>
+<p>在一個流程 (Flow) 可以再細分為 SubFlow，讓複雜的流程可依照模組化的方式設計，也更容易進行維護。此外除了逐一設計動作外，也可以以按鍵精靈或類似 Excel 巨集的方式進行錄製 (Recorder)。</p>
+<p><img src="/assets/Power-Automate-GUI.png"></p>
+<h3 id="UI-Elements"><a href="#UI-Elements" class="headerlink" title="UI Elements"></a>UI Elements</h3><p>Power Automate 能夠將 Browser 與 Desktop 上的 UI 項目藉由使用者主動標記為 UI Elements，並將這些 UI Elements 作為可以被加入自動化流程互動的一部分。</p>
+<p>這項功能讓 Power Automate 與直接寫 Script 比起來對使用者十分方便，不需要用座標、圖像或者是 CSS Selector 的方式去標註 Elements，只需要直接用滑鼠點選，十分方便。</p>
+<h3 id="OCR"><a href="#OCR" class="headerlink" title="OCR"></a>OCR</h3><p>內建的 OCR 功能也是 Power Automation 的強項，辨識率不差且速度快。</p>
+<p>在免費層級的使用上，用於將日常的紙本表單識別為文字後，搭配自動輸入的流程，能夠大幅的減少原本作業上的不便。應用的情境包含差旅費用、人事假單、庶務申請等等項目，對於辦公室的自動化使用情境而言 OCR 扮演相當重要的角色。</p>
+<h2 id="You-Don’t-Need-Power-Automate-🤔"><a href="#You-Don’t-Need-Power-Automate-🤔" class="headerlink" title="You Don’t Need Power Automate 🤔"></a>You Don’t Need Power Automate 🤔</h2><p>Power Automate 對於沒有程式設計技能的使用者而言，能夠自動化例行的作業，同時在處理 UI Elements 或者 OCR 辨識上都很容易處理。</p>
+<p>但因為沒有對於流程 Editor 的功能 (例如 Power BI 的 Query M)，要設計較為複雜的流程上較受限制，雖然可以藉由搭配執行 Script 的方式得到功能上的擴充，但始終不如直接寫 Python 或者 PowerShell 來得便利，而相對地如果寫 Python 或者 PoweShell 要自行負責處理 UI Elements 或者 OCR 辨識。</p>
+<p>對於工程師而言，Power Automate 仍是可以顧及日常的使用場景，要管理眾多特定任務的流程 (Flow) 也不是容易的事情，藉由 Power Automate 可以更快速的開始自動化的設計，活用它所提供的 UI Elements、OCR 以及其他與雲端 AI 整合的功能。</p>
+<p>此外也可以從 Power Automate 所支援的流程設計功能，反思如何以 Script 實踐，不僅是使用更是學習，最重要的是 Power Automate 免費層級就非常好用，這點和 Power BI 相同，給過 😋</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/Micorosoft-Power-Automate/" data-id="clg3fmafh00uqs4ts1kfvf55o" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/IIS-New-Server/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">迎新 Web / IIS 伺服器安裝與設定指南 (Debut IIS Server Setup) 👋</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/Visual-Studio-Sonarlint/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Visual Studio Sonarlint
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

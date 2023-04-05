@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>遷移資料庫伺服器的登入與密碼至新資料庫伺服器 (SQL Server Transfer Logins Passwords) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何要遷移資料庫伺服器，如何將原有伺服器中的登入(Login)以及其密碼轉移到新的資料庫伺服器。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="遷移資料庫伺服器的登入與密碼至新資料庫伺服器 (SQL Server Transfer Logins Passwords)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/02/SQL-Server-Transfer-Logins-Passwords/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何要遷移資料庫伺服器，如何將原有伺服器中的登入(Login)以及其密碼轉移到新的資料庫伺服器。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-transfer-logins-passwords-between-instances.png">
+<meta property="article:published_time" content="2021-02-18T03:24:01.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Transfer-Logins-Passwords" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/02/SQL-Server-Transfer-Logins-Passwords/" class="article-date">
+  <time datetime="2021-02-18T03:24:01.000Z" itemprop="datePublished">2021-02-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      遷移資料庫伺服器的登入與密碼至新資料庫伺服器 (SQL Server Transfer Logins Passwords)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E8%A4%87%E8%A3%BD-Login-amp-Passwords-%E7%9A%84-Stored-Procedure"><span class="toc-text">建立複製 Login &amp; Passwords 的 Stored Procedure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A4%87%E8%A3%BD%E7%94%A2%E7%94%9F%E7%9A%84%E6%8C%87%E4%BB%A4"><span class="toc-text">複製產生的指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-Login-%E8%88%87-Passwords"><span class="toc-text">建立 Login 與 Passwords</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何要遷移資料庫伺服器，如何將原有伺服器中的登入(Login)以及其密碼轉移到新的資料庫伺服器。</p>
+<a href="/posts/2021/02/SQL-Server-Transfer-Logins-Passwords/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="建立複製-Login-amp-Passwords-的-Stored-Procedure"><a href="#建立複製-Login-amp-Passwords-的-Stored-Procedure" class="headerlink" title="建立複製 Login &amp; Passwords 的 Stored Procedure"></a>建立複製 Login &amp; Passwords 的 Stored Procedure</h3><p>由原始資料庫伺服器，建立下列的 Stored Procedure</p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/sdwh/aed680c55ad14a11cefa529596beb9e1">https://gist.github.com/sdwh/aed680c55ad14a11cefa529596beb9e1</a></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> master
+GO
+<span class="token keyword">IF</span> OBJECT_ID <span class="token punctuation">(</span><span class="token string">'sp_hexadecimal'</span><span class="token punctuation">)</span> <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+<span class="token keyword">DROP</span> <span class="token keyword">PROCEDURE</span> sp_hexadecimal
+GO
+<span class="token keyword">CREATE</span> <span class="token keyword">PROCEDURE</span> sp_hexadecimal
+<span class="token variable">@binvalue</span> <span class="token keyword">varbinary</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token variable">@hexvalue</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">514</span><span class="token punctuation">)</span> OUTPUT
+<span class="token keyword">AS</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@charvalue</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">514</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@i</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@length</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@hexstring</span> <span class="token keyword">char</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@charvalue</span> <span class="token operator">=</span> <span class="token string">'0x'</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@i</span> <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@length</span> <span class="token operator">=</span> DATALENGTH <span class="token punctuation">(</span><span class="token variable">@binvalue</span><span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@hexstring</span> <span class="token operator">=</span> <span class="token string">'0123456789ABCDEF'</span>
+<span class="token keyword">WHILE</span> <span class="token punctuation">(</span><span class="token variable">@i</span> <span class="token operator">&lt;=</span> <span class="token variable">@length</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@tempint</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@firstint</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@secondint</span> <span class="token keyword">int</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@tempint</span> <span class="token operator">=</span> <span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">,</span> SUBSTRING<span class="token punctuation">(</span><span class="token variable">@binvalue</span><span class="token punctuation">,</span><span class="token variable">@i</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@firstint</span> <span class="token operator">=</span> FLOOR<span class="token punctuation">(</span><span class="token variable">@tempint</span><span class="token operator">/</span><span class="token number">16</span><span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@secondint</span> <span class="token operator">=</span> <span class="token variable">@tempint</span> <span class="token operator">-</span> <span class="token punctuation">(</span><span class="token variable">@firstint</span><span class="token operator">*</span><span class="token number">16</span><span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@charvalue</span> <span class="token operator">=</span> <span class="token variable">@charvalue</span> <span class="token operator">+</span>
+SUBSTRING<span class="token punctuation">(</span><span class="token variable">@hexstring</span><span class="token punctuation">,</span> <span class="token variable">@firstint</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+SUBSTRING<span class="token punctuation">(</span><span class="token variable">@hexstring</span><span class="token punctuation">,</span> <span class="token variable">@secondint</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@i</span> <span class="token operator">=</span> <span class="token variable">@i</span> <span class="token operator">+</span> <span class="token number">1</span>
+<span class="token keyword">END</span>
+
+<span class="token keyword">SELECT</span> <span class="token variable">@hexvalue</span> <span class="token operator">=</span> <span class="token variable">@charvalue</span>
+GO
+
+<span class="token keyword">IF</span> OBJECT_ID <span class="token punctuation">(</span><span class="token string">'sp_help_revlogin'</span><span class="token punctuation">)</span> <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+<span class="token keyword">DROP</span> <span class="token keyword">PROCEDURE</span> sp_help_revlogin
+GO
+<span class="token keyword">CREATE</span> <span class="token keyword">PROCEDURE</span> sp_help_revlogin <span class="token variable">@login_name</span> sysname <span class="token operator">=</span> <span class="token boolean">NULL</span> <span class="token keyword">AS</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@name</span> sysname
+<span class="token keyword">DECLARE</span> <span class="token variable">@type</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@hasaccess</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@denylogin</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@is_disabled</span> <span class="token keyword">int</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@PWD_varbinary</span> <span class="token keyword">varbinary</span> <span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@PWD_string</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">514</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@SID_varbinary</span> <span class="token keyword">varbinary</span> <span class="token punctuation">(</span><span class="token number">85</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@SID_string</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">514</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@tmpstr</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">1024</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@is_policy_checked</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@is_expiration_checked</span> <span class="token keyword">varchar</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+
+<span class="token keyword">DECLARE</span> <span class="token variable">@defaultdb</span> sysname
+
+<span class="token keyword">IF</span> <span class="token punctuation">(</span><span class="token variable">@login_name</span> <span class="token operator">IS</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span>
+<span class="token keyword">DECLARE</span> login_curs <span class="token keyword">CURSOR</span> <span class="token keyword">FOR</span>
+
+<span class="token keyword">SELECT</span> p<span class="token punctuation">.</span>sid<span class="token punctuation">,</span> p<span class="token punctuation">.</span>name<span class="token punctuation">,</span> p<span class="token punctuation">.</span><span class="token keyword">type</span><span class="token punctuation">,</span> p<span class="token punctuation">.</span>is_disabled<span class="token punctuation">,</span> p<span class="token punctuation">.</span>default_database_name<span class="token punctuation">,</span> l<span class="token punctuation">.</span>hasaccess<span class="token punctuation">,</span> l<span class="token punctuation">.</span>denylogin <span class="token keyword">FROM</span>
+sys<span class="token punctuation">.</span>server_principals p <span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>syslogins l
+<span class="token keyword">ON</span> <span class="token punctuation">(</span> l<span class="token punctuation">.</span>name <span class="token operator">=</span> p<span class="token punctuation">.</span>name <span class="token punctuation">)</span> <span class="token keyword">WHERE</span> p<span class="token punctuation">.</span><span class="token keyword">type</span> <span class="token operator">IN</span> <span class="token punctuation">(</span> <span class="token string">'S'</span><span class="token punctuation">,</span> <span class="token string">'G'</span><span class="token punctuation">,</span> <span class="token string">'U'</span> <span class="token punctuation">)</span> <span class="token operator">AND</span> p<span class="token punctuation">.</span>name <span class="token operator">&lt;></span> <span class="token string">'sa'</span>
+<span class="token keyword">ELSE</span>
+<span class="token keyword">DECLARE</span> login_curs <span class="token keyword">CURSOR</span> <span class="token keyword">FOR</span>
+
+<span class="token keyword">SELECT</span> p<span class="token punctuation">.</span>sid<span class="token punctuation">,</span> p<span class="token punctuation">.</span>name<span class="token punctuation">,</span> p<span class="token punctuation">.</span><span class="token keyword">type</span><span class="token punctuation">,</span> p<span class="token punctuation">.</span>is_disabled<span class="token punctuation">,</span> p<span class="token punctuation">.</span>default_database_name<span class="token punctuation">,</span> l<span class="token punctuation">.</span>hasaccess<span class="token punctuation">,</span> l<span class="token punctuation">.</span>denylogin <span class="token keyword">FROM</span>
+sys<span class="token punctuation">.</span>server_principals p <span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>syslogins l
+<span class="token keyword">ON</span> <span class="token punctuation">(</span> l<span class="token punctuation">.</span>name <span class="token operator">=</span> p<span class="token punctuation">.</span>name <span class="token punctuation">)</span> <span class="token keyword">WHERE</span> p<span class="token punctuation">.</span><span class="token keyword">type</span> <span class="token operator">IN</span> <span class="token punctuation">(</span> <span class="token string">'S'</span><span class="token punctuation">,</span> <span class="token string">'G'</span><span class="token punctuation">,</span> <span class="token string">'U'</span> <span class="token punctuation">)</span> <span class="token operator">AND</span> p<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token variable">@login_name</span>
+<span class="token keyword">OPEN</span> login_curs
+
+<span class="token keyword">FETCH</span> <span class="token keyword">NEXT</span> <span class="token keyword">FROM</span> login_curs <span class="token keyword">INTO</span> <span class="token variable">@SID_varbinary</span><span class="token punctuation">,</span> <span class="token variable">@name</span><span class="token punctuation">,</span> <span class="token variable">@type</span><span class="token punctuation">,</span> <span class="token variable">@is_disabled</span><span class="token punctuation">,</span> <span class="token variable">@defaultdb</span><span class="token punctuation">,</span> <span class="token variable">@hasaccess</span><span class="token punctuation">,</span> <span class="token variable">@denylogin</span>
+<span class="token keyword">IF</span> <span class="token punctuation">(</span>@<span class="token variable">@fetch_status</span> <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span>
+<span class="token keyword">PRINT</span> <span class="token string">'No login(s) found.'</span>
+<span class="token keyword">CLOSE</span> login_curs
+<span class="token keyword">DEALLOCATE</span> login_curs
+<span class="token keyword">RETURN</span> <span class="token operator">-</span><span class="token number">1</span>
+<span class="token keyword">END</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token string">'/* sp_help_revlogin script '</span>
+<span class="token keyword">PRINT</span> <span class="token variable">@tmpstr</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token string">'** Generated '</span> <span class="token operator">+</span> <span class="token keyword">CONVERT</span> <span class="token punctuation">(</span><span class="token keyword">varchar</span><span class="token punctuation">,</span> GETDATE<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">' on '</span> <span class="token operator">+</span> @<span class="token variable">@SERVERNAME</span> <span class="token operator">+</span> <span class="token string">'*/'</span>
+<span class="token keyword">PRINT</span> <span class="token variable">@tmpstr</span>
+<span class="token keyword">PRINT</span> <span class="token string">''</span>
+<span class="token keyword">WHILE</span> <span class="token punctuation">(</span>@<span class="token variable">@fetch_status</span> <span class="token operator">&lt;></span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span>
+<span class="token keyword">IF</span> <span class="token punctuation">(</span>@<span class="token variable">@fetch_status</span> <span class="token operator">&lt;></span> <span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span>
+<span class="token keyword">PRINT</span> <span class="token string">''</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token string">'-- Login: '</span> <span class="token operator">+</span> <span class="token variable">@name</span>
+<span class="token keyword">PRINT</span> <span class="token variable">@tmpstr</span>
+<span class="token keyword">IF</span> <span class="token punctuation">(</span><span class="token variable">@type</span> <span class="token operator">IN</span> <span class="token punctuation">(</span> <span class="token string">'G'</span><span class="token punctuation">,</span> <span class="token string">'U'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span> <span class="token comment">-- NT authenticated account/group</span>
+
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token string">'CREATE LOGIN '</span> <span class="token operator">+</span> QUOTENAME<span class="token punctuation">(</span> <span class="token variable">@name</span> <span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">' FROM WINDOWS WITH DEFAULT_DATABASE = ['</span> <span class="token operator">+</span> <span class="token variable">@defaultdb</span> <span class="token operator">+</span> <span class="token string">']'</span>
+<span class="token keyword">END</span>
+<span class="token keyword">ELSE</span> <span class="token keyword">BEGIN</span> <span class="token comment">-- SQL Server authentication</span>
+<span class="token comment">-- obtain password and sid</span>
+<span class="token keyword">SET</span> <span class="token variable">@PWD_varbinary</span> <span class="token operator">=</span> CAST<span class="token punctuation">(</span> LOGINPROPERTY<span class="token punctuation">(</span> <span class="token variable">@name</span><span class="token punctuation">,</span> <span class="token string">'PasswordHash'</span> <span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">varbinary</span> <span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">EXEC</span> sp_hexadecimal <span class="token variable">@PWD_varbinary</span><span class="token punctuation">,</span> <span class="token variable">@PWD_string</span> <span class="token keyword">OUT</span>
+<span class="token keyword">EXEC</span> sp_hexadecimal <span class="token variable">@SID_varbinary</span><span class="token punctuation">,</span><span class="token variable">@SID_string</span> <span class="token keyword">OUT</span>
+
+<span class="token comment">-- obtain password policy state</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@is_policy_checked</span> <span class="token operator">=</span> <span class="token keyword">CASE</span> is_policy_checked <span class="token keyword">WHEN</span> <span class="token number">1</span> <span class="token keyword">THEN</span> <span class="token string">'ON'</span> <span class="token keyword">WHEN</span> <span class="token number">0</span> <span class="token keyword">THEN</span> <span class="token string">'OFF'</span> <span class="token keyword">ELSE</span> <span class="token boolean">NULL</span> <span class="token keyword">END</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>sql_logins <span class="token keyword">WHERE</span> name <span class="token operator">=</span> <span class="token variable">@name</span>
+<span class="token keyword">SELECT</span> <span class="token variable">@is_expiration_checked</span> <span class="token operator">=</span> <span class="token keyword">CASE</span> is_expiration_checked <span class="token keyword">WHEN</span> <span class="token number">1</span> <span class="token keyword">THEN</span> <span class="token string">'ON'</span> <span class="token keyword">WHEN</span> <span class="token number">0</span> <span class="token keyword">THEN</span> <span class="token string">'OFF'</span> <span class="token keyword">ELSE</span> <span class="token boolean">NULL</span> <span class="token keyword">END</span> <span class="token keyword">FROM</span> sys<span class="token punctuation">.</span>sql_logins <span class="token keyword">WHERE</span> name <span class="token operator">=</span> <span class="token variable">@name</span>
+
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token string">'CREATE LOGIN '</span> <span class="token operator">+</span> QUOTENAME<span class="token punctuation">(</span> <span class="token variable">@name</span> <span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">' WITH PASSWORD = '</span> <span class="token operator">+</span> <span class="token variable">@PWD_string</span> <span class="token operator">+</span> <span class="token string">' HASHED, SID = '</span> <span class="token operator">+</span> <span class="token variable">@SID_string</span> <span class="token operator">+</span> <span class="token string">', DEFAULT_DATABASE = ['</span> <span class="token operator">+</span> <span class="token variable">@defaultdb</span> <span class="token operator">+</span> <span class="token string">']'</span>
+
+<span class="token keyword">IF</span> <span class="token punctuation">(</span> <span class="token variable">@is_policy_checked</span> <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token variable">@tmpstr</span> <span class="token operator">+</span> <span class="token string">', CHECK_POLICY = '</span> <span class="token operator">+</span> <span class="token variable">@is_policy_checked</span>
+<span class="token keyword">END</span>
+<span class="token keyword">IF</span> <span class="token punctuation">(</span> <span class="token variable">@is_expiration_checked</span> <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token variable">@tmpstr</span> <span class="token operator">+</span> <span class="token string">', CHECK_EXPIRATION = '</span> <span class="token operator">+</span> <span class="token variable">@is_expiration_checked</span>
+<span class="token keyword">END</span>
+<span class="token keyword">END</span>
+<span class="token keyword">IF</span> <span class="token punctuation">(</span><span class="token variable">@denylogin</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span> <span class="token comment">-- login is denied access</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token variable">@tmpstr</span> <span class="token operator">+</span> <span class="token string">'; DENY CONNECT SQL TO '</span> <span class="token operator">+</span> QUOTENAME<span class="token punctuation">(</span> <span class="token variable">@name</span> <span class="token punctuation">)</span>
+<span class="token keyword">END</span>
+<span class="token keyword">ELSE</span> <span class="token keyword">IF</span> <span class="token punctuation">(</span><span class="token variable">@hasaccess</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span> <span class="token comment">-- login exists but does not have access</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token variable">@tmpstr</span> <span class="token operator">+</span> <span class="token string">'; REVOKE CONNECT SQL TO '</span> <span class="token operator">+</span> QUOTENAME<span class="token punctuation">(</span> <span class="token variable">@name</span> <span class="token punctuation">)</span>
+<span class="token keyword">END</span>
+<span class="token keyword">IF</span> <span class="token punctuation">(</span><span class="token variable">@is_disabled</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">BEGIN</span> <span class="token comment">-- login is disabled</span>
+<span class="token keyword">SET</span> <span class="token variable">@tmpstr</span> <span class="token operator">=</span> <span class="token variable">@tmpstr</span> <span class="token operator">+</span> <span class="token string">'; ALTER LOGIN '</span> <span class="token operator">+</span> QUOTENAME<span class="token punctuation">(</span> <span class="token variable">@name</span> <span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">' DISABLE'</span>
+<span class="token keyword">END</span>
+<span class="token keyword">PRINT</span> <span class="token variable">@tmpstr</span>
+<span class="token keyword">END</span>
+
+<span class="token keyword">FETCH</span> <span class="token keyword">NEXT</span> <span class="token keyword">FROM</span> login_curs <span class="token keyword">INTO</span> <span class="token variable">@SID_varbinary</span><span class="token punctuation">,</span> <span class="token variable">@name</span><span class="token punctuation">,</span> <span class="token variable">@type</span><span class="token punctuation">,</span> <span class="token variable">@is_disabled</span><span class="token punctuation">,</span> <span class="token variable">@defaultdb</span><span class="token punctuation">,</span> <span class="token variable">@hasaccess</span><span class="token punctuation">,</span> <span class="token variable">@denylogin</span>
+<span class="token keyword">END</span>
+<span class="token keyword">CLOSE</span> login_curs
+<span class="token keyword">DEALLOCATE</span> login_curs
+<span class="token keyword">RETURN</span> <span class="token number">0</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="複製產生的指令"><a href="#複製產生的指令" class="headerlink" title="複製產生的指令"></a>複製產生的指令</h3><p>接著從原始資料庫伺服器執行上述的 Stored Procedure</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">EXEC</span> sp_help_revlogin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/SQL-Server-transfer-logins-passwords-between-instances.png"></p>
+<h3 id="建立-Login-與-Passwords"><a href="#建立-Login-與-Passwords" class="headerlink" title="建立 Login 與 Passwords"></a>建立 Login 與 Passwords</h3><p>最後於目標資料庫伺服器，將上述 Stored Procedure 產生的 Create Login Script 執行。</p>
+<p>⚠️ 執行前有幾項注意事項：</p>
+<ol>
+<li>Default Database 必須已經於目標資料庫伺服器建立，否則會產生 Login 失敗</li>
+<li>Database Level Role 必須手動重新指定</li>
+</ol>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/EN-US/troubleshoot/sql/security/transfer-logins-passwords-between-instances">Transfer logins and passwords between instances of SQL Server</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-TW/troubleshoot/sql/security/transfer-logins-passwords-between-instances">在 SQL Server 實例之間傳輸登入和密碼</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/02/SQL-Server-Transfer-Logins-Passwords/" data-id="clg3fmaks01eqs4ts3a86b9sl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/02/SQL-Server-SubQuery/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server SubQuery 子查詢筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/02/Windows-Net-Framework-Version/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          查詢 Windows 作業系統 .NET Framework Version
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>PowerShell | Get-Content &amp; Select-String 尋找檔案內容的關鍵字 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何使用 PowerShell 搜尋檔案中的特定關鍵字，示範的情境為對於 IIS Logs 檔進行搜尋。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PowerShell | Get-Content &amp; Select-String 尋找檔案內容的關鍵字">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/08/PowerShell-Get-Content-Select-String/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何使用 PowerShell 搜尋檔案中的特定關鍵字，示範的情境為對於 IIS Logs 檔進行搜尋。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/powershell.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/PoweShell-GetContent-With-SelectString.png">
+<meta property="article:published_time" content="2021-08-09T22:58:14.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.909Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="PowerShell">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/powershell.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-PowerShell-Get-Content-Select-String" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/08/PowerShell-Get-Content-Select-String/" class="article-date">
+  <time datetime="2021-08-09T22:58:14.000Z" itemprop="datePublished">2021-08-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PowerShell | Get-Content &amp; Select-String 尋找檔案內容的關鍵字
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2%E6%AA%94%E6%A1%88%E5%85%A7%E5%AE%B9%E4%B8%AD%E7%9A%84%E9%97%9C%E9%8D%B5%E5%AD%97"><span class="toc-text">查詢檔案內容中的關鍵字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A2%BA%E8%AA%8D%E6%9F%A5%E8%A9%A2%E7%B5%90%E6%9E%9C%E7%9A%84%E6%95%B8%E9%87%8F"><span class="toc-text">確認查詢結果的數量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Filter"><span class="toc-text">Filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#First"><span class="toc-text">First</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tail"><span class="toc-text">Tail</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%87%89%E7%94%A8%E6%83%85%E5%A2%83"><span class="toc-text">應用情境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E5%B0%8B-IIS-Logs-404-StatusCode-%E4%B8%A6%E4%B8%94%E8%BD%89%E7%82%BA-CSV-Format"><span class="toc-text">搜尋 IIS Logs 404 StatusCode 並且轉為 CSV Format</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E5%B0%8B-Code-Files-%E4%B8%AD%E7%89%B9%E5%AE%9A%E9%97%9C%E9%8D%B5%E5%AD%97"><span class="toc-text">搜尋 Code Files 中特定關鍵字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IIS-Logs-%E4%B8%AD%E7%9A%84-IP"><span class="toc-text">IIS Logs 中的 IP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何使用 PowerShell 搜尋檔案中的特定關鍵字，示範的情境為對於 IIS Logs 檔進行搜尋。</p>
+<a href="/posts/2021/08/PowerShell-Get-Content-Select-String/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/powershell.svg" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="查詢檔案內容中的關鍵字"><a href="#查詢檔案內容中的關鍵字" class="headerlink" title="查詢檔案內容中的關鍵字"></a>查詢檔案內容中的關鍵字</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\iis<span class="token punctuation">.</span>log <span class="token punctuation">|</span> <span class="token function">Select-String</span> Debug<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>兩個以上的關鍵字，可以使用下列方式</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\iis<span class="token punctuation">.</span>log <span class="token punctuation">|</span> <span class="token function">Select-String</span> 404<span class="token punctuation">,</span> 500<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果有更多複雜的規則，則可以使用 Regex 的方式。</p>
+<h3 id="確認查詢結果的數量"><a href="#確認查詢結果的數量" class="headerlink" title="確認查詢結果的數量"></a>確認查詢結果的數量</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token punctuation">(</span><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\iis<span class="token punctuation">.</span>log <span class="token punctuation">|</span> <span class="token function">Select-String</span> Debug<span class="token punctuation">)</span><span class="token punctuation">.</span>length<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>可以將多個來源的檔案合併讀取，並藉由 Filter 規則挑選檔案</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\<span class="token operator">*</span><span class="token punctuation">.</span>log <span class="token operator">-</span><span class="token keyword">Filter</span> <span class="token operator">*</span>iis*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="First"><a href="#First" class="headerlink" title="First"></a>First</h3><p>可以篩選前特定列的資料，縮小讀取得檔案範圍，例如下面的方式只會顯示前 10 行</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\iis<span class="token punctuation">.</span>log <span class="token operator">-</span>First 10<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Tail"><a href="#Tail" class="headerlink" title="Tail"></a>Tail</h3><p>也可以從反向從結尾選擇檔案範圍，例如下列方式可以取得最後一筆資料</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\iis<span class="token punctuation">.</span>log <span class="token operator">-</span>Tail 1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="應用情境"><a href="#應用情境" class="headerlink" title="應用情境"></a>應用情境</h2><h3 id="搜尋-IIS-Logs-404-StatusCode-並且轉為-CSV-Format"><a href="#搜尋-IIS-Logs-404-StatusCode-並且轉為-CSV-Format" class="headerlink" title="搜尋 IIS Logs 404 StatusCode 並且轉為 CSV Format"></a>搜尋 IIS Logs 404 StatusCode 並且轉為 CSV Format</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Content</span> <span class="token punctuation">.</span>\iis<span class="token punctuation">.</span>log <span class="token punctuation">|</span> <span class="token function">Select-String</span> 404 <span class="token punctuation">|</span> <span class="token function">ConvertTo-Csv</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="搜尋-Code-Files-中特定關鍵字"><a href="#搜尋-Code-Files-中特定關鍵字" class="headerlink" title="搜尋 Code Files 中特定關鍵字"></a>搜尋 Code Files 中特定關鍵字</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-Childitem</span> <span class="token operator">-</span>Recurse <span class="token operator">*</span><span class="token punctuation">.</span>cs <span class="token punctuation">|</span> <span class="token operator">%</span> <span class="token punctuation">&#123;</span> <span class="token variable">$_</span><span class="token punctuation">.</span>FullName<span class="token punctuation">;</span> <span class="token function">Get-Content</span> <span class="token variable">$_</span><span class="token punctuation">.</span>FullName <span class="token punctuation">|</span> <span class="token function">Select-String</span> <span class="token string">"keywords"</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/PoweShell-GetContent-With-SelectString.png"></p>
+<h3 id="IIS-Logs-中的-IP"><a href="#IIS-Logs-中的-IP" class="headerlink" title="IIS Logs 中的 IP"></a>IIS Logs 中的 IP</h3><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Select-String</span> <span class="token operator">-</span>Pattern <span class="token string">"\d&#123;1,3&#125;\.\d&#123;1,3&#125;\.\d&#123;1,3&#125;\.\d&#123;1,3&#125;"</span> <span class="token punctuation">.</span>\logfile<span class="token punctuation">.</span>log <span class="token operator">-</span>AllMatches <span class="token punctuation">|</span> <span class="token operator">%</span> <span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>Matches<span class="token punctuation">.</span>Values<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/08/PowerShell-Tips-For-Developer/">PowerShell 使用者不能錯過的 5 個技巧</a></p>
+<p><a href="/posts/2021/07/Powershell-Objects-Data-Structures/">Powershell 使用物件與資料結構 (Array, Hash)</a></p>
+<p><a href="/posts/2020/09/PowerShell-CheatSheet/">PowerShell 常用指令筆記</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-7.1">MSDocs | Get-Content</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-7.1">MSDocs | Select-String</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/08/PowerShell-Get-Content-Select-String/" data-id="clg3fmagk00z6s4tsgf02cupo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/08/JavaScript-Query-Selector-Get-Element-By/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Vanilla JavaScript | Get DOM Elements 使用 JS 原生語法取得 DOM 元素</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/08/JavaScript-Cookie-LocalStorage/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ES20XX Modern JS 新語言特性筆記 | JavaScript Cookie &amp; LocalStorage
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

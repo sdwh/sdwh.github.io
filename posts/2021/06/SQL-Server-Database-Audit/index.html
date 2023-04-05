@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server 資料庫稽核設定 (SQL Server Audit Setup) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何啟用 SQL Server 的資料庫稽核功能，發現異常行為的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 資料庫稽核設定 (SQL Server Audit Setup)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/SQL-Server-Database-Audit/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何啟用 SQL Server 的資料庫稽核功能，發現異常行為的方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-9.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-10.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-11.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Audit-12.png">
+<meta property="article:published_time" content="2021-06-25T11:30:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.940Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Database-Audit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/SQL-Server-Database-Audit/" class="article-date">
+  <time datetime="2021-06-25T11:30:00.000Z" itemprop="datePublished">2021-06-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 資料庫稽核設定 (SQL Server Audit Setup)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E%E7%A8%BD%E6%A0%B8"><span class="toc-text">新增稽核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%BA%E6%9C%8D%E5%99%A8%E5%B1%A4%E7%B4%9A%E7%9A%84%E7%A8%BD%E6%A0%B8%E8%A8%AD%E5%AE%9A"><span class="toc-text">伺服器層級的稽核設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E5%B1%A4%E7%B4%9A%E7%9A%84%E7%A8%BD%E6%A0%B8%E8%A8%AD%E5%AE%9A"><span class="toc-text">資料庫層級的稽核設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AA%A2%E8%A6%96%E7%A8%BD%E6%A0%B8%E7%B4%80%E9%8C%84"><span class="toc-text">檢視稽核紀錄</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AF%84%E4%BE%8B%E8%AA%AA%E6%98%8E"><span class="toc-text">範例說明</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何啟用 SQL Server 的資料庫稽核功能，發現異常行為的方式。</p>
+<a href="/posts/2021/06/SQL-Server-Database-Audit/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="新增稽核"><a href="#新增稽核" class="headerlink" title="新增稽核"></a>新增稽核</h3><p>首先要由整個伺服器層級的地方新增一個「稽核」，這個稽核是用於定義蒐集到的稽核紀錄如何儲存，選項包含檔案、Windows Security Event / Windows Application Event。</p>
+<p><img src="/assets/SQL-Server-Audit-1.png"><br><img src="/assets/SQL-Server-Audit-2.png"></p>
+<p>完成稽核的建立後，必須要啟用才可以紀錄才能夠被保存。</p>
+<p><img src="/assets/SQL-Server-Audit-7.png"></p>
+<h3 id="伺服器層級的稽核設定"><a href="#伺服器層級的稽核設定" class="headerlink" title="伺服器層級的稽核設定"></a>伺服器層級的稽核設定</h3><p>實際要稽核的內容分為<strong>伺服器層級</strong>與<strong>資料庫層級</strong>，伺服器層級包含資料備份、登入登出等行為，由「安全性」選擇「伺服器稽核規格」進行設定。較需要費神理解的是想要稽核的動作是屬於那一個動作類型。</p>
+<p><img src="/assets/SQL-Server-Audit-3.png"><br><img src="/assets/SQL-Server-Audit-4.png"><br><img src="/assets/SQL-Server-Audit-5.png"></p>
+<p>完成「伺服器稽核規格」設定後，一樣需要啟動才會開始進行稽核。需要注意的是「伺服器稽核規格」與「稽核」都必須要同時啟動，才能夠正確紀錄。</p>
+<p><img src="/assets/SQL-Server-Audit-6.png"></p>
+<h3 id="資料庫層級的稽核設定"><a href="#資料庫層級的稽核設定" class="headerlink" title="資料庫層級的稽核設定"></a>資料庫層級的稽核設定</h3><p>另外再資料庫層級也有特定的動作類型，差別在於資料庫層級的設定必須明確指明要稽核的物件類別、結構描述及名稱，同時必須明確指定要稽核的主體名稱(Login Name)。而在大量設定的時候 GUI 不太方便，例如要針對所有的 Table 對於 Login1 進行稽核。這個時候可以利用指令碼編輯的方式來完成。過程中可能會搭配 sys.table 來產生指令碼。</p>
+<p><img src="/assets/SQL-Server-Audit-9.png"><br><img src="/assets/SQL-Server-Audit-10.png"></p>
+<p>完成「資料庫稽核規格」設定後，一樣需要啟動才會開始進行稽核。需要注意的是「資料庫稽核規格」與「稽核」都必須要同時啟動，才能夠正確紀錄。</p>
+<p><img src="/assets/SQL-Server-Audit-11.png"></p>
+<h3 id="檢視稽核紀錄"><a href="#檢視稽核紀錄" class="headerlink" title="檢視稽核紀錄"></a>檢視稽核紀錄</h3><p><img src="/assets/SQL-Server-Audit-8.png"></p>
+<p><img src="/assets/SQL-Server-Audit-12.png"></p>
+<h2 id="範例說明"><a href="#範例說明" class="headerlink" title="範例說明"></a>範例說明</h2><p>規劃示範說明如何稽核特定主體(Login)在特定資料庫中，所有對資料表的 SELECT 以及 UPDATE 行為。</p>
+<p>規劃示範說明如何稽核所有主體，對於特定資料庫進行 DELETE 行為。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/SQL-Server-Database-Audit/" data-id="clg3fmaih0165s4tsg0007jqt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/IIS-CustomErrors-Error-Pages/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">IIS 錯誤頁面客製設定 (IIS Custom Erros, Error Pages)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/Statistics-Series-Taiwan-Name-Male-Or-Female/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          請問「陳宥均」是男生還是女生的名字？ | 台灣 100 個最難判斷是男生還是女生的姓名
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

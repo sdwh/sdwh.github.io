@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>如何在 IIS 10 安裝 PHP 7 以及 PHP 8 (How to install PHP 8 in IIS 10) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="不需要透過 MAMP 或者是 XAMPP，也不需要額外在 Windows 上安裝 Apache，只要搭配 IIS 就可以使用 PHP 提供 Web 服務。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在 IIS 10 安裝 PHP 7 以及 PHP 8 (How to install PHP 8 in IIS 10)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/11/IIS-PHP-Setup/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="不需要透過 MAMP 或者是 XAMPP，也不需要額外在 Windows 上安裝 Apache，只要搭配 IIS 就可以使用 PHP 提供 Web 服務。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-CGI-Features.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-No-Managed-ApplicationPool.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-Add-Module-Mapping.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-Add-Module-Mapping-Setting.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-Info.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-scriptProcess-Not-Found.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Setup-PHP-Manager.png">
+<meta property="article:published_time" content="2022-11-19T04:05:06.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IIS-PHP-Setup" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/11/IIS-PHP-Setup/" class="article-date">
+  <time datetime="2022-11-19T04:05:06.000Z" itemprop="datePublished">2022-11-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何在 IIS 10 安裝 PHP 7 以及 PHP 8 (How to install PHP 8 in IIS 10)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Download-PHP"><span class="toc-text">Download PHP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VC15-and-VS16-builds"><span class="toc-text">VC15 and VS16 builds</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows-Features-CGI"><span class="toc-text">Windows Features - CGI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E7%AB%99%E5%8F%B0"><span class="toc-text">建立站台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A%E8%99%95%E7%90%86%E5%B8%B8%E5%BC%8F%E5%B0%8D%E6%87%89-Handler-Mapping"><span class="toc-text">設定處理常式對應 (Handler Mapping)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A-php-ini"><span class="toc-text">設定 php.ini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%99%E5%8F%B0%E6%B8%AC%E8%A9%A6"><span class="toc-text">站台測試</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>不需要透過 MAMP 或者是 XAMPP，也不需要額外在 Windows 上安裝 Apache，只要搭配 IIS 就可以使用 PHP 提供 Web 服務。</p>
+<a href="/posts/2022/11/IIS-PHP-Setup/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Download-PHP"><a href="#Download-PHP" class="headerlink" title="Download PHP"></a>Download PHP</h3><p>首先需要下載 <a target="_blank" rel="noopener" href="https://windows.php.net/download/">PHP for Windows</a>，</p>
+<p>下載的版本選擇 <strong>x64 Non Thread Safe</strong>的版本，目前網站提供 PHP 8.1、8.0 以及 7.4 可以供選擇，如果需要已經 EOS 的版本，例如 PHP 5.6，可以到 <a target="_blank" rel="noopener" href="https://windows.php.net/downloads/releases/archives/">Archive Donwload Page</a> 下載。</p>
+<table>
+<thead>
+<tr>
+<th>PHP Version</th>
+<th>Release Date</th>
+<th>EOS Date</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1995-06-08</td>
+<td>EOS</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1996-04-16</td>
+<td>EOS</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1998-06-06</td>
+<td>2000-10-20</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td>2004-07-13</td>
+<td>2005-09-05</td>
+</tr>
+<tr>
+<td>5.6</td>
+<td>2014-08-28</td>
+<td>2018-12-31</td>
+</tr>
+<tr>
+<td>7.4</td>
+<td>2019-11-28</td>
+<td>2022-11-28</td>
+</tr>
+<tr>
+<td>8.0</td>
+<td>2020-11-26</td>
+<td>2023-11-26</td>
+</tr>
+<tr>
+<td>8.1</td>
+<td>2021-11-25</td>
+<td>2024-11-25</td>
+</tr>
+</tbody></table>
+<p>完成下載後的 PHP 不需要安裝，僅需要解壓縮至 Web Server。</p>
+<h3 id="VC15-and-VS16-builds"><a href="#VC15-and-VS16-builds" class="headerlink" title="VC15 and VS16 builds"></a>VC15 and VS16 builds</h3><p>需要安裝相依資源才能夠正常在 IIS 上啟用 PHP。</p>
+<p><a target="_blank" rel="noopener" href="https://aka.ms/vs/16/release/VC_redist.x64.exe">x64</a>、<a target="_blank" rel="noopener" href="https://aka.ms/vs/16/release/VC_redist.x86.exe">x86</a></p>
+<h3 id="Windows-Features-CGI"><a href="#Windows-Features-CGI" class="headerlink" title="Windows Features - CGI"></a>Windows Features - CGI</h3><p>需要在 Windows Server 上加入 CGI 功能，才能夠在 IIS 上啟用 PHP。</p>
+<p><img src="/assets/IIS-Setup-PHP-CGI-Features.png"></p>
+<h3 id="建立站台"><a href="#建立站台" class="headerlink" title="建立站台"></a>建立站台</h3><p>站台所使用的應用程式集區，必須調整為 <strong>沒有受控碼 (No Managed)</strong></p>
+<p><img src="/assets/IIS-Setup-PHP-No-Managed-ApplicationPool.png"></p>
+<h3 id="設定處理常式對應-Handler-Mapping"><a href="#設定處理常式對應-Handler-Mapping" class="headerlink" title="設定處理常式對應 (Handler Mapping)"></a>設定處理常式對應 (Handler Mapping)</h3><p>進入<strong>處理常式對應 (Handler Mapping)<strong>後，選擇</strong>新增模組對應 (Add Module Mapping)</strong></p>
+<p><img src="/assets/IIS-Setup-PHP-Add-Module-Mapping.png"></p>
+<p><img src="/assets/IIS-Setup-PHP-Add-Module-Mapping-Setting.png"></p>
+<h3 id="設定-php-ini"><a href="#設定-php-ini" class="headerlink" title="設定 php.ini"></a>設定 php.ini</h3><p>前往 PHP 的資料夾，使用 <code class="s">php.ini-deveopment</code> 重新命名為 <code class="s">php.ini</code>，調整下列內容：</p>
+<p><code class="watch">php.ini</code></p>
+<p>調整下列內容：</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token comment">;extension_dir = "ext"</span>
+<span class="token comment">;date.timezone =</span>
+<span class="token comment">;extension=openssl</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>調整結果：</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token key attr-name">extension_dir</span> <span class="token punctuation">=</span> <span class="token value attr-value">"<span class="token inner-value">C:\inetpub\php-7.4.33-nts-Win32-vc15-x64\ext</span>"</span>
+<span class="token key attr-name">date.timezone</span> <span class="token punctuation">=</span> <span class="token value attr-value">"<span class="token inner-value">Asia/Taipei</span>"</span>
+<span class="token key attr-name">extension</span><span class="token punctuation">=</span><span class="token value attr-value">openssl</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>而 php.ini-deveopment 與 php.ini-production 的差別如下：</p>
+<p><code class="watch">php.ini-production</code></p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token key attr-name">zend.exception_ignore_args</span> <span class="token punctuation">=</span> <span class="token value attr-value">On</span>
+<span class="token key attr-name">error_reporting</span> <span class="token punctuation">=</span> <span class="token value attr-value">E_ALL &amp; ~E_DEPRECATED &amp; ~E_STRICT</span>
+<span class="token key attr-name">display_errors</span> <span class="token punctuation">=</span> <span class="token value attr-value">Off</span>
+<span class="token key attr-name">display_startup_errors</span> <span class="token punctuation">=</span> <span class="token value attr-value">Off</span>
+<span class="token key attr-name">mysqlnd.collect_memory_statistics</span> <span class="token punctuation">=</span> <span class="token value attr-value">Off</span>
+<span class="token key attr-name">zend.assertions</span> <span class="token punctuation">=</span> <span class="token value attr-value">-1</span>
+<span class="token comment">;opcache.huge_code_pages=1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="站台測試"><a href="#站台測試" class="headerlink" title="站台測試"></a>站台測試</h3><p>完成後，在站台下建立 php 檔案進行測試。</p>
+<p><code class="watch">Default.php</code></p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+  <span class="token function">phpinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/IIS-Setup-PHP-Info.png"></p>
+<p>PHP 7.4 在 IIS 的安裝相當順利，但按照相同的設定設定 PHP 8.0 或 PHP 8.1 則會失敗：</p>
+<p>&lt;handler&gt; scriptProcess could not be found in &lt;fastCGI&gt; application configuration</p>
+<p><img src="/assets/IIS-Setup-PHP-scriptProcess-Not-Found.png"></p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>藉由安裝 PHP Manager 2 for IIS 後問題有得到處理。</p>
+            <p>但會讓所有的站台都繼承 php 的 handler，否則衍生新的問題。而在觀察 <code class="s">applicationHost.config</code> 後，找到問題的所在是僅需要註冊 <code class="s">fastCgi</code> 即可，當中的 Path 對應到實際 Web Server 的 PHP 路徑。如此一來就可以不用透過安裝 PHP Manager 2 for IIS 也能夠順利安裝 PHP 8.0, 8.1 囉 😁</p>
+        </div>
+    </div>
+</div>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/phpmanager/phpmanager">PHP Manager 2 for IIS</a></p>
+<p><img src="/assets/IIS-Setup-PHP-Manager.png"></p>
+<p><code class="watch">C:\Windows\System32\inetsrv\Config\applicationHost.config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>fastCgi</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>application</span> <span class="token attr-name">fullPath</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>C:\inetpub\php-8.1.12-nts-Win32-vs16-x64\php-cgi.exe<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">monitorChangesTo</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>C:\inetpub\php-8.1.12-nts-Win32-vs16-x64\php.ini<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">activityTimeout</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>300<span class="token punctuation">"</span></span> <span class="token attr-name">requestTimeout</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>300<span class="token punctuation">"</span></span> <span class="token attr-name">instanceMaxRequests</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>10000<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>environmentVariables</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>environmentVariable</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>PHPRC<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>C:\inetpub\php-8.1.12-nts-Win32-vs16-x64\<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>environmentVariable</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>PHP_FCGI_MAX_REQUESTS<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>10000<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>environmentVariables</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>application</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>application</span> <span class="token attr-name">fullPath</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>C:\inetpub\php-7.4.33-nts-Win32-vc15-x64\php-cgi.exe<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>fastCgi</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而在站台或者子目錄的應用程式，只需要在 <code class="s">web.config</code> 加入 handlers 的註冊即可以讓站台或者子目錄應用程式支援 php。</p>
+<p><code class="watch">web.config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>handlers</span><span class="token punctuation">></span></span>
+            <span class="token comment">&lt;!-- &lt;add name="php 7.4" path="*.php" 
+            verb="GET,HEAD,POST"
+            modules="FastCgiModule"
+            scriptProcessor="C:\inetpub\php-7.4.33-nts-Win32-vc15-x64\php-cgi.exe"
+            resourceType="Either" /> --></span>
+
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>php 8.4<span class="token punctuation">"</span></span> <span class="token attr-name">path</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*.php<span class="token punctuation">"</span></span>
+            <span class="token attr-name">verb</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>GET,HEAD,POST<span class="token punctuation">"</span></span>
+            <span class="token attr-name">modules</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>FastCgiModule<span class="token punctuation">"</span></span>
+            <span class="token attr-name">scriptProcessor</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>C:\inetpub\php-8.1.12-nts-Win32-vs16-x64\php-cgi.exe<span class="token punctuation">"</span></span>
+            <span class="token attr-name">resourceType</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Either<span class="token punctuation">"</span></span> <span class="token attr-name">requireAccess</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Script<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>handlers</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>defaultDocument</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>files</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Default.php<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>files</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>defaultDocument</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/snans/article/details/111823604">PHP開發日誌 – IIS7安裝PHP8.0及多個版本如何同時存在一台服務器</a></p>
+<p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10284851?sc=rss.qu">【Windows】安裝 Apache Web Server(含多版本PHP並存)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.hungwin.com.tw/windows-server-iis-php-install/">Windows Server IIS 如何安裝 PHP 網頁伺服器 | 理財工程師 Mars</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/08/IIS-MISC/">IIS 筆記整理</a></p>
+<p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/11/IIS-PHP-Setup/" data-id="clg3fmaeu00s7s4tscxo4367v" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/11/Homeland-Security/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">國土安全大作戰</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/11/Cybersecurity-Web-Vulnerability-Injection/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Web 資安漏洞大可不必 - Injection 攻防之道
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

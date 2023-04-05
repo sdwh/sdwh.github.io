@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Visual Studio Debugging Tools (活用除錯工具) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記使用 Visual Studio 的除錯功能技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Visual Studio Debugging Tools (活用除錯工具)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/03/Visual-Studio-Debugging-Tools/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記使用 Visual Studio 的除錯功能技巧。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Autos-Locals-Watch.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Debug-Cursor.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Debug-Edit.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Actions-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Actions-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-PDB-Source.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-JavaScript-Debug.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Attach-Processes-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Visual-Studio-Attach-Processes-2.png">
+<meta property="article:published_time" content="2021-03-01T10:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="VisualStudio">
+<meta property="article:tag" content="DevSetup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Visual-Studio-Debugging-Tools" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/03/Visual-Studio-Debugging-Tools/" class="article-date">
+  <time datetime="2021-03-01T10:00:00.000Z" itemprop="datePublished">2021-03-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Visual Studio Debugging Tools (活用除錯工具)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A%E4%B8%AD%E6%96%B7%E9%BB%9E"><span class="toc-text">設定中斷點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%A3%E7%BA%8C%E4%B8%AD%E6%96%B7%E9%BB%9E"><span class="toc-text">連續中斷點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A2%9D%E4%BB%B6%E5%BC%8F%E4%B8%AD%E6%96%B7%E9%BB%9E"><span class="toc-text">條件式中斷點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Watch-%E7%9B%A3%E6%B8%AC"><span class="toc-text">Watch, 監測</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Autos-%E8%87%AA%E5%8B%95%E8%AE%8A%E6%95%B8-Locals-%E5%8D%80%E5%9F%9F%E8%AE%8A%E6%95%B8"><span class="toc-text">Autos, 自動變數 &#x2F; Locals, 區域變數</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step-Into-F11-Step-Over-F10-Step-Out-Shift-F11"><span class="toc-text">Step Into(F11) &#x2F; Step Over(F10) &#x2F; Step Out(Shift + F11)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pinned-DataTips"><span class="toc-text">Pinned DataTips</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%B2%E9%9A%8E%E7%9A%84%E9%99%A4%E9%8C%AF%E6%8A%80%E5%B7%A7-%F0%9F%A4%A0"><span class="toc-text">進階的除錯技巧 🤠</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AA%BF%E6%95%B4%E5%9F%B7%E8%A1%8C%E4%B8%AD%E7%9A%84-statement"><span class="toc-text">調整執行中的 statement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%B5%E9%8C%AF%E4%B8%AD%E5%90%8C%E6%AD%A5%E7%B7%A8%E8%BC%AF"><span class="toc-text">偵錯中同步編輯</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inmediate-Window-%E5%8D%B3%E6%99%82%E9%81%8B%E7%AE%97"><span class="toc-text">Inmediate Window, 即時運算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trace-Points-%E8%BF%BD%E8%B9%A4%E9%BB%9E"><span class="toc-text">Trace Points, 追蹤點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Symbol-Files-amp-Source"><span class="toc-text">Symbol Files &amp; Source</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Debug-JavaScript"><span class="toc-text">Debug JavaScript</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Remote-Debug-amp-Attach-To-Processes"><span class="toc-text">Remote Debug &amp; Attach To Processes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記使用 Visual Studio 的除錯功能技巧。</p>
+<a href="/posts/2021/03/Visual-Studio-Debugging-Tools/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>一般的情境，如果只是要測試程式功能，不需要特別使用 <code class="watch">F5</code>  來進行除錯，因為除錯需要較長的啟用應用程式時間，應該使用 <code class="watch">Ctrl + F5</code> 的方式啟用但不偵錯應用程式。</p>
+<h3 id="設定中斷點"><a href="#設定中斷點" class="headerlink" title="設定中斷點"></a>設定中斷點</h3><p>快捷鍵 <code class="watch">F9</code> 設定後，使用除錯模式運行應用程式，當觸發到中斷點會自動停止，並且可以檢視自動變數(Auto)與區域變數(Local)。</p>
+<h3 id="連續中斷點"><a href="#連續中斷點" class="headerlink" title="連續中斷點"></a>連續中斷點</h3><p>可以設置多個中斷點，並且使用 <strong>Continue, 繼續(F5)</strong> 的按鈕來前往下一個中斷點。</p>
+<h3 id="條件式中斷點"><a href="#條件式中斷點" class="headerlink" title="條件式中斷點"></a>條件式中斷點</h3><p>中斷點可以設定觸發的條件，對於迴圈的檢查情境下，只有當屬性符合特定的規則才會觸發中斷點，可以加速除錯的步驟。</p>
+<h3 id="Watch-監測"><a href="#Watch-監測" class="headerlink" title="Watch, 監測"></a>Watch, 監測</h3><p>可以在中斷點中將相關的變數加入 Watch，如此一來可以比較除錯過程中 Watch 監測值的變化，更可以進一步的直接修改監測值來達到測試、除錯的效果。</p>
+<h3 id="Autos-自動變數-Locals-區域變數"><a href="#Autos-自動變數-Locals-區域變數" class="headerlink" title="Autos, 自動變數 / Locals, 區域變數"></a>Autos, 自動變數 / Locals, 區域變數</h3><p>相對於逐一設定 Watch，自動變數及區域變數會自動顯示相關聯的變數，同時也可以從 Autos 或者 Locals 來修改相關變數進行測試。</p>
+<p>自動變數是中斷點行使用到的相關變數；區域變數則是該程式範圍(Funciton Scope)所使用到的相關變數。換言之，自動變數是區域變數的子集。</p>
+<p><img src="/assets/Visual-Studio-Autos-Locals-Watch.png"></p>
+<h3 id="Step-Into-F11-Step-Over-F10-Step-Out-Shift-F11"><a href="#Step-Into-F11-Step-Over-F10-Step-Out-Shift-F11" class="headerlink" title="Step Into(F11) / Step Over(F10) / Step Out(Shift + F11)"></a>Step Into(F11) / Step Over(F10) / Step Out(Shift + F11)</h3><p>Step Into 與 Step Over 都是從目前的中斷點繼續往下一個步驟，但差別在於如果接下來要執行的是函式，Step Into 會深入函式之中，並逐步執行；Step Over 則會直接進行至函數回傳結果。</p>
+<p>所以 Step Into 可以用以檢視呼叫函式的步驟助於除錯，而如果已經處於函式之中想要結束，可以藉由 Step Out 來完成並離開函式並繼續進行除錯。</p>
+<h3 id="Pinned-DataTips"><a href="#Pinned-DataTips" class="headerlink" title="Pinned DataTips"></a>Pinned DataTips</h3><p>在除錯模式中，將變數檢視鎖定在畫面上，不僅可以觀察程式執行過程變數的變化，在不同 Session 的除錯之中，前一次的變數值也會被帶出來方便做比較。</p>
+<h2 id="進階的除錯技巧-🤠"><a href="#進階的除錯技巧-🤠" class="headerlink" title="進階的除錯技巧 🤠"></a>進階的除錯技巧 🤠</h2><h3 id="調整執行中的-statement"><a href="#調整執行中的-statement" class="headerlink" title="調整執行中的 statement"></a>調整執行中的 statement</h3><p>可以在 Debug Mode 調整黃箭頭來改變目前的執行，甚至可以往回執行；或者點選程式碼的綠箭頭，執行到綠箭頭的程式碼；或者使用滑鼠直行至游標處。</p>
+<p><img src="/assets/Visual-Studio-Debug-Cursor.png"></p>
+<h3 id="偵錯中同步編輯"><a href="#偵錯中同步編輯" class="headerlink" title="偵錯中同步編輯"></a>偵錯中同步編輯</h3><p><img src="/assets/Visual-Studio-Debug-Edit.png"></p>
+<h3 id="Inmediate-Window-即時運算"><a href="#Inmediate-Window-即時運算" class="headerlink" title="Inmediate Window, 即時運算"></a>Inmediate Window, 即時運算</h3><p>可以從 Debug 選單的視窗中啟用「即時運算」，在即時運算視窗可以互動式的輸入變數名稱，進行查詢或者是變更。</p>
+<h3 id="Trace-Points-追蹤點"><a href="#Trace-Points-追蹤點" class="headerlink" title="Trace Points, 追蹤點"></a>Trace Points, 追蹤點</h3><p>在 Visual Studio 中斷點上，可以設定 Action 將中斷點改為追蹤點，差別在於中斷點會停下讓使用者檢視，追蹤點則是可以在 Debug Output 留下指定的訊息，方便在迴圈的情境除錯。</p>
+<p><img src="/assets/Visual-Studio-Actions-1.png"><br><img src="/assets/Visual-Studio-Actions-2.png"></p>
+<h3 id="Symbol-Files-amp-Source"><a href="#Symbol-Files-amp-Source" class="headerlink" title="Symbol Files &amp; Source"></a>Symbol Files &amp; Source</h3><p>在專案編譯的過程，會產生 DLL 與 PDB 檔，其中 PDB 檔，也稱為 Symbol Files 是用於連結 Source Code 與 Compiled Code，所以藉由 PDB 檔才能夠 Debug Code。而從 Nuget 等下載的專案，僅有 DLL 檔案，因此沒有辦法 Debug，但如果 Nuget Package 開發者由提供 PDB 檔在相關服務上(例如 Github)，藉由 Source 的設定就可以讓 Visual Studio 自行從 Github 取回該專案的 Symbol Files。</p>
+<p><img src="/assets/Visual-Studio-PDB-Source.png"></p>
+<h3 id="Debug-JavaScript"><a href="#Debug-JavaScript" class="headerlink" title="Debug JavaScript"></a>Debug JavaScript</h3><p>身為地表最強大的 IDE，當然是連前端程式也可以一併 Debug，只要在 Debug 的 Settings 啟用支援 JavaScript，並搭配對應的瀏覽器，照樣可以在 Js Code 中設定中斷點、監測值等方式進行除錯。</p>
+<p><img src="/assets/Visual-Studio-JavaScript-Debug.png"></p>
+<h3 id="Remote-Debug-amp-Attach-To-Processes"><a href="#Remote-Debug-amp-Attach-To-Processes" class="headerlink" title="Remote Debug &amp; Attach To Processes"></a>Remote Debug &amp; Attach To Processes</h3><p>開發環境和作業環境畢竟還是會有落差，如果在開發環境沒有問題，但部署後就發生問題的時候，可以使用 Remote Debug。</p>
+<p>遠端伺服器必須安裝 Remote Tools，Client 端可以藉由 Attach Processes 的方式連線到遠端伺服器並進行除錯。</p>
+<p><img src="/assets/Visual-Studio-Attach-Processes-1.png"><br><img src="/assets/Visual-Studio-Attach-Processes-2.png"></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/visualstudio/debugger/remote-debugging?view=vs-2019">Remote Debugging</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.ithome.com.tw/voice/106635">從Debugger學除錯</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/visualstudio/debugger/debugger-feature-tour?view=vs-2019">First look at the Visual Studio Debugger</a></p>
+<p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/debugging-visual-studio-2019/table-of-contents">Pluralsight - Visual Studio 2019: Debugging</a></p>
+<p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/visual-studio-2019-advanced-debugging/table-of-contents">Pluralsight - Advanced Debugging with Visual Studio 2019</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/03/Visual-Studio-Debugging-Tools/" data-id="clg3fmaly01iqs4tse4q43ti8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevSetup/" rel="tag">DevSetup</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/02/ASPNET-MVC-Safer-File-Upload/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC 5 實作更安全的檔案上傳功能 (ASP.NET MVC Safer File Upload Implements)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET MVC 從無到有打造一個應用系統
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

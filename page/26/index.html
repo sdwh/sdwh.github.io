@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Skeptical Software Engineer">
+<meta property="og:url" content="https://sdwh.dev/page/26/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:locale">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="資訊處理">
+<meta property="article:tag" content="自我成長">
+<meta property="article:tag" content="軟體工程">
+<meta property="article:tag" content="系統管理">
+<meta property="article:tag" content="資料庫管理">
+<meta property="article:tag" content="資料分析">
+<meta property="article:tag" content="資訊安全">
+<meta property="article:tag" content="程式設計">
+<meta property="article:tag" content="政府採購法">
+<meta property="article:tag" content="資訊證照">
+<meta property="article:tag" content="DBA">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="asp">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+  
+    <article id="post-SQL-Server-Get-View-And-Stored-Procedures-Definition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-Get-View-And-Stored-Procedures-Definition/" class="article-date">
+  <time datetime="2022-01-20T11:14:15.000Z" itemprop="datePublished">2022-01-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-Get-View-And-Stored-Procedures-Definition/">SQL Server Get Object Definition (sp_helptext)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 SQL Server 如何查詢資料庫物件的定義，同時說明如何結合<strong>產生指令碼</strong>，匯出資料庫部分資料及物件。</p>
+<a href="/posts/2022/01/SQL-Server-Get-View-And-Stored-Procedures-Definition/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-Get-View-And-Stored-Procedures-Definition/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-Get-View-And-Stored-Procedures-Definition/" data-id="clg3fmaix017zs4tsff8r37n9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-CSS-With-Scale-Ratio" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/CSS-With-Scale-Ratio/" class="article-date">
+  <time datetime="2022-01-20T11:13:46.000Z" itemprop="datePublished">2022-01-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/CSS-With-Scale-Ratio/">CSS With Scale &amp; Ratio</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>彙整瀏覽器的縮放比率與螢幕寬度的關聯，並比較 Bootstrap 響應式的螢幕尺寸分斷點。</p>
+<a href="/posts/2022/01/CSS-With-Scale-Ratio/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/openmoji-monitor.svg" alt="logo" width="150px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/CSS-With-Scale-Ratio/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/CSS-With-Scale-Ratio/" data-id="clg3fmab600cjs4tsdxch0ujm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/" rel="tag">CSS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Gentle-Services-Club" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-Gentle-Services-Club/" class="article-date">
+  <time datetime="2022-01-19T11:13:00.000Z" itemprop="datePublished">2022-01-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-Gentle-Services-Club/">SQL Server Gentleman Services 資料庫紳士密令</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>SQL Server Gentleman Services 🎩</p>
+<a href="/posts/2022/01/SQL-Server-Gentle-Services-Club/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-Gentle-Services-Club/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-Gentle-Services-Club/" data-id="clg3fmaiw017ss4tsd97xhis8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DBA/" rel="tag">DBA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Dot-Net-Ecosystem" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/Dot-Net-Ecosystem/" class="article-date">
+  <time datetime="2022-01-19T11:10:22.000Z" itemprop="datePublished">2022-01-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/Dot-Net-Ecosystem/">.Net Ecosystem (微軟開發生態系)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明微軟 .NET 開發的生態系，從 Visual Studio 建立專案、編譯到 DDL。比較 .NET Framework、.NET Core 以及 .Net 等 Runtime，並探討 C# 各版本在不同 Runtime 的支援情形。</p>
+<a href="/posts/2022/01/Dot-Net-Ecosystem/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/Dot-Net-Ecosystem/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/Dot-Net-Ecosystem/" data-id="clg3fmacs00jds4ts31svhlwz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NetFramework/" rel="tag">NetFramework</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Hexo-Syntax-Highlight" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/Hexo-Syntax-Highlight/" class="article-date">
+  <time datetime="2022-01-18T11:16:29.000Z" itemprop="datePublished">2022-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Blog/">Blog</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/Hexo-Syntax-Highlight/">Hexo Syntax Highlight (Prismjs)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記更新 Hexo 為 6.0 版本的方式，同時比較各種 Hexo 達到 Code Syntax Highlight 的方式 😊</p>
+<a href="/posts/2022/01/Hexo-Syntax-Highlight/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/Hexo-Syntax-Highlight/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/Hexo-Syntax-Highlight/" data-id="clg3fmae600pds4tscceq8ubt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-ASP-Database-Connection" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/ASP-Database-Connection/" class="article-date">
+  <time datetime="2022-01-18T11:10:28.000Z" itemprop="datePublished">2022-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/ASP-Database-Connection/">Classic ASP Database Connection</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明 Classic ASP 如何連線資料庫以及介紹基本的 VBScript 語法。</p>
+<a href="/posts/2022/01/ASP-Database-Connection/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/asp-logo.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/ASP-Database-Connection/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/ASP-Database-Connection/" data-id="clg3fma8b000es4ts27ux2moa" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASP/" rel="tag">ASP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Restore-With-Orphaned-User-Missing-User" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-Restore-With-Orphaned-User-Missing-User/" class="article-date">
+  <time datetime="2022-01-18T11:09:00.000Z" itemprop="datePublished">2022-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-Restore-With-Orphaned-User-Missing-User/">SQL Server Restore With Orphaned User Missing User (孤兒 / 孤立使用者)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明 SQL Server 在進行資料庫還原、遷移上可能會碰到的 User 與 Login 不一致、孤立使用者、缺少使用者的問題。</p>
+<p>說明如何以 TSQL Script 檢查目前的角色授權以及權限授權，並說明如何處理 Orphaned User，同時彙整微軟官方介紹的「在 SQL Server 實例之間傳輸登入和密碼」使用方式。</p>
+<a href="/posts/2022/01/SQL-Server-Restore-With-Orphaned-User-Missing-User/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-Restore-With-Orphaned-User-Missing-User/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-Restore-With-Orphaned-User-Missing-User/" data-id="clg3fmajy01bns4ts21a1cx0z" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Installation-Detailed" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-Installation-Detailed/" class="article-date">
+  <time datetime="2022-01-17T11:09:47.000Z" itemprop="datePublished">2022-01-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-Installation-Detailed/">SQL Server Installation Detailed 安裝流程與規劃詳細說明</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何安裝 SQL Server Developer 以及 Standard、Enterprise 各版本，同時比較 SQL Server 2019、SQL Server 2022 安裝方式的差異。並詳述安裝過程要考量的磁碟檔案格式、防火牆 1433 Port 設定以及累計更新 Cumulative Update 等注意事項。</p>
+<p>最後羅列完成安裝後要進行的組態管理員設定以及維護計畫設定，讓資料庫伺服器的安裝動作一氣呵成，提早完成不拖泥帶水，悠閒享受一杯美好的鮮奶茶 ☕</p>
+<a href="/posts/2022/01/SQL-Server-Installation-Detailed/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-Installation-Detailed/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-Installation-Detailed/" data-id="clg3fmaj10189s4ts6c0d3i5t" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Truncate-Permissions-Only" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-Truncate-Permissions-Only/" class="article-date">
+  <time datetime="2022-01-15T05:07:30.000Z" itemprop="datePublished">2022-01-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-Truncate-Permissions-Only/">SQL Server Truncate Permissions Only</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何使用 SQL Server 授權 Truncate Table 的權限，且同時能保持在最小授權的原則下。本次範例藉由 Stored Procedures 搭配 User without login proxy 的方式完成。</p>
+<a href="/posts/2022/01/SQL-Server-Truncate-Permissions-Only/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-Truncate-Permissions-Only/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-Truncate-Permissions-Only/" data-id="clg3fmakr01ens4ts9adyaw59" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSIS/" rel="tag">SSIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-SQL-Server-Stored-Procedures-With-Impersonation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/SQL-Server-Stored-Procedures-With-Impersonation/" class="article-date">
+  <time datetime="2022-01-14T11:14:40.000Z" itemprop="datePublished">2022-01-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/01/SQL-Server-Stored-Procedures-With-Impersonation/">SQL Server 委託預存程序執行 TSQL (Stored Procedures With Impersonation)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明 SQL Server 如何設計 Stored Procedures，讓僅具有 Execute Stored Procedures 權限的 User，可以藉由 Stored Procedures 來使用 User 本身未具權限的物件。</p>
+<a href="/posts/2022/01/SQL-Server-Stored-Procedures-With-Impersonation/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/01/SQL-Server-Stored-Procedures-With-Impersonation/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/SQL-Server-Stored-Procedures-With-Impersonation/" data-id="clg3fmakg01dhs4ts519b62da" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/25/">↖ Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><a class="extend next" rel="next" href="/page/27/">Next ↘</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

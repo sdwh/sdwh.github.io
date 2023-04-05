@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC Ajax Add / Delete Image (MiniAlbum) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ASP.NET MVC 使用 Ajax Helper 搭配 jQuery Ajax 實作非同步式圖片上傳與刪除。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC Ajax Add &#x2F; Delete Image (MiniAlbum)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="ASP.NET MVC 使用 Ajax Helper 搭配 jQuery Ajax 實作非同步式圖片上傳與刪除。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://i.imgur.com/nScUmPS.gif">
+<meta property="article:published_time" content="2022-01-10T13:05:26.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/" class="article-date">
+  <time datetime="2022-01-10T13:05:26.000Z" itemprop="datePublished">2022-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC Ajax Add / Delete Image (MiniAlbum)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Model"><span class="toc-text">Model</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Controller"><span class="toc-text">Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Album"><span class="toc-text">Album</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GetPhoto"><span class="toc-text">GetPhoto</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AddPhoto"><span class="toc-text">AddPhoto</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View"><span class="toc-text">View</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%B1%BA-Bootstrap-3-Column-Height-%E4%B8%8D%E4%B8%80%E8%87%B4%E5%95%8F%E9%A1%8C"><span class="toc-text">解決 Bootstrap 3 Column Height 不一致問題</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Album-cshtml"><span class="toc-text">Album.cshtml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GetPhoto-cshtml"><span class="toc-text">GetPhoto.cshtml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>ASP.NET MVC 使用 Ajax Helper 搭配 jQuery Ajax 實作非同步式圖片上傳與刪除。</p>
+<a href="/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p><img src="https://i.imgur.com/nScUmPS.gif"></p>
+<ul>
+<li><p>Controller</p>
+<ul>
+<li>Album</li>
+<li>GetPhoto (retun partial)</li>
+<li>AddPhoto (Post-only)</li>
+<li>DeletePhoto (Post-only)</li>
+</ul>
+</li>
+<li><p>View</p>
+<ul>
+<li>Album</li>
+<li>GetPhoto (Partial)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>使用 App_Data 當中建立 mdf 的方式建立本次專案，並且搭配 SSMS 直接於 <strong>(localdb)\MSSQLLocalDB</strong> 進行資料庫的設計，僅有一張簡單的資料表負責圖片的上傳作業。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Photo<span class="token punctuation">]</span><span class="token punctuation">(</span>
+	<span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">]</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+	<span class="token punctuation">[</span>FileName<span class="token punctuation">]</span> <span class="token punctuation">[</span>nvarchar<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+	<span class="token punctuation">[</span>UpdateDateTime<span class="token punctuation">]</span> <span class="token punctuation">[</span>datetime2<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+	<span class="token punctuation">[</span>MIME<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">varchar</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+	<span class="token punctuation">[</span>Path<span class="token punctuation">]</span> <span class="token punctuation">[</span>nvarchar<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h2><h3 id="Album"><a href="#Album" class="headerlink" title="Album"></a>Album</h3><p>相簿的主頁，但 Controller 的工作卻相當簡單，只是負責回應 View。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Album</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="GetPhoto"><a href="#GetPhoto" class="headerlink" title="GetPhoto"></a>GetPhoto</h3><p>Ajax 如果達成的靈魂 Action，負責提供 Partial View，提供 Ajax 呼叫所需的 Html 以進行頁面的更新。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">GetPhoto</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">PartialView</span><span class="token punctuation">(</span>db<span class="token punctuation">.</span>Photo<span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="AddPhoto"><a href="#AddPhoto" class="headerlink" title="AddPhoto"></a>AddPhoto</h3><p>負責將收到的 HttpPostedFileBase 進行實體檔案的加入以及資料庫的內容寫入，因為是示範專案，許多上傳檔案需要進行的<a href="/posts/2021/02/ASPNET-MVC-Safer-File-Upload/">安全檢查</a>沒有加入。</p>
+<p>而回應的 ActionResult 為導向 GetPhoto，重新渲染 Photo。這樣雖然有利用到 Ajax 但還是處理了許多不需要更動的 HTML DOM ，在效能考量上不是最理想，精神上是參考 Ajax Helper Replace 的設計方式，好處就是設計上直覺且便利。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ValidateAntiForgeryToken</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">AddPhoto</span><span class="token punctuation">(</span><span class="token class-name">HttpPostedFileBase</span> file<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">string</span></span> extension <span class="token operator">=</span> Path<span class="token punctuation">.</span><span class="token function">GetExtension</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>FileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">string</span></span> fileName <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">Guid<span class="token punctuation">.</span><span class="token function">NewGuid</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><span class="token punctuation">&#125;</span></span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">extension</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">string</span></span> savePath <span class="token operator">=</span> 
+      Path<span class="token punctuation">.</span><span class="token function">Combine</span><span class="token punctuation">(</span>Server<span class="token punctuation">.</span><span class="token function">MapPath</span><span class="token punctuation">(</span><span class="token string">"~/UploadFile"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    file<span class="token punctuation">.</span><span class="token function">SaveAs</span><span class="token punctuation">(</span>savePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    db<span class="token punctuation">.</span>Photo<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Photo</span>
+        <span class="token punctuation">&#123;</span>
+            FileName <span class="token operator">=</span> fileName<span class="token punctuation">,</span>
+            Path <span class="token operator">=</span> savePath<span class="token punctuation">,</span>
+            UpdateDateTime <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">,</span>
+            MIME <span class="token operator">=</span> MimeMapping<span class="token punctuation">.</span><span class="token function">GetMimeMapping</span><span class="token punctuation">(</span>savePath<span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    db<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"GetPhoto"</span><span class="token punctuation">,</span> <span class="token string">"Home"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+```       
+
+<span class="token preprocessor property">### DeletePhoto</span>
+
+```csharp
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">DeletePhoto</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> photo <span class="token operator">=</span> db<span class="token punctuation">.</span>Photo<span class="token punctuation">.</span><span class="token function">Find</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>photo <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>System<span class="token punctuation">.</span>IO<span class="token punctuation">.</span>File<span class="token punctuation">.</span><span class="token function">Exists</span><span class="token punctuation">(</span>photo<span class="token punctuation">.</span>Path<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            System<span class="token punctuation">.</span>IO<span class="token punctuation">.</span>File<span class="token punctuation">.</span><span class="token function">Delete</span><span class="token punctuation">(</span>photo<span class="token punctuation">.</span>Path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        db<span class="token punctuation">.</span>Photo<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>photo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        db<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"GetPhoto"</span><span class="token punctuation">,</span> <span class="token string">"Home"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><h3 id="解決-Bootstrap-3-Column-Height-不一致問題"><a href="#解決-Bootstrap-3-Column-Height-不一致問題" class="headerlink" title="解決 Bootstrap 3 Column Height 不一致問題"></a>解決 Bootstrap 3 Column Height 不一致問題</h3><p>解決方法就是在 Row 加入 Flex，可以使用 inline-css：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-wrap</span><span class="token punctuation">:</span> wrap</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-2<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>img-responsive<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>元素較多的時候可以改採 CSS：</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.equalHeight</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> 
+  <span class="token property">flex-wrap</span><span class="token punctuation">:</span> wrap
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Album-cshtml"><a href="#Album-cshtml" class="headerlink" title="Album.cshtml"></a>Album.cshtml</h3><p>核心內容為 #album 的 Container 用於將 Partial View 鑲嵌於此</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>album<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    @Html.Action("GetPhoto")
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>搭配 Ajax ActionLink，可以用於非同步式地更新圖片顯示，本次範例中沒有使用到，但是使用 Ajax BeginForm 的前身，也方便在測試使用：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> inline-block</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    @Ajax.ActionLink(
+      "Update Photo", "GetPhoto", "Home", new &#123; id = 0 &#125;,
+      new AjaxOptions
+      &#123;
+        HttpMethod = "GET",
+        UpdateTargetId = "album",
+        InsertionMode = InsertionMode.Replace
+      &#125;,
+      new &#123; @class = "btn btn-primary", style = "margin-right: 5px" &#125;
+    )
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>實際使用的是 Ajax BeginForm，用於將上傳的圖片以 Form 的形式提供給 Home/AddPhoto Action</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> inline-block</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    @using (Ajax.BeginForm("AddPhoto", "Home", new &#123; id = 0 &#125;,
+        new AjaxOptions()
+        &#123;
+            HttpMethod = "POST",
+            UpdateTargetId = "album",
+            InsertionMode = InsertionMode.Replace
+        &#125;, new &#123; enctype = "multipart/form-data" &#125;))
+    &#123;
+        @Html.AntiForgeryToken()
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> inline-block</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> 
+          <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Upload File to Server<span class="token punctuation">"</span></span> 
+          <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">display</span><span class="token punctuation">:</span> inline-block</span><span class="token punctuation">"</span></span></span> 
+          <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Script Section 有兩大功能：</p>
+<p>第一個是負責將 <a href="/posts/2020/06/ASPNET-MVC-JS-Interactive/">jquery.unobtrusive-ajax.js</a> 函式庫載入，以使用 Ajax。</p>
+<p>第二個功能則是負責在 document 註冊 click 事件，用於處理圖片被點擊後刪除的事件。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html">@section scripts&#123;
+  @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+    <span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token string">'.removePhoto'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token string">"/Home/DeletePhoto/"</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>id<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+        <span class="token function-variable function">success</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#album'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>因為使用 Ajax 的方式將 getPhoto 的結果取代 Html Dom，如果不是在 Document 上使用 on 來註冊 Listener 的話，Listener 會因為 Dom 被更新而消失。如下列的程式碼的錯誤示範。</p>
+        </div>
+    </div>
+</div>
+
+<p>下列為錯誤示範，只能夠執行一次，後續會因 Listener 消失而無法再次使用。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.removePhoto'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token string">"/Home/DeletePhoto/"</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>id<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+        <span class="token function-variable function">success</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#album'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="GetPhoto-cshtml"><a href="#GetPhoto-cshtml" class="headerlink" title="GetPhoto.cshtml"></a>GetPhoto.cshtml</h3><p>GetPhoto 的任務單純，就是負責渲染 Model 當中的圖片，有使用到 flex style 解決 Bootstrap 3 Column Height 不一致的問題。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html">@model IList<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>MiniAlbum.Models.Photo</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row<span class="token punctuation">"</span></span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">margin-top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-wrap</span><span class="token punctuation">:</span> wrap</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span>
+    @foreach (var img in Model)
+    &#123;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-2<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>removePhoto<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>@img.Id<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/UploadFile/@img.FileName<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>img-responsive<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    &#125;
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>本專案僅為練習 ASP.NET MVC 搭配 jQuery Unobtrusive Ajax，在小型的專案可以採用，以提升更佳的網站使用體驗。但如果要追求更理想的體驗與更複雜的應用情境，還是得仰賴前端框架使用，並以 WebAPI 分前、後端的方式進行開發。</p>
+<p>而本專案對於圖片的上傳、刪除還有可以改進的地方，例如刪除前的警示，圖片的上傳與刪除安全性上的考量也需加入，以免衍生資安漏洞。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://pokemondb.net/">圖片來源 Pokemondb</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a target="_blank" rel="noopener" href="https://dev.azure.com/">專案位置 | dev.azure</a></p>
+<p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/ASPNET-MVC-Mini-Album-Ajax-Add-Image-Dlete-Image/" data-id="clg3fma9f004gs4ts42m72jvg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/01/PowerShell-Invoke-RestMethod-RestFul-API/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PowerShell RestFul API (Invoke-RestMethod)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/Log-Parser/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Log Parser 工具在手 紀錄我有 | IIS W3C Logs 分析指南
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

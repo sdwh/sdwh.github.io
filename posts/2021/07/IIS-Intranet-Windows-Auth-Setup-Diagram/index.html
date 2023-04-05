@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>IIS Connect SQL Server With Windows Authentication | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="教學如何在 IIS 的環境，使用 Windows 驗證連線 SQL Server 資料庫。示範的程式是以 ASP.NET MVC 5 進行示範，完成設定後，將可以使用 Windows 驗證的方式去存取資料庫，不需要額外在資料庫中安全性中新增 SQL Server 驗證。 同時也說明過程中碰到的 500.24 Http Status 等問題該如何進行處理 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IIS Connect SQL Server With Windows Authentication">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/IIS-Intranet-Windows-Auth-Setup-Diagram/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="教學如何在 IIS 的環境，使用 Windows 驗證連線 SQL Server 資料庫。示範的程式是以 ASP.NET MVC 5 進行示範，完成設定後，將可以使用 Windows 驗證的方式去存取資料庫，不需要額外在資料庫中安全性中新增 SQL Server 驗證。 同時也說明過程中碰到的 500.24 Http Status 等問題該如何進行處理 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Setup-Diagram.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-SQL-Server-Setup.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Site-Setting.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-ApplicationPool-Identity.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Authentication.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Finish.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Services-Identity.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Insufficient-Permissions.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Members-Of-IIS-IUSRS.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Connect-Fail.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-Http-Error-500-24.png">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Intranet-Windows-Auth-ApplicationPool-ManagedPipe.png">
+<meta property="article:published_time" content="2021-07-16T12:13:41.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IIS-Intranet-Windows-Auth-Setup-Diagram" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/IIS-Intranet-Windows-Auth-Setup-Diagram/" class="article-date">
+  <time datetime="2021-07-16T12:13:41.000Z" itemprop="datePublished">2021-07-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IIS Connect SQL Server With Windows Authentication
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E8%A8%AD%E5%AE%9A"><span class="toc-text">資料庫設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F"><span class="toc-text">應用程式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Web-config-%E8%A8%AD%E5%AE%9A"><span class="toc-text">Web.config 設定</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IIS-%E8%A8%AD%E5%AE%9A"><span class="toc-text">IIS 設定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%A3%E7%B7%9A%E8%BA%AB%E5%88%86%E8%AA%BF%E6%95%B4"><span class="toc-text">連線身分調整</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F%E8%AA%BF%E6%95%B4"><span class="toc-text">驗證方式調整</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%90%E6%9E%9C"><span class="toc-text">成果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TroubleShooting"><span class="toc-text">TroubleShooting</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BA%AB%E5%88%86%E6%AC%8A%E9%99%90%E4%B8%8D%E8%B6%B3%E5%AD%98%E5%8F%96-NET-Framework-%E8%B3%87%E6%96%99%E5%A4%BE"><span class="toc-text">使用的身分權限不足存取 .NET Framework 資料夾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Connect-Faile-With-Wrong-Identity"><span class="toc-text">Connect Faile With Wrong Identity</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#500-24"><span class="toc-text">500.24</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Web-config-%E8%AA%BF%E6%95%B4"><span class="toc-text">Web.config 調整</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AA%BF%E6%95%B4-Managed-Pipe"><span class="toc-text">調整 Managed Pipe</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>教學如何在 IIS 的環境，使用 Windows 驗證連線 SQL Server 資料庫。示範的程式是以 ASP.NET MVC 5 進行示範，完成設定後，將可以使用 Windows 驗證的方式去存取資料庫，不需要額外在資料庫中安全性中新增 SQL Server 驗證。</p>
+<p>同時也說明過程中碰到的 500.24 Http Status 等問題該如何進行處理 😎</p>
+<a href="/posts/2021/07/IIS-Intranet-Windows-Auth-Setup-Diagram/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p><img src="/assets/IIS-Intranet-Windows-Auth-Setup-Diagram.png"></p>
+<h3 id="資料庫設定"><a href="#資料庫設定" class="headerlink" title="資料庫設定"></a>資料庫設定</h3><p>本次使用的範例資料庫為 <a href="">AdventureWorks</a>，需要完成的步驟為安全性實體新增 Windows 驗證 Login，並設定對應的資料庫 Read / Write 權限。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-SQL-Server-Setup.png"></p>
+<h3 id="應用程式"><a href="#應用程式" class="headerlink" title="應用程式"></a>應用程式</h3><p>使用 <strong>Windows 驗證</strong>，加入 Model 使用 SQL Server 驗證。</p>
+<p>詳細的步驟省略請參考 <a href="/posts/2021/03/ASPNET-MVC-EntityFramework-Model/">ASP.NET MVC EntityFramework Model</a></p>
+<p>調整完 Web.config 後發佈至 Web Server，準備進行 IIS 的設定。</p>
+<h4 id="Web-config-設定"><a href="#Web-config-設定" class="headerlink" title="Web.config 設定"></a>Web.config 設定</h4><p><code class="watch">Web.Config</code></p>
+<p>必須要加入 Impersonate 才能夠跨伺服器的使用 Windows 驗證存取 SQL Server。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>identity</span> <span class="token attr-name">impersonate</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>authentication</span> <span class="token attr-name">mode</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Windows<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>authorization</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>deny</span> <span class="token attr-name">users</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>?<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>authorization</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此外必須另外設定 加入 validateIntegratedModeConfiguration 以處理 500.24 問題。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>validation</span> <span class="token attr-name">validateIntegratedModeConfiguration</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Web.Release.Config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml">  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>connectionStrings</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>AdventureWorksLT2019Entities<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">connectionString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>metadata=res://*/Models.Model1.csdl|
+  res://*/Models.Model1.ssdl|
+  res://*/Models.Model1.msl;
+  provider=System.Data.SqlClient;
+  provider connection string=
+  <span class="token entity named-entity" title="&quot;">&amp;quot;</span>data source=db.webber.local;
+    initial catalog=AdventureWorksLT2019;
+    Integrated Security=True;
+    MultipleActiveResultSets=True;
+    App=EntityFramework
+  <span class="token entity named-entity" title="&quot;">&amp;quot;</span><span class="token punctuation">"</span></span> 
+  <span class="token attr-name">providerName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Data.EntityClient<span class="token punctuation">"</span></span> 
+  <span class="token attr-name"><span class="token namespace">xdt:</span>Transform</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>SetAttributes<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">xdt:</span>Locator</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Match(name)<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>connectionStrings</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="IIS-設定"><a href="#IIS-設定" class="headerlink" title="IIS 設定"></a>IIS 設定</h3><h4 id="連線身分調整"><a href="#連線身分調整" class="headerlink" title="連線身分調整"></a>連線身分調整</h4><p><img src="/assets/IIS-Intranet-Windows-Auth-Site-Setting.png"></p>
+<p>AD User 的密碼預設會保存於下列路徑：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">echo</span> C:\Windows\System32\inetsrv\Config\applicationHost.config</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/IIS-Intranet-Windows-Auth-ApplicationPool-Identity.png" alt="應用程式的集區身分不需要特別調整"></p>
+<h4 id="驗證方式調整"><a href="#驗證方式調整" class="headerlink" title="驗證方式調整"></a>驗證方式調整</h4><p><strong>ASP.NET Impersonate</strong> 必須要啟動，否則無法跨伺服器進行 Widnows 驗證存取資料庫。此外必須開啟 <strong>Windows Authentication</strong>。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-Authentication.png"></p>
+<h3 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h3><p>IIS 順利連到遠端資料庫 Barvo 🤓</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-Finish.png"></p>
+<p>同時驗證 Services 使用的身分為 ApplicationPool，而不是　Webber\Yi （Webber\Yi 用於與資料庫的連線使用）。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-Services-Identity.png"></p>
+<h2 id="TroubleShooting"><a href="#TroubleShooting" class="headerlink" title="TroubleShooting"></a>TroubleShooting</h2><h3 id="使用的身分權限不足存取-NET-Framework-資料夾"><a href="#使用的身分權限不足存取-NET-Framework-資料夾" class="headerlink" title="使用的身分權限不足存取 .NET Framework 資料夾"></a>使用的身分權限不足存取 .NET Framework 資料夾</h3><p><img src="/assets/IIS-Intranet-Windows-Auth-Insufficient-Permissions.png" alt="權限不足存取 .NET Framework 資料夾"></p>
+<p>處理方法：將 AD User 加入到本機伺服器的 IIS_IUSRS 群組中。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-Members-Of-IIS-IUSRS.png" alt="處理方法"></p>
+<h3 id="Connect-Faile-With-Wrong-Identity"><a href="#Connect-Faile-With-Wrong-Identity" class="headerlink" title="Connect Faile With Wrong Identity"></a>Connect Faile With Wrong Identity</h3><p>IIS 使用錯誤的身分 (WEBBER\W-DC2$) 去向 SQL Server 連線並請求資料。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-Connect-Fail.png"></p>
+<p>處理方法：必須要加入 Impersonate 才能夠跨伺服器的使用 Windows 驗證存取 SQL Server。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>identity</span> <span class="token attr-name">impersonate</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="500-24"><a href="#500-24" class="headerlink" title="500.24"></a>500.24</h3><p>在加入 Impersonate 到 web.config 後會衍生出 Http Status Code 500.24 的錯誤，有兩種方式可以修正。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-Http-Error-500-24.png"></p>
+<h4 id="Web-config-調整"><a href="#Web-config-調整" class="headerlink" title="Web.config 調整"></a>Web.config 調整</h4><p>在 Web.config 加入 validateIntegratedModeConfiguration 以處理 500.24 問題。本次的專案使用此方式進行處理，因為 Managed Pipe 調整為 Classic 整個就是覺得怪 😯</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>validation</span> <span class="token attr-name">validateIntegratedModeConfiguration</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="調整-Managed-Pipe"><a href="#調整-Managed-Pipe" class="headerlink" title="調整 Managed Pipe"></a>調整 Managed Pipe</h4><p>調整為 Classic 即可，本次專案不採用這個方法。</p>
+<p><img src="/assets/IIS-Intranet-Windows-Auth-ApplicationPool-ManagedPipe.png"></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/aspnet/2xzyzb0f(v=vs.100)">How to: Access SQL Server Using a Mapped Windows Domain User</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.darkthread.net/blog/aspnet-and-iis-auth-setting/">黑暗執行緒 - IIS 與 web.config 的 Windows 驗證設定</a></p>
+<p><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/regionbbs/2017/07/13/sqlserver_database_authentication_mode">小朱 | 你認為偷懶的方法卻是最安全的方法</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/08/IIS-MISC/">IIS 筆記整理</a></p>
+<p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/IIS-Intranet-Windows-Auth-Setup-Diagram/" data-id="clg3fmaes00s0s4ts7b8z1mep" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Github-Pages-Deploy-And-DNS-Setup/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Github Pages 使用教學 ⭐ 發布網頁設計成果</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/ASPNET-MVC-Create-File/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用 C# 建立檔案於伺服器的方法 (ASP.NET Create File In Server)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

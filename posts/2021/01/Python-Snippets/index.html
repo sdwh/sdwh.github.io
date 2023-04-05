@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Python 開發實務程式碼片段集合 Coding like Ninja with Snippets | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="綜整日常 Python 開發慣用的 Snippets ，讓開發保持沉浸在心流不斷的快感 🐱‍👤">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 開發實務程式碼片段集合 Coding like Ninja with Snippets">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/01/Python-Snippets/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="綜整日常 Python 開發慣用的 Snippets ，讓開發保持沉浸在心流不斷的快感 🐱‍👤">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
+<meta property="article:published_time" content="2021-01-05T10:52:41.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="PythonLibrary">
+<meta property="article:tag" content="Snippets">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/python-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Python-Snippets" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/01/Python-Snippets/" class="article-date">
+  <time datetime="2021-01-05T10:52:41.000Z" itemprop="datePublished">2021-01-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python 開發實務程式碼片段集合 Coding like Ninja with Snippets
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-101-%F0%9F%90%8D"><span class="toc-text">Python 101 🐍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Text-file-read-amp-write"><span class="toc-text">Text file read &amp; write</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Print-Number-in-Binary"><span class="toc-text">Print Number in Binary</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Import-Modules-%F0%9F%93%A6"><span class="toc-text">Import Modules 📦</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Import-BeauifulSoup-to-parse-HTML-XML"><span class="toc-text">Import BeauifulSoup to parse HTML &#x2F; XML</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Import-Colorama-for-CLI-Colorful-Output"><span class="toc-text">Import Colorama for CLI Colorful Output</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Import-argparse-for-handle-CLI-args"><span class="toc-text">Import argparse for handle CLI args</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Import-hashlib-Hash-strings-with-md5-5"><span class="toc-text">Import hashlib, Hash strings with md5 5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Import-shutil-How-to-zip-file"><span class="toc-text">Import shutil, How to zip file</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Datetime-Magician-%F0%9F%93%85"><span class="toc-text">Datetime Magician 📅</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Datetime-Handle"><span class="toc-text">Datetime Handle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97%E6%B0%91%E5%9C%8B%E5%B9%B4-%E6%9C%88-%E6%97%A5"><span class="toc-text">取得民國年 &#x2F; 月 &#x2F; 日</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Advanced-Data-Structures-%F0%9F%A7%8A"><span class="toc-text">Advanced Data Structures 🧊</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-Sort-Dictionary-object"><span class="toc-text">How to Sort Dictionary object</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Default-Dictionary"><span class="toc-text">Default Dictionary</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NamedTuple"><span class="toc-text">NamedTuple</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Python-GroupBy"><span class="toc-text">Python GroupBy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Automation-%F0%9F%A4%96"><span class="toc-text">Automation 🤖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Automation-Keyboard-Control"><span class="toc-text">Automation Keyboard Control</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pending-To-Archive-%F0%9F%97%9D%EF%B8%8F"><span class="toc-text">Pending To Archive 🗝️</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#python-encoding"><span class="toc-text">python encoding</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>綜整日常 Python 開發慣用的 Snippets ，讓開發保持沉浸在心流不斷的快感 🐱‍👤</p>
+<a href="/posts/2021/01/Python-Snippets/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/python-logo.png" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Python-101-🐍"><a href="#Python-101-🐍" class="headerlink" title="Python 101 🐍"></a>Python 101 🐍</h2><h3 id="Text-file-read-amp-write"><a href="#Text-file-read-amp-write" class="headerlink" title="Text file read &amp; write"></a>Text file read &amp; write</h3><p>讀寫 txt file 的起手式。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">saveTxt</span><span class="token punctuation">(</span>fileName <span class="token operator">=</span> <span class="token string">'f.txt'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">,</span> encoding <span class="token operator">=</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        f<span class="token punctuation">.</span>writelines<span class="token punctuation">(</span><span class="token string">'text'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">loadTxt</span><span class="token punctuation">(</span>fileName <span class="token operator">=</span> <span class="token string">'f.txt'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> encoding <span class="token operator">=</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> f<span class="token punctuation">.</span>readlines<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Print-Number-in-Binary"><a href="#Print-Number-in-Binary" class="headerlink" title="Print Number in Binary"></a>Print Number in Binary</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"&#123;0:b&#125;"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="Import-Modules-📦"><a href="#Import-Modules-📦" class="headerlink" title="Import Modules 📦"></a>Import Modules 📦</h2><h3 id="Import-BeauifulSoup-to-parse-HTML-XML"><a href="#Import-BeauifulSoup-to-parse-HTML-XML" class="headerlink" title="Import BeauifulSoup to parse HTML / XML"></a>Import BeauifulSoup to parse HTML / XML</h3><p>載入 BeauifulSoup 處理爬下來的 HTML 資料起手式。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>content<span class="token punctuation">,</span> <span class="token string">'lxml'</span><span class="token punctuation">)</span>
+eautifulSoup<span class="token punctuation">(</span>s<span class="token punctuation">.</span>text<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'html.parser'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Import-Colorama-for-CLI-Colorful-Output"><a href="#Import-Colorama-for-CLI-Colorful-Output" class="headerlink" title="Import Colorama for CLI Colorful Output"></a>Import Colorama for CLI Colorful Output</h3><p>載入 Colorama 用來控制 CLI 輸出的內容色彩。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> colorama <span class="token keyword">import</span> Style<span class="token punctuation">,</span> Fore<span class="token punctuation">,</span> Back<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Import-argparse-for-handle-CLI-args"><a href="#Import-argparse-for-handle-CLI-args" class="headerlink" title="Import argparse for handle CLI args"></a>Import argparse for handle CLI args</h3><p>載入 argparse 讓設計 CLI Tools 更為簡易。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> argparse
+parser <span class="token operator">=</span> argparse<span class="token punctuation">.</span>ArgumentParser<span class="token punctuation">(</span>description<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">)</span>
+parser<span class="token punctuation">.</span>add_argument<span class="token punctuation">(</span><span class="token string">'-flag'</span><span class="token punctuation">,</span> action<span class="token operator">=</span><span class="token string">'store_true'</span><span class="token punctuation">)</span>
+args <span class="token operator">=</span> parser<span class="token punctuation">.</span>parse_args<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Import-hashlib-Hash-strings-with-md5-5"><a href="#Import-hashlib-Hash-strings-with-md5-5" class="headerlink" title="Import hashlib, Hash strings with md5 5"></a>Import hashlib, Hash strings with md5 5</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> hashlib
+hashlib<span class="token punctuation">.</span>md5<span class="token punctuation">(</span><span class="token string">'content'</span><span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>hexdigest<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Import-shutil-How-to-zip-file"><a href="#Import-shutil-How-to-zip-file" class="headerlink" title="Import shutil, How to zip file"></a>Import shutil, How to zip file</h3><p>如何壓縮檔案為 zip</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> shutil
+shutil<span class="token punctuation">.</span>make_archive<span class="token punctuation">(</span><span class="token string">r'path\filename'</span><span class="token punctuation">,</span> <span class="token string">'zip'</span><span class="token punctuation">,</span> r'toZipPath\'<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="Datetime-Magician-📅"><a href="#Datetime-Magician-📅" class="headerlink" title="Datetime Magician 📅"></a>Datetime Magician 📅</h2><h3 id="Datetime-Handle"><a href="#Datetime-Handle" class="headerlink" title="Datetime Handle"></a>Datetime Handle</h3><p>如何將 Datetime Object 轉會為特別的字串形式。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>strftime<span class="token punctuation">(</span><span class="token string">"%Y-%m-%d %H:%M:%S"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="取得民國年-月-日"><a href="#取得民國年-月-日" class="headerlink" title="取得民國年 / 月 / 日"></a>取得民國年 / 月 / 日</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">[</span>
+    v <span class="token keyword">if</span> <span class="token builtin">int</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">2000</span> <span class="token keyword">else</span> <span class="token builtin">str</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1911</span><span class="token punctuation">)</span> 
+    <span class="token keyword">for</span> v <span class="token keyword">in</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>strftime<span class="token punctuation">(</span><span class="token string">"%Y-%m%d"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">"-"</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Advanced-Data-Structures-🧊"><a href="#Advanced-Data-Structures-🧊" class="headerlink" title="Advanced Data Structures 🧊"></a>Advanced Data Structures 🧊</h2><h3 id="How-to-Sort-Dictionary-object"><a href="#How-to-Sort-Dictionary-object" class="headerlink" title="How to Sort Dictionary object"></a>How to Sort Dictionary object</h3><p>如何排序 Dict Object</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token builtin">sorted</span><span class="token punctuation">(</span>_dcit<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> key<span class="token operator">=</span><span class="token keyword">lambda</span> d<span class="token punctuation">:</span> d<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> reverse <span class="token operator">=</span> <span class="token boolean">True</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Default-Dictionary"><a href="#Default-Dictionary" class="headerlink" title="Default Dictionary"></a>Default Dictionary</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> collections <span class="token keyword">import</span> defaultdict
+dicWithDefaultList <span class="token operator">=</span> defaultdict<span class="token punctuation">(</span><span class="token builtin">list</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="NamedTuple"><a href="#NamedTuple" class="headerlink" title="NamedTuple"></a>NamedTuple</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> collections <span class="token keyword">import</span> namedtuple
+EMPLOYEE <span class="token operator">=</span> namedtuple<span class="token punctuation">(</span><span class="token string">'EMPLOYEE'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'pid'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Python-GroupBy"><a href="#Python-GroupBy" class="headerlink" title="Python GroupBy"></a>Python GroupBy</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">city_list <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">(</span><span class="token string">'TW'</span><span class="token punctuation">,</span> <span class="token string">'Taipei'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token string">'TW'</span><span class="token punctuation">,</span> <span class="token string">'Kaohsiung'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token string">'JP'</span><span class="token punctuation">,</span> <span class="token string">'Tokyo'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token string">'US'</span><span class="token punctuation">,</span> <span class="token string">'NewYork'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token string">'FR'</span><span class="token punctuation">,</span> <span class="token string">'Paris'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token string">'FR'</span><span class="token punctuation">,</span> <span class="token string">'Lille'</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span>
+<span class="token builtin">list</span><span class="token punctuation">(</span>itertools<span class="token punctuation">.</span>groupby<span class="token punctuation">(</span>city_list<span class="token punctuation">,</span> <span class="token keyword">lambda</span> ele <span class="token punctuation">:</span> ele<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment">#[('TW', &lt;itertools._grouper at 0x121880af6d8>),</span>
+<span class="token comment">#('JP', &lt;itertools._grouper at 0x121880af0f0>),</span>
+<span class="token comment">#('US', &lt;itertools._grouper at 0x121880af5f8>),</span>
+<span class="token comment">#('FR', &lt;itertools._grouper at 0x121880af400>)]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Automation-🤖"><a href="#Automation-🤖" class="headerlink" title="Automation 🤖"></a>Automation 🤖</h2><h3 id="Automation-Keyboard-Control"><a href="#Automation-Keyboard-Control" class="headerlink" title="Automation Keyboard Control"></a>Automation Keyboard Control</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> time<span class="token punctuation">,</span> pyautogui<span class="token punctuation">,</span> random
+<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+  time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  pyautogui<span class="token punctuation">.</span>hotkey<span class="token punctuation">(</span><span class="token string">'left'</span><span class="token punctuation">)</span>
+  time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  pyautogui<span class="token punctuation">.</span>hotkey<span class="token punctuation">(</span><span class="token string">'win'</span><span class="token punctuation">,</span> <span class="token string">'prtscr'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Pending-To-Archive-🗝️"><a href="#Pending-To-Archive-🗝️" class="headerlink" title="Pending To Archive 🗝️"></a>Pending To Archive 🗝️</h2><h3 id="python-encoding"><a href="#python-encoding" class="headerlink" title="python encoding"></a>python encoding</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">set</span> <span class="token variable">PYTHONIOENCODING</span><span class="token operator">=</span>utf8</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/01/Python-Snippets/" data-id="clg3fmahf0122s4ts5yoy1el5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PythonLibrary/" rel="tag">PythonLibrary</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Snippets/" rel="tag">Snippets</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/01/Review-2020/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">精選各內容經營者分享的《回顧 2020 年》</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/01/SQL-Server-Save-As-Insert-Scripts/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server 將資料表資料存成 Insert Script 的方式 (How To Save SQL Server Table as Insert Scritp)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

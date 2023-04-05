@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC 5 預設的資安機制 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本次的筆記源自於 ASP.NET: Security 課程的啟發，其中討論了關於 OWASP 中常見的弱點以及其在 ASP.NET MVC 中可能出現的方式。而實際上學習的心得發現 ASP.NET MVC 有相當程度的預設的安全機制，而瞭解這些機制與 OWASP 中常見的弱點，可以更有安全開發的意識。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 5 預設的資安機制">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/09/ASPNET-MVC-Default-Security-Defense/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="本次的筆記源自於 ASP.NET: Security 課程的啟發，其中討論了關於 OWASP 中常見的弱點以及其在 ASP.NET MVC 中可能出現的方式。而實際上學習的心得發現 ASP.NET MVC 有相當程度的預設的安全機制，而瞭解這些機制與 OWASP 中常見的弱點，可以更有安全開發的意識。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/CSRF.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Session.svg">
+<meta property="article:published_time" content="2020-09-27T00:53:39.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Default-Security-Defense" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/09/ASPNET-MVC-Default-Security-Defense/" class="article-date">
+  <time datetime="2020-09-27T00:53:39.000Z" itemprop="datePublished">2020-09-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 5 預設的資安機制
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Defense-Default"><span class="toc-text">XSS Defense Default</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#HttpUtility-JavaScriptStringEncode"><span class="toc-text">HttpUtility.JavaScriptStringEncode</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Injection"><span class="toc-text">SQL Injection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cross-Site-Request-Forgery-CSRF"><span class="toc-text">Cross Site Request Forgery, CSRF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web-config-Encryption"><span class="toc-text">Web.config Encryption</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Secure-Configuration"><span class="toc-text">Secure Configuration</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Secure-cookies-amp-sessions"><span class="toc-text">Secure cookies &amp; sessions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Error-Handling"><span class="toc-text">Error Handling</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Security-HTTP-Headers"><span class="toc-text">Security HTTP Headers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Enforcing-HTTPS"><span class="toc-text">Enforcing HTTPS</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E8%A1%8C%E5%8B%95"><span class="toc-text">後續行動</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%8A%E5%82%B3%E6%A9%9F%E5%88%B6%EF%BC%8C%E9%81%BF%E5%85%8D%E8%A2%AB%E4%B8%8A%E5%82%B3-webshells"><span class="toc-text">安全的上傳機制，避免被上傳 webshells</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>本次的筆記源自於 <a target="_blank" rel="noopener" href="https://www.linkedin.com/learning/asp-dot-net-security-2/">ASP.NET: Security</a> 課程的啟發，其中討論了關於 OWASP 中常見的弱點以及其在 ASP.NET MVC 中可能出現的方式。而實際上學習的心得發現 ASP.NET MVC 有相當程度的預設的安全機制，而瞭解這些機制與 OWASP 中常見的弱點，可以更有安全開發的意識。</p>
+<a href="/posts/2020/09/ASPNET-MVC-Default-Security-Defense/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="XSS-Defense-Default"><a href="#XSS-Defense-Default" class="headerlink" title="XSS Defense Default"></a>XSS Defense Default</h3><p>預設情形下在 ASP.NET MVC 中不容易遇見 XSS ，但如果有特殊的需求放行特殊的字元或將特殊字元置於特別的程式位置，則就有可能有 XSS 的疑慮。</p>
+<p><strong>ASP.NET MVC XSS 關鍵字</strong></p>
+<ul>
+<li>[ValidateInput(false)]</li>
+<li>allowHtml</li>
+<li>HttpUtility.encode</li>
+<li>Html.Raw</li>
+</ul>
+<p>本段程式碼為允許 XSS 傳入的 Action 範例，如果直接在 View 中以 Html.Raw 渲染， XSS 就可以被實現。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ValidateInput</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">DefaultDefense</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> query<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    ViewBag<span class="token punctuation">.</span>query <span class="token operator">=</span> query<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="HttpUtility-JavaScriptStringEncode"><a href="#HttpUtility-JavaScriptStringEncode" class="headerlink" title="HttpUtility.JavaScriptStringEncode"></a>HttpUtility.JavaScriptStringEncode</h4><p>預設情形下，JS 會自動渲染傳入的 escape sequences，藉由 JavaScriptStringEncode 則可以加以編碼 escape sequences 讓其不被渲染。</p>
+<p>JS <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Template_literals#%E6%A8%99%E7%B1%A4%E6%A8%A3%E6%9D%BF%E5%AD%97%E9%9D%A2%E5%80%BC%E5%92%8C%E8%B7%B3%E8%84%AB%E5%BA%8F%E5%88%97">escape sequences</a></p>
+<p><strong>escape sequences examples:</strong></p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">.</span> <span class="token operator">:</span> \x2e
+<span class="token operator">/</span> <span class="token operator">:</span> \x2f
+\ <span class="token operator">:</span> \x5c
+<span class="token operator">&lt;</span> <span class="token operator">:</span> \x3c 
+<span class="token operator">></span> <span class="token operator">:</span> \x3e<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://www.utf8-chartable.de/unicode-utf8-table.pl?number=128&names=2&utf8=string-literal">UTF-8 encoding table and Unicode characters</a></p>
+<p>malicious query : \x3cscript\x3ealert(1)\x3c/script\x3e</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>xss<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+@section scripts&#123;
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+      <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#xss'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'@ViewBag.query'</span><span class="token punctuation">)</span>
+  </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>藉由 JavaScriptStringEncode 則可以加以編碼 escape sequences 讓其不被渲染。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">ViewBag<span class="token punctuation">.</span>query <span class="token operator">=</span> HttpUtility<span class="token punctuation">.</span><span class="token function">JavaScriptStringEncode</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>⚠️直接將使用者輸入的內容放入 js script 中相當危險，JavaScriptStringEncode 雖可針對 escape sequences 編碼，但 html tag 則不會處理，所以如果有使用 jQuery.html 之類的函式時，也必須一併檢查是否包含不當的 html tag。</p>
+<h3 id="SQL-Injection"><a href="#SQL-Injection" class="headerlink" title="SQL Injection"></a>SQL Injection</h3><p>原則上使用 Entity Framework 不受 SQL Injection 的影響，但仍能夠使用 Entity Framework 對於資料庫進行直接的指令查詢：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">DbSet<span class="token punctuation">.</span><span class="token function">SqlQuery</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+DbContext<span class="token punctuation">.</span>Database<span class="token punctuation">.</span><span class="token function">SqlQuery</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+DbContext<span class="token punctuation">.</span>Database<span class="token punctuation">.</span><span class="token function">ExecuteSqlQuery</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>原因上避免這樣的使用，而如果有特殊的使用原因，務必要檢查使用者輸入的內容以及是否被直接傳送到 SqlQuery() 中。</p>
+<h3 id="Cross-Site-Request-Forgery-CSRF"><a href="#Cross-Site-Request-Forgery-CSRF" class="headerlink" title="Cross Site Request Forgery, CSRF"></a>Cross Site Request Forgery, CSRF</h3><p><img src="/assets/CSRF.svg" alt="CSRF 的作用方式"></p>
+<p>在 Post 的情境下 ASP.NET MVC 會自動生成 ValidateAntiForgeryToken，但如果 Custom Get Action 有直接影響資料庫內容時，可以考慮改為 Post 加上 ValidateAntiForgeryToken，但如果，或者在參數上加上 ValidateAntiForgeryToken，避免 Cross Site Request Forgery。</p>
+<p>view</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@<span class="token keyword">using</span> <span class="token punctuation">(</span>Html<span class="token punctuation">.</span><span class="token function">BeginForm</span><span class="token punctuation">(</span><span class="token string">"Action"</span><span class="token punctuation">,</span> <span class="token string">"Controller"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  @Html<span class="token punctuation">.</span><span class="token function">AntiForgeryToken</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>controller</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ValidateAntiForgeryToken</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<h3 id="Web-config-Encryption"><a href="#Web-config-Encryption" class="headerlink" title="Web.config Encryption"></a>Web.config Encryption</h3><p><strong>Encryption</strong></p>
+<p>使用系統管理員身分執行 Command-line</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> <span class="token string">"folder with web.config to encrypt"</span></span>
+<span class="token command"><span class="token keyword">C</span><span class="token label property">:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe</span> -pef connectionStrings <span class="token string">"."</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><strong>Decryption</strong></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> <span class="token string">"folder with web.config to decrypt"</span></span>
+<span class="token command"><span class="token keyword">C</span><span class="token label property">:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe</span> -pdf connectionStrings <span class="token string">"."</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://blog.darkthread.net/blog/web-config-connstr-encryptor-v09-cht/">黑暗執行緒 - web.config連線字串加密工具</a><br><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/wasichris/2016/01/01/235040">使用相同 RSA 金鑰容器幫 web.config 連線字串加密</a></p>
+<h3 id="Secure-Configuration"><a href="#Secure-Configuration" class="headerlink" title="Secure Configuration"></a>Secure Configuration</h3><h4 id="Secure-cookies-amp-sessions"><a href="#Secure-cookies-amp-sessions" class="headerlink" title="Secure cookies &amp; sessions"></a>Secure cookies &amp; sessions</h4><p><img src="/assets/Session.svg" alt="How Sessions Work"></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.web</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sessionSate</span> 
+    <span class="token attr-name">cookieless</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span>
+    <span class="token attr-name">regenerateExpiredSessionId</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span>
+    <span class="token attr-name">timeout</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>20<span class="token punctuation">"</span></span>
+  <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpCookies</span>
+    <span class="token attr-name">httpOnlyCookies</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+    <span class="token attr-name">requireSSL</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+    <span class="token attr-name">sameSite</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Strict<span class="token punctuation">"</span></span>
+  <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.web</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>更完整與詳盡的整合筆記，可以參考下列連結：<a href="/posts/2020/09/ASPNET-MVC-Default-Security-Defense/">ASP.NET Web.config &amp; Http Headers 安全設定大全</a></p>
+<p><strong>其他參考資料</strong></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/it-digital-%E4%BA%92%E8%81%AF%E7%B6%B2/%E4%BB%80%E9%BA%BC-samesite-cookies-policy-%E6%9B%B4%E6%96%B0%E4%BA%86-2b317e6cf6bb">什麼!? SameSite Cookies Policy 更新了— Chrome SameSite Attribute 簡介</a></p>
+<h4 id="Error-Handling"><a href="#Error-Handling" class="headerlink" title="Error Handling"></a>Error Handling</h4><p><strong>Custom Error Handler</strong></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Application_Error</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  <span class="token class-name"><span class="token keyword">var</span></span> ex <span class="token operator">=</span> Server<span class="token punctuation">.</span><span class="token function">GetLastError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>Custom Error Message</strong></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>customErrors</span> <span class="token attr-name">mode</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>On<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>error</span> <span class="token attr-name">statusCode</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>404<span class="token punctuation">"</span></span> <span class="token attr-name">redirect</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>~/Home/Error<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>customErrors</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Security-HTTP-Headers"><a href="#Security-HTTP-Headers" class="headerlink" title="Security HTTP Headers"></a>Security HTTP Headers</h4><p>Global.asax</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Application_Start</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">object</span></span> sender<span class="token punctuation">,</span> <span class="token class-name">EventArgs</span> e<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  MvcHandler<span class="token punctuation">.</span>DisableMvcResponseHeader <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Enforcing-HTTPS"><a href="#Enforcing-HTTPS" class="headerlink" title="Enforcing HTTPS"></a>Enforcing HTTPS</h4><ul>
+<li>Redirect</li>
+<li>Rewrite</li>
+<li>HSTS</li>
+</ul>
+<p><strong>Rewrite</strong></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+      ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>本段落規劃獨立成個別筆記，從 HTTPS 前世今生到強制使用 HTTPS 😊</p>
+<h2 id="後續行動"><a href="#後續行動" class="headerlink" title="後續行動"></a>後續行動</h2><h3 id="安全的上傳機制，避免被上傳-webshells"><a href="#安全的上傳機制，避免被上傳-webshells" class="headerlink" title="安全的上傳機制，避免被上傳 webshells"></a>安全的上傳機制，避免被上傳 webshells</h3><p>本次課程的遺憾是未討論安全檔案上傳方式，這個部分待日後藉由 <a target="_blank" rel="noopener" href="https://www.books.com.tw/products/E050064457">ASP.NET專題實務(I)：C#入門實戰</a> 來補充知識，並且知行合一的再將實作結果另外筆記。</p>
+<p>參考 <a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html#file-upload-protection">OWASP - File Upload Cheat Sheet</a> 實作安全的上傳機制</p>
+<p>使用 <a target="_blank" rel="noopener" href="https://github.com/emposha/Shell-Detector">Shell-Detector</a> 定期自主檢查服務是否存在 webshells ，同時尋找更好的評斷工具與標準。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/09/ASPNET-MVC-Default-Security-Defense/" data-id="clg3fma97003bs4tse2su06pu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/09/ASPNET-MVC-Safer-Download/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC 5 實作更安全的檔案下載功能 (ASP.NET MVC Safer Downloads Implements)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/09/ASPNET-MVC-Checkmarx-Fix-Vulnerability/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          修正 ASP.NET MVC 常見 Checkmarx 原碼檢測漏洞 (Fix ASP.NET MVC Common Vulnerability Scan By Checkmarx)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

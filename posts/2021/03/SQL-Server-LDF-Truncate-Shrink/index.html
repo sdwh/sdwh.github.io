@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server LDF 容量大爆炸 (SQL Server ldf truncate &amp; shrink) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server ldf 為什麼會容量大爆漲以及因應之道。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server LDF 容量大爆炸 (SQL Server ldf truncate &amp; shrink)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/03/SQL-Server-LDF-Truncate-Shrink/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server ldf 為什麼會容量大爆漲以及因應之道。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2021-03-10T12:07:20.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.940Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="SSMS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-LDF-Truncate-Shrink" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/03/SQL-Server-LDF-Truncate-Shrink/" class="article-date">
+  <time datetime="2021-03-10T12:07:20.000Z" itemprop="datePublished">2021-03-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server LDF 容量大爆炸 (SQL Server ldf truncate &amp; shrink)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%A9%E5%8E%9F%E6%A8%A1%E5%BC%8F"><span class="toc-text">復原模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Truncate-Log-file-%E6%B8%85%E7%A9%BA%E4%BA%A4%E6%98%93%E7%B4%80%E9%8C%84%E6%AA%94"><span class="toc-text">Truncate Log file 清空交易紀錄檔</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shrink-Log-file-%E7%B8%AE%E5%B0%8F%E4%BA%A4%E6%98%93%E7%B4%80%E9%8C%84%E6%AA%94"><span class="toc-text">Shrink Log file 縮小交易紀錄檔</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%83%E9%81%BF%E9%9B%96%E7%84%B6%E5%8F%AF%E6%81%A5%EF%BC%8C%E4%BD%86%E6%98%AF%E5%BE%88%E6%9C%89%E7%94%A8"><span class="toc-text">逃避雖然可恥，但是很有用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E7%A2%BA%E9%9D%A2%E5%B0%8D-ldf-%E7%88%86%E7%82%B8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">正確面對 ldf 爆炸的方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E9%A9%97%E9%81%8E%E7%A8%8B"><span class="toc-text">實驗過程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server ldf 為什麼會容量大爆漲以及因應之道。</p>
+<a href="/posts/2021/03/SQL-Server-LDF-Truncate-Shrink/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>會發生 ldf 容量大爆炸的可能原因如下：</p>
+<ol>
+<li>資料庫復原模式選擇「完整」，但從未進行 log 備份</li>
+<li>進行了大量的批次寫入動作或者是複雜龐大的交易所導致</li>
+</ol>
+<p>本次說明如何處理第一種情境</p>
+<h3 id="復原模式"><a href="#復原模式" class="headerlink" title="復原模式"></a>復原模式</h3><p>資料庫的復原模式選擇「完整」，主要是希望能夠使用 point-in-time 的還原能力，讓資料庫藉由交易紀錄還原到特定的時間點上。而選擇完整的復原模式，只有在交易紀錄做備份的時候，log file 才會「清空」檔案空間，從而容納新的交易紀錄檔，否則交易紀錄會繼續的成長，直到儲存空間用盡。</p>
+<p>而簡單復原模式，在 CheckPoint 時間點上，就會自動清空 log file 檔案空間，因此才不會有第一種情境的問題，但簡單的復原模式仍有可能出現 ldf 容量大爆炸，那就可能是第二種情境所造成的，不在本次的討論之中。</p>
+<p>網路上如果搜尋 ldf 可以找到很多的教學，千篇一律的都是告訴管理者將復原模式從「完整」調整為「簡單」，然後進行縮小交易紀錄檔或者備份交易紀錄（或各種觸發 CheckPoint的行為），最後再透過 DBCC 或者修改檔案容量的方式調降交易紀錄檔，最後再調整回完整模式。</p>
+<p>雖然這樣子的方式真的能夠讓交易紀錄檔的容量變小，但卻不是根本的處理方式，因為真正的問題來自於資料庫管理初學者的對於資料庫備份策略、復原模式以及交易紀錄檔的誤會。</p>
+<h3 id="Truncate-Log-file-清空交易紀錄檔"><a href="#Truncate-Log-file-清空交易紀錄檔" class="headerlink" title="Truncate Log file 清空交易紀錄檔"></a>Truncate Log file 清空交易紀錄檔</h3><p>當完整模式備份交易紀錄檔或者簡單模式觸發 CheckPoint 行為時，交易紀錄檔會進行「清空」。清空的意涵在於將檔案容器的空間釋放出來，但不會減少實際上在檔案系統中所占用的空間大小，這一點可以比較備份交易紀錄前後，並透過指令來做確認：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Shrink-Log-file-縮小交易紀錄檔"><a href="#Shrink-Log-file-縮小交易紀錄檔" class="headerlink" title="Shrink Log file 縮小交易紀錄檔"></a>Shrink Log file 縮小交易紀錄檔</h3><p>多數時候資料庫管理者以及系統管理者，真正想要解決的是縮小交易紀錄檔，也就是令交易紀錄檔在檔案系統中所佔用的大小減少，而藉由 DBCC 或者修改檔案容量的方式調降交易紀錄檔，可以讓交易紀錄的檔案大小降低。</p>
+<p>但如果縮小交易紀錄的檔案大小，而交易紀錄卻有頻繁增長的需求，反而會造成資料庫伺服器的效能不佳。</p>
+<h4 id="逃避雖然可恥，但是很有用"><a href="#逃避雖然可恥，但是很有用" class="headerlink" title="逃避雖然可恥，但是很有用"></a>逃避雖然可恥，但是很有用</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>LogTest<span class="token punctuation">]</span> <span class="token keyword">SET</span> RECOVERY <span class="token keyword">SIMPLE</span><span class="token punctuation">;</span> <span class="token comment">--復原模式調整為簡單</span>
+
+<span class="token keyword">dbcc</span> shrinkfile<span class="token punctuation">(</span>LogTest_log<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">--縮小交易紀錄檔</span>
+
+<span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>LogTest<span class="token punctuation">]</span> <span class="token keyword">SET</span> RECOVERY <span class="token keyword">FULL</span><span class="token punctuation">;</span> <span class="token comment">--恢復復原模式為完整</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="正確面對-ldf-爆炸的方式"><a href="#正確面對-ldf-爆炸的方式" class="headerlink" title="正確面對 ldf 爆炸的方式"></a>正確面對 ldf 爆炸的方式</h3><p>復原模式選擇完整的資料庫，同時也定期進行資料庫交易紀錄備份，因此資料庫保持著 point-in-time 的還原能力，但僅需要一定時間範圍的交易紀錄備份，該如何處理？</p>
+<p>落實備份策略，刪除特定期間以上的備份檔，如此一來不再需要的交易紀錄檔就會消失，所以 ldf 容量大爆炸在情境一中的問題，其實是來自於沒有適當的資料庫備份策略，所造成的現象。</p>
+<p>所以當碰到 ldf 容量大爆炸的時候，不是急著縮小交易紀錄檔的大小，還是要替該資料庫安排備份策略，評估是否調整為簡單復原模式，或者是設定 JOB 或者維護計畫定期進行完整、交易紀錄備份，並且自動清除逾期的備份檔案，讓交易紀錄能夠發揮其用途。</p>
+<h2 id="實驗過程"><a href="#實驗過程" class="headerlink" title="實驗過程"></a>實驗過程</h2><p>以下驗證下列行為</p>
+<ol>
+<li>只有交易紀錄備份(Backup Log)能夠清空交易紀錄檔的大小、完整備份並不會</li>
+<li>清空並不會縮小檔案的大小</li>
+<li>調整復原模式</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 確認目前的交易紀錄檔案</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 輸入 10,000 筆測試資料，讓交易紀錄增加</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@num</span> <span class="token keyword">INT</span><span class="token punctuation">;</span>
+<span class="token keyword">SET</span> <span class="token variable">@num</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">WHILE</span> <span class="token variable">@num</span> <span class="token operator">&lt;</span> <span class="token number">10000</span>
+<span class="token keyword">BEGIN</span>
+    <span class="token keyword">INSERT</span> tLogTest<span class="token punctuation">(</span>col1<span class="token punctuation">)</span>
+    <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token variable">@num</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">SET</span> <span class="token variable">@num</span> <span class="token operator">=</span> <span class="token variable">@num</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">END</span>
+
+<span class="token comment">-- 確認目前的交易紀錄檔案，會發現空間使用增加、但檔案大小可能沒有發生改變</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 完整備份</span>
+<span class="token keyword">BACKUP</span> <span class="token keyword">DATABASE</span> LogTest
+<span class="token keyword">TO</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token string">'C:\backup\LogTest.bak'</span>
+   <span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span>
+      MEDIANAME <span class="token operator">=</span> <span class="token string">'LogTest'</span><span class="token punctuation">,</span>
+      NAME <span class="token operator">=</span> <span class="token string">'Full Backup of LogTest'</span><span class="token punctuation">;</span>
+GO
+
+<span class="token comment">-- 確認交易紀錄檔案，會發現沒有改變</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 備份交易紀錄檔案</span>
+<span class="token keyword">BACKUP</span> LOG LogTest
+<span class="token keyword">TO</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token string">'C:\backup\LogTest.trn'</span>
+   <span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span> DESCRIPTION <span class="token operator">=</span> <span class="token string">'LogTest log backup'</span><span class="token punctuation">;</span>
+GO
+
+<span class="token comment">-- 確認交易紀錄檔案，會發現已經清空交易紀錄檔的使用率，但檔案大小不會改變</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 輸入 20,000 筆測試資料，讓交易紀錄增加</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@num</span> <span class="token keyword">INT</span><span class="token punctuation">;</span>
+<span class="token keyword">SET</span> <span class="token variable">@num</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">WHILE</span> <span class="token variable">@num</span> <span class="token operator">&lt;</span> <span class="token number">20000</span>
+<span class="token keyword">BEGIN</span>
+    <span class="token keyword">INSERT</span> tLogTest<span class="token punctuation">(</span>col1<span class="token punctuation">)</span>
+    <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token variable">@num</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">SET</span> <span class="token variable">@num</span> <span class="token operator">=</span> <span class="token variable">@num</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">END</span>
+
+<span class="token comment">-- 檢視交易紀錄後，發現檔案大小膨脹</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 備份交易紀錄檔案</span>
+<span class="token keyword">BACKUP</span> LOG LogTest
+<span class="token keyword">TO</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token string">'C:\backup\LogTest.trn'</span>
+   <span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span> DESCRIPTION <span class="token operator">=</span> <span class="token string">'LogTest log backup'</span><span class="token punctuation">;</span>
+GO
+
+<span class="token comment">-- 雖然清空交易紀錄，但檔案大小沒有改變</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 調整為簡單復原模式</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>LogTest<span class="token punctuation">]</span>
+<span class="token keyword">SET</span> RECOVERY <span class="token keyword">SIMPLE</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- 縮小資料庫的交易紀錄檔案大小</span>
+<span class="token keyword">dbcc</span> shrinkfile<span class="token punctuation">(</span>LogTest_log<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+
+<span class="token comment">-- 交易紀錄檔大幅的縮小</span>
+<span class="token keyword">DBCC</span> SQLPERF<span class="token punctuation">(</span>LOGSPACE<span class="token punctuation">)</span>
+
+<span class="token comment">-- 恢復為完整復原模式</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>LogTest<span class="token punctuation">]</span>
+<span class="token keyword">SET</span> RECOVERY <span class="token keyword">FULL</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://jonesyeh.wordpress.com/2020/01/13/%E8%A6%81%E5%A6%82%E4%BD%95%E6%9C%89%E6%95%88%E7%9A%84%E5%81%9A%E8%B7%A8%E4%BC%BA%E6%9C%8D%E5%99%A8%E8%B3%87%E6%96%99%E5%BA%AB%E5%82%99%E4%BB%BD/">要如何有效的做跨伺服器資料庫備份</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/sql-server-transaction-log-interview-questions/">SQL Server Transaction Log Interview Questions</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sqlshack.com/sql-server-transaction-log-administration-best-practices/">SQL Server Transaction Log Administration Best Practices</a></p>
+<p><a target="_blank" rel="noopener" href="https://dba.stackexchange.com/questions/29829/why-does-the-transaction-log-keep-growing-or-run-out-of-space">Why Does the Transaction Log Keep Growing or Run Out of Space?</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/12/SQL-Server-Backup-Restoring-Lab/">SQL Server 備份與還原實驗筆記</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Restoring/">SQL Server 資料庫備份與還原</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/03/SQL-Server-LDF-Truncate-Shrink/" data-id="clg3fmaja0198s4ts4na22rx5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSMS/" rel="tag">SSMS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/03/SQL-Server-What-Is-dbo/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 什麼是 dbo (What is dbo)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/SQL-Server-Encryption/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Backup Encryption 資料庫備份的加密方式
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

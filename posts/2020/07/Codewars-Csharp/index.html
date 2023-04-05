@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>藉由 Codewars 來熟悉 C# 語法特性 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="為了要讓自己能夠更熟悉 C# 的語法特性，決定複製自己學習 Python 的經驗，在 Codewars 上專門以 C# 來解決 Kata (題目)，並從社群的 Solution 反饋自己值得學習的語法特性並整理成重點筆記。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="藉由 Codewars 來熟悉 C# 語法特性">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/Codewars-Csharp/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="為了要讓自己能夠更熟悉 C# 的語法特性，決定複製自己學習 Python 的經驗，在 Codewars 上專門以 C# 來解決 Kata (題目)，並從社群的 Solution 反饋自己值得學習的語法特性並整理成重點筆記。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://www.codewars.com/users/sdwh_csharp/badges/large">
+<meta property="article:published_time" content="2020-07-13T02:33:13.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="Codewars">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Codewars-Csharp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/Codewars-Csharp/" class="article-date">
+  <time datetime="2020-07-13T02:33:13.000Z" itemprop="datePublished">2020-07-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      藉由 Codewars 來熟悉 C# 語法特性
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E9%BB%9E%E7%AD%86%E8%A8%98"><span class="toc-text">重點筆記</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Enumerable-Select"><span class="toc-text">Enumerable.Select</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Select-%E4%BD%9C%E7%82%BA-Map-%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">Select 作為 Map 的用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Select-%E5%BB%BA%E6%A7%8B-%E5%8C%BF%E5%90%8D%E9%9B%86%E5%90%88%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">Select 建構 匿名集合的用法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Enumerable-Range"><span class="toc-text">Enumerable.Range</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Enumerable-Repeat"><span class="toc-text">Enumerable.Repeat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Enumerable-Count"><span class="toc-text">Enumerable.Count</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Enumerable-Sum"><span class="toc-text">Enumerable.Sum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Regex"><span class="toc-text">Regex</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A7%BB%E9%99%A4%E5%AD%97%E9%A6%96%E5%AD%97%E5%B0%BE%E5%AD%97%E5%85%83"><span class="toc-text">移除字首字尾字元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E4%B8%B2%E6%AF%94%E8%BC%83-z-%E9%80%A3%E6%8F%9B%E8%A1%8C%E7%AC%A6%E8%99%9F%E9%83%BD%E8%A6%81%E5%8A%A0%E5%85%A5%E8%80%83%E6%85%AE"><span class="toc-text">字串比較 \z 連換行符號都要加入考慮</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Misc"><span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Char-IsDigit-IsLower-IsUpper-ToLower-ToUpper"><span class="toc-text">Char IsDigit &#x2F; IsLower &#x2F; IsUpper &#x2F; ToLower &#x2F; ToUpper</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>為了要讓自己能夠更熟悉 C# 的語法特性，決定複製自己學習 Python 的經驗，在 Codewars 上專門以 C# 來解決 Kata (題目)，並從社群的 Solution 反饋自己值得學習的語法特性並整理成重點筆記。</p>
+<a href="/posts/2020/07/Codewars-Csharp/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<hr>
+<img src="https://www.codewars.com/users/sdwh_csharp/badges/large" alt="Codewars Csharp 目前的 Badge">
+
+<h2 id="重點筆記"><a href="#重點筆記" class="headerlink" title="重點筆記"></a>重點筆記</h2><h3 id="Enumerable-Select"><a href="#Enumerable-Select" class="headerlink" title="Enumerable.Select"></a>Enumerable.Select</h3><h4 id="Select-作為-Map-的用法"><a href="#Select-作為-Map-的用法" class="headerlink" title="Select 作為 Map 的用法"></a>Select 作為 Map 的用法</h4><p>類似於 Python 及 js 中的 Map，Select 可以將序列 (sequence) 中的元素經由統一處理而形成新的值。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> numberList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> numberArray <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Join</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">,</span> numberList<span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 2, 4, 6, 8, 10</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Join</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">,</span> numberArray<span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">*</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 1, 4, 9, 16, 25</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Select-建構-匿名集合的用法"><a href="#Select-建構-匿名集合的用法" class="headerlink" title="Select 建構 匿名集合的用法"></a>Select 建構 匿名集合的用法</h4><p>這種用法比較常用在從 Model 的類別中要擷取部分的 Property 另外構成匿名類型的集合時使用。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Person</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> BirthDate <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> NickName <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> userList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"sdwh"</span><span class="token punctuation">,</span> BirthDate <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">2020</span><span class="token punctuation">,</span> <span class="token number">7</span> <span class="token punctuation">,</span> <span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">,</span> NickName <span class="token operator">=</span> <span class="token string">"hwds"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"ryan"</span><span class="token punctuation">,</span> BirthDate <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">2019</span><span class="token punctuation">,</span> <span class="token number">7</span> <span class="token punctuation">,</span> <span class="token number">13</span><span class="token punctuation">)</span><span class="token punctuation">,</span> NickName <span class="token operator">=</span> <span class="token string">"nayr"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> newUserList <span class="token operator">=</span> userList<span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span> index<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> index<span class="token punctuation">,</span> userFullName <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">user<span class="token punctuation">.</span>Name</span><span class="token punctuation">&#125;</span></span><span class="token string">, </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">user<span class="token punctuation">.</span>NickName</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> user <span class="token keyword">in</span> newUserList<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span>userFullName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Enumerable-Range"><a href="#Enumerable-Range" class="headerlink" title="Enumerable.Range"></a>Enumerable.Range</h3><p>如同 Python 的 range ，可以產生連續的數值，不過只有一種建構的情形即 Range(start, count) ，如果要跳值產生的話需要另外的處理。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> num <span class="token keyword">in</span> Enumerable<span class="token punctuation">.</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  Console<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 12345</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Enumerable-Repeat"><a href="#Enumerable-Repeat" class="headerlink" title="Enumerable.Repeat"></a>Enumerable.Repeat</h3><p>用來重複元素，可以用來重複 <strong>字元</strong>、<strong>字串</strong>、<strong>數字</strong>、<strong>物件</strong> 等。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">Console<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">Concat</span><span class="token punctuation">(</span>Enumerable<span class="token punctuation">.</span><span class="token function">Repeat</span><span class="token punctuation">(</span><span class="token string">"c#"</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// c#c#c#</span>
+Console<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">Join</span><span class="token punctuation">(</span><span class="token string">", "</span><span class="token punctuation">,</span> Enumerable<span class="token punctuation">.</span><span class="token function">Repeat</span><span class="token punctuation">(</span><span class="token string">"c#"</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// c#, c#, c#</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>🤖 同場加映：也可以使用 new string(char, count) 建構子的方式來重複字元，但使用的彈性不如 Enumerable.Repeat 大。</p>
+<h3 id="Enumerable-Count"><a href="#Enumerable-Count" class="headerlink" title="Enumerable.Count"></a>Enumerable.Count</h3><p>值得說明的是 Count 本身就支援篩選條件，不需要先 Where 後再做 Count</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> intArray <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">10</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>intArray<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">>=</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//✔️</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>intArray<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">>=</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//❌</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Enumerable-Sum"><a href="#Enumerable-Sum" class="headerlink" title="Enumerable.Sum"></a>Enumerable.Sum</h3><p>Sum 的多載方法支援直接對 sequence 中的值做 Map 運算，但無法用來篩選條件，篩選仍必須搭配 Where 使用。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> intArray <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">10</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>intArray<span class="token punctuation">.</span><span class="token function">Sum</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>intArray<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i <span class="token operator">&lt;=</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Sum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Regex"><a href="#Regex" class="headerlink" title="Regex"></a>Regex</h3><h4 id="移除字首字尾字元"><a href="#移除字首字尾字元" class="headerlink" title="移除字首字尾字元"></a>移除字首字尾字元</h4><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Text<span class="token punctuation">.</span>RegularExpressions</span><span class="token punctuation">;</span>
+Regex<span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">@"^.|.$"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="字串比較-z-連換行符號都要加入考慮"><a href="#字串比較-z-連換行符號都要加入考慮" class="headerlink" title="字串比較 \z 連換行符號都要加入考慮"></a>字串比較 \z 連換行符號都要加入考慮</h4><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">Regex<span class="token punctuation">.</span><span class="token function">Match</span><span class="token punctuation">(</span><span class="token string">"1\n"</span><span class="token punctuation">,</span> <span class="token string">@"^\d\z"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Success <span class="token comment">// false</span>
+Regex<span class="token punctuation">.</span><span class="token function">Match</span><span class="token punctuation">(</span><span class="token string">"1\n"</span><span class="token punctuation">,</span> <span class="token string">@"^\d$"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Success <span class="token comment">// true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h3><h4 id="Char-IsDigit-IsLower-IsUpper-ToLower-ToUpper"><a href="#Char-IsDigit-IsLower-IsUpper-ToLower-ToUpper" class="headerlink" title="Char IsDigit / IsLower / IsUpper / ToLower / ToUpper"></a>Char IsDigit / IsLower / IsUpper / ToLower / ToUpper</h4><p>C# 中 <strong><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/api/system.char.isnumber?view=netframework-4.8">char</a></strong> 和 <strong>string</strong> 關係若即若離，有自己的 Property 和 Method ，儘管很相似，但終究是不太一樣的存在意義。</p>
+<hr>
+<p>持續編輯中 👨‍🔧</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://gist.github.com/sdwh/6e78e084b6b0597ea3d01851b456987d">Gist</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable?view=netframework-4.8">MSDN - Enumerable</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/api/system.string?view=netframework-4.8">MSDN - String</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=netframework-4.8">MSDN - Regex</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/Codewars-Csharp/" data-id="clg3fmabt00fns4ts2rbt8138" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Codewars/" rel="tag">Codewars</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/07/Design-Pattern-Facade/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">重溫《深入淺出設計模式》外觀模式 (Book Review of Head First Design Pattern, Facade Pattern)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/07/ASPNET-MVC-BirdsEyeView/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          鳥瞰 ASP.NET MVC 生命週期筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

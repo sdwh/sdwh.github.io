@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Dependency Injection 初探筆記 (DI &amp; IOC) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。 持續編輯中 🧙‍♂️">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dependency Injection 初探筆記 (DI &amp; IOC)">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。 持續編輯中 🧙‍♂️">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2021-06-16T11:30:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="DesignPattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Dependency-Injection-Glimpse" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" class="article-date">
+  <time datetime="2021-06-16T11:30:00.000Z" itemprop="datePublished">2021-06-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dependency Injection 初探筆記 (DI &amp; IOC)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5-Denpendency-Injection-Pattern-DI"><span class="toc-text">依賴注入 Denpendency Injection Pattern, DI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E6%A7%8B%E5%BC%8F%E6%B3%A8%E5%85%A5-Constructor-Injection"><span class="toc-text">建構式注入, Constructor Injection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%AC%E6%80%A7%E6%B3%A8%E5%85%A5-Property-Injection"><span class="toc-text">屬性注入, Property Injection</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-Container"><span class="toc-text">DI Container</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。</p>
+<p>持續編輯中 🧙‍♂️</p>
+<a href="/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="依賴注入-Denpendency-Injection-Pattern-DI"><a href="#依賴注入-Denpendency-Injection-Pattern-DI" class="headerlink" title="依賴注入 Denpendency Injection Pattern, DI"></a>依賴注入 Denpendency Injection Pattern, DI</h2><h3 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h3><div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p><strong>什麼是依賴注入 💉</strong><br/>
+            依賴注入是一種設計模式，目的是要減少程式碼的耦合程度，讓擴充與維護變得更容易。同時也因為 ASP.NET Core 將 DI 的觀念加入其框架之中，因此 DI 成為學習 ASP.NET Core 的基礎與背景知識。</p>
+        </div>
+    </div>
+</div>
+
+<p>而要使用依賴注入設計模式，重點在於結合使用 Interface，藉由將注入的物件介面化，相似於<a href="/posts/2020/06/Design-Pattern-Strategy/">策略模式</a>的使用方式，提升提供開發的擴充性，常見的注入方式包含：建構式注入、屬性注入、方法注入等。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-success"><i></i></div>
+        <div class="colorbox-body colorbox-body-success">
+            <p>
+            <strong>依賴注入能夠帶來的好處 💗</strong><br/>
+            將依賴的類別介面化，並如同策略模式一般替換演算法<br/>
+            使用裝飾模式，將依賴的類別可以層層包裝的方式加入功能，卻不影響使用的類別<br/>
+            藉由替換依賴類別的方式，可以產生專為測試情境需要的演算法，增加程式的可測試性
+            </p>
+        </div>
+    </div>
+</div>
+
+<h4 id="建構式注入-Constructor-Injection"><a href="#建構式注入-Constructor-Injection" class="headerlink" title="建構式注入, Constructor Injection"></a>建構式注入, Constructor Injection</h4><p>在寫 ASP.NET MVC 5 的時候，就會思考在 Service Layer 或者 Business Layer 也仿照 HomeController 去起始一個 DBContext 會不會造成資源的負擔，此外該 DBContext 在使用完畢後是否會自動釋放？</p>
+<p>後來雖然研究的結果是 EntityFramework 具備處理的機制，不需要特別去覆寫 Dispose 也不會造成資料庫連線數的負擔，同時實際觀察 Database 的 Session 確實沒有多個 Session 來自 ASP.NET MVC 因此後來也沒有特別費心在此。</p>
+<p>只是當時有思考過可以藉由 Controller 在 DBContext 傳送給 Business Layer 來使用，隱約也是有建構式注入的精神。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IReadable</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ReadData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XMLReader</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IReadable</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ReadData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NotImplementedException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CSVReader</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IReadable</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ReadData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NotImplementedException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中 Reader Class 是受其他類別所依賴的。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Reader</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">IReadable</span> _reader<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Reader</span><span class="token punctuation">(</span><span class="token class-name">IReadable</span> reader<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _reader <span class="token operator">=</span> reader<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Read</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
+    <span class="token punctuation">&#123;</span>
+        _reader<span class="token punctuation">.</span><span class="token function">ReadData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>由執行的類別負責決定其所依賴的物件。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Reader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">XMLReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    reader<span class="token punctuation">.</span><span class="token function">Read</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="屬性注入-Property-Injection"><a href="#屬性注入-Property-Injection" class="headerlink" title="屬性注入, Property Injection"></a>屬性注入, Property Injection</h4><p>持續編輯中 🧙‍♂️</p>
+<h3 id="DI-Container"><a href="#DI-Container" class="headerlink" title="DI Container"></a>DI Container</h3><p>使用 DI Container 可以帶來下列好處：</p>
+<ol>
+<li>自動註冊模型</li>
+<li>自動解析物件的生成依賴</li>
+<li>物件生命週期的管理</li>
+</ol>
+<p>常見的 DI Container 包括 AutoFac、Ninject、Unity 等， ASP.NET Core 則是有原生的 DI Container 可以使用。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10204404">ASP.Net Core MVC 進化之路 - Dependency Injection概念介紹</a></p>
+<p><a target="_blank" rel="noopener" href="https://kevintsengtw.blogspot.com/2013/04/aspnet-mvc-part6-diioc-unitymvc.html">ASP.NET MVC 專案分層架構 Part.6 - DI/IoC 使用 Unity.MVC</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/using-dependency-injection-on-ramp/table-of-contents">Pluralsight - Getting Started with Dependency Injection in .NET</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" data-id="clg3fma8o001gs4tsgfbkblmg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/Taiwan-Software-Company-With-Its-Products/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">台灣資訊與軟體公司與代表產品 (Software Products)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/ASPNET-OOP-Interfaces/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET Interfaces 介面使用筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

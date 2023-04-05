@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>精進 ASP.NET MVC 開發技術，打造高生產力與易於維護的系統 (Develop ASP.NET MVC Better) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本次的筆記是從 LinkedIn Learing 課程中，反芻學習內容整理而成，深信只有動手輸出，才能夠將知識真正納為己有 😉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="精進 ASP.NET MVC 開發技術，打造高生產力與易於維護的系統 (Develop ASP.NET MVC Better)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/09/ASPNET-MVC-Building-For-Productivity-Maintainability/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="本次的筆記是從 LinkedIn Learing 課程中，反芻學習內容整理而成，深信只有動手輸出，才能夠將知識真正納為己有 😉">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2020-09-15T11:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Building-For-Productivity-Maintainability" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/09/ASPNET-MVC-Building-For-Productivity-Maintainability/" class="article-date">
+  <time datetime="2020-09-15T11:00:00.000Z" itemprop="datePublished">2020-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      精進 ASP.NET MVC 開發技術，打造高生產力與易於維護的系統 (Develop ASP.NET MVC Better)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E9%8C%84"><span class="toc-text">目錄</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Customizing-routes-with-attribute-routing"><span class="toc-text">Customizing routes with attribute routing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reuse-View-with-AjaxRequest"><span class="toc-text">Reuse View with AjaxRequest</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Custom-Html-Helper-To-reuse-code"><span class="toc-text">Custom Html Helper To reuse code</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Razor-Helper"><span class="toc-text">Razor Helper</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Razor-Function"><span class="toc-text">Razor Function</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Html-Helper-Extension"><span class="toc-text">Html Helper Extension</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Less-Responsibility-On-View-More-Responsibility-For-ViewModel"><span class="toc-text">Less Responsibility On View, More Responsibility For ViewModel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Seperation-Concerntion-of-Controller-amp-Model-Abstract-Service-Level"><span class="toc-text">Seperation Concerntion of Controller &amp; Model (Abstract Service Level)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AutoFac-Dependency-Injection"><span class="toc-text">AutoFac Dependency Injection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ELMAH-Log-amp-Monitor"><span class="toc-text">ELMAH - Log &amp; Monitor</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>本次的筆記是從 LinkedIn Learing 課程中，反芻學習內容整理而成，深信只有動手輸出，才能夠將知識真正納為己有 😉</p>
+<a href="/posts/2020/09/ASPNET-MVC-Building-For-Productivity-Maintainability/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="目錄"><a href="#目錄" class="headerlink" title="目錄"></a>目錄</h2><h3 id="Customizing-routes-with-attribute-routing"><a href="#Customizing-routes-with-attribute-routing" class="headerlink" title="Customizing routes with attribute routing"></a>Customizing routes with attribute routing</h3><p>在 RouteConfig.cs 加入 routes.MapMvcAttributeRoutes</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">RegisterRoutes</span><span class="token punctuation">(</span><span class="token class-name">RouteCollection</span> routes<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    routes<span class="token punctuation">.</span><span class="token function">IgnoreRoute</span><span class="token punctuation">(</span><span class="token string">"&#123;resource&#125;.axd/&#123;*pathInfo&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    routes<span class="token punctuation">.</span><span class="token function">MapMvcAttributeRoutes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    routes<span class="token punctuation">.</span><span class="token function">MapRoute</span><span class="token punctuation">(</span>
+        <span class="token named-parameter punctuation">name</span><span class="token punctuation">:</span> <span class="token string">"Default"</span><span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">url</span><span class="token punctuation">:</span> <span class="token string">"&#123;controller&#125;/&#123;action&#125;/&#123;id&#125;"</span><span class="token punctuation">,</span>
+        <span class="token named-parameter punctuation">defaults</span><span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> controller <span class="token operator">=</span> <span class="token string">"Home"</span><span class="token punctuation">,</span> action <span class="token operator">=</span> <span class="token string">"Index"</span><span class="token punctuation">,</span> id <span class="token operator">=</span> UrlParameter<span class="token punctuation">.</span>Optional <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>即可在 Controller Action 藉由 Route Attribute 自定義路由，使用 Url.Action 的 Url 會自動配合使用新的 Route ，十分方便。</p>
+<p>Controller.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">RoutePrefix</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Home"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HomeController</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Controller</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"~/About"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token comment">// /About/</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span></span><span class="token punctuation">]</span> <span class="token comment">// /Home/</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"~/"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token comment">// /</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Information"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token comment">// /Home/Information/</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Info/About"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token comment">// /Home/Info/About</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">About</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Application"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token comment">// /Home/Contact -> /Home/Application/</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Contact</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Route Constraint 可以進一步的限制參數條件來決定使用不同的 Action 處理。</p>
+<p>Controller.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">@"~/Route/&#123;str:regex(^\d&#123;6&#125;)&#125;"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">ProcessDigits</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> str<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">Content</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"&lt;h1>It's Digit&lt;/h1>&lt;p></span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">str</span><span class="token punctuation">&#125;</span></span><span class="token string">&lt;/p>"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">@"~/Route/&#123;str:regex(^[a-zA-Z]\d&#123;0,8&#125;)&#125;"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">ProcessAlphaDigits</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> str<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">Content</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"&lt;h1>It's Alpha Digit String&lt;/h1>&lt;p></span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">str</span><span class="token punctuation">&#125;</span></span><span class="token string">&lt;/p>"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/web-api/overview/web-api-routing-and-actions/attribute-routing-in-web-api-2#route-constraints">MS Docs - Route Constraints</a></p>
+<h3 id="Reuse-View-with-AjaxRequest"><a href="#Reuse-View-with-AjaxRequest" class="headerlink" title="Reuse View with AjaxRequest"></a>Reuse View with AjaxRequest</h3><p>共用 Controller Action 及 View，利用 IsAjaxRequest 區別呼叫是否來自於 Ajax，如果是以 Partial View 方式回傳，避免多餘的 head, body 標籤。</p>
+<h3 id="Custom-Html-Helper-To-reuse-code"><a href="#Custom-Html-Helper-To-reuse-code" class="headerlink" title="Custom Html Helper To reuse code"></a>Custom Html Helper To reuse code</h3><p>重複使用 Razor Html Code 的三種方式:</p>
+<ol>
+<li>Razor Helper</li>
+<li>Razor Function</li>
+<li>Html Helper Extension</li>
+</ol>
+<h4 id="Razor-Helper"><a href="#Razor-Helper" class="headerlink" title="Razor Helper"></a>Razor Helper</h4><p>/cshtml</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name">@helper</span> <span class="token function">ROCCalendarTrans</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> commonEra<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token operator">&lt;</span>text<span class="token operator">></span>@<span class="token punctuation">(</span>commonEra <span class="token operator">-</span> <span class="token number">1911</span><span class="token punctuation">)</span><span class="token operator">&lt;</span><span class="token operator">/</span>text<span class="token operator">></span>
+<span class="token punctuation">&#125;</span>
+
+@<span class="token function">ROCCalendarTrans</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>Year<span class="token punctuation">)</span>
+
+<span class="token return-type class-name">@helper</span> <span class="token function">AMPM</span><span class="token punctuation">(</span><span class="token class-name">DateTime</span> datetime<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>datetime<span class="token punctuation">.</span>Hour <span class="token operator">&lt;</span> <span class="token number">12</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token operator">&lt;</span>text<span class="token operator">></span>AM🌞<span class="token operator">&lt;</span><span class="token operator">/</span>text<span class="token operator">></span>
+<span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token operator">&lt;</span>text<span class="token operator">></span>PM🌙<span class="token operator">&lt;</span><span class="token operator">/</span>text<span class="token operator">></span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+@<span class="token function">AMPM</span><span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Razor-Function"><a href="#Razor-Function" class="headerlink" title="Razor Function"></a>Razor Function</h4><p>/cshtml</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@functions
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">func</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> str<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token number">42</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+@<span class="token function">func</span><span class="token punctuation">(</span><span class="token string">"params"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>不論是 Razor Helper 或者 Function 都可以將程式碼存在 App_Code 讓 View 共用，引用的方式配合調整為檔案名稱即可。例如 App_Code/RazorHelper.cshtml 下則調整為 @RazorHelper.HelperName 😎</p>
+<h4 id="Html-Helper-Extension"><a href="#Html-Helper-Extension" class="headerlink" title="Html Helper Extension"></a>Html Helper Extension</h4><p>/App_Code/HtmlHelperExteinsions.cs</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Mvc</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">MvcHtmlString</span> <span class="token function">ExtensionExamples</span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name">HtmlHelper</span> helper<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">object</span></span> htmlAttributes <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> ele <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TagBuilder</span><span class="token punctuation">(</span><span class="token string">"div"</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            InnerHtml <span class="token operator">=</span> <span class="token string">"&lt;p>Lorem Ipsum&lt;/p>"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        ele<span class="token punctuation">.</span><span class="token function">MergeAttributes</span><span class="token punctuation">(</span>HtmlHelper<span class="token punctuation">.</span><span class="token function">AnonymousObjectToHtmlAttributes</span><span class="token punctuation">(</span>htmlAttributes<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MvcHtmlString</span><span class="token punctuation">(</span>ele<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/davidwhitney/Nancy.ViewEngines.Razor.HtmlHelpers/tree/master/Nancy.ViewEngines.Razor.HtmlHelpers">Github - Nancy.ViewEngines.Razor.HtmlHelpers</a></p>
+<p>目前範例寫得還不理想，主要是要用 TagBuilder 客製化可以重用的 Html Code，待實際情境再補充這部分的內容 🤔</p>
+<h3 id="Less-Responsibility-On-View-More-Responsibility-For-ViewModel"><a href="#Less-Responsibility-On-View-More-Responsibility-For-ViewModel" class="headerlink" title="Less Responsibility On View, More Responsibility For ViewModel"></a>Less Responsibility On View, More Responsibility For ViewModel</h3><p>View 中複雜的邏輯抽取為 ViewModel 的方法。</p>
+<ol>
+<li>不要懼怕創造新的類別(Viewmodel)，為了區別輸入物件與呈現物件，使用不同的類別是可以被接受的</li>
+<li>類別共有屬性，藉由 Controller 做 Adapter 轉換兩者</li>
+<li>Viewmodel 中可以將原本 View 的 logic 抽取出</li>
+</ol>
+<h3 id="Seperation-Concerntion-of-Controller-amp-Model-Abstract-Service-Level"><a href="#Seperation-Concerntion-of-Controller-amp-Model-Abstract-Service-Level" class="headerlink" title="Seperation Concerntion of Controller &amp; Model (Abstract Service Level)"></a>Seperation Concerntion of Controller &amp; Model (Abstract Service Level)</h3><p>將 Controller 中龐雜的邏輯抽取為 Business Folder 下的 Service.cs</p>
+<h3 id="AutoFac-Dependency-Injection"><a href="#AutoFac-Dependency-Injection" class="headerlink" title="AutoFac Dependency Injection"></a>AutoFac Dependency Injection</h3><h3 id="ELMAH-Log-amp-Monitor"><a href="#ELMAH-Log-amp-Monitor" class="headerlink" title="ELMAH - Log &amp; Monitor"></a>ELMAH - Log &amp; Monitor</h3><p>The Error Logging Modules And Handlers</p>
+<p>Nuget Install : </p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">Install</span>-Package elmah</span>
+<span class="token command"><span class="token keyword">Install</span>-Package elmah.xml</span>
+<span class="token command"><span class="token keyword">Install</span>-Package elmah.mvc</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>預設情況下，ELMAH 會將錯誤存在 Ram 中，安裝完成 elmah.xml packages 後，則會將資料存在 <code class="watch">~\App_Data\Elmah.Errors</code> 下以 XML file 的方式保存。每一個 XML file 代表一個 錯誤。</p>
+<p>使用 ELMAH 要特別注意存取的安全性，因為錯誤訊息的資料如果被惡意存取，將會被利用於攻擊所使用。</p>
+<p>同時 ELMAH 可以將資料改存在資料庫，另外可以設定電子郵件通報以及區別事件的等級來決定是否通報。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/09/ASPNET-MVC-Building-For-Productivity-Maintainability/" data-id="clg3fma90002is4ts19kd22la" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/09/HackerCollege-PenetrationTest-Basic-Course-Review/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">交通大學亥客書院─基礎網頁安全與滲透測試 課程心得</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/09/Capture-WebPage-Screenshot-With-ChromeHeadless/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          自動化擷取特定網頁畫面、擷取網頁全畫面 (Capture Web Screenshot with Chrome Headless)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

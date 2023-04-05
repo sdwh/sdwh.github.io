@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Skeptical Software Engineer">
+<meta property="og:url" content="https://sdwh.dev/page/18/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="聽聞後遺忘，學習與筆記後備忘；驗證與實作後未來隨時派上用場。紀錄工作及興趣上所碰到的各式資訊問題，讓每一次的問題處理藉由寫作發揮更大的價值，凡問題必經驗證與實作，讓知識有最深刻的積累。">
+<meta property="og:locale">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="資訊處理">
+<meta property="article:tag" content="自我成長">
+<meta property="article:tag" content="軟體工程">
+<meta property="article:tag" content="系統管理">
+<meta property="article:tag" content="資料庫管理">
+<meta property="article:tag" content="資料分析">
+<meta property="article:tag" content="資訊安全">
+<meta property="article:tag" content="程式設計">
+<meta property="article:tag" content="政府採購法">
+<meta property="article:tag" content="資訊證照">
+<meta property="article:tag" content="DBA">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="asp">
+<meta property="article:tag" content="PowerBI">
+<meta property="article:tag" content="CyberSecurity">
+<meta name="twitter:card" content="summary">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+  
+    <article id="post-ASPNET-MVC-Reporting-With-RDLC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/" class="article-date">
+  <time datetime="2022-04-21T12:20:26.000Z" itemprop="datePublished">2022-04-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/">ASP.NET MVC Reporting With RDLC (使用 RDLC 作為報表解決方案)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何在 ASP.NET MVC 使用 RDLC 作為報表設計的解決方案，開發可供列印的電子發票、表單等設計以及將提供資料以 Excel, Word 以及 PDF 的方式進行下載。</p>
+<a href="/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/ASPNET-MVC-Reporting-With-RDLC/" data-id="clg3fma9p005cs4tsd52j42uo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reporting/" rel="tag">Reporting</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-PowerBI-Query-Data-From-Web-With-Parameter" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/PowerBI-Query-Data-From-Web-With-Parameter/" class="article-date">
+  <time datetime="2022-04-20T12:12:32.000Z" itemprop="datePublished">2022-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PowerBI/">PowerBI</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/PowerBI-Query-Data-From-Web-With-Parameter/">PowerBI Query Data From Web With Parameter</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何使用 Power Query M 使用 Web 作為資料來源，並且在 URL 使用參數與函式，來達到批次載入資料的便利性 😎</p>
+<a href="/posts/2022/04/PowerBI-Query-Data-From-Web-With-Parameter/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/POWER-BI-LOGO.png" alt="logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/PowerBI-Query-Data-From-Web-With-Parameter/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/PowerBI-Query-Data-From-Web-With-Parameter/" data-id="clg3fmaga00y3s4ts7yk60apb" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DataVisualization/" rel="tag">DataVisualization</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerBI/" rel="tag">PowerBI</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Microsoft-Reporting-Solutions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/Microsoft-Reporting-Solutions/" class="article-date">
+  <time datetime="2022-04-18T10:10:42.000Z" itemprop="datePublished">2022-04-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/Microsoft-Reporting-Solutions/">微軟生態系的報表解決方案 Power BI Report Server &amp; Reporting Services (rdl, rdlc &amp; pbix)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>介紹微軟生態系的報表解決方案，包含 Power BI Report Server 以及 Reporting Services 等伺服器端的應用技術以及 Report Definition Language Client Side 直接在應用程式端處理報表需求的解決方案。</p>
+<a href="/posts/2022/04/Microsoft-Reporting-Solutions/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/Microsoft-Reporting-Solutions/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/Microsoft-Reporting-Solutions/" data-id="clg3fmafn00vcs4ts1szqcg2d" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerBI/" rel="tag">PowerBI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reporting/" rel="tag">Reporting</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-ASPNET-Generic-Handler" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/ASPNET-Generic-Handler/" class="article-date">
+  <time datetime="2022-04-17T05:41:25.000Z" itemprop="datePublished">2022-04-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/ASPNET-Generic-Handler/">ASP.NET Generic Handler (ASHX File Extension)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何開發 ASHX 泛型處理常式，不需要在專案進行編譯就直接參與執行環境中作為 Http Handler 的替代選擇，不論是在問題處理的 Workaround 或 Trouble Shooting 工具，都能夠發揮作用 😁</p>
+<a href="/posts/2022/04/ASPNET-Generic-Handler/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/ASPNET-Generic-Handler/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/ASPNET-Generic-Handler/" data-id="clg3fma8t001vs4tsb7taghod" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-IIS-Integrated-Classic-Mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/IIS-Integrated-Classic-Mode/" class="article-date">
+  <time datetime="2022-04-16T07:46:18.000Z" itemprop="datePublished">2022-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/IIS-Integrated-Classic-Mode/">IIS Intergrated &amp; Classic Mode</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記 IIS 應用程式集區 Managed Pipeline Mode 設定為 Intergrated Mode (整合模式) 與 Classic Mode (傳統模式) 的差別，並延伸討論 ISAPI Filter 與 ISAPI Extension 對應到 Http Module 與 Http Handler 的關聯，並且示範如何實作 Http Module 用以處理常見的資安弱點掃描實務 🙂</p>
+<a href="/posts/2022/04/IIS-Integrated-Classic-Mode/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/IIS-Integrated-Classic-Mode/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/IIS-Integrated-Classic-Mode/" data-id="clg3fmaeq00rts4tsfki21old" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Azure-Certification-DP-300-Lab-02" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/Azure-Certification-DP-300-Lab-02/" class="article-date">
+  <time datetime="2022-04-16T01:15:59.000Z" itemprop="datePublished">2022-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/Azure-Certification-DP-300-Lab-02/">Azure Learn DP-300 The Hard Way | 實作 DP-300 Lab 02 Azure SQL Databases</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>實作 DP-300 Lab，從實驗課程中精熟 DP-300 的測驗重點以及工具操作。本次要實驗的是如何建立 Azure SQL Database 以及建立 PostgreSQL。</p>
+<a href="/posts/2022/04/Azure-Certification-DP-300-Lab-02/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/Azure-Certification-DP-300-Lab-02/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/Azure-Certification-DP-300-Lab-02/" data-id="clg3fmaam009zs4tsgitufe3w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Agile-Manifesto-Principles-Practices" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/Agile-Manifesto-Principles-Practices/" class="article-date">
+  <time datetime="2022-04-14T11:10:26.000Z" itemprop="datePublished">2022-04-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/Agile-Manifesto-Principles-Practices/">初探 Agile 開發 Manifesto, Principles &amp; Practices</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>筆記敏捷開發的宣言、原則與實踐 (Manifesto, Principles &amp; Practices)，試圖藉由筆記的過程整理敏捷開發是什麼？Agile 是什麼？使用敏捷開發系統的優缺點以及與瀑布式開發 (Watefall) 的差異。</p>
+<a href="/posts/2022/04/Agile-Manifesto-Principles-Practices/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="650px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/Agile-Manifesto-Principles-Practices/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/Agile-Manifesto-Principles-Practices/" data-id="clg3fmaa5007rs4tsabsw3af2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Azure-Certification-DP-300-Lab-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/" class="article-date">
+  <time datetime="2022-04-13T13:24:14.000Z" itemprop="datePublished">2022-04-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/">Azure Learn DP-300 The Hard Way | 實作 DP-300 Lab 01 Azure SQL Server VM</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>實作 DP-300 Lab，從實驗課程中精熟 DP-300 的測驗重點以及工具操作。本次要實驗的是如何建立 Azure VM 並且搭配 SQL Server Developer 版本，並使用 SSMS 進行資料庫還原與操作，最後會調整 Azure Networking 設定，從本機使用 SSMS 遠端連線至 Azure VM 😎</p>
+<a href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/Azure-Certification-DP-300-Lab-01/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/Azure-Certification-DP-300-Lab-01/" data-id="clg3fmaal009ws4tsatuz3yvh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-dotnet-Hosting" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/dotnet-Hosting/" class="article-date">
+  <time datetime="2022-04-12T12:28:39.000Z" itemprop="datePublished">2022-04-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/dotnet-Hosting/">.NET Hosting Solutions (Kestrel, HTTP.sys, IIS)</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>介紹 .NET Core 關於網站 Hostings 可以採用的 Solutions，包含 .NET 跨平台力推的 Kestrel Web Server 或者是在 Windows 平台獨家的 HTTP.sys Web Server 或是 Windows Ecosystem 的老朋友 IIS Web Server。</p>
+<p>從系統的發佈、部署出發，討論各不同解決方案的效能優勢以及背後帶來的架構觀念。</p>
+<a href="/posts/2022/04/dotnet-Hosting/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/dotnet-Hosting/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/dotnet-Hosting/" data-id="clg3fmaoa01pts4ts7wb9awi3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dotnet/" rel="tag">dotnet</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <article id="post-Windows-Server-Check-System-Uptime" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/04/Windows-Server-Check-System-Uptime/" class="article-date">
+  <time datetime="2022-04-11T11:18:27.000Z" itemprop="datePublished">2022-04-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/2022/04/Windows-Server-Check-System-Uptime/">Windows Server Check System Uptime 如何確認 Windows 開機時間 / 運行時間</a>
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        <p>說明如何使用 Task Manager, msinfo32, systeminfo 以及 PowerShell 確認 Windows 作業系統開機的日期與時間 ⏳</p>
+<a href="/posts/2022/04/Windows-Server-Check-System-Uptime/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+        
+          <p class="article-more-link">
+            <a href="/posts/2022/04/Windows-Server-Check-System-Uptime/">閱讀更多</a>
+          </p>
+        
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/04/Windows-Server-Check-System-Uptime/" data-id="clg3fmanh01nes4tsb98o48ar" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WinServer/" rel="tag">WinServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/17/">↖ Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><a class="extend next" rel="next" href="/page/19/">Next ↘</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 04 Cosmos DB | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用具有 Scale Out 特性的 Cosmos DB。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 04 Cosmos DB">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab-04/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用具有 Scale Out 特性的 Cosmos DB。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-Diagram.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/AZ-204-Lab-04-7.png">
+<meta property="article:published_time" content="2022-03-17T11:33:31.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.815Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Certification">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Azure-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Azure-Certification-AZ-204-Lab-04" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-04/" class="article-date">
+  <time datetime="2022-03-17T11:33:31.000Z" itemprop="datePublished">2022-03-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 04 Cosmos DB
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lab04-Cosmos-DB"><span class="toc-text">Lab04 - Cosmos DB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pre-Setting"><span class="toc-text">Pre Setting</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-Cosmos-DB-Account"><span class="toc-text">Create Cosmos DB Account</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-Cosmos-DB-database-and-collection"><span class="toc-text">Create a Cosmos DB database and collection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Validate-JSON-data-upload"><span class="toc-text">Validate JSON data upload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NET-Web-Application"><span class="toc-text">.NET Web Application</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configure-connectivity-to-Azure-Cosmos-DB"><span class="toc-text">Configure connectivity to Azure Cosmos DB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NET-application-startup-logic"><span class="toc-text">.NET application startup logic</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Azure-Cosmos-DB-%E7%9B%B8%E9%97%9C%E7%9F%A5%E8%AD%98"><span class="toc-text">Azure Cosmos DB 相關知識</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hierarchy"><span class="toc-text">Hierarchy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Partition"><span class="toc-text">Partition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Consistency"><span class="toc-text">Consistency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RU"><span class="toc-text">RU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resources"><span class="toc-text">Resources</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E6%88%B0-Azure-Cosmos-DB-%E5%BF%83%E5%BE%97"><span class="toc-text">實戰 Azure Cosmos DB 心得</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>實作 AZ-204 證照測驗準備的實驗課程，從實驗課程中精熟 AZ-204 的測驗重點以及工具操作。本次要實驗的是如何使用具有 Scale Out 特性的 Cosmos DB。</p>
+<a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-04/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Azure-Logo.svg" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Lab04-Cosmos-DB"><a href="#Lab04-Cosmos-DB" class="headerlink" title="Lab04 - Cosmos DB"></a>Lab04 - Cosmos DB</h2><p>詳細的實驗流程可以參考微軟在 Github上的<a target="_blank" rel="noopener" href="https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/master/Instructions/Labs">專案</a></p>
+<p><img src="/assets/AZ-204-Lab-04-Diagram.png" alt="圖片來源：微軟"></p>
+<h3 id="Pre-Setting"><a href="#Pre-Setting" class="headerlink" title="Pre Setting"></a>Pre Setting</h3><p>一開始先建立 Resource Group 以及 Storage Account。</p>
+<p>建立好 Storage Account 後接著建立 Container，並且 <strong>Access Level</strong> 選擇為 Blob，並且將 Lab Starter/Images 中的圖片全數上傳。</p>
+<p>先將 Container Properties 中的 URL 筆記，後續的過程會使用到。</p>
+<h3 id="Create-Cosmos-DB-Account"><a href="#Create-Cosmos-DB-Account" class="headerlink" title="Create Cosmos DB Account"></a>Create Cosmos DB Account</h3><p>建立 Comsmos DB Account，類型選擇「Core(SQL)」，其他還有 Azure Cosmos DB API For Mango DB、Cassandra、Azure Table 以及 Gremlin 可以使用的類型。</p>
+<p><img src="/assets/AZ-204-Lab-04-1.png"><br><img src="/assets/AZ-204-Lab-04-2.png"></p>
+<p>建立後將 Keys 中的 URI、Prmary Key 以及 Primary Connection String 筆記，後續的過程會使用到。</p>
+<p><img src="/assets/AZ-204-Lab-04-3.png"></p>
+<h3 id="Create-a-Cosmos-DB-database-and-collection"><a href="#Create-a-Cosmos-DB-database-and-collection" class="headerlink" title="Create a Cosmos DB database and collection"></a>Create a Cosmos DB database and collection</h3><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"0481d7e1-4970-4efa-a560-020f6579918d"</span><span class="token punctuation">,</span>
+    <span class="token property">"Name"</span><span class="token operator">:</span> <span class="token string">"LL Fork"</span><span class="token punctuation">,</span>
+    <span class="token property">"Category"</span><span class="token operator">:</span> <span class="token string">"Forks"</span><span class="token punctuation">,</span>
+    <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"Stout design absorbs shock and offers more precise steering."</span><span class="token punctuation">,</span>
+    <span class="token property">"Products"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"fb8502be-07eb-4134-ab06-c3a9959a52ae"</span><span class="token punctuation">,</span>
+        <span class="token property">"Name"</span><span class="token operator">:</span> <span class="token string">"LL Fork"</span><span class="token punctuation">,</span>
+        <span class="token property">"Number"</span><span class="token operator">:</span> <span class="token string">"FK-1639"</span><span class="token punctuation">,</span>
+        <span class="token property">"Category"</span><span class="token operator">:</span> <span class="token string">"Forks"</span><span class="token punctuation">,</span>
+        <span class="token property">"Color"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"Size"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"Weight"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"ListPrice"</span><span class="token operator">:</span> <span class="token number">148.22</span><span class="token punctuation">,</span>
+        <span class="token property">"Photo"</span><span class="token operator">:</span> <span class="token string">"fork.jpg"</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"Photo"</span><span class="token operator">:</span> <span class="token string">"fork.jpg"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> .\AdventureWorks.Upload\</span>
+<span class="token command"><span class="token keyword">dotnet</span> add package Microsoft.Azure.Cosmos <span class="token parameter attr-name">--version</span> <span class="token number">3</span>.<span class="token number">20</span>.<span class="token number">1</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><code class="watch">/Upload/Program.cs</code></p>
+<pre class="line-numbers language-cs" data-language="cs"><code class="language-cs"><span class="token keyword">private</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> EndpointUrl <span class="token operator">=</span> <span class="token string">"https://polycosmoscs.documents.azure.com:443/"</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> AuthorizationKey <span class="token operator">=</span> <span class="token string">"*Q=="</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> DatabaseName <span class="token operator">=</span> <span class="token string">"Retail"</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> ContainerName <span class="token operator">=</span> <span class="token string">"Online"</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> PartitionKey <span class="token operator">=</span> <span class="token string">"/Category"</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> JsonFilePath <span class="token operator">=</span> <span class="token string">"C:\\Labs\\AdventureWorks\\AdventureWorks.Upload\\models.json"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">dotnet</span> build</span>
+<span class="token command"><span class="token keyword">dotnet</span> run</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Validate-JSON-data-upload"><a href="#Validate-JSON-data-upload" class="headerlink" title="Validate JSON data upload"></a>Validate JSON data upload</h3><p><img src="/assets/AZ-204-Lab-04-5.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> models<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/AZ-204-Lab-04-6.png"></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token keyword">VALUE</span> <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">FROM</span> models<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="NET-Web-Application"><a href="#NET-Web-Application" class="headerlink" title=".NET Web Application"></a>.NET Web Application</h3><p><code class="watch">/web/appsettings.json</code></p>
+<p>使用之前筆記的 <code class="s">ConnectionStrings</code> 以及 <code class="s">BlobContainerUrl</code> 進行更新：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token punctuation">&#123;</span>
+  <span class="token string-property property">"ConnectionStrings"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">"AdventureWorksCosmosContext"</span><span class="token operator">:</span> <span class="token string">"AccountEndpoint=https://polycosmoscs.documents.azure.com:443/;..."</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token string-property property">"Settings"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">"BlobContainerUrl"</span><span class="token operator">:</span> <span class="token string">"https://polystorcs2.blob.core.windows.net/images"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> .\AdventureWorks.Web\</span>
+<span class="token command"><span class="token keyword">dotnet</span> add package Microsoft.Azure.Cosmos <span class="token parameter attr-name">--version</span> <span class="token number">3</span>.<span class="token number">20</span>.<span class="token number">1</span></span>
+<span class="token command"><span class="token keyword">dotnet</span> build</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Configure-connectivity-to-Azure-Cosmos-DB"><a href="#Configure-connectivity-to-Azure-Cosmos-DB" class="headerlink" title="Configure connectivity to Azure Cosmos DB"></a>Configure connectivity to Azure Cosmos DB</h3><p>在路徑 <code class="s">/AdventureWorks.Context</code> 下，新增檔案 <code class="s">AdventureWorksCosmosContext.cs</code></p>
+<p>並且輸入下列內容：</p>
+<p><code class="watch">/AdventureWorks.Context/AdventureWorksCosmosContext.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Threading<span class="token punctuation">.</span>Tasks</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">AdventureWorks<span class="token punctuation">.</span>Models</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>Azure<span class="token punctuation">.</span>Cosmos</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>Azure<span class="token punctuation">.</span>Cosmos<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">AdventureWorks<span class="token punctuation">.</span>Context</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AdventureWorksCosmosContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IAdventureWorksProductContext</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">Container</span> _container<span class="token punctuation">;</span>
+
+        <span class="token keyword">public</span> <span class="token function">AdventureWorksCosmosContext</span><span class="token punctuation">(</span>
+            <span class="token class-name"><span class="token keyword">string</span></span> connectionString<span class="token punctuation">,</span>
+            <span class="token class-name"><span class="token keyword">string</span></span> database <span class="token operator">=</span> <span class="token string">"Retail"</span><span class="token punctuation">,</span>
+            <span class="token class-name"><span class="token keyword">string</span></span> container <span class="token operator">=</span> <span class="token string">"Online"</span>
+        <span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            _container <span class="token operator">=</span>
+                <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CosmosClient</span><span class="token punctuation">(</span>connectionString<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">GetDatabase</span><span class="token punctuation">(</span>database<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">GetContainer</span><span class="token punctuation">(</span>container<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span> <span class="token function">FindModelAsync</span><span class="token punctuation">(</span><span class="token class-name">Guid</span> id<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> iterator <span class="token operator">=</span>
+                _container
+                    <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">GetItemLinqQueryable</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>m <span class="token operator">=></span> m<span class="token punctuation">.</span>id <span class="token operator">==</span> id<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ToFeedIterator</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token class-name">List<span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span> matches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>iterator<span class="token punctuation">.</span>HasMoreResults<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> next <span class="token operator">=</span> <span class="token keyword">await</span> iterator<span class="token punctuation">.</span><span class="token function">ReadNextAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                matches<span class="token punctuation">.</span>AddRange <span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token keyword">return</span> matches<span class="token punctuation">.</span><span class="token function">SingleOrDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>List<span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">GetModelsAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">string</span></span> query <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$@"SELECT * FROM items"</span></span><span class="token punctuation">;</span>
+
+            <span class="token class-name"><span class="token keyword">var</span></span> iterator <span class="token operator">=</span> _container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">GetItemQueryIterator</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>query<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token class-name">List<span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span> matches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Model<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>iterator<span class="token punctuation">.</span>HasMoreResults<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> next <span class="token operator">=</span> <span class="token keyword">await</span> iterator<span class="token punctuation">.</span><span class="token function">ReadNextAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                matches<span class="token punctuation">.</span>AddRange <span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token keyword">return</span> matches<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>Product<span class="token punctuation">></span></span> <span class="token function">FindProductAsync</span><span class="token punctuation">(</span><span class="token class-name">Guid</span> id<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">string</span></span> query <span class="token operator">=</span>
+                <span class="token interpolation-string"><span class="token string">$@"SELECT VALUE products
+                    FROM models
+                    JOIN products in models.Products
+                    WHERE products.id = '</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">
+                    id</span><span class="token punctuation">&#125;</span></span><span class="token string">'"</span></span><span class="token punctuation">;</span>
+
+            <span class="token class-name"><span class="token keyword">var</span></span> iterator <span class="token operator">=</span> _container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">GetItemQueryIterator</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Product<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>query<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token class-name">List<span class="token punctuation">&lt;</span>Product<span class="token punctuation">></span></span> matches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Product<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>iterator<span class="token punctuation">.</span>HasMoreResults<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> next <span class="token operator">=</span> <span class="token keyword">await</span> iterator<span class="token punctuation">.</span><span class="token function">ReadNextAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                matches<span class="token punctuation">.</span>AddRange <span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token keyword">return</span> matches<span class="token punctuation">.</span><span class="token function">SingleOrDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">dotnet</span> build</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="NET-application-startup-logic"><a href="#NET-application-startup-logic" class="headerlink" title=".NET application startup logic"></a>.NET application startup logic</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ConfigureProductService</span><span class="token punctuation">(</span><span class="token class-name">IServiceCollection</span> services<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddScoped</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IAdventureWorksProductContext<span class="token punctuation">,</span> AdventureWorksCosmosContext<span class="token punctuation">></span></span></span>
+    <span class="token punctuation">(</span>
+        provider <span class="token operator">=></span>
+          <span class="token keyword">new</span> <span class="token constructor-invocation class-name">AdventureWorksCosmosContext</span><span class="token punctuation">(</span>
+            _configuration<span class="token punctuation">.</span><span class="token function">GetConnectionString</span><span class="token punctuation">(</span><span class="token keyword">nameof</span><span class="token punctuation">(</span>AdventureWorksCosmosContext<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> ..\AdventureWorks.Web\</span>
+<span class="token command"><span class="token keyword">dotnet</span> run</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>使用瀏覽器在 <a target="_blank" rel="noopener" href="http://localhost:5000/">http://localhost:5000</a> 可以看到本機端執行使用 Azure Cosmos DB 的應用程式結果：</p>
+<p><img src="/assets/AZ-204-Lab-04-7.png"></p>
+<h2 id="Azure-Cosmos-DB-相關知識"><a href="#Azure-Cosmos-DB-相關知識" class="headerlink" title="Azure Cosmos DB 相關知識"></a>Azure Cosmos DB 相關知識</h2><h3 id="Hierarchy"><a href="#Hierarchy" class="headerlink" title="Hierarchy"></a>Hierarchy</h3><ul>
+<li>Account<ul>
+<li>Database<ul>
+<li>Container<ul>
+<li>Item</li>
+<li>Stored Procedures</li>
+<li>User-defined Functinos</li>
+<li>Triggers</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>關於 Stored Procedures</p>
+<dl>
+  <dt>Stored Procedures Transaction Continuation</dt>
+  <dd>避免當 Stored Procedures 中斷時，所有步驟都 Rollback 需要重新執行的機制</dd>
+</dl>
+
+<h3 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning-overview">Partition</a></p>
+<h3 id="Consistency"><a href="#Consistency" class="headerlink" title="Consistency"></a>Consistency</h3><p>Strong -&gt; Bounded Staleness -&gt; Session -&gt; Consistent Prefix -&gt; Eventual</p>
+<p>左側的一致性高，但寫入速度慢、越往右側一致性越低，但寫入速度提高</p>
+<h3 id="RU"><a href="#RU" class="headerlink" title="RU"></a>RU</h3><pre class="line-numbers language-none"><code class="language-none">Reuqests Unit &#x3D; % Memory + % CPU + % IOPS <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>for Database Operations (read, insert, update, delete and query)</p>
+<h3 id="Resources"><a href="#Resources" class="headerlink" title="Resources"></a>Resources</h3><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/azure/cosmos-db/local-emulator?tabs=ssl-netstd21">Azure Cosmos DB Emulator</a></p>
+<p><a target="_blank" rel="noopener" href="https://azurecosmosdb.github.io/labs/">Azure Cosmos DB Workshop</a></p>
+<h2 id="實戰-Azure-Cosmos-DB-心得"><a href="#實戰-Azure-Cosmos-DB-心得" class="headerlink" title="實戰 Azure Cosmos DB 心得"></a>實戰 Azure Cosmos DB 心得</h2><p>Cosmos DB 的計價方式是以每秒鐘的 Request Unit 計算，而目前實務上尚未使用過 NoSQL 類型的資料庫，因此對於具體可行的應用較為陌生。</p>
+<p>相較於 SQL Server 不容易設計 Load Balance 架構 Cosmos DB 則是資料庫 Scale Out 代表性解決方案， Cosmos DB 最為特色的低延遲以及高可用先記在心中，期待未來的相遇 😊</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/03/Azure-Certification-AZ-204-Lab-04/" data-id="clg3fmaaf0097s4ts7gch9q33" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Azure/" rel="tag">Azure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Certification/" rel="tag">Certification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-02/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 02 Azure Functions</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/03/Azure-Certification-AZ-204-Lab-05/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Azure Learn AZ-204 The Hard Way | 實作 AZ-204 Lab 05 Azure Container
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

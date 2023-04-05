@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Hexo Syntax Highlight (Prismjs) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記更新 Hexo 為 6.0 版本的方式，同時比較各種 Hexo 達到 Code Syntax Highlight 的方式 😊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo Syntax Highlight (Prismjs)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/01/Hexo-Syntax-Highlight/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記更新 Hexo 為 6.0 版本的方式，同時比較各種 Hexo 達到 Code Syntax Highlight 的方式 😊">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+<meta property="article:published_time" content="2022-01-18T11:16:29.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/JavaScript-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Hexo-Syntax-Highlight" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/Hexo-Syntax-Highlight/" class="article-date">
+  <time datetime="2022-01-18T11:16:29.000Z" itemprop="datePublished">2022-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Blog/">Blog</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Hexo Syntax Highlight (Prismjs)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#highlight"><span class="toc-text">highlight</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hexo-prism-plus"><span class="toc-text">hexo-prism-plus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hexo-prism-plugin"><span class="toc-text">hexo-prism-plugin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hexo-6"><span class="toc-text">Hexo 6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prism-thmes"><span class="toc-text">prism-thmes</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記更新 Hexo 為 6.0 版本的方式，同時比較各種 Hexo 達到 Code Syntax Highlight 的方式 😊</p>
+<a href="/posts/2022/01/Hexo-Syntax-Highlight/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/JavaScript-Logo.svg" alt="JavaScript logo" width="168px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="highlight"><a href="#highlight" class="headerlink" title="highlight"></a>highlight</h3><p>在 Hexo 5 版本之前原生支援的 syntax highlight 技術，但因為對 themes 以及支援的程式語言不足而放棄。</p>
+<h3 id="hexo-prism-plus"><a href="#hexo-prism-plus" class="headerlink" title="hexo-prism-plus"></a>hexo-prism-plus</h3><p>在搜尋的過程中，有發現到 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/hexo-prism-plus">hexo-prism-plus</a>。但嘗試了一會無法啟用成功，最後忍痛放棄。</p>
+<h3 id="hexo-prism-plugin"><a href="#hexo-prism-plugin" class="headerlink" title="hexo-prism-plugin"></a>hexo-prism-plugin</h3><p>有很長一段時間使用 <a target="_blank" rel="noopener" href="https://github.com/ele828/hexo-prism-plugin">hexo-prism-plugin</a>，其所支援的 <strong>okaidia</strong> 色彩主題很對喜歡 <strong>monokai</strong> 的胃口。同時 prism 所支援的程式語言更為豐富。</p>
+<p>但在最近因為需要 vbscript 的 syntax highlight 支援，發現 prismjs 是可以辦到，但 hexo-prism-plugin 已經四年沒有維護，其使用的 prismjs 停留在過早的版本。</p>
+<p>原本嘗試要自己 Fork <a target="_blank" rel="noopener" href="https://github.com/ele828/hexo-prism-plugin">hexo-prism-plugin</a>，但因為對 Node.js 熟悉程度有限，在嘗試一段時間後作罷。但過程裝發現了幾個有趣的收穫：</p>
+<ol>
+<li>prismjs 分為預處理以及即時處理的方式，將 code element 進行 tag 標註</li>
+<li>themes style file 則負責顏色內容，與 prismjs 的 js 相互合作</li>
+<li>Node Packages.json 的來源不僅可以是 NPM，更可以是 git 甚至是本機檔案系統，讓 Fork Node_Modules 成為可能</li>
+</ol>
+<p>最後的選擇是不要在折騰，直接將 Hexo 專案升級為 6.0</p>
+<h3 id="Hexo-6"><a href="#Hexo-6" class="headerlink" title="Hexo 6"></a>Hexo 6</h3><p>Hexo 6 內建有 highlight 以及 prismjs 可以使用，兩者不能同時使用，首先在 _config.yml 進行調整：</p>
+<pre class="line-numbers language-yml" data-language="yml"><code class="language-yml"><span class="token key atrule">highlight</span><span class="token punctuation">:</span>
+  <span class="token key atrule">enable</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token key atrule">line_number</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token key atrule">auto_detect</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token key atrule">tab_replace</span><span class="token punctuation">:</span> <span class="token string">''</span>
+  <span class="token key atrule">wrap</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">hljs</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+<span class="token key atrule">prismjs</span><span class="token punctuation">:</span>
+  <span class="token key atrule">enable</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">preprocess</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">line_number</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">tab_replace</span><span class="token punctuation">:</span> <span class="token string">''</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而不同於 hexo-prism-plugin 可以直接在 config 設定 themes，Hexo 6 是在 <strong>Head.ejs</strong> 的部分直接引入 CSS CDN：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+  ...
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> 
+    <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="prism-thmes"><a href="#prism-thmes" class="headerlink" title="prism-thmes"></a>prism-thmes</h3><p>除了 prism 預設的 thmes 外，尚有 <a target="_blank" rel="noopener" href="https://github.com/PrismJS/prism-themes">prism-thmes</a>，有更多豐富的 themes 可以提供使用。同樣是使用 CDN 的方式引入到 head 即可。</p>
+<p><a target="_blank" rel="noopener" href="https://cdnjs.com/libraries/prism-themes">prism-themes | cdnjs</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/Hexo-Syntax-Highlight/" data-id="clg3fmae600pds4tscceq8ubt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/01/ASP-Database-Connection/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Classic ASP Database Connection</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/Dot-Net-Ecosystem/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          .Net Ecosystem (微軟開發生態系)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>鳥瞰 ASP.NET MVC 生命週期筆記 (2023) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET MVC 的框架生命週期，從而在開發時採用最佳的擴充點來達成客製化的需求。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="鳥瞰 ASP.NET MVC 生命週期筆記 (2023)">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/02/ASPNET-MVC-BirdsEyeView-2023/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET MVC 的框架生命週期，從而在開發時採用最佳的擴充點來達成客製化的需求。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2023-02-14T11:11:30.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-BirdsEyeView-2023" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/02/ASPNET-MVC-BirdsEyeView-2023/" class="article-date">
+  <time datetime="2023-02-14T11:11:30.000Z" itemprop="datePublished">2023-02-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      鳥瞰 ASP.NET MVC 生命週期筆記 (2023)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Summary"><span class="toc-text">Summary</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Detailed"><span class="toc-text">Detailed</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Application-amp-Request-Life-Cycle-Events"><span class="toc-text">Application &amp; Request Life Cycle Events</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HttpHandlers-amp-HttpModules"><span class="toc-text">HttpHandlers &amp; HttpModules</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RouteTable"><span class="toc-text">RouteTable</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Controller-Initialization"><span class="toc-text">Controller Initialization</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ControllerActionInvoker"><span class="toc-text">ControllerActionInvoker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ControllerBuilder"><span class="toc-text">ControllerBuilder</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Action-Method-Execution"><span class="toc-text">Action Method Execution</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Model-Binding"><span class="toc-text">Model Binding</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Action-Results-amp-View-Engine"><span class="toc-text">Action Results &amp; View Engine</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET MVC 的框架生命週期，從而在開發時採用最佳的擴充點來達成客製化的需求。</p>
+<a href="/posts/2023/02/ASPNET-MVC-BirdsEyeView-2023/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p><a href="/posts/2020/07/ASPNET-MVC-BirdsEyeView/">鳥瞰 ASP.NET MVC 生命週期筆記</a></p>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>UrlRoutingModule：用於處理 HTTP 請求的 URL，將其解析為路由資訊。它實現了 IHttpModule 介面，並且在 ASP.NET MVC 應用程式啟動時被自動註冊，負責監聽 HTTP 請求事件並處理該請求的路由信息。</p>
+<p>MvcHandler：處理 HTTP 請求並生成 HTTP 回應，用於將路由資訊轉換為控制器與動作方法。實現了 IHttpHandler 介面，並且在 URL 路由解析後，調用該請求的控制器動作方法並生成 HTTP 回應。</p>
+<p>DefaultControllerFactory：負責根據控制器名稱和命名空間名稱查找並創建控制器實例。實現了 IControllerFactory 介面，當控制器實例被創建時，ASP.NET MVC 框架會自動調用 CreateController 方法。</p>
+<p>ControllerActionInvoker：負責調用控制器的動作方法，以及處理 Action 的參數綁定、模型綁定、驗證、Filter 處理等功能。實現了 IActionInvoker 介面，當控制器動作方法被呼叫時，ASP.NET MVC 框架會自動調用 InvokeAction 方法。</p>
+<p>DefaultModelBinder：負責模型綁定，將 HTTP 請求中的參數映射到動作方法的參數或控制器的屬性上。實現了 IModelBinder 介面，當 ASP.NET MVC 框架需要將 HTTP 請求參數映射到動作方法參數時，它會自動調用 BindModel 方法。</p>
+<p>ActionResult：定義了 MVC 應用程式中回傳的各種結果類型，例如 ViewResult、JsonResult、ContentResult 等。實現了 IActionResult 介面，當控制器動作方法完成時，會回傳 ActionResult 物件，這個物件可以將回應資料轉換為 HTTP 回應並返回給客戶端。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>用途</th>
+<th>所屬分類或介面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Global.asax</td>
+<td>當 ASP.NET 應用程式啟動時，用於處理應用程式層級的事件</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>HttpModule</td>
+<td>ASP.NET 中可讓您攔截 HTTP 要求、響應和錯誤的基礎結構</td>
+<td>IHttpModule</td>
+</tr>
+<tr>
+<td>RouteTable.Routes.GetRouteData</td>
+<td>從請求中檢索可用於路由的路由資料</td>
+<td>RouteTable, RouteCollection, IRouteCollection</td>
+</tr>
+<tr>
+<td>RouteBase</td>
+<td>定義路由的方法和屬性</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>RouteData</td>
+<td>包含經過路由處理的路由的資訊，如路由值和路由處理程式等</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>IRouteHandler</td>
+<td>定義用於處理請求的自訂路由處理程式的契約</td>
+<td>IRouteHandler</td>
+</tr>
+<tr>
+<td>RequestContext</td>
+<td>包含有關目前 HTTP 要求的資訊，如 HTTP 內容、路由資訊和 HTTP 設定等。</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>UrlRoutingModule</td>
+<td>根據請求資訊查找與要求匹配的路由</td>
+<td>UrlRoutingModule, IHttpModule</td>
+</tr>
+<tr>
+<td>Get HttpHandler From RouteData</td>
+<td>從路由資料中取得相對應的 HttpHandler</td>
+<td>MvcRouteHandler</td>
+</tr>
+<tr>
+<td>Route</td>
+<td>定義路由模式、預設值和約束</td>
+<td>Route</td>
+</tr>
+<tr>
+<td>MvcRouteHandler</td>
+<td>呼叫 Controller Action Invoker 的 HttpHandler</td>
+<td>MvcRouteHandler</td>
+</tr>
+<tr>
+<td>MvcHandler</td>
+<td>建立、執行控制器，以及呼叫操作方法</td>
+<td></td>
+</tr>
+<tr>
+<td>ControllerBuilder</td>
+<td>用於設定和創建控制器類型的物件</td>
+<td>IControllerFactory</td>
+</tr>
+<tr>
+<td>DefaultControllerFactory</td>
+<td>創建控制器實例的預設實作</td>
+<td>IControllerFactory</td>
+</tr>
+<tr>
+<td>IController</td>
+<td>定義控制器的方法和屬性</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ControllerBase</td>
+<td>提供所有控制器的共用屬性和方法，但沒有動作執行</td>
+<td>ControllerBase</td>
+</tr>
+<tr>
+<td>Return DefaultControllerFactory</td>
+<td>回傳預設的控制器工廠</td>
+<td>ControllerBuilder</td>
+</tr>
+<tr>
+<td>Return MvcHandler</td>
+<td>回傳用於執行控制器和呼叫操作方法的 HttpHandler</td>
+<td>MvcRouteHandler</td>
+</tr>
+<tr>
+<td>Return ControllerBase</td>
+<td>回傳實際的控制器執行個體</td>
+<td>MvcHandler</td>
+</tr>
+<tr>
+<td>IActionInvoker</td>
+<td>定義控制器動作方法的執行邏輯</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ControllerActionInvoker</td>
+<td>負責執行 Action，呼叫 Action 的方法並回傳 ActionResult</td>
+<td>ControllerActionInvoker</td>
+</tr>
+<tr>
+<td>IModelBinder</td>
+<td>用來將 HTTP 請求中的資料繫結到 Controller 的參數上</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>DefaultModelBinder</td>
+<td>IModelBinder 的預設實作</td>
+<td>IModelBinder</td>
+</tr>
+<tr>
+<td>Return ControllerActionInvoker</td>
+<td>回傳 ControllerActionInvoker 實例</td>
+<td>DefaultControllerFactory</td>
+</tr>
+<tr>
+<td>ActionResult</td>
+<td>回傳結果，例如 View 或 JSON 資料等</td>
+<td>ActionResult</td>
+</tr>
+<tr>
+<td>RawContentResult</td>
+<td>回傳純文字資料</td>
+<td>ActionResult</td>
+</tr>
+</tbody></table>
+<h2 id="Detailed"><a href="#Detailed" class="headerlink" title="Detailed"></a>Detailed</h2><h3 id="Application-amp-Request-Life-Cycle-Events"><a href="#Application-amp-Request-Life-Cycle-Events" class="headerlink" title="Application &amp; Request Life Cycle Events"></a>Application &amp; Request Life Cycle Events</h3><p><strong>HttpApplication</strong>: An instance of the HttpApplication class is created to start the application lifecycle.</p>
+<p>ASP.NET 的應用程式生命週期(Life Cycle)可以分為下列階段：</p>
+<p>Application Start：當應用程式啟動時，會建立一個 Application 對象來代表應用程式。在這個階段中，會進行一些應用程式級別的初始化工作，例如路由設定、組態設定、設定網站主題等。</p>
+<p>PostResolveRequestCache：在這個階段中，當請求到達伺服器後，ASP.NET 會試圖解析請求路徑並從快取中取得頁面。如果頁面存在於快取中，則直接傳回快取的頁面。否則，會繼續進入下一個階段，也就是執行 IHttpHandler 的 ProcessRequest 方法。</p>
+<p>ProcessRequest：在這個階段中，ASP.NET 會將請求傳遞給正確的 IHttpHandler 物件，讓其處理請求並產生回應。這個階段是 ASP.NET 生命週期中最重要的階段，因為大部分的請求處理邏輯都是在這個階段中實現的。</p>
+<p>PostAcquireRequestState：在這個階段中，ASP.NET 會從狀態服務中取得當前請求的狀態資訊，並將其儲存在 HttpContext.Current.Items 集合中。這些狀態資訊可以包括 Session、Application、ViewState 等等。</p>
+<p>PostRequestHandlerExecute：在這個階段中，IHttpHandler 物件已經處理完當前請求並傳回了回應。在這個階段中，可以對回應進行後處理，例如壓縮回應內容、設定緩存控制等等。</p>
+<p>ReleaseRequestState：在這個階段中，ASP.NET 會釋放當前請求的狀態資訊。如果啟用了 Session 狀態，則會將其儲存在 Session 狀態服務中。</p>
+<p>UpdateRequestCache：在這個階段中，ASP.NET 會將當前請求的回應儲存在快取中，以便下一次相同的請求可以直接從快取中取得頁面。</p>
+<p>LogRequest：在這個階段中，ASP.NET 會記錄當前請求的相關資訊到日誌中，例如請求的 HTTP 方法、URL、請求時間、回應時間等等。</p>
+<p>EndRequest：在這個階段中，ASP.NET 已經完成了整個請求/回應的處理過程，並將結果返回給 Client Side 。在這個階段中，可以進行一些清理工作，例如釋放資源、關閉連接等等。</p>
+<h3 id="HttpHandlers-amp-HttpModules"><a href="#HttpHandlers-amp-HttpModules" class="headerlink" title="HttpHandlers &amp; HttpModules"></a>HttpHandlers &amp; HttpModules</h3><p><strong>HttpModule</strong>: The HttpModule pipeline is initialized, allowing additional functionality to be added to the request pipeline, including the Routing Module.</p>
+<dl>
+  <dt>IHttpModule</dt>
+  <dd>The interface for defining a custom HttpModule.</dd>
+  <dt>RouteCollection</dt>
+  <dd>A collection of Route objects that are used to match incoming URLs to the appropriate controllers and actions.</dd>
+  <dt>Route</dt>
+  <dd>A class that defines a URL pattern and the controller and action to be used for that pattern.</dd>
+  <dt>RouteBase</dt>
+  <dd>The base class for defining custom route implementations.</dd>
+  <dt>IRouteHandler</dt>
+  <dd>The interface for defining a custom route handler.</dd>
+  <dt>MvcRouteHandler</dt>
+  <dd>The default route handler for processing requests that match an MVC route.</dd>
+</dl>
+
+<p><strong>HttpHandler</strong>: The MvcHandler processes the response generated by the ActionResult.</dd></p>
+<dl>
+  <dt>IHttpHandler</dt>
+  <dd>The interface that HttpHandlers must implement.</dd>
+  <dt>MvcHandler</dt>
+  <dd>The HttpHandler responsible for processing requests that match an MVC route.</dd>
+</dl>
+
+<p><strong>Routing</strong>: The Routing Module determines the appropriate controller and action based on the incoming URL.</p>
+<p>在 ASP.NET MVC 中，HTTP 模組 (HttpModules) 可以協助判斷路由，讓應用程式能夠根據請求的 URL 路徑找到對應的控制器和動作方法。HTTP 模組可以從 HTTP 請求中取得 URL，然後解析出其中的路由資訊，並根據路由規則將其轉換為控制器和動作方法的名稱。</p>
+<p>在 ASP.NET MVC 中，HTTP 模組的路由解析功能通常是由 Routing HTTP 模組處理的。Routing HTTP 模組會在應用程式啟動時加載，並註冊在 ASP.NET 的 HTTP 請求管道中。當應用程式收到 HTTP 請求時，HTTP 請求管道會透過 Routing HTTP 模組來解析請求的 URL，並將其轉換為對應的控制器和動作方法。</p>
+<p>Routing HTTP 模組可以根據路由規則來解析 URL。路由規則是定義在 RouteConfig.cs 檔案中的，可以根據應用程式需求進行自訂。每個路由規則都包含一個 URL 模式、一個可選的預設控制器和動作方法，以及一些可選的參數。當 Routing HTTP 模組解析 URL 時，它會將 URL 與每個路由規則進行比對，找到第一個符合 URL 的規則，然後根據規則將 URL 轉換為對應的控制器和動作方法。</p>
+<p>總之，HTTP 模組可以協助判斷路由，讓 ASP.NET MVC 應用程式能夠根據請求的 URL 路徑找到對應的控制器和動作方法。Routing HTTP 模組是 ASP.NET MVC 中負責路由解析的核心模組，可以根據路由規則來解析 URL，找到對應的控制器和動作方法。</p>
+<p>正確的名稱是UrlRoutingModule，這個類別是實現 ASP.NET MVC 中路由功能的主要類別之一。UrlRoutingModule 實現了 IHttpModule 介面，並在 ASP.NET 的 HTTP 請求管道中註冊，以便能夠處理傳入的 HTTP 請求。當應用程式收到 HTTP 請求時，UrlRoutingModule 會從請求中獲取 URL 資訊，然後根據路由規則進行解析，找到對應的控制器和動作方法。</p>
+<p>在 ASP.NET MVC 5 及更早版本中，UrlRoutingModule 是實現路由功能的主要類別。但在 ASP.NET Core 中，Routing HTTP 模組已經被完全重寫，並且使用了全新的路由系統，因此與 ASP.NET MVC 中的 UrlRoutingModule 已經不同。不過，UrlRoutingModule 仍然是 ASP.NET MVC 5 及更早版本中非常重要的類別之一，負責處理請求路由並將其路由到適當的控制器和動作方法。</p>
+<hr>
+<p>當 HTTP 請求進入 ASP.NET MVC 應用程式後，會由 ASP.NET 的 HTTP 請求管道進行處理。HTTP 請求管道是由一系列的 HTTP 模組 (HttpModules) 組成，其中包括 ASP.NET MVC 的 UrlRoutingModule。當 HTTP 請求進入到 UrlRoutingModule 時，UrlRoutingModule 會根據路由規則解析 URL，找到對應的控制器和動作方法。</p>
+<p>當 UrlRoutingModule 找到對應的控制器和動作方法之後，就會建立一個控制器類別的實例。這個實例會在控制器初始化 (Controller Initialization) 階段建立，並會負責處理該請求的所有相關邏輯。</p>
+<p>控制器初始化是在控制器類別的實例建立之後執行的，其目的是確保控制器及其相關資源都已經準備好，並且可以正確地處理該請求。在控制器初始化階段，ASP.NET MVC 會執行以下幾個步驟：</p>
+<p>建立控制器的實例，並設置其相關屬性。</p>
+<p>設置控制器的 ActionInvoker 物件，以處理動作方法的呼叫。</p>
+<p>執行控制器的 ActionFilters，這些過濾器可以在執行動作方法之前或之後進行額外的處理。</p>
+<p>執行控制器的 Initialize 方法，這個方法可以用來初始化控制器的相關資源。</p>
+<p>設置控制器的 ViewData 和 TempData 屬性，以傳遞資料給視圖。</p>
+<p>呼叫動作方法。</p>
+<p>總之，當 Request 進入到 ASP.NET MVC，並交由 UrlRoutingModule 處理後，UrlRoutingModule 會建立一個控制器類別的實例，然後進行控制器初始化。控制器初始化是確保控制器及其相關資源都已經準備好，並且可以正確地處理該請求的重要階段。</p>
+<hr>
+<p>當 UrlRoutingModule 找到對應的控制器和動作方法之後，會呼叫 MvcHandler 的 ProcessRequest 方法，該方法負責處理請求並呼叫相應的控制器動作方法。</p>
+<p>簡單來說，UrlRoutingModule 會根據路由規則解析 URL，找到對應的控制器和動作方法，然後將處理權限轉交給 MvcHandler。MvcHandler 會負責進一步處理請求，包括建立控制器的實例、呼叫控制器動作方法、返回結果等操作。在這個過程中，控制器初始化是其中的一個重要階段。感謝你的指正，希望這次能回答到你的問題。</p>
+<hr>
+<p>UrlRoutingModule 會根據路由規則解析 URL，找到對應的控制器和動作方法。它使用的類別、介面和方法如下：</p>
+<ol>
+<li>RouteCollection：負責儲存所有路由規則，UrlRoutingModule 會使用該類別中的方法來查找匹配的路由。</li>
+<li>IRouteHandler：定義了一個方法 GetHttpHandler，該方法負責處理路由請求，返回一個 IHttpHandler 介面的實例。</li>
+<li>IRouteConstraint：定義了一個方法 Match，該方法負責驗證 URL 的路由參數是否符合要求。</li>
+<li>Route：表示一個路由規則，其中包含了 URL 模式、路由規則的名稱、 Default 值和約束條件等設置。</li>
+<li>RouteData：表示路由規則解析 URL 後的結果，其中包含了控制器名稱、動作方法名稱、路由規則的名稱、URL 參數等相關資訊。</li>
+<li>RouteBase：是 Route 和 RouteCollection 的基類，定義了一些共用的方法和屬性。</li>
+</ol>
+<p>UrlRoutingModule 會根據 RouteCollection 中設置的路由規則，逐一進行匹配。當找到匹配的路由規則後，UrlRoutingModule 會建立一個 RouteData 物件，該物件包含了控制器名稱、動作方法名稱、路由規則的名稱、URL 參數等相關資訊。然後，UrlRoutingModule 會將該 RouteData 物件傳遞給 MvcHandler，MvcHandler 根據 RouteData 中的資訊來建立相應的控制器和動作方法的實例，並執行該動作方法。</p>
+<p>簡而言之，UrlRoutingModule 使用 RouteCollection 中的路由規則來解析 URL，找到匹配的路由規則後，建立 RouteData 物件並將其傳遞給 MvcHandler，由 MvcHandler 進一步處理該請求，建立控制器的實例並執行動作方法。</p>
+<hr>
+<p>在 MvcHandler 中，會依序進行以下幾個方法：</p>
+<p>GetHttpHandler：這個方法是 IRouteHandler 定義的方法，該方法負責返回一個實現了 IHttpHandler 介面的類別的實例，一般情況下，這個實例會是 MvcHandler 本身。<br>ProcessRequestInit：這個方法負責初始化 RequestContext 和 ControllerContext 等上下文資訊，該方法包含在抽象基類中，具體實現在 MvcHandler 派生類中。<br>ProcessRequest：這個方法負責調用相應的控制器和動作方法，並將結果返回給 Client Side ，具體實現在 MvcHandler 派生類中。</p>
+<p>相關的類別和介面如下：</p>
+<p>IRouteHandler：定義了 GetHttpHandler 方法，該方法返回一個實現了 IHttpHandler 介面的類別的實例。<br>MvcHandler：實現了 IRouteHandler 和 IHttpHandler 介面，負責處理 ASP.NET MVC 請求的主要類別，其中包含了 ProcessRequestInit 和 ProcessRequest 方法。<br>RequestContext：表示當前請求的上下文資訊，包含了 HTTPContext、RouteData 和相關的請求資訊等。<br>ControllerContext：表示當前控制器的上下文資訊，包含了當前的 HttpContext、當前控制器的名稱和相關資訊等。<br>ControllerBase：所有控制器的基底類別，包含了一些共用的屬性和方法，例如 HttpContext、TempData 等。<br>Controller：實現了 ControllerBase 類別，代表了 MVC 應用程序中的控制器，其中包含了 Action 方法和相關的屬性和方法。</p>
+<p>總體來說，當收到請求後，UrlRoutingModule 會將路由資訊傳遞給 MvcHandler，MvcHandler 會負責處理該請求，這個過程包含了一系列的方法調用，其中主要包含了 ProcessRequestInit 和 ProcessRequest 方法。在這個過程中，涉及到的類別和介面包括了 IRouteHandler、MvcHandler、RequestContext、ControllerContext、Controller 和 ControllerBase。</p>
+<h4 id="RouteTable"><a href="#RouteTable" class="headerlink" title="RouteTable"></a>RouteTable</h4><p>RouteTable 是一個 ASP.NET MVC 中的靜態類別，用於管理網站的路由規則。它的主要作用是儲存所有網站所使用的路由規則，並提供方法讓開發人員可以動態地新增或刪除路由。RouteTable 會在應用程式啟動時被初始化，並且會在收到請求時被用來尋找符合路由規則的處理程序。</p>
+<p>在 ASP.NET MVC 中，RouteTable 屬於 System.Web.Routing 命名空間下的類別，繼承自 RouteCollection。它實現了 IRouteHandler 和 IUrlHelper，同時還提供了一些方法，例如 Add()、Clear()、GetVirtualPath() 等，用於管理路由規則。開發人員可以通過修改 RouteTable 的屬性和調用方法，來建立自己的路由規則。</p>
+<p>簡而言之，RouteTable 是 ASP.NET MVC 中用於管理路由規則的類別，負責將傳入的請求與路由規則進行比對，並返回符合要求的路由對應的處理程序。</p>
+<hr>
+<p>在 ASP.NET MVC 中，路由（Routing）是一個非常重要的機制，可以讓應用程序根據 URL 請求來匹配對應的控制器和操作方法。以下是與路由相關的類別、介面和方法的說明：</p>
+<p>RouteBase：定義了路由的基本行為和屬性，包括匹配 URL、獲取路由參數等。所有的路由類都必須繼承自這個類別。<br>RouteDictionary：是一個字典類別，用於存儲路由的名稱和路由對象。<br>RouteTable：是一個靜態類別，用於管理應用程序中的所有路由。它包含一個靜態的 Routes 屬性，用於獲取和設置路由列表。<br>RouteData：表示一個路由的路由參數（Route Parameters），例如控制器名稱、動作方法名稱等。這些參數可以通過路由匹配 URL 得到。<br>IRouteHandler：定義了一個方法 GetHttpHandler，它返回一個 IHttpHandler 對象，用於處理匹配的路由。<br>當應用程序收到一個請求時，它會通過 UrlRoutingModule 進行處理。UrlRoutingModule 會根據 RouteTable 中的路由配置來進行路由匹配，並返回一個 RouteData 對象。然後，MvcRouteHandler 會通過 RouteData 中的路由參數來獲取控制器和動作方法，並創建一個 MvcHandler 對象來處理請求。</p>
+<p>在 MvcHandler 中，ControllerBuilder 會負責創建控制器對象，並調用該控制器的操作方法。在執行操作方法之前，ControllerActionInvoker 會根據請求中的參數值來執行模型繫結（Model Binding）操作，並檢查是否有任何過濾器（Filter）需要執行。最後，ControllerActionInvoker 會返回一個 ActionResult 對象，用於生成輸出內容。</p>
+<p>在 ActionResult 中，可以定義返回給客戶端的內容，例如 ViewResult 會使用 View Engine 來生成 HTML 代碼，而 RawContentResult 會返回原始的字節流。</p>
+<p>RouteBase 是 Route 的抽象基礎類別，定義了處理路由請求的規範。Route 則是 RouteBase 的具體實現，繼承了 RouteBase 的規範，實現了具體的路由規則，例如定義了 URL 模板、默認值、約束條件等。<br>RouteDictionary 是一個繼承自 Dictionary 的自定義字典類別，用於儲存路由規則。它的索引鍵是路由的名稱，索引值是 RouteBase 物件。<br>RouteTable 是 ASP.NET MVC 應用程式中的一個靜態類別，用於註冊和儲存路由規則。它維護一個 RouteDictionary，提供了添加、移除和查詢路由規則的方法。<br>RouteData 是在處理路由請求時創建的一個包含路由相關資訊的物件，例如路由名稱、控制器名稱、動作方法名稱、路由參數等。RouteData 類別提供了許多屬性和方法，用於訪問和操作這些資訊。<br>IRouteHandler 是一個介面，定義了處理路由請求的方法 GetHttpHandler。該方法接受一個 RequestContext 物件作為引數，返回一個實現了 IHttpHandler 介面的物件，通常是 MvcHandler。 MvcRouteHandler 是 IRouteHandler 的一個具體實現，用於處理路由請求並返回 MvcHandler。</p>
+<h3 id="Controller-Initialization"><a href="#Controller-Initialization" class="headerlink" title="Controller Initialization"></a>Controller Initialization</h3><p><strong>Controller</strong> creation: The controller instance is created.</p>
+<dl>
+  <dt>IControllerFactory</dt>
+  <dd>The interface for defining a custom controller factory.</dd>
+  <dt>DefaultControllerFactory</dt>
+  <dd>The default implementation of IControllerFactory.</dd>
+  <dt>IController</dt>
+  <dd>The interface that controllers must implement.</dd>
+  <dt>ControllerBase</dt>
+  <dd>The base class for defining custom controller implementations.</dd>
+</dl>
+
+<p>在 Controller 初始化後，下列方法、類別以及介面會按照以下順序依次執行：</p>
+<p>Action Invoker：Action Invoker 會負責處理與動作方法相關的邏輯。首先，它會找到相應的動作方法，接著，它會通過 Controller ActionInvoker 屬性中的實例來執行該方法。Action Invoker 是一個抽象基類，具體實現在 ControllerActionInvoker 類別中。</p>
+<p>Authorization Filters：當 Action Invoker 決定了要調用哪個動作方法後，會執行 Authorization Filter。Authorization Filter 是 ASP.NET MVC 提供的一個機制，它可以讓開發人員對動作方法進行權限檢查。如果任何一個 Authorization Filter 返回了 HTTP 狀態碼，MVC 框架就不會繼續執行該動作方法。Authorization Filter 可以在 Action 方法或 Controller 上定義。</p>
+<p>Action Filters：當 Authorization Filters 執行完畢後，MVC 框架就會執行 Action Filters。Action Filter 是一個自定義類別，它可以在執行動作方法之前和之後執行額外的邏輯。Action Filters 可以用來實現輸入驗證、日誌記錄、性能測試和結果緩存等功能。Action Filter 可以在 Action 方法或 Controller 上定義。</p>
+<p>Model Binding：在執行動作方法之前，MVC 框架會將 Client Side 的 HTTP 請求參數與動作方法參數進行綁定，並將綁定後的結果傳遞給動作方法。Model Binding 可以將 Client Side 的 HTTP 請求參數綁定到基本類型、複雜對象或集合類型中。如果綁定失敗，MVC 框架會將錯誤信息添加到 ModelState 物件中。</p>
+<p>Action Execution：MVC 框架會調用動作方法本身。該方法會使用 Model Binding 後的參數，然後返回一個 ActionResult 物件，ActionResult 物件封裝了該動作方法執行的結果。</p>
+<p>Result Filters：當 Action Execution 完畢後，MVC 框架會執行 Result Filters。Result Filter 是一個自定義類別，它可以在動作方法執行之後對 ActionResult 物件進行修改，例如，添加 HTTP 標頭或執行結果緩存等操作。Result Filter 可以在 Action 方法或 Controller 上定義。</p>
+<hr>
+<p>在 Controller 初始化後，下列方法、類別以及介面會按照以下順序依次執行：</p>
+<p>IControllerFactory：IControllerFactory 會負責創建 Concrete 的 Controller 實例，它是 ASP.NET MVC 提供的一個 Extension，可以讓開發人員替換 Default 的 Controller Factory。在 ASP.NET MVC 中， Default 的 Controller Factory是 DefaultControllerFactory。</p>
+<p>CreateController 方法：DefaultControllerFactory 會調用 CreateController 方法，根據傳入的 ControllerContext 創建 Concrete 的 Controller 實例。CreateController 方法需要實現 IControllerFactory 介面。</p>
+<p>BeginExecute 方法：在創建 Controller 實例後，MVC 框架會調用 Controller 的 BeginExecute 方法。BeginExecute 方法是 Controller 的生命週期中的一個關鍵方法，它負責準備 Controller 的狀態，例如，設置 HttpContext、Route Data 和 ControllerContext 等。</p>
+<p>CreateActionInvoker 方法：Controller 的 BeginExecute 方法會調用 CreateActionInvoker 方法，創建一個 Action Invoker 實例。Action Invoker 會負責處理與動作方法相關的邏輯。在 ASP.NET MVC 中， Default 的 Action Invoker 是 ControllerActionInvoker。</p>
+<p>Action Invoker：Action Invoker 會負責找到相應的動作方法，並且通過 Controller ActionInvoker 屬性中的實例來執行該方法。</p>
+<p>Authorization Filters：當 Action Invoker 決定了要調用哪個動作方法後，會執行 Authorization Filter。</p>
+<p>Action Filters：當 Authorization Filters 執行完畢後，MVC 框架就會執行 Action Filters。</p>
+<p>Model Binding：在執行動作方法之前，MVC 框架會將 Client Side 的 HTTP 請求參數與動作方法參數進行綁定。</p>
+<p>Action Execution：MVC 框架會調用動作方法本身。</p>
+<p>Result Filters：當 Action Execution 完畢後，MVC 框架會執行 Result Filters。</p>
+<hr>
+<p>ControllerActionInvoker 是在 ASP.NET MVC 中用來執行控制器動作方法的類別。當控制器接收到由 ASP.NET MVC 應用程式的路由引擎分發的 HTTP 請求時，ControllerActionInvoker 負責呼叫相應的控制器動作方法。以下是 ControllerActionInvoker 運作的過程和涉及的相關類別、介面和方法：</p>
+<p>接收 HTTP 請求<br>當路由引擎成功地將 HTTP 請求路由到控制器時，ControllerActionInvoker 會開始執行。這時，控制器動作方法的參數還未綁定。</p>
+<p>判斷 Action Method 的存在與權限<br>ControllerActionInvoker 會檢查控制器類別中是否有與路由匹配的動作方法。如果找到該方法，則 ControllerActionInvoker 會檢查使用者是否有執行該方法的權限。</p>
+<p>選擇 Action Method<br>當 ControllerActionInvoker 確定使用者有權限執行動作方法時，它會選擇要呼叫的方法。在選擇動作方法時，ControllerActionInvoker 會考慮傳入的參數和動作方法的名稱和類型。</p>
+<p>綁定動作方法的參數<br>一旦 ControllerActionInvoker 選擇了要呼叫的動作方法，它會使用 Model Binding 綁定該方法的參數。Model Binding 會將 HTTP 請求中的值映射到控制器動作方法的參數上，並將該參數傳遞給方法。</p>
+<p>Action Filter 的執行<br>在執行控制器動作方法之前，ControllerActionInvoker 會呼叫所有相關聯的 Action Filter。Action Filter 是 ASP.NET MVC 中用來執行額外處理的類別，例如驗證使用者、記錄日誌和檢查緩存。</p>
+<p>Action Method 的執行<br>當 ControllerActionInvoker 完成所有必要的前置作業後，它會呼叫控制器動作方法。這時，動作方法的參數已經綁定，可以正確地呼叫該方法。</p>
+<p>ActionResult 的產生<br>當動作方法完成後，ControllerActionInvoker 會產生 ActionResult。ActionResult 描述控制器應用程式對 HTTP 請求的回應方式。例如，它可以回傳檔案、檢視或 JSON 資料。</p>
+<p>Result Filter 的執行<br>在 ActionResult 產生後，ControllerActionInvoker 會呼叫所有相關聯的 Result。</p>
+<h4 id="ControllerActionInvoker"><a href="#ControllerActionInvoker" class="headerlink" title="ControllerActionInvoker"></a>ControllerActionInvoker</h4><p>當 ControllerActionInvoker 負責呼叫正確的 Action 方法後，它會根據 Action 方法所需要的參數進行參數繫結（Parameter Binding）。</p>
+<p>在 ASP.NET MVC 中，參數繫結是由 IModelBinder 介面及其實作來實現的。當 ControllerActionInvoker 需要將參數繫結到 Action 方法的參數上時，它會透過 ModelBinderProvider 從註冊的 IModelBinder 實例中選擇適當的 Model Binder 來進行參數繫結。當然，如果沒有註冊適當的 Model Binder，ASP.NET MVC 也會嘗試使用預設的 Model Binder 來進行繫結。</p>
+<p>一旦參數繫結完成後，ControllerActionInvoker 就會執行 Action 方法並得到其回傳的 ActionResult 物件。這個 ActionResult 物件會被透過 Model Binding 以及 View Engine 所提供的機制進行渲染，最後回傳到使用者的瀏覽器中。</p>
+<p>總結來說，ControllerActionInvoker 是 ASP.NET MVC 中的一個關鍵類別，它負責將 Request 路由到正確的 Controller 和 Action 方法上，並進行必要的參數繫結、Action 方法執行以及 ActionResult 物件渲染等操作。在這個過程中，它與多個相關的類別、介面以及方法進行互動，包括 IActionInvoker、IModelBinder、ModelBinderProvider、IViewEngine、ActionResult 等。</p>
+<h4 id="ControllerBuilder"><a href="#ControllerBuilder" class="headerlink" title="ControllerBuilder"></a>ControllerBuilder</h4><p>ControllerBuilder 是 ASP.NET MVC 框架中的一個靜態類別，位於 System.Web.Mvc 命名空間中，用於提供一些靜態方法和屬性，可以設置和訪問與控制器和操作相關的組件，如 IControllerFactory、IActionInvoker 和 ModelBinderProviders 等。</p>
+<p>具體來說，ControllerBuilder 的主要用途如下：</p>
+<p>設置和獲取全局 IControllerFactory 對象，控制控制器的創建和實例化。<br>設置和獲取全局 IActionInvoker 對象，控制操作方法的調用和執行。<br>設置和獲取全局的模型繫結器提供程序（ModelBinderProviders），它提供了一組用於將 HTTP 請求數據轉換為操作方法參數的模型繫結器。<br>設置和獲取全局的過濾器提供程序（FilterProviders），它提供了一組用於執行操作方法前後的過濾器。<br>除此之外，ControllerBuilder 還提供了一些其他的方法和屬性，如 GetControllerSessionBehavior、GetService 和 SetControllerFactory 等，用於控制控制器和操作的行為。</p>
+<p>需要注意的是，ControllerBuilder 並不是一個介面，而是一個靜態類別。</p>
+<h3 id="Action-Method-Execution"><a href="#Action-Method-Execution" class="headerlink" title="Action Method Execution"></a>Action Method Execution</h3><p><strong>Action Execution</strong>: The MvcHandler executes the appropriate action method in the controller.</p>
+<dl>
+  <dt>MvcHandler</dt>
+  <dd>The HttpHandler responsible for processing requests that match an MVC route.</dd>
+  <dt>IActionInvoker</dt>
+  <dd>The interface for defining a custom action invoker.</dd>
+  <dt>ControllerActionInvoker</dt>
+  <dd>The default implementation of IActionInvoker.</dd>
+  <dt>Model binding</dt>
+  <dd>The process of mapping incoming request data to action method parameters.</dd>
+  <dt>IModelBinder</dt>
+  <dd>The interface for defining a custom model binder.</dd>
+  <dt>DefaultModelBinder</dt>
+  <dd>The default implementation of IModelBinder.</dd>
+  <dt>Action filters</dt>
+  <dd>A set of filters that run before and after an action method.</dd>
+  <dt>IActionFilter</dt>
+  <dd>The interface for defining a custom action filter.</dd>
+  <dt>Authorization filters</dt>
+  <dd>A type of action filter that runs before the action method to verify that the user is authorized to access the requested resource.</dd>
+  <dt>IAuthorizationFilter</dt>
+  <dd>The interface for defining a custom authorization filter.</dd>
+  <dt>Authentication filters</dt>
+  <dd>A type of action filter that runs before the action method to authenticate the user.</dd>
+  <dt>IAuthenticationFilter</dt>
+  <dd>The interface for defining a custom authentication filter.</dd>
+</dl>
+
+<h4 id="Model-Binding"><a href="#Model-Binding" class="headerlink" title="Model Binding"></a>Model Binding</h4><p>在 ASP.NET MVC 中，Model Binding 是將 HTTP 請求中的參數值綁定到 Controller 的 Action 方法的參數上。這樣就可以方便地從 HTTP 請求中獲取數據，並傳遞到 Action 方法中進行後續處理。</p>
+<p>以下是 Model Binding 的過程：</p>
+<p>準備要綁定的參數：MVC 框架從 HTTP 請求中獲取參數，包括Route Data 、表單數據、查詢字符串、cookie 等。</p>
+<p>確定要綁定的參數：MVC 框架會通過 ActionDescriptor 找到要調用的 Action 方法及其參數，並確定哪些參數需要綁定。</p>
+<p>創建綁定器：根據要綁定的參數的數據類型，MVC 框架會創建對應的綁定器。例如，如果參數是基本類型，則使用 ValueProviderResult。</p>
+<p>綁定數據：使用綁定器將 HTTP 請求中的數據綁定到參數上。這是 Model Binding 的核心步驟，根據綁定器的不同，綁定數據的過程也會有所不同。</p>
+<p>驗證數據：綁定器會對綁定後的數據進行基本的驗證，例如，確認數據是否符合數據類型等。</p>
+<p>傳遞數據：綁定器將綁定後的數據傳遞給 Action 方法，讓其進行後續處理。</p>
+<p>在 Model Binding 的過程中，涉及到的類別和介面包括：</p>
+<p>IModelBinder：IModelBinder 是 ASP.NET MVC 中的一個介面，用於將 HTTP 請求中的數據綁定到 Action 方法的參數上。開發人員可以實現自定義的 IModelBinder，以擴展 Model Binding 的功能。</p>
+<p>IValueProvider：IValueProvider 用於從 HTTP 請求中獲取參數值，並將其傳遞給 IModelBinder。</p>
+<p>IModelBinderProvider：IModelBinderProvider 負責創建 IModelBinder 的實例，並根據參數的數據類型來選擇適合的 IModelBinder。在 ASP.NET MVC 中， Default 的 IModelBinderProvider 是 DefaultModelBinderProvider</p>
+<h3 id="Action-Results-amp-View-Engine"><a href="#Action-Results-amp-View-Engine" class="headerlink" title="Action Results &amp; View Engine"></a>Action Results &amp; View Engine</h3><p><strong>ActionResult Creation</strong>: The action method returns an ActionResult object, representing the result of the action.</p>
+<dl>
+  <dt>ActionResult</dt>
+  <dd>The base class for representing the result of an action.</dd>
+  <dt>ViewResult</dt>
+  <dd>The class that represents a view result.</dd>
+  <dt>PartialViewResult</dt>
+  <dd>The class that represents a partial view result.</dd>
+  <dt>JsonResult</dt>
+  <dd>The class that represents a JSON result.</dd>
+  <dt>ContentResult</dt>
+  <dd>The class that represents a result containing a raw string.</dd>
+</dl>
+
+<p><strong>Result Execution</strong>: The ActionResult is executed to generate the response to be sent to the client.</p>
+<dl>
+  <dt>ViewEngineResult</dt>
+  <dd>The result of the view engine's attempt to locate a view.</dd>
+  <dt>IView</dt>
+  <dd>The interface for defining a custom view.</dd>
+  <dt>RazorView</dt>
+  <dd>The default view engine that is used to render Razor views.</dd>
+  <dt>IViewEngine</dt>
+  <dd>The interface for defining a custom view engine.</dd>
+  <dt>ViewResultBase</dt>
+  <dd>The base class for defining custom view result implementations.</dd>
+</dl>
+
+<p>在 ASP.NET MVC 中，ActionResult 負責將 Action 方法執行後得到的結果回傳給使用者的瀏覽器。它可以是純文字、JSON 資料、檔案下載、重導向等形式，而其中最常用的就是 ViewResult 了。ViewResult 負責渲染一個 View 並將結果回傳給使用者的瀏覽器。</p>
+<p>當 ControllerActionInvoker 得到 ActionResult 後，它會將它傳遞給 ViewResultExecutor。ViewResultExecutor 是一個負責將 ViewResult 轉換成 HTML 的類別。它會透過 ViewEngineCollection 所提供的 View Engine 機制找到對應的 View 檔案，再將 Model 以及 ViewData 傳入 View 中進行渲染。</p>
+<p>在 ASP.NET MVC 中，ViewEngine 負責將 View 檔案轉換成 HTML。ASP.NET MVC 預設提供了兩種 ViewEngine，即 WebFormViewEngine 與 RazorViewEngine。其中，WebFormViewEngine 負責將 Web Form 檔案轉換成 HTML，而 RazorViewEngine 則負責將 Razor 檔案轉換成 HTML。</p>
+<p>當 ControllerActionInvoker 需要渲染 View 時，它會透過 ViewEngineCollection 所提供的機制選擇適當的 ViewEngine。ViewEngineCollection 是一個負責管理 ViewEngine 的集合類別。ASP.NET MVC 預設將 WebFormViewEngine 與 RazorViewEngine 加入了 ViewEngineCollection 中。當 ViewEngineCollection 找到適當的 ViewEngine 後，就會呼叫其 CreateView 方法建立對應的 View 物件，並傳入 Model 以及 ViewData 進行渲染。最終，ViewResultExecutor 會得到 View 的渲染結果並將其轉換成 HTML，然後回傳給使用者的瀏覽器。</p>
+<p>總結來說，ASP.NET MVC 的 ActionResult 與 ViewEngine 機制是負責將 Action 方法的結果轉換成 HTML 並回傳給使用者的瀏覽器的關鍵類別與機制。在這個過程中，涉及到多個相關的類別、介面以及方法，包括 ViewResult、ViewResultExecutor、ViewEngineCollection、WebFormViewEngine、RazorViewEngine、CreateView 等。在 ASP.NET MVC 中，ActionResult 負責將 Action 方法執行後得到的結果回傳給使用者的瀏覽器。它可以是純文字、JSON 資料、檔案下載、重導向等形式，而其中最常用的就是 ViewResult 了。ViewResult 負責渲染一個 View 並將結果回傳給使用者的瀏覽器。</p>
+<p>當 ControllerActionInvoker 得到 ActionResult 後，它會將它傳遞給 ViewResultExecutor。ViewResultExecutor 是一個負責將 ViewResult 轉換成 HTML 的類別。它會透過 ViewEngineCollection 所提供的 View Engine 機制找到對應的 View 檔案，再將 Model 以及 ViewData 傳入 View 中進行渲染。</p>
+<p>在 ASP.NET MVC 中，ViewEngine 負責將 View 檔案轉換成 HTML。ASP.NET MVC 預設提供了兩種 ViewEngine，即 WebFormViewEngine 與 RazorViewEngine。其中，WebFormViewEngine 負責將 Web Form 檔案轉換成 HTML，而 RazorViewEngine 則負責將 Razor 檔案轉換成 HTML。</p>
+<p>當 ControllerActionInvoker 需要渲染 View 時，它會透過 ViewEngineCollection 所提供的機制選擇適當的 ViewEngine。ViewEngineCollection 是一個負責管理 ViewEngine 的集合類別。ASP.NET MVC 預設將 WebFormViewEngine 與 RazorViewEngine 加入了 ViewEngineCollection 中。當 ViewEngineCollection 找到適當的 ViewEngine 後，就會呼叫其 CreateView 方法建立對應的 View 物件，並傳入 Model 以及 ViewData 進行渲染。最終，ViewResultExecutor 會得到 View 的渲染結果並將其轉換成 HTML，然後回傳給使用者的瀏覽器。</p>
+<p>總結來說，ASP.NET MVC 的 ActionResult 與 ViewEngine 機制是負責將 Action 方法的結果轉換成 HTML 並回傳給使用者的瀏覽器的關鍵類別與機制。在這個過程中，涉及到多個相關的類別、介面以及方法，包括 ViewResult、ViewResultExecutor、ViewEngineCollection、WebFormViewEngine、RazorViewEngine、CreateView 等。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p>來自 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/Music/p/mini-mvc.html">深入研究蔣金楠（Artech）老師的MiniMvc（迷你MVC）</a> 所整理的生命週期相關類別與介面：</p>
+<p>Global.asax<br>HttpModule<br>RouteTable.Routes.GetRouteData<br>RouteBase<br>RouteData<br>IRouteHandler, <strong>Interface</strong><br>RequestContext<br>UrlRoutingModule, Important Imlements<br>RequestContext<br>Get HttpHandler From RouteData<br>Route<br>MvcRouteHandler<br>MvcHandler, Important Imlements<br>ControllerBuilder<br>DefaultControllerFactory, Important Imlements<br>IController, <strong>Interface</strong><br>ControllerBase<br>Return DefaultControllerFactory<br>Return MvcHandler<br>Return ControllerBase<br>IActionInvoker, <strong>Interface</strong><br>ControllerActionInvoker, Important Imlements<br>IModelBinder, <strong>Interface</strong><br>DefaultModelBinder, Important Imlements<br>Return ControllerActionInvoker<br>ActionResult, Important Imlements<br>RawContentResult</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/02/ASPNET-MVC-BirdsEyeView-2023/" data-id="clg3fma8x0029s4tscx0447ux" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/02/ASPNET-MVC-DisplayTemplates-And-EditorTemplates/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC DisplayTemplates And EditorTemplates</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/02/EntityFramework-DbMigrationsConfiguration-And-DbContext-Seed/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Entity Framework DbMigrationsConfiguration And DbContext Seed
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

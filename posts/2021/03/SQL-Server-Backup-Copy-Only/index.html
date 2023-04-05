@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server 備份與還原實驗筆記 2 - Copy Only 的使用時機 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 完整備份資料庫時，使用 Copy Only 的情境以及時機。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 備份與還原實驗筆記 2 - Copy Only 的使用時機">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/03/SQL-Server-Backup-Copy-Only/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 完整備份資料庫時，使用 Copy Only 的情境以及時機。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Backup-Only.png">
+<meta property="article:published_time" content="2021-03-14T12:29:48.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="SSMS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Backup-Copy-Only" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/03/SQL-Server-Backup-Copy-Only/" class="article-date">
+  <time datetime="2021-03-14T12:29:48.000Z" itemprop="datePublished">2021-03-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 備份與還原實驗筆記 2 - Copy Only 的使用時機
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E6%99%82%E9%96%93%E9%BB%9E%E7%9A%84%E5%BE%A9%E5%8E%9F%E9%9C%80%E6%B1%82"><span class="toc-text">任意時間點的復原需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%A9%E5%8E%9F%E6%B8%AC%E8%A9%A6"><span class="toc-text">復原測試</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FLSN-amp-LLSN"><span class="toc-text">FLSN &amp; LLSN</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E7%9A%84%E5%AF%A6%E9%A9%97-Script"><span class="toc-text">完整的實驗 Script</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 完整備份資料庫時，使用 Copy Only 的情境以及時機。</p>
+<a href="/posts/2021/03/SQL-Server-Backup-Copy-Only/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">/*
+0--123---45---67----8-------9
+-------T---------A------T
+       1                2
+F-----------F
+0           1
+*/</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上圖是資料庫的備份歷程，包含 F0、F1、T1、T2，其中 F0 為第一次的完整備份、F1為完整備份、T1、T2 為交易紀錄備份。時間軸 0 到 9 表示輸入進資料庫的資料，A 點為想要探究是否可以還原的一點，藉由上述的時間軸結合 SQL Script 作為本次的驗證情境。</p>
+<p>本次特別將所有的備份檔以單獨(.bak for fullbackup, .trn for trasactional log)檔案的方式儲存，而不以媒體集累積的方式來實驗。</p>
+<hr>
+<h3 id="任意時間點的復原需求"><a href="#任意時間點的復原需求" class="headerlink" title="任意時間點的復原需求"></a>任意時間點的復原需求</h3><p>如果使用 GUI，系統僅會提示使用 F1 以及 T2 進行資料庫復原，並且支援 Point-In-Time 的復原方式，但在做復原之前，如果沒有做 log tail 備份的話，則時間軸的 9 就無法復原會有資料遺失的風險。</p>
+<p>如果要復原到 1、2、3 必須要使用 F0 以及 T1 來做復原。</p>
+<p>4、5 只能使用 F1 來復原，且無法指定 Point-In-Time，只能還原到時間軸 5 已經完成之處，無法指定在時間軸 5 之前 4 之後，<strong>這也表示在完整備份之前，應該再做一次交易紀錄備份，才能保持完整彈性的 Point-In-Time 復原。</strong></p>
+<p>如果要復原 6、7、A、8 必須要使用 F1 以及 T2 來進行復原，並且可以使用 Point-In-Time 還原到特定的時間點。</p>
+<p>如果要復原到 9 則一定要做 log tail 備份，並使用 F1、T2 以及 Log tail 備份來復原。</p>
+<h3 id="復原測試"><a href="#復原測試" class="headerlink" title="復原測試"></a>復原測試</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f0.bak'</span> <span class="token keyword">WITH</span>  <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>  
+NORECOVERY<span class="token punctuation">,</span>  NOUNLOAD<span class="token punctuation">,</span>  <span class="token keyword">REPLACE</span><span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">5</span>
+
+<span class="token keyword">RESTORE</span> LOG <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t1.trn'</span> <span class="token keyword">WITH</span>  <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+NORECOVERY<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">5</span>
+
+<span class="token keyword">RESTORE</span> LOG <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t2.trn'</span> <span class="token keyword">WITH</span>  <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+RECOVERY<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述的復原會在復原可以成功，因為完整備份(Full Backup)不會中斷交易紀錄的 LSN Chain。</p>
+<h3 id="FLSN-amp-LLSN"><a href="#FLSN-amp-LLSN" class="headerlink" title="FLSN &amp; LLSN"></a>FLSN &amp; LLSN</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f0.bak'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">FirstLSN<span class="token punctuation">,</span> LastLSN<span class="token punctuation">,</span> CheckpointLSN<span class="token punctuation">,</span> DatabaseBackupLSN
+<span class="token number">37000000034400001</span><span class="token punctuation">,</span> <span class="token number">37000000036800001</span><span class="token punctuation">,</span> <span class="token number">37000000034400001</span><span class="token punctuation">,</span> <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t1.trn'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">FirstLSN<span class="token punctuation">,</span> LastLSN<span class="token punctuation">,</span> CheckpointLSN<span class="token punctuation">,</span> DatabaseBackupLSN
+<span class="token number">37000000034400001</span><span class="token punctuation">,</span> <span class="token number">37000000041600001</span><span class="token punctuation">,</span> <span class="token number">37000000034400001</span><span class="token punctuation">,</span> <span class="token number">37000000034400001</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f1.bak'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">FirstLSN<span class="token punctuation">,</span> LastLSN<span class="token punctuation">,</span> CheckpointLSN<span class="token punctuation">,</span> DatabaseBackupLSN
+<span class="token number">37000000054400001</span><span class="token punctuation">,</span> <span class="token number">37000000056800001</span><span class="token punctuation">,</span> <span class="token number">37000000054400001</span><span class="token punctuation">,</span> <span class="token number">37000000034400001</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t2.trn'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">FirstLSN<span class="token punctuation">,</span> LastLSN<span class="token punctuation">,</span> CheckpointLSN<span class="token punctuation">,</span> DatabaseBackupLSN
+<span class="token number">37000000041600001</span><span class="token punctuation">,</span> <span class="token number">37000000061600001</span><span class="token punctuation">,</span> <span class="token number">37000000054400001</span><span class="token punctuation">,</span> <span class="token number">37000000054400001</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>藉由備份檔 FLSN 以及 LLSN 可以發現，完整備份的 LLSN 會與對應的交易備份檔的 FLSN 相連，而中途加入的新的完整備份，不會改變新交易紀錄 FLSN 對應前一次交易紀錄的 LLSN。</p>
+<p>同時也可以發現新的完整備份出現，其 CheckpointLSN 會成為新交易紀錄備份的 CheckpointLSN, DatabaseBackupLSN 值。</p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>只透過完整備份，儘管有使用完整復原模式，仍然無法進行 Point-In-Time 的時間點復原</li>
+<li>要使用 Point-In-Time 的時間點復原，必須搭配交易紀錄檔的備份，才能夠進行</li>
+<li><strong>差異備份</strong>必須與最近一次的完整紀錄做搭配，換言之中途插入的完整備份紀錄，會影響後續的差異備份的還原使用</li>
+<li>如果要插入完整備份，可以使用 Copy-Only 的方式完整備份資料庫</li>
+<li>插入的完整備份不會破壞交易備份的 Log Chain</li>
+<li>交易紀錄也可以做 Copy-Only 為的是避免遺失該交易紀錄備份造成還原使用的交易紀錄缺乏</li>
+<li>備份還原盡量使用 Script 的方式明確告知資料庫，不要仰賴 GUI</li>
+</ol>
+<p><img src="/assets/SQL-Server-Backup-Only.png" alt="SSMS 指定只複製備份"></p>
+<h3 id="完整的實驗-Script"><a href="#完整的實驗-Script" class="headerlink" title="完整的實驗 Script"></a>完整的實驗 Script</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">/*
+
+0--123---45---67----8-------9
+-------T---------A------T
+       1                2
+F-----------F
+0           1
+
+0	2021-03-14 16:15:32.887
+1	2021-03-14 16:15:36.703
+2	2021-03-14 16:15:36.703
+3	2021-03-14 16:15:36.703
+4	2021-03-14 16:15:41.003
+5	2021-03-14 16:15:41.043
+6	2021-03-14 16:16:47.310
+7	2021-03-14 16:16:47.347
+8	2021-03-14 16:17:38.193
+9	2021-03-14 16:18:28.363
+*/</span>
+
+<span class="token keyword">USE</span> MASTER<span class="token punctuation">;</span>
+<span class="token keyword">DROP</span> <span class="token keyword">DATABASE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> DB1<span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">DATABASE</span> DB1<span class="token punctuation">;</span>
+
+<span class="token keyword">USE</span> DB1
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span>
+	<span class="token punctuation">(</span>
+	Id <span class="token keyword">int</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+	<span class="token keyword">Date</span> <span class="token keyword">datetime</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+	<span class="token punctuation">)</span>  <span class="token keyword">ON</span> <span class="token punctuation">[</span><span class="token keyword">PRIMARY</span><span class="token punctuation">]</span>
+GO
+
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> dbo<span class="token punctuation">.</span>T1 <span class="token keyword">ADD</span> <span class="token keyword">CONSTRAINT</span>
+	DF_T1 <span class="token keyword">DEFAULT</span> getdate<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">FOR</span> <span class="token keyword">Date</span>
+GO
+
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+
+<span class="token keyword">BACKUP</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">TO</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f0.bak'</span> <span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span> INIT<span class="token punctuation">,</span>  
+NAME <span class="token operator">=</span> N<span class="token string">'完整資料庫備份 - F0'</span><span class="token punctuation">,</span> SKIP<span class="token punctuation">,</span> NOREWIND<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">10</span>
+GO
+
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+
+<span class="token keyword">BACKUP</span> LOG <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">TO</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t1.trn'</span> 
+<span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span> INIT<span class="token punctuation">,</span>  NAME <span class="token operator">=</span> N<span class="token string">'交易紀錄備份 - T1'</span><span class="token punctuation">,</span> SKIP<span class="token punctuation">,</span> NOREWIND<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">10</span>
+GO
+
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+
+<span class="token keyword">BACKUP</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">TO</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f1.bak'</span> <span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span> INIT<span class="token punctuation">,</span>  
+NAME <span class="token operator">=</span> N<span class="token string">'完整資料庫備份 - F1'</span><span class="token punctuation">,</span> SKIP<span class="token punctuation">,</span> NOREWIND<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">10</span>
+GO
+
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span>
+
+<span class="token comment">-- Wait 10 secs</span>
+
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>
+
+<span class="token keyword">BACKUP</span> LOG <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">TO</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t2.trn'</span> 
+<span class="token keyword">WITH</span> FORMAT<span class="token punctuation">,</span> INIT<span class="token punctuation">,</span>  NAME <span class="token operator">=</span> N<span class="token string">'交易紀錄備份 - T2'</span><span class="token punctuation">,</span> SKIP<span class="token punctuation">,</span> NOREWIND<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">10</span>
+GO
+
+<span class="token keyword">Insert</span> <span class="token keyword">Into</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">Values</span><span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">)</span>
+
+
+<span class="token comment">----</span>
+
+<span class="token keyword">USE</span> <span class="token punctuation">[</span>master<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">SET</span> SINGLE_USER <span class="token keyword">WITH</span> <span class="token keyword">ROLLBACK</span> IMMEDIATE
+<span class="token keyword">RESTORE</span> <span class="token keyword">DATABASE</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f0.bak'</span> <span class="token keyword">WITH</span>  <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>  
+NORECOVERY<span class="token punctuation">,</span>  NOUNLOAD<span class="token punctuation">,</span>  <span class="token keyword">REPLACE</span><span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">5</span>
+
+<span class="token keyword">RESTORE</span> LOG <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t1.trn'</span> <span class="token keyword">WITH</span>  <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+RECOVERY<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">5</span>
+
+<span class="token keyword">RESTORE</span> LOG <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span> <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t2.trn'</span> <span class="token keyword">WITH</span>  <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+RECOVERY<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span>  STATS <span class="token operator">=</span> <span class="token number">5</span>
+
+<span class="token comment">-- SELECT FROM DB1.dbo.T1</span>
+
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> <span class="token punctuation">[</span>DB1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>T1<span class="token punctuation">]</span>
+
+<span class="token comment">--</span>
+
+<span class="token keyword">RESTORE</span> FILELISTONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f0.bak'</span>
+<span class="token keyword">RESTORE</span> FILELISTONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f1.bak'</span>
+
+<span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f0.bak'</span>
+<span class="token comment">-- FLSN LLSN</span>
+<span class="token comment">--37000000037600001 37000000035200001</span>
+
+<span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\f1.bak'</span>
+<span class="token comment">-- FLSN LLSN</span>
+<span class="token comment">--37000000055200001 37000000057600001</span>
+
+<span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t1.trn'</span>
+<span class="token comment">-- FLSN LLSN</span>
+<span class="token comment">-- 37000000035200001 370000000424000014</span>
+
+<span class="token keyword">RESTORE</span> HEADERONLY <span class="token keyword">FROM</span>  <span class="token keyword">DISK</span> <span class="token operator">=</span> N<span class="token string">'C:\backup\t2.trn'</span>
+<span class="token comment">-- FLSN LLSN</span>
+<span class="token comment">-- 37000000057600001 37000000075200001</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/03/SQL-Server-Backup-Copy-Only/" data-id="clg3fmahw013xs4ts3mm85fy4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSMS/" rel="tag">SSMS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/03/SQL-Server-Encryption/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Backup Encryption 資料庫備份的加密方式</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/03/IIS-Create-Certificate-Signed-Requests-With-MMC/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows 內部 AD CS 環境申請 HTTPS 憑證的方式
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

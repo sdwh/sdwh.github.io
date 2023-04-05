@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>C# 30 Seconds Snippets 語言技巧筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記由 Github 《30 seconds of C#》所學習到的語言使用技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 30 Seconds Snippets 語言技巧筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/Csharp-30-Seconds-Snippet-Summary/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記由 Github 《30 seconds of C#》所學習到的語言使用技巧。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2021-06-19T02:42:49.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="LearningNote">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Csharp-30-Seconds-Snippet-Summary" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/Csharp-30-Seconds-Snippet-Summary/" class="article-date">
+  <time datetime="2021-06-19T02:42:49.000Z" itemprop="datePublished">2021-06-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LearningNote/">LearningNote</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C# 30 Seconds Snippets 語言技巧筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-TrueForAll"><span class="toc-text">Array.TrueForAll</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Func-lt-T-type-gt"><span class="toc-text">Func&lt;T, type&gt;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%B2%E4%BD%8D%E5%88%B6%E8%BD%89%E6%8F%9B-Convert"><span class="toc-text">進位制轉換, Convert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ToCharArray"><span class="toc-text">ToCharArray</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Chunk-%E4%BD%BF%E7%94%A8-Linq-%E5%88%86%E5%89%B2-Collection"><span class="toc-text">Chunk, 使用 Linq 分割 Collection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IEnumerable-Extension-Method-Except-Intersect"><span class="toc-text">IEnumerable Extension Method : Except, Intersect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Duplicate-%E4%BD%BF%E7%94%A8-Linq-%E6%89%BE%E5%87%BA%E9%87%8D%E8%A4%87%E7%9A%84%E9%A0%85%E7%9B%AE"><span class="toc-text">Duplicate, 使用 Linq 找出重複的項目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-FindAll"><span class="toc-text">Array.FindAll</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記由 Github 《30 seconds of C#》所學習到的語言使用技巧。</p>
+<a href="/posts/2021/06/Csharp-30-Seconds-Snippet-Summary/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Array-TrueForAll"><a href="#Array-TrueForAll" class="headerlink" title="Array.TrueForAll"></a>Array.TrueForAll</h3><p>藉由 Array.TrueForAll Static Method 可以判斷陣列中的物件是否符合 Predicate，達到 Python  <code class="watch">ALL</code> 的同等功能。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> nums <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token number">11</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">bool</span></span> isMatchPredicate <span class="token operator">=</span> Array<span class="token punctuation">.</span><span class="token function">TrueForAll</span><span class="token punctuation">(</span>nums<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> x <span class="token operator">=></span> x <span class="token operator">></span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Func-lt-T-type-gt"><a href="#Func-lt-T-type-gt" class="headerlink" title="Func&lt;T, type&gt;"></a>Func&lt;T, type&gt;</h3><p>藉由 <code class="watch">Func&lt;T, type&gt;</code> 可以將 lambda function 進行宣告，並且在傳入 Linq 當中。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">List<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span> people <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Person<span class="token punctuation">></span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>Height <span class="token operator">=</span> <span class="token number">180</span><span class="token punctuation">,</span> Weight <span class="token operator">=</span> <span class="token number">75</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>Height <span class="token operator">=</span> <span class="token number">160</span><span class="token punctuation">,</span> Weight <span class="token operator">=</span> <span class="token number">75</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>Height <span class="token operator">=</span> <span class="token number">180</span><span class="token punctuation">,</span> Weight <span class="token operator">=</span> <span class="token number">55</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token class-name">Func<span class="token punctuation">&lt;</span>Person<span class="token punctuation">,</span> <span class="token keyword">float</span><span class="token punctuation">></span></span> BMICalculateFunc <span class="token operator">=</span> v <span class="token operator">=></span> v<span class="token punctuation">.</span>Weight <span class="token operator">/</span> <span class="token punctuation">(</span>v<span class="token punctuation">.</span>Height <span class="token operator">*</span> v<span class="token punctuation">.</span>Height <span class="token operator">/</span> <span class="token number">10000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> peopleBMIList <span class="token operator">=</span> people<span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>BMICalculateFunc<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="進位制轉換-Convert"><a href="#進位制轉換-Convert" class="headerlink" title="進位制轉換, Convert"></a>進位制轉換, Convert</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> number <span class="token operator">=</span> <span class="token number">112</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>Convert<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//1110000</span>
+<span class="token class-name"><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> bytes <span class="token operator">=</span> <span class="token punctuation">&#123;</span> <span class="token number">64</span><span class="token punctuation">,</span> <span class="token number">128</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>BitConverter<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span>bytes<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//40-80-FF</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ToCharArray"><a href="#ToCharArray" class="headerlink" title="ToCharArray"></a>ToCharArray</h3><p>因為 string 為 immutable ，所以如果要操作個別字元必須轉為 CharArray。</p>
+<h3 id="Chunk-使用-Linq-分割-Collection"><a href="#Chunk-使用-Linq-分割-Collection" class="headerlink" title="Chunk, 使用 Linq 分割 Collection"></a>Chunk, 使用 Linq 分割 Collection</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> data <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        
+<span class="token class-name"><span class="token keyword">var</span></span> chunks <span class="token operator">=</span> 
+  data
+  <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> Index <span class="token operator">=</span> i<span class="token punctuation">,</span> Value <span class="token operator">=</span> x <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">GroupBy</span><span class="token punctuation">(</span>x <span class="token operator">=></span> x<span class="token punctuation">.</span>Index <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>x <span class="token operator">=></span> x<span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>v <span class="token operator">=></span> v<span class="token punctuation">.</span>Value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> chunk <span class="token keyword">in</span> chunks<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Join</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">,</span> chunk<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="IEnumerable-Extension-Method-Except-Intersect"><a href="#IEnumerable-Extension-Method-Except-Intersect" class="headerlink" title="IEnumerable Extension Method : Except, Intersect"></a>IEnumerable Extension Method : Except, Intersect</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> data1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> data2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> except <span class="token operator">=</span> data1<span class="token punctuation">.</span><span class="token function">Except</span><span class="token punctuation">(</span>data2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Except:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> except<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 1, 3</span>
+
+<span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> intersect <span class="token operator">=</span> data1<span class="token punctuation">.</span><span class="token function">Intersect</span><span class="token punctuation">(</span>data2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"Intersect:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> intersect<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Duplicate-使用-Linq-找出重複的項目"><a href="#Duplicate-使用-Linq-找出重複的項目" class="headerlink" title="Duplicate, 使用 Linq 找出重複的項目"></a>Duplicate, 使用 Linq 找出重複的項目</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> items <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> data <span class="token operator">=</span> items
+  <span class="token punctuation">.</span><span class="token function">GroupBy</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>g <span class="token operator">=></span> g<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>i <span class="token operator">=></span> i<span class="token punctuation">.</span>Key<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Array-FindAll"><a href="#Array-FindAll" class="headerlink" title="Array.FindAll"></a>Array.FindAll</h3><p>利用 Array.FindAll 可以簡易的過濾文字內容</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://github.com/sdwh/30-seconds-of-csharp">FORK - 30-seconds-of-csharp</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/Csharp-30-Seconds-Snippet-Summary/" data-id="clg3fmabx00g5s4ts5t2g10g2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/Word-Insert-Mode-Replace-Mode/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Word 打字文字消失的問題 (插入模式與取代模式）</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/Google-Sites-Tutorial/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用 Google Sites 協作平台輕鬆打造網站
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

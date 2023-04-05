@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Python Rich Library - 豐富 Terminal 視覺化效果的函式庫 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在 Github Trending 意外發現的神好用函式庫，提供解決目前 Python Terminal 顯示上的兩個痛點，分別是 Syntax Highlighting 以及 Progress Bar，原本要實現這兩項功能都是仰賴自己手動刻寫，完全是重造輪子的疲憊感。而 Rich 除實現了目前的痛點，並且帶來更多 Terminal 上視覺效果的呈現，實在是相見恨晚 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Rich Library - 豐富 Terminal 視覺化效果的函式庫">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/07/Python-Rich/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="在 Github Trending 意外發現的神好用函式庫，提供解決目前 Python Terminal 顯示上的兩個痛點，分別是 Syntax Highlighting 以及 Progress Bar，原本要實現這兩項功能都是仰賴自己手動刻寫，完全是重造輪子的疲憊感。而 Rich 除實現了目前的痛點，並且帶來更多 Terminal 上視覺效果的呈現，實在是相見恨晚 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/python-rich-print-color.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Python-rich-syntax-highliting.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Python-Rich-ProgressBar.gif">
+<meta property="og:image" content="https://sdwh.dev/assets/Python-Rich-MultiProgressBar.gif">
+<meta property="article:published_time" content="2020-07-08T08:49:27.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.924Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="PythonLibrary">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/python-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Python-Rich" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/07/Python-Rich/" class="article-date">
+  <time datetime="2020-07-08T08:49:27.000Z" itemprop="datePublished">2020-07-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Toys/">Toys</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python Rich Library - 豐富 Terminal 視覺化效果的函式庫
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E5%BC%8F%E5%BA%AB%E4%BB%8B%E7%B4%B9"><span class="toc-text">函式庫介紹</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Rich-Print"><span class="toc-text">Rich Print</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Syntax-Highlighting"><span class="toc-text">Syntax Highlighting</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Progress-Bar"><span class="toc-text">Progress Bar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tables"><span class="toc-text">Tables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logs-Logging-Handler-Tracebacks"><span class="toc-text">Logs &#x2F; Logging Handler &#x2F; Tracebacks</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>在 <a target="_blank" rel="noopener" href="https://github.com/trending">Github Trending</a> 意外發現的神好用函式庫，提供解決目前 Python Terminal 顯示上的兩個痛點，分別是 Syntax Highlighting 以及 Progress Bar，原本要實現這兩項功能都是仰賴自己手動刻寫，完全是重造輪子的疲憊感。而 Rich 除實現了目前的痛點，並且帶來更多 Terminal 上視覺效果的呈現，實在是相見恨晚 😎</p>
+<a href="/posts/2020/07/Python-Rich/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/python-logo.png" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="函式庫介紹"><a href="#函式庫介紹" class="headerlink" title="函式庫介紹"></a>函式庫介紹</h2><p>使用 Rich 之前必須先透過 pip install</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pip <span class="token function">install</span> rich --user<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>而在使用上除可以將函式直接引入外，也可以藉由創造 console object 來進行，建議用這個 consle 的方式避免和既有的函式混淆。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> rich<span class="token punctuation">.</span>console <span class="token keyword">import</span> Console
+
+console <span class="token operator">=</span> Console<span class="token punctuation">(</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Hello World"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Rich-Print"><a href="#Rich-Print" class="headerlink" title="Rich Print"></a>Rich Print</h3><p>使用 Rich 就可以和以往使用的 coloroma library 整合，更為便利，而同樣受限 Cmder 僅支援 8bit color，未來對於彩色文字的應用潛力無窮。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">console <span class="token operator">=</span> Console<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> color <span class="token keyword">in</span> <span class="token punctuation">[</span><span class="token string">'red'</span><span class="token punctuation">,</span> <span class="token string">'blue'</span><span class="token punctuation">,</span> <span class="token string">'green'</span><span class="token punctuation">,</span> <span class="token string">'yellow'</span><span class="token punctuation">,</span> <span class="token string">'white'</span><span class="token punctuation">,</span> <span class="token string">'black'</span><span class="token punctuation">,</span> <span class="token string">'magenta'</span><span class="token punctuation">,</span> <span class="token string">'cyan'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Hello World! </span><span class="token interpolation"><span class="token punctuation">&#123;</span>color<span class="token punctuation">&#125;</span></span><span class="token string"> bold"</span></span><span class="token punctuation">,</span> style<span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>color<span class="token punctuation">&#125;</span></span><span class="token string"> bold"</span></span><span class="token punctuation">)</span>
+    console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Hello World! </span><span class="token interpolation"><span class="token punctuation">&#123;</span>color<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> style<span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>color<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/python-rich-print-color.png" alt="渲染效果"></p>
+<p><a target="_blank" rel="noopener" href="https://rich.readthedocs.io/en/latest/appendix/colors.html#appendix-colors">Docs - style colors</a></p>
+<p>支援 <strong>bbcode</strong> 的標籤方式，要組合彩色字串更為方便</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">console<span class="token punctuation">.</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"[lime bold]What[/] is [green bold]your[/] [bold red]name[/]?"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/BBCode">Docs - bbcode</a></p>
+<p>也自帶 python objects 的顏色渲染</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">fruits <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">'apple'</span> <span class="token punctuation">:</span> <span class="token punctuation">&#123;</span> <span class="token string">'price'</span> <span class="token punctuation">:</span> <span class="token number">20</span><span class="token punctuation">,</span> <span class="token string">'color'</span> <span class="token punctuation">:</span> <span class="token string">'red'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token string">'banana'</span> <span class="token punctuation">:</span> <span class="token punctuation">&#123;</span> <span class="token string">'price'</span> <span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token string">'color'</span> <span class="token punctuation">:</span> <span class="token string">'yellow'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span>fruits<span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">locals</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>要做到 Jusfity 也是易如反掌，當然要更精準的對齊還是要仰賴 <a target="_blank" rel="noopener" href="https://pyformat.info/">format string</a></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">console <span class="token operator">=</span> Console<span class="token punctuation">(</span>width <span class="token operator">=</span> <span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># width 控制輸出螢幕寬度</span>
+
+style <span class="token operator">=</span> <span class="token string">"bold white on green"</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Rich"</span><span class="token punctuation">,</span> justify<span class="token operator">=</span><span class="token string">"left"</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Rich"</span><span class="token punctuation">,</span> justify<span class="token operator">=</span><span class="token string">"center"</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Rich"</span><span class="token punctuation">,</span> justify<span class="token operator">=</span><span class="token string">"right"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Syntax-Highlighting"><a href="#Syntax-Highlighting" class="headerlink" title="Syntax Highlighting"></a>Syntax Highlighting</h3><p>Rich 使用 <a target="_blank" rel="noopener" href="https://pygments.org/">pygments</a> 來實踐 Syntax Highlighting，所支援的 <a target="_blank" rel="noopener" href="https://github.com/pygments/pygments/tree/master/pygments/styles">themes</a> 包括：</p>
+<p>abap, algol, algol_nu, arduino, autumn, borland, bw, colorful, default, emacs, friendly, fruity, igor, inkpot, lovelace, manni, monokai, murphy, native, paraiso_dark, paraiso_light, pastie, perldoc, rainbow_dash, rrt, sas, solarized, stata_dark, stata_light, tango, trac, vim, vs, xcode</p>
+<p>其中最常使用的就是 <strong>monokai</strong>。</p>
+<p>而支援的<a target="_blank" rel="noopener" href="https://github.com/pygments/pygments/tree/master/pygments/lexers">語言</a>也相當豐富，基本上常見的都有支援，例如 c_like, python, javascript, sql。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> rich<span class="token punctuation">.</span>console <span class="token keyword">import</span> Console
+<span class="token keyword">from</span> rich<span class="token punctuation">.</span>syntax <span class="token keyword">import</span> Syntax
+
+console <span class="token operator">=</span> Console<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+syntax <span class="token operator">=</span> Syntax<span class="token punctuation">(</span>codeString<span class="token punctuation">,</span> <span class="token string">"python"</span><span class="token punctuation">,</span> theme <span class="token operator">=</span> <span class="token string">"monokai"</span><span class="token punctuation">,</span> line_numbers <span class="token operator">=</span> <span class="token boolean">True</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span>syntax<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/Python-rich-syntax-highliting.png" alt="New Windows Terminal 上渲染的成果令人感動萬分 😂"></p>
+<h3 id="Progress-Bar"><a href="#Progress-Bar" class="headerlink" title="Progress Bar"></a>Progress Bar</h3><p>藉由將要迭代的集合 (sequence) 當作參數傳給 track ，Rich 就會自動計算已迭代的數量並顯示於 Termianl</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> rich<span class="token punctuation">.</span>progress <span class="token keyword">import</span> track
+
+<span class="token keyword">for</span> step <span class="token keyword">in</span> track<span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100_000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        lst<span class="token punctuation">.</span>append<span class="token punctuation">(</span>i<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/Python-Rich-ProgressBar.gif" alt="實作成果"></p>
+<p>同時 Rich 也支援多個 ProgressBar 顯示，其中 total 表示的是任務完成所需要的總量，advance 則是每次 update 時累積的完成度， Rich 會根據兩者的比值自動渲染 Multiple ProgressBar。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> rich<span class="token punctuation">.</span>progress <span class="token keyword">import</span> Progress
+
+
+<span class="token keyword">with</span> Progress<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">as</span> progress<span class="token punctuation">:</span>
+    task1 <span class="token operator">=</span> progress<span class="token punctuation">.</span>add_task<span class="token punctuation">(</span><span class="token string">"[red]Downloading..."</span><span class="token punctuation">,</span> total<span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">)</span>
+    task2 <span class="token operator">=</span> progress<span class="token punctuation">.</span>add_task<span class="token punctuation">(</span><span class="token string">"[green]Processing..."</span><span class="token punctuation">,</span> total<span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">)</span>
+    task3 <span class="token operator">=</span> progress<span class="token punctuation">.</span>add_task<span class="token punctuation">(</span><span class="token string">"[cyan]Cooking..."</span><span class="token punctuation">,</span> total<span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">while</span> <span class="token keyword">not</span> progress<span class="token punctuation">.</span>finished<span class="token punctuation">:</span>
+        progress<span class="token punctuation">.</span>update<span class="token punctuation">(</span>task1<span class="token punctuation">,</span> advance<span class="token operator">=</span><span class="token number">0.5</span><span class="token punctuation">)</span>
+        progress<span class="token punctuation">.</span>update<span class="token punctuation">(</span>task2<span class="token punctuation">,</span> advance<span class="token operator">=</span><span class="token number">0.3</span><span class="token punctuation">)</span>
+        progress<span class="token punctuation">.</span>update<span class="token punctuation">(</span>task3<span class="token punctuation">,</span> advance<span class="token operator">=</span><span class="token number">0.9</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.02</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/Python-Rich-MultiProgressBar.gif" alt="實作成果"></p>
+<p><a target="_blank" rel="noopener" href="https://rich.readthedocs.io/en/latest/progress.html#">Docs - Progress</a></p>
+<h3 id="Tables"><a href="#Tables" class="headerlink" title="Tables"></a>Tables</h3><p>容易使用的程度與 <a target="_blank" rel="noopener" href="https://github.com/jazzband/prettytable">prettytable</a> 不相上下，而 Rich Table 強項在顏色控制、Emoji 等支援，prettytable 強項則是表格的欄位、格線等客製。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> rich<span class="token punctuation">.</span>console <span class="token keyword">import</span> Console
+<span class="token keyword">from</span> rich<span class="token punctuation">.</span>table <span class="token keyword">import</span> Table
+
+table <span class="token operator">=</span> Table<span class="token punctuation">(</span>title<span class="token operator">=</span><span class="token string">"Python Versions"</span><span class="token punctuation">)</span>
+
+table<span class="token punctuation">.</span>add_column<span class="token punctuation">(</span><span class="token string">"Release Date"</span><span class="token punctuation">,</span> justify<span class="token operator">=</span><span class="token string">"right"</span><span class="token punctuation">,</span> style<span class="token operator">=</span><span class="token string">"cyan"</span><span class="token punctuation">,</span> no_wrap<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_column<span class="token punctuation">(</span><span class="token string">"Version"</span><span class="token punctuation">,</span> style<span class="token operator">=</span><span class="token string">"magenta"</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_column<span class="token punctuation">(</span><span class="token string">"Latest Micro Version"</span><span class="token punctuation">,</span> justify<span class="token operator">=</span><span class="token string">"left"</span><span class="token punctuation">,</span> style<span class="token operator">=</span><span class="token string">"green"</span><span class="token punctuation">)</span>
+
+table<span class="token punctuation">.</span>add_row<span class="token punctuation">(</span><span class="token string">"Oct 10, 2020"</span><span class="token punctuation">,</span> <span class="token string">"3.9"</span><span class="token punctuation">,</span> <span class="token string">"3.9.0"</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_row<span class="token punctuation">(</span><span class="token string">"Oct 14, 2019"</span><span class="token punctuation">,</span> <span class="token string">"3.8"</span><span class="token punctuation">,</span> <span class="token string">"3.8.3"</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_row<span class="token punctuation">(</span><span class="token string">"Jun 27, 2018"</span><span class="token punctuation">,</span> <span class="token string">"3.7"</span><span class="token punctuation">,</span> <span class="token string">"3.7.7"</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_row<span class="token punctuation">(</span><span class="token string">"Dec 23, 2016"</span><span class="token punctuation">,</span> <span class="token string">"3.6"</span><span class="token punctuation">,</span> <span class="token string">"3.6.10"</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_row<span class="token punctuation">(</span><span class="token string">"Sep 13, 2015"</span><span class="token punctuation">,</span> <span class="token string">"3.5"</span><span class="token punctuation">,</span> <span class="token string">"3.5.9"</span><span class="token punctuation">)</span>
+table<span class="token punctuation">.</span>add_row<span class="token punctuation">(</span><span class="token string">"Mar 16, 2014"</span><span class="token punctuation">,</span> <span class="token string">"3.4"</span><span class="token punctuation">,</span> <span class="token string">"3.4.10"</span><span class="token punctuation">)</span>
+
+console <span class="token operator">=</span> Console<span class="token punctuation">(</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token keyword">print</span><span class="token punctuation">(</span>table<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://rich.readthedocs.io/en/latest/tables.html">Docs - Tables</a></p>
+<h3 id="Logs-Logging-Handler-Tracebacks"><a href="#Logs-Logging-Handler-Tracebacks" class="headerlink" title="Logs / Logging Handler / Tracebacks"></a>Logs / Logging Handler / Tracebacks</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">console<span class="token punctuation">.</span>log<span class="token punctuation">(</span><span class="token string">"Hello, World!"</span><span class="token punctuation">)</span>
+<span class="token comment">#[19:05:53] Hello, World!                test.py:25</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>Rich 完全是激起重新整合 CLI 環境的神兵利器，因為對於豐富文字色彩、 Emoji 支援的需求改採 New Windows Terminal 來作為 shell 工具；同時 Cmder 的便利性也不能割捨，於是整合 Cmder 以及New Windows Terminal 並使用 Rich 改寫既有的 CLI tools 成為現下最熱血想做的事情。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/willmcgugan/rich">Github - Rich</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@huier23/%E9%96%8B%E5%A7%8B%E4%BD%BF%E7%94%A8-windows-terminal-%E5%90%A7-cdc771678ed1">Medium - 開始使用 Windows Terminal 吧</a></li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/07/Python-Rich/" data-id="clg3fmahe011zs4ts8e2cell8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PythonLibrary/" rel="tag">PythonLibrary</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/07/Design-Pattern-State/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">重溫《深入淺出設計模式》狀態模式 (Book Review of Head First Design Pattern, State Pattern)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/07/ScreenToGif/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ScreenToGif 錄製螢幕畫面成為 gif 檔案的實用開源工具
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

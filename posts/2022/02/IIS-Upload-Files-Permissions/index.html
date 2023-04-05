@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>IIS Upload Files Permissions | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="實驗 ASP.NET 上傳檔案時，資料夾需要提供 NTFS 權限的對象。實驗的授權對象包括了 Application Pool Identity、Domain Users、Authenticated Users、IIS_IUSRS 以及 Current Auth Users 等等。 最小權限的探究，實驗過才知道 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IIS Upload Files Permissions">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/02/IIS-Upload-Files-Permissions/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="實驗 ASP.NET 上傳檔案時，資料夾需要提供 NTFS 權限的對象。實驗的授權對象包括了 Application Pool Identity、Domain Users、Authenticated Users、IIS_IUSRS 以及 Current Auth Users 等等。 最小權限的探究，實驗過才知道 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="article:published_time" content="2022-02-09T12:32:46.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IIS-Upload-Files-Permissions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/02/IIS-Upload-Files-Permissions/" class="article-date">
+  <time datetime="2022-02-09T12:32:46.000Z" itemprop="datePublished">2022-02-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IIS Upload Files Permissions
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%A6%E9%A9%97%E7%B5%90%E6%9E%9C"><span class="toc-text">實驗結果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Principal-%E7%9A%84%E7%BE%A4%E7%B5%84%E9%97%9C%E4%BF%82"><span class="toc-text">Principal 的群組關係</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%AB%96"><span class="toc-text">推論</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>實驗 ASP.NET 上傳檔案時，資料夾需要提供 NTFS 權限的對象。實驗的授權對象包括了 Application Pool Identity、Domain Users、Authenticated Users、IIS_IUSRS 以及 Current Auth Users 等等。</p>
+<p>最小權限的探究，實驗過才知道 😎</p>
+<a href="/posts/2022/02/IIS-Upload-Files-Permissions/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>使用 ASP.NET MVC 5 框架，搭配 IIS 使用 Windows 驗證，集區的執行身分為 Application Pool Indentity，上傳所使用的 <a href="/posts/2021/02/ASPNET-MVC-Safer-File-Upload/">Sample Code</a>。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>TL;DR;關於上傳檔案，想要保持最小權限嗎？如果集區的識別是以 <code class="s">Application Pool Identity</code> 就給它要上傳檔案的資料夾修改及寫入的權限，不要給 IIS_IUSRS、不要給 Authenticated Users 更不要給 Everyone。</p>
+        </div>
+    </div>
+</div>
+
+<h3 id="實驗結果"><a href="#實驗結果" class="headerlink" title="實驗結果"></a>實驗結果</h3><p>上傳的資料夾逐一測試給予 Write 及 Modify 權限，測試是否能夠上傳成功。</p>
+<table>
+<thead>
+<tr>
+<th>Principal</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sdwh.local\yi2</td>
+<td>NO ❌</td>
+</tr>
+<tr>
+<td>IIS_IUSRS</td>
+<td>YES ⭕️</td>
+</tr>
+<tr>
+<td>IIS Apppool\Home</td>
+<td>YES ⭕️</td>
+</tr>
+<tr>
+<td>Node1\Users</td>
+<td>YES ⭕️</td>
+</tr>
+<tr>
+<td>Autenticated Users</td>
+<td>YES ⭕️</td>
+</tr>
+<tr>
+<td>Interactive</td>
+<td>NO ❌</td>
+</tr>
+<tr>
+<td>sdwh\Domain Users</td>
+<td>NO ❌</td>
+</tr>
+</tbody></table>
+<dl>
+  <dt>sdwh.local</dt>
+  <dd>Active Directive Domain Nmae</dd>
+  <dt>Node1</dt>
+  <dd>IIS Host Machine 有加入 AD</dd>
+  <dt>Authenticated Users</dt>
+  <dd>安全性是選擇在 sdwh.local 下選擇，推測都是指 NT Authority\Authenticated Users</dd>
+  <dt>Interactive</dt>
+  <dd>安全性是選擇在 sdwh.local 下選擇，推測都是指 NT Authority\Interactive</dd>
+  <dt>Home</dt>
+  <dd>本次 IIS 應用系統所使用的集區名稱</dd>
+</dl>
+
+<h3 id="Principal-的群組關係"><a href="#Principal-的群組關係" class="headerlink" title="Principal 的群組關係"></a>Principal 的群組關係</h3><ul>
+<li>IIS_IUSRS ⭕️<ul>
+<li>IIS Apppool\Home ⭕️</li>
+</ul>
+</li>
+</ul>
+<p>這個隸屬關係無法直接觀察到，但可以從 <a target="_blank" rel="noopener" href="https://social.msdn.microsoft.com/Forums/en-US/42213711-e58b-4921-bef5-ce1b610c6bf7/applicationpoolidentity-and-iisiusrs-group-membership?forum=iis7general">MSDN</a> 看到支持的討論意見。</p>
+<ul>
+<li>Node1\Users ⭕️<ul>
+<li>sdwh.local\Domain Users ❌<ul>
+<li>sdwh.local\yi2 ❌</li>
+</ul>
+</li>
+<li>NT Authority\Authenticated Users ⭕️</li>
+<li>NT Authority\Interactive ❌</li>
+</ul>
+</li>
+</ul>
+<h3 id="推論"><a href="#推論" class="headerlink" title="推論"></a>推論</h3><p>從實驗結果搭配群組關係，可以觀察到最小權限下的 <code class="s">IIS Apppool\Home</code> 以及 <code class="s">NT Authority\Authenticated Users</code> 給予 Write 及 Modify 權限，都能夠上傳成功。</p>
+<p>但 <code class="s">IIS Apppool\Home</code> 的權限應該是比目前尚不知道來歷的 <code class="s">NT Authority\Authenticated Users</code> 更小也更安全。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p><code class="s">IIS Apppool\Home</code> 以及 <code class="s">NT Authority\Authenticated Users</code> 兩者都可以完成上傳任務，猜測 <code class="s">IIS Apppool\Home</code> 或許也是 <code class="s">NT Authority\Authenticated Users</code> 的成員？</p>
+            <p>
+              或者 <code class="s">IIS_IUSRS</code> 是隸屬於 <code class="s">NT Authority\Authenticated Users？</code>
+            </p>
+        </div>
+    </div>
+</div>
+
+<p>意外的插曲，實驗的環境是使用 .NET 4 以後的版本，.NET 2 及 3.5 是否有不同的安全性機制尚待實證。</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/08/IIS-MISC/">IIS 筆記整理</a></p>
+<p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/02/IIS-Upload-Files-Permissions/" data-id="clg3fmaf000t0s4tseol97orv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/02/SQL-Server-Data-Type-Mappings/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Data Type Mappings (EF 與 SQL 型別對照)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/02/SQL-Server-DateTime-Convert/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server DateTime Convert
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

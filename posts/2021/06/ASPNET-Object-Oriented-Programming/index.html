@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Object Oriented Programming 物件導向程式開發筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於 ASP.NET 物件導向開發的常見的名詞與使用情境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Object Oriented Programming 物件導向程式開發筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/ASPNET-Object-Oriented-Programming/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於 ASP.NET 物件導向開發的常見的名詞與使用情境">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2021-06-09T10:06:20.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="OOP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Object-Oriented-Programming" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/ASPNET-Object-Oriented-Programming/" class="article-date">
+  <time datetime="2021-06-09T10:06:20.000Z" itemprop="datePublished">2021-06-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Object Oriented Programming 物件導向程式開發筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%AC%E6%80%A7-Property"><span class="toc-text">屬性 Property</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%BC%89-Overload"><span class="toc-text">多載 Overload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E6%A7%8B%E5%AD%90-Constructor"><span class="toc-text">建構子 Constructor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%86%E5%AF%AB-Override"><span class="toc-text">覆寫 Override</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E4%BB%B6%E7%9A%84%E9%97%9C%E4%BF%82-Relationship"><span class="toc-text">物件的關係 Relationship</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#USE-A"><span class="toc-text">USE-A</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HAS-A"><span class="toc-text">HAS-A</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IS-A"><span class="toc-text">IS-A</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E9%9D%A2-Interface"><span class="toc-text">介面 Interface</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9C%E6%85%8B%E4%BF%AE%E9%A3%BE-Static"><span class="toc-text">靜態修飾 Static</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於 ASP.NET 物件導向開發的常見的名詞與使用情境</p>
+<a href="/posts/2021/06/ASPNET-Object-Oriented-Programming/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>物件導向的程式設計，是以物件的互動的方式進行開發，可以提升程式的可維護性，對於複雜與大規模的系統開發有著更好的管理。</p>
+<p>物件導向設計與資料庫的設計息息相關，都是從需求到建立抽象化模型的過程。而該如何<strong>識別類別</strong>，可以從需求情境中，找出名詞關鍵字作為實體，動詞作為方法建構出類別。在類別設計上，需要注意<strong>切割責任</strong>，保持類別的單一功能，將客戶的地址由 primitive type(string) 獨立為 Class，讓基於地址的資料(zipCode, city, street..)與方法由類別負責。</p>
+<h3 id="屬性-Property"><a href="#屬性-Property" class="headerlink" title="屬性 Property"></a>屬性 Property</h3><p>屬性是公開面對外界的物件資料，依據情境可以提供 getter / setter 或只提供 getter。屬性背後指向的仍是 Field，而 Field 是封裝在物件之中不提供外界直接存取。藉由 Property 可以從 Field 衍生多種資料。</p>
+<p>例如 Birthdate Field 可以衍生為 Age Property；Last Name 與 First Name Field 可以衍生為組合再一起的 FullName。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Person</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">DateTime</span> _birthDate<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Age <span class="token operator">=></span> <span class="token punctuation">(</span>DateTime<span class="token punctuation">.</span>Now <span class="token operator">-</span> _birthDate<span class="token punctuation">)</span><span class="token punctuation">.</span>Days <span class="token operator">/</span> <span class="token number">365</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">string</span></span> _lastName<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">string</span></span> _firstName<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token operator">=></span> <span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">_firstName</span><span class="token punctuation">&#125;</span></span><span class="token string">, </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">_lastName</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div class="article-blockquote">
+屬性通常會與驗證做結合，在 ASP.NET MVC 框架中，搭配 DataAnnotations 設定屬性的規範，可以在使用 EntityFramework 時自動進行檢查，同時也將檢查的設定做關注點的分離，非常方便。
+</div>
+
+
+<h3 id="多載-Overload"><a href="#多載-Overload" class="headerlink" title="多載 Overload"></a>多載 Overload</h3><p>函式可以同名，但藉由簽名(由參數的型別、順序、數量所構成)的不同提供使用上的便利性，在不同的使用情境選擇使用。</p>
+<p>同時多載函式也可以作為對於執行期間的邏輯控制。然而參數過多的 Primitive Variable 會變得不容易閱讀，應該用 Class 作為裝載參數。</p>
+<div class="article-blockquote">
+在 ASP.NET MVC 框架中，不論是 Html Helper 或者 Url Helper 都有提供多載，在創造 Html Tag 上具有極佳的彈性。
+</div>
+
+<h3 id="建構子-Constructor"><a href="#建構子-Constructor" class="headerlink" title="建構子 Constructor"></a>建構子 Constructor</h3><p>建構子可以定義物件被建立時，建立當下要進行的步驟，通常是為屬性進行賦值。建構子本身也可以 Overloadding ，依照使用情境提供不同的參數進行建立。</p>
+<div class="article-blockquote">
+在 MVC 的 Controller 中，如果有共通的 ViewBag 值需要設定，可以創造該 Controller 的建構子，這樣所有的 Action 都會有建構子的設定。
+</div>
+
+<h3 id="覆寫-Override"><a href="#覆寫-Override" class="headerlink" title="覆寫 Override"></a>覆寫 Override</h3><p>類別可以覆寫所繼承(Inherit)或者所實作介面(Implement Interface)的屬性與方法，未被覆寫的內容達到程式碼重複使用的便利，覆寫的內容則提供了程式設計與擴充上的彈性。</p>
+<p>覆寫可以針對類別(Class)、抽象類別(Abstract Class)與介面(Interface)中的屬性或方法進行覆寫，允許被覆寫的屬性與方法須明確以 <strong>Virtual</strong> 修飾，否則預設都是不可被子類別複寫的 <strong>Sealed</strong> 修飾。抽象類別的方法與屬性則是以 <strong>Abstract</strong> 進行修飾。</p>
+<div class="article-blockquote">
+MVC 提供了許多可供覆寫的元件，許多機制的客製化，就是實作介面並覆寫方法，例如 Filter、Route Handler。
+</div>
+
+<h3 id="物件的關係-Relationship"><a href="#物件的關係-Relationship" class="headerlink" title="物件的關係 Relationship"></a>物件的關係 Relationship</h3><h4 id="USE-A"><a href="#USE-A" class="headerlink" title="USE-A"></a>USE-A</h4><p>類別之間是使用關係，例如在任務類別中啟用了一個計時器的類別。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Calculator</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Caculate</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> timer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Timer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Timer</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> Time <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="HAS-A"><a href="#HAS-A" class="headerlink" title="HAS-A"></a>HAS-A</h4><p>類別之間是擁有關係，例如計算機類別擁有一個 CPU 類別。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Calculator</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">CPU</span> ComputeChip <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CPU</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Model <span class="token punctuation">&#123;</span><span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="IS-A"><a href="#IS-A" class="headerlink" title="IS-A"></a>IS-A</h4><p>類別之間是繼承關係或者實作關係，因此可以使用物件導向中多型 (Polymorphism) 的功能。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Calculator</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IComputable</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">CPU</span> ComputeChip <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Compute</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Calculator</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Object</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">base</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="介面-Interface"><a href="#介面-Interface" class="headerlink" title="介面 Interface"></a>介面 Interface</h3><div class="article-blockquote">
+MVC 中常見的 Interface : IActionFilter、IDisposable
+</div>
+
+<h3 id="靜態修飾-Static"><a href="#靜態修飾-Static" class="headerlink" title="靜態修飾 Static"></a>靜態修飾 Static</h3><p>static 可以用於修飾 Class 形成靜態類別，或者是修飾類別中的屬性與方法。</p>
+<p>靜態類別的特性是無法實體化，且其成員(屬性與方法)都被須為 static 修飾，而靜態類別的屬性與方法可以直接被呼叫。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">HelperMethod</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">SquareSum</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> x<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> y<span class="token punctuation">)</span> <span class="token operator">=></span> x <span class="token operator">*</span> x <span class="token operator">+</span> y <span class="token operator">*</span> y<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>HelperMethod<span class="token punctuation">.</span><span class="token function">SquareSum</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//26</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>一般類別中的靜態屬性或靜態方法，不是保存在個別的實體化物件之中，而是保存在類別之中，只會有一份資料，可以用於類別與其物件管理上的用途。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Person</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Count<span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Count <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> PersonNumbers <span class="token punctuation">&#123;</span> <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> Count<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> p1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"Javis"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> p2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"Ted"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>Person<span class="token punctuation">.</span>PersonNumbers<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//2</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/object-oriented-programming-fundamentals-csharp/table-of-contents">Object-Oriented Programming Fundamentals in C#</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/06/Udemy-Csharp-Intermediate/">Course Review - C# Intermediate Classes, Interfaces and OOP</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/ASPNET-Object-Oriented-Programming/" data-id="clg3fma9x006is4ts8fklczao" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OOP/" rel="tag">OOP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/HTTP-Header-Content-Security-Policy/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">HTTP Header Content Security Policy (CSP)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/SQL-Server-Memory-Monitor/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server 記憶體監控 (Memory Monitor)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

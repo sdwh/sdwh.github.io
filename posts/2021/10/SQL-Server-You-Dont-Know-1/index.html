@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server 您所不知道的事（一） | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="關於 SQL Server 那些您所不知事情，第一篇的內容主要來自 T-SQL 語法，例如 Escape Char、CTE 以及更有效率的 Query 撰寫方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 您所不知道的事（一）">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/10/SQL-Server-You-Dont-Know-1/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="關於 SQL Server 那些您所不知事情，第一篇的內容主要來自 T-SQL 語法，例如 Escape Char、CTE 以及更有效率的 Query 撰寫方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Query-Performance-Comparison.png">
+<meta property="article:published_time" content="2021-10-15T12:20:07.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-You-Dont-Know-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/10/SQL-Server-You-Dont-Know-1/" class="article-date">
+  <time datetime="2021-10-15T12:20:07.000Z" itemprop="datePublished">2021-10-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 您所不知道的事（一）
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#You-Don%E2%80%99t-Know-SQL-Server"><span class="toc-text">You Don’t Know SQL Server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Escape-Char"><span class="toc-text">Escape Char</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#True-False-Null"><span class="toc-text">True &#x2F; False &#x2F; Null</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%A9%A2%E6%95%88%E8%83%BD"><span class="toc-text">查詢效能</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%94%E8%BC%83%E4%B8%8D%E5%90%8C%E6%9F%A5%E8%A9%A2%E7%9A%84%E5%9F%B7%E8%A1%8C%E6%95%88%E7%8E%87"><span class="toc-text">比較不同查詢的執行效率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%9C%E6%96%BC%E6%95%88%E8%83%BD%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%BA%8B%E6%83%85"><span class="toc-text">關於效能要注意的事情</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Order-By-With-Case"><span class="toc-text">Order By With Case</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E6%8D%A8%E5%85%AD%E5%85%A5%E4%BA%94%E6%88%90%E9%9B%99"><span class="toc-text">四捨六入五成雙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ANSI-%F0%9F%86%9A-TSQL"><span class="toc-text">ANSI 🆚 TSQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Add-Opesrator-%F0%9F%86%9A-Concat-Function"><span class="toc-text">Add Opesrator 🆚 Concat Function</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DatePart-%F0%9F%86%9A-DateName"><span class="toc-text">DatePart 🆚 DateName</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sys-SysLanguages"><span class="toc-text">Sys.SysLanguages</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CTE-Common-Table-Expression"><span class="toc-text">CTE, Common Table Expression</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Outer-Join-%E7%9A%84-On-%E6%9C%89%E4%BA%8B%E5%97%8E%EF%BC%9F"><span class="toc-text">Outer Join 的 On 有事嗎？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete-With-Select"><span class="toc-text">Delete With Select</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Insert-Select-%F0%9F%86%9A-Select-Into-%F0%9F%86%9A-Insert-Exec"><span class="toc-text">Insert Select 🆚 Select Into 🆚 Insert Exec</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IDENT-CURRENT"><span class="toc-text">IDENT_CURRENT</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>關於 SQL Server 那些您所不知事情，第一篇的內容主要來自 T-SQL 語法，例如 Escape Char、CTE 以及更有效率的 Query 撰寫方式。</p>
+<a href="/posts/2021/10/SQL-Server-You-Dont-Know-1/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="You-Don’t-Know-SQL-Server"><a href="#You-Don’t-Know-SQL-Server" class="headerlink" title="You Don’t Know SQL Server"></a>You Don’t Know SQL Server</h2><h3 id="Escape-Char"><a href="#Escape-Char" class="headerlink" title="Escape Char"></a>Escape Char</h3><p>SQL Server 如何使用 Escape Char (脫逸字元)，範例中要尋找所有客戶名稱包含 <code class="watch">%</code> 的資料列。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Customers <span class="token keyword">WHERE</span> Name <span class="token operator">LIKE</span> <span class="token string">'%\%%'</span> &#123;<span class="token keyword">escape</span> '\'&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="True-False-Null"><a href="#True-False-Null" class="headerlink" title="True / False / Null"></a>True / False / Null</h3><p>dataset = { A, A, B, B, C, N }</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Beloning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Not Null</td>
+<td>A A B B C</td>
+</tr>
+<tr>
+<td>Null</td>
+<td>N</td>
+</tr>
+<tr>
+<td>Equal A</td>
+<td>A A</td>
+</tr>
+<tr>
+<td>Not Equal A</td>
+<td>B B C</td>
+</tr>
+</tbody></table>
+<h3 id="查詢效能"><a href="#查詢效能" class="headerlink" title="查詢效能"></a>查詢效能</h3><h4 id="比較不同查詢的執行效率"><a href="#比較不同查詢的執行效率" class="headerlink" title="比較不同查詢的執行效率"></a>比較不同查詢的執行效率</h4><p>勾選「顯示評估執行計畫」(Ctrl + M)，上方紅框標住處。</p>
+<p>同時選取不同的查詢語法後執行，執行時間佔比少者為效率較佳的查詢，第二個查詢故意加上排序，所以相對時間比 62 % ，費時較多，效率也較差。</p>
+<p><img src="/assets/SQL-Server-Query-Performance-Comparison.png"></p>
+<h4 id="關於效能要注意的事情"><a href="#關於效能要注意的事情" class="headerlink" title="關於效能要注意的事情"></a>關於效能要注意的事情</h4><p>Merge Join &gt; Hash Join &gt; Nested Loop Join</p>
+<p>Join &gt; SubQuery (通常而言)</p>
+<p>Index Seek &gt; Index Scan</p>
+<hr>
+<p>藉由將 STATISTICS IO 設定為 ON 以顯示查詢的 IO 統計資訊</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">statistics</span> io <span class="token keyword">ON</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>邏輯讀取</strong> 從資料快取中讀取的頁數<br><strong>實體讀取</strong> 從磁碟中讀取的頁數</p>
+<h3 id="Order-By-With-Case"><a href="#Order-By-With-Case" class="headerlink" title="Order By With Case"></a>Order By With Case</h3><p>使用 CASE 來進行排序，以達到客製化排序的方式，非常實用。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span>
+<span class="token keyword">FROM</span>   dbo<span class="token punctuation">.</span>customers
+<span class="token keyword">ORDER</span>  <span class="token keyword">BY</span> <span class="token keyword">CASE</span>
+            <span class="token keyword">WHEN</span> country <span class="token operator">=</span> <span class="token string">'USA'</span> <span class="token keyword">THEN</span> <span class="token number">1</span>
+            <span class="token keyword">WHEN</span> country <span class="token operator">=</span> <span class="token string">'UK'</span> <span class="token keyword">THEN</span> <span class="token number">2</span>
+            <span class="token keyword">ELSE</span> <span class="token number">5</span>
+          <span class="token keyword">END</span><span class="token punctuation">,</span>
+          city <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/t-sql/language-elements/case-transact-sql?view=sql-server-ver15">MSDocs - CASE (Transact-SQL)</a></p>
+<h3 id="四捨六入五成雙"><a href="#四捨六入五成雙" class="headerlink" title="四捨六入五成雙"></a>四捨六入五成雙</h3><p>ISO 處理 float 的進位方法，下列為進位範例：</p>
+<table>
+<thead>
+<tr>
+<th>數值</th>
+<th>進位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5.3</td>
+<td>5</td>
+</tr>
+<tr>
+<td>5.6</td>
+<td>6</td>
+</tr>
+<tr>
+<td>5.5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>6.5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>7.5</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<p>但在 SQL Server 中並非採用「四捨六入五成雙」，而是使用四捨五入的方式，有趣。</p>
+<h3 id="ANSI-🆚-TSQL"><a href="#ANSI-🆚-TSQL" class="headerlink" title="ANSI 🆚 TSQL"></a>ANSI 🆚 TSQL</h3><p>SQL 有 ANSI 標準，而 TSQL 除實踐 ANSI 標準外也會再加上專有的特色，但在語法的撰寫上仍應該優先以 ANSI 的方式，以求跨不同廠牌的資料庫管理系統都能使用，且提升易讀性。</p>
+<ol>
+<li><strong>Convert_Time</strong> vs <strong>GetDate()</strong></li>
+<li><strong>Coalesce</strong> vs <strong>IsNull</strong></li>
+<li><strong>Cast</strong> vs <strong>Convert</strong></li>
+</ol>
+<h3 id="Add-Opesrator-🆚-Concat-Function"><a href="#Add-Opesrator-🆚-Concat-Function" class="headerlink" title="Add Opesrator 🆚 Concat Function"></a>Add Opesrator 🆚 Concat Function</h3><p>當相加的項目存在 Null 的時候，Add Operator 會將結果以 Null 回應，Concat Function 則會忽略 Null 當作空白。</p>
+<h3 id="DatePart-🆚-DateName"><a href="#DatePart-🆚-DateName" class="headerlink" title="DatePart 🆚 DateName"></a>DatePart 🆚 DateName</h3><p>DatePart 回傳的是 Int<br>DateName 回傳的是 VarChar 且顯示結果未受 Login User Language 影響其顯示</p>
+<h3 id="Sys-SysLanguages"><a href="#Sys-SysLanguages" class="headerlink" title="Sys.SysLanguages"></a>Sys.SysLanguages</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 取得目前使用者的語系</span>
+<span class="token keyword">SELECT</span> @<span class="token variable">@language</span>
+
+<span class="token comment">-- 查詢系統中所有的語系資訊</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">from</span> sys<span class="token punctuation">.</span>syslanguages
+
+<span class="token comment">-- 設定目前使用者的語系以及查詢 localize 日期</span>
+<span class="token keyword">SET</span> <span class="token keyword">Language</span> N<span class="token string">'日本語'</span>
+<span class="token keyword">SELECT</span> DateName<span class="token punctuation">(</span><span class="token keyword">Month</span><span class="token punctuation">,</span> Getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+       DateName<span class="token punctuation">(</span>WeekDay<span class="token punctuation">,</span> Getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="CTE-Common-Table-Expression"><a href="#CTE-Common-Table-Expression" class="headerlink" title="CTE, Common Table Expression"></a>CTE, Common Table Expression</h3><p>Common Table Expression 解決 Outer Join 查詢上語法設計思考不易的痛點，改善語法的易讀性，而不影響效能 😀</p>
+<h3 id="Outer-Join-的-On-有事嗎？"><a href="#Outer-Join-的-On-有事嗎？" class="headerlink" title="Outer Join 的 On 有事嗎？"></a>Outer Join 的 On 有事嗎？</h3><p>思考用 On 來限制 Outer Join 單方面資料表的作用 😶</p>
+<h3 id="Delete-With-Select"><a href="#Delete-With-Select" class="headerlink" title="Delete With Select"></a>Delete With Select</h3><p>可以組合複雜的刪除條件，例如刪除符合特定 Join 結果的資料。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DELETE</span> <span class="token keyword">FROM</span> A
+<span class="token keyword">FROM</span>   dbo<span class="token punctuation">.</span>customers A
+       <span class="token keyword">LEFT</span> <span class="token keyword">OUTER</span> <span class="token keyword">JOIN</span> dbo<span class="token punctuation">.</span>orders B
+                    <span class="token keyword">ON</span> A<span class="token punctuation">.</span>customerid <span class="token operator">=</span> B<span class="token punctuation">.</span>customerid
+<span class="token keyword">WHERE</span>  B<span class="token punctuation">.</span>orderid <span class="token operator">IS</span> <span class="token boolean">NULL</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Insert-Select-🆚-Select-Into-🆚-Insert-Exec"><a href="#Insert-Select-🆚-Select-Into-🆚-Insert-Exec" class="headerlink" title="Insert Select 🆚 Select Into 🆚 Insert Exec"></a>Insert Select 🆚 Select Into 🆚 Insert Exec</h3><dl>
+  <dt>Insert Select</dt>
+  <dd>將查詢資料新增至已存在的資料表</dd>
+  <dt>Insert Exec</dt>
+  <dd>將執行 Stored Procedures 的結果新增至已存在的資料表</dd>    
+  <dt>Select Into</dt>
+  <dd>將查詢資料建立至新資料表</dd>
+</dl>
+
+<h3 id="IDENT-CURRENT"><a href="#IDENT-CURRENT" class="headerlink" title="IDENT_CURRENT"></a>IDENT_CURRENT</h3><p>取得資料列自動編號的最新資料值，可以用於查詢最新的資料而不必 Order By。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Select</span> IDENT_CURRENT<span class="token punctuation">(</span><span class="token string">'dbo.Employees'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/10/SQL-Server-You-Dont-Know-1/" data-id="clg3fmakz01ffs4ts2xhwdxth" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/10/Vue-Monaco/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Vue 使用 Monaco 打造 VSCode Editor Cloud</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/10/IIS-SQL-Connect-Where-From/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server | 是誰在敲打我窗 使用 IIS Logs 分析 SQL Server 連線的來源
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

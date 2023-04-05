@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server 資料庫備份與還原 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記資料庫備份與還原的規劃與執行 🎁持續編輯中 🧙‍♂️">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 資料庫備份與還原">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/12/SQL-Server-Restoring/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記資料庫備份與還原的規劃與執行 🎁持續編輯中 🧙‍♂️">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/BackupPlan.svg">
+<meta property="article:published_time" content="2020-12-15T02:34:25.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.956Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Restoring" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/12/SQL-Server-Restoring/" class="article-date">
+  <time datetime="2020-12-15T02:34:25.000Z" itemprop="datePublished">2020-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server 資料庫備份與還原
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%82%99%E4%BB%BD"><span class="toc-text">備份</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%99%E4%BB%BD%E7%9B%AE%E6%A8%99"><span class="toc-text">備份目標</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%99%E4%BB%BD%E9%A1%9E%E5%9E%8B-Backup-Type"><span class="toc-text">備份類型 Backup Type</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E5%82%99%E4%BB%BD"><span class="toc-text">完整備份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%AE%E7%95%B0%E5%82%99%E4%BB%BD"><span class="toc-text">差異備份</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A8%98%E9%8C%84%E6%AA%94%E5%82%99%E4%BB%BD"><span class="toc-text">記錄檔備份</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%99%E4%BB%BD%E9%9B%86%E8%B3%87%E8%A8%8A-Backup-Sets-Informatino"><span class="toc-text">備份集資訊 (Backup Sets Informatino)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%A9%E5%8E%9F%E6%A8%A1%E5%BC%8F-Recovery-Model"><span class="toc-text">復原模式 Recovery Model</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B0%A1%E6%98%93%E5%BE%A9%E5%8E%9F%E6%A8%A1%E5%BC%8F"><span class="toc-text">簡易復原模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E5%BE%A9%E5%8E%9F%E6%A8%A1%E5%BC%8F"><span class="toc-text">完整復原模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%A7%E9%87%8F%E7%B4%80%E9%8C%84%E5%BE%A9%E5%8E%9F%E6%A8%A1%E5%BC%8F"><span class="toc-text">大量紀錄復原模式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%86%E5%AF%AB%E5%AA%92%E9%AB%94-Overwrite-media"><span class="toc-text">覆寫媒體 Overwrite media</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E9%9D%A0%E6%80%A7-Reliability"><span class="toc-text">可靠性 Reliability</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%84%E5%8E%9F"><span class="toc-text">還原</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%82%84%E5%8E%9F%E9%81%B8%E9%A0%85-Restore-options"><span class="toc-text">還原選項 Restore options</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%A9%E5%8E%9F%E7%8B%80%E6%85%8B"><span class="toc-text">復原狀態</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E5%8D%A1%E4%BD%8F%E5%9C%A8%E3%80%8C%E6%AD%A3%E5%9C%A8%E9%82%84%E5%8E%9F%E3%80%8D%E7%8B%80%E6%85%8B"><span class="toc-text">資料庫卡住在「正在還原」狀態</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記資料庫備份與還原的規劃與執行 🎁<br>持續編輯中 🧙‍♂️</p>
+<a href="/posts/2020/12/SQL-Server-Restoring/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="備份"><a href="#備份" class="headerlink" title="備份"></a>備份</h2><h3 id="備份目標"><a href="#備份目標" class="headerlink" title="備份目標"></a>備份目標</h3><ul>
+<li>RPO, Recovery Point Objective 可以接受的資料損失程度</li>
+<li>PTO, Recovery Time Objecttive 可以接受的服務中止時間</li>
+</ul>
+<h3 id="備份類型-Backup-Type"><a href="#備份類型-Backup-Type" class="headerlink" title="備份類型 Backup Type"></a>備份類型 Backup Type</h3><ul>
+<li>Full 完整備份</li>
+<li>Differential 差異備份</li>
+<li>Log Backup 記錄檔備份</li>
+</ul>
+<p>每周日進行完整備份，每天進行差異備份，每六個小時進行記錄檔備份。</p>
+<p><img src="/assets/BackupPlan.svg" alt="備份計畫示意圖"></p>
+<h4 id="完整備份"><a href="#完整備份" class="headerlink" title="完整備份"></a>完整備份</h4><div class="article-blockquote">
+備份資料檔以及備份期間所產生的交易紀錄，同時也是差異備份以及交易紀錄備份的還原基準。備份所需的時間較長，且需要較大的空間，僅能還原為任一紀錄點，不同於記錄檔備份可以還原為任一個瞬點 (point-in-time recovery)。
+</div>
+
+<h4 id="差異備份"><a href="#差異備份" class="headerlink" title="差異備份"></a>差異備份</h4><div class="article-blockquote">
+備份 mdf 檔中自上一次完整備份到目前為止的資料異動。
+</div>
+
+<h4 id="記錄檔備份"><a href="#記錄檔備份" class="headerlink" title="記錄檔備份"></a>記錄檔備份</h4><div class="article-blockquote">
+備份上一次交易紀錄備份，到目前為止的交易資料。
+</div>
+
+<p><a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2010/04/21/SQL-Server-Full-Differential-Transaction-Backup">觀念釐清：SQL Server 完整備份、差異備份、交易記錄備份</a><br><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10028622">淺談SQL Server的備份類型</a></p>
+<h3 id="備份集資訊-Backup-Sets-Informatino"><a href="#備份集資訊-Backup-Sets-Informatino" class="headerlink" title="備份集資訊 (Backup Sets Informatino)"></a>備份集資訊 (Backup Sets Informatino)</h3><p>備份進行後，會於 msdb 系統資料庫留下相關資訊，並保存於下列的系統資料表：</p>
+<ul>
+<li>backupfile : 備份集的 ID、檔案大小、邏輯名稱以及實體路徑</li>
+<li>backupfilegroup : 備份資料庫的檔案群組資訊</li>
+<li>backupset : 每次備份動作相關的資訊，例如備份名稱、描述、作業時間、檔案大小等</li>
+<li>backupmediaset</li>
+<li>backupmediafamily </li>
+</ul>
+<h3 id="復原模式-Recovery-Model"><a href="#復原模式-Recovery-Model" class="headerlink" title="復原模式 Recovery Model"></a>復原模式 Recovery Model</h3><div class="article-blockquote">
+復原模式是資料庫的屬性，用於控制資料庫「交易的紀錄方式」、允許「備份交易紀錄」以及可用的還原類型。
+</div>
+
+<h4 id="簡易復原模式"><a href="#簡易復原模式" class="headerlink" title="簡易復原模式"></a>簡易復原模式</h4><div class="article-blockquote">
+簡單模式無備份交易紀錄優點是節省空間的使用，但只能復原到備份結束的時間點，且不支援需要<strong>交易記錄</strong>備份的作業，包括下列功能：
+</div>
+
+<ol>
+<li>記錄傳送</li>
+<li>AlwaysOn 或資料庫鏡像</li>
+<li>無資料遺失的媒體復原</li>
+<li>時間點還原</li>
+</ol>
+<h4 id="完整復原模式"><a href="#完整復原模式" class="headerlink" title="完整復原模式"></a>完整復原模式</h4><div class="article-blockquote">
+保存所有的交易紀錄，因此可以復原至任意時間點，除非碰到紀錄結尾毀損必須要重做該次交易紀錄以後的變更；缺點是占用儲存空間。
+</div>
+
+<h4 id="大量紀錄復原模式"><a href="#大量紀錄復原模式" class="headerlink" title="大量紀錄復原模式"></a>大量紀錄復原模式</h4><div class="article-blockquote">
+完整復原模式的輔助，允許執行高效能的大量複製作業。針對大多數的大量作業使用最少記錄，以減少記錄空間的使用量
+</div>
+
+<p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10028383">淺談SQL Server備份基本概念</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/relational-databases/backup-restore/recovery-models-sql-server?view=sql-server-ver15">復原模式 (SQL Server)</a><br><a target="_blank" rel="noopener" href="https://medium.com/ricos-note/sql-server-%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E4%BA%A4%E6%98%93%E7%B4%80%E9%8C%84%E6%AA%94%E9%82%84%E5%8E%9F%E5%88%B0%E6%9F%90%E4%B8%80%E6%99%82%E9%96%93%E9%BB%9E-e278b9a6814f">如何利用交易紀錄檔還原到某一時間點</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/relational-databases/backup-restore/quickstart-backup-restore-database?view=sql-server-ver15">MS Doc - 快速入門：備份與還原內部部署的 SQL Server 資料庫</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/relational-databases/backup-restore/restore-a-database-backup-using-ssms?view=sql-server-ver15">MS Doc - Restore a Database Backup Using SSMS</a></p>
+<h3 id="覆寫媒體-Overwrite-media"><a href="#覆寫媒體-Overwrite-media" class="headerlink" title="覆寫媒體 Overwrite media"></a>覆寫媒體 Overwrite media</h3><ul>
+<li>附加至現有</li>
+<li>覆寫至現有</li>
+<li>檢查媒體名稱及備份組是否逾期</li>
+</ul>
+<h3 id="可靠性-Reliability"><a href="#可靠性-Reliability" class="headerlink" title="可靠性 Reliability"></a>可靠性 Reliability</h3><ul>
+<li>完成後驗證備份</li>
+<li>寫入媒體前執行總和檢查碼</li>
+<li>發生錯誤時繼續</li>
+</ul>
+<h2 id="還原"><a href="#還原" class="headerlink" title="還原"></a>還原</h2><h3 id="還原選項-Restore-options"><a href="#還原選項-Restore-options" class="headerlink" title="還原選項 Restore options"></a>還原選項 Restore options</h3><ul>
+<li>With Replace</li>
+<li>With Keep_Replication</li>
+<li>With Restricted_User</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/relational-databases/backup-restore/restore-database-options-page?view=sql-server-ver15">還原資料庫 (選項頁面)</a></p>
+<h3 id="復原狀態"><a href="#復原狀態" class="headerlink" title="復原狀態"></a>復原狀態</h3><ul>
+<li>Restore With Recovery</li>
+<li>Restore With NoRecovery</li>
+<li>Restore With StandBy</li>
+</ul>
+<h3 id="資料庫卡住在「正在還原」狀態"><a href="#資料庫卡住在「正在還原」狀態" class="headerlink" title="資料庫卡住在「正在還原」狀態"></a>資料庫卡住在「正在還原」狀態</h3><p>使用下列 TSQL 進行恢復</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">RESTORE</span> <span class="token keyword">DATABASE</span> AdventureWorksLT2019
+<span class="token keyword">WITH</span> RECOVERY
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://hackmd.io/@Not/HkS2oQNm8">SQL還原問題排除 (記憶體不足、限制的使用者)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/12/SQL-Server-Restoring/" data-id="clg3fmak001bus4tsgnz0e24s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/12/SQL-Server-Tools/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server 周邊工具彙整筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/12/Windows-URI/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          妙用 Windows URI / 強制使用 Edge 瀏覽器
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

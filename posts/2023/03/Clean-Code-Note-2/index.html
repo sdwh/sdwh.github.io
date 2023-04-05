@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>再探 Clean Code | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於 Scott Allen 在 C# Programming Paradigms | pluralsight 所說明的 Crafting C# Code 的十個 Rules，讓 C# &#x2F; ASP.NET 以及 .NET Framework 開發人員寫出更高品質的程式碼。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="再探 Clean Code">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/03/Clean-Code-Note-2/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於 Scott Allen 在 C# Programming Paradigms | pluralsight 所說明的 Crafting C# Code 的十個 Rules，讓 C# &#x2F; ASP.NET 以及 .NET Framework 開發人員寫出更高品質的程式碼。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/VisualStudio-Set-Warning-As-Error.png">
+<meta property="article:published_time" content="2023-03-12T11:40:00.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="Generated">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Clean-Code-Note-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/03/Clean-Code-Note-2/" class="article-date">
+  <time datetime="2023-03-12T11:40:00.000Z" itemprop="datePublished">2023-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      再探 Clean Code
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Don%E2%80%99t-Use-Region"><span class="toc-text">Don’t Use Region</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Keep-Small-Class"><span class="toc-text">Keep Small Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Keep-Method-Short"><span class="toc-text">Keep Method Short</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-Boolean-Parameter"><span class="toc-text">Avoid Boolean Parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-Exception-for-Error"><span class="toc-text">Use Exception for Error</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set-Warning-As-Error"><span class="toc-text">Set Warning As Error</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-Too-Many-Parameters"><span class="toc-text">Avoid Too Many Parameters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Encapsulate-Complex-Expressions"><span class="toc-text">Encapsulate Complex Expressions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-Comments"><span class="toc-text">Avoid Comments</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-Multiple-Exits"><span class="toc-text">Avoid Multiple Exits</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於 Scott Allen 在 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/csharp-fundamentals-2/">C# Programming Paradigms | pluralsight</a> 所說明的 Crafting C# Code 的十個 Rules，讓 C# / ASP.NET 以及 .NET Framework 開發人員寫出更高品質的程式碼。</p>
+<a href="/posts/2023/03/Clean-Code-Note-2/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>之前曾<a href="/posts/2023/01/Clean-Code-Note/">筆記</a> Cory House 在 Pluralsight 的 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/csharp-clean-coding-principles/exercise-files">Clean Coding Principles in C#</a> 所介紹的 Clean Coding Principles；這次則是學習了 Scott Allen 在 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/csharp-fundamentals-2/">C# Programming Paradigms | pluralsight</a> 所說明的 Crafting C# Code 的 10 個 Rules，同樣是對於 Clean Code 的探討 😀</p>
+<h3 id="Don’t-Use-Region"><a href="#Don’t-Use-Region" class="headerlink" title="Don’t Use Region"></a>Don’t Use Region</h3><p>大G：嗨，小N，我們今天來談談C#中的 <code class="s">Region</code> 功能。你知道 <code class="s">Region</code> 是什麼嗎？</p>
+<p>小N：我知道它可以將一段程式碼區塊包裝在一個區域內，可以展開或折疊。</p>
+<p>大G：對的，不過我們公司的程式碼風格指南建議不要使用 <code class="s">Region</code>，你知道為什麼嗎？</p>
+<p>小N：不知道，可以請大G解釋一下嗎？</p>
+<p>大G：當你使用 <code class="s">Region</code> 時，通常是想隱藏一些程式碼。這會讓其他人在閱讀程式碼時很難理解整個方法或類別的邏輯。這也會讓你的程式碼更加難以維護和測試。另外， <code class="s">Region</code> 不會影響編譯器生成的 IL 碼，所以它不會真正影響代碼的性能。</p>
+<p>小N：那如果我只是想將一些相關的代碼放在一起，而不是隱藏它們呢？</p>
+<p>大G：這種情況下，我們建議使用區域變數（local variables）或區域函數（local functions）來將相關的代碼放在一起。這樣會使你的代碼更加清晰易讀，並且還能夠提高代碼的可維護性和可測試性。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MyMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Local Variables</span>
+        <span class="token class-name"><span class="token keyword">int</span></span> x <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+        <span class="token class-name"><span class="token keyword">int</span></span> y <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Local Function</span>
+        <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> a<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> b<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token class-name"><span class="token keyword">int</span></span> result <span class="token operator">=</span> <span class="token function">Add</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"x + y = "</span> <span class="token operator">+</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>使用 Regions 的目的是避免過大的單一檔案，避免影響程式碼的閱讀性，因為閱讀性越差，維護就越不便。</p>
+</blockquote>
+<h3 id="Keep-Small-Class"><a href="#Keep-Small-Class" class="headerlink" title="Keep Small Class"></a>Keep Small Class</h3><p>大G：嗨，小N，你知道為什麼類別要盡量設計的越小越好嗎？</p>
+<p>小N：其實我不太清楚，大G，能跟我解釋一下嗎？</p>
+<p>大G：當一個類別的大小增加時，它變得更難以維護和測試。如果一個類別做太多事情，就會變得很複雜，很難去理解它的功能，也很難去找到錯誤的原因。</p>
+<p>小N：那麼，你認為一個類別的大小應該是多少？</p>
+<p>大G：這個問題有很多不同的答案，但是通常建議是保持類別小於200行程式碼。如果你的類別越小，它就越容易閱讀和理解，也更容易測試和維護。此外，一個小的類別也更容易進行重構和修改。</p>
+<blockquote>
+<p>延續著不使用 Regions 的討論，保持小的類別並且拆分在多個檔案，謹記 SOLID 所提的單一職責以及開放與封閉原則。</p>
+</blockquote>
+<h3 id="Keep-Method-Short"><a href="#Keep-Method-Short" class="headerlink" title="Keep Method Short"></a>Keep Method Short</h3><p>大G: 你知道「Keep Method Short」嗎？</p>
+<p>小N: 大概是說我們在寫程式時，每個方法不要太長太複雜，是吧？</p>
+<p>大G: 沒錯，方法的長度和複雜度是影響程式碼可讀性和可維護性的重要因素之一。如果一個方法太長，閱讀和理解起來就會變得困難，而且在修改和調試時也會更加麻煩。</p>
+<p>小N: 那麼，方法的長度要控制在多少行程式碼以內比較好呢？</p>
+<p>大G: 這個沒有一個絕對的標準，但一般來說，我們建議每個方法的長度控制在 10 行到 20 行之間比較適合。如果一個方法超過了這個範圍，就應該考慮把它拆分成更小的方法來實現同樣的功能。</p>
+<p>小N: 那麼，如果有一個方法有很多的邏輯判斷，我們應該怎麼處理呢？</p>
+<p>大G: 這個問題很好，其實可以通過把邏輯判斷拆分成多個方法來解決。比如，你可以把每個邏輯判斷封裝成一個小方法，然後在主方法中調用這些小方法。這樣可以讓代碼更加清晰易讀，也更容易維護和擴展。</p>
+<blockquote>
+<p>類別小，方法同樣要短，對於開發人員致力於寫出容易閱讀的程式碼是最重要的事情 😀</p>
+</blockquote>
+<p><code class="watch">資深工程師這樣寫.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyList<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">List<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> items <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token class-name">T</span> item<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        items<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Contains</span><span class="token punctuation">(</span><span class="token class-name">T</span> item<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> items<span class="token punctuation">.</span><span class="token function">Contains</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Remove</span><span class="token punctuation">(</span><span class="token class-name">T</span> item<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        items<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> items<span class="token punctuation">.</span>Count<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">菜鳥工程師這樣寫.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyList<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">List<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> items <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token class-name">T</span> item<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 這裡有一些很長的邏輯，難以理解</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>items<span class="token punctuation">.</span>Count <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> items<span class="token punctuation">.</span>Count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>items<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">InvalidOperationException</span><span class="token punctuation">(</span><span class="token string">"Item already exists"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+
+        items<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Contains</span><span class="token punctuation">(</span><span class="token class-name">T</span> item<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 這裡有一些很長的邏輯，難以理解</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> items<span class="token punctuation">.</span>Count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>items<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Remove</span><span class="token punctuation">(</span><span class="token class-name">T</span> item<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 這裡有一些很長的邏輯，難以理解</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> items<span class="token punctuation">.</span>Count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>items<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                items<span class="token punctuation">.</span><span class="token function">RemoveAt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 這裡有一些很長的邏輯，難以理解</span>
+        <span class="token class-name"><span class="token keyword">int</span></span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> items<span class="token punctuation">.</span>Count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            count<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> count<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Avoid-Boolean-Parameter"><a href="#Avoid-Boolean-Parameter" class="headerlink" title="Avoid Boolean Parameter"></a>Avoid Boolean Parameter</h3><p>大G: 嗨，小N，聽說你現在負責開發一個新功能，對吧？</p>
+<p>小N: 是的，大G。我在開發一個功能，需要使用一個 Boolean Parameter，你有什麼建議嗎？</p>
+<p>大G: 呃，關於 Boolean Parameter，我會建議盡量避免使用它們。</p>
+<p>小N: 為什麼呢？我看其他代碼中經常使用這種類型的參數。</p>
+<p>大G: 是的，它們是常用的參數類型之一，但是使用 Boolean Parameter可能會導致代碼的可讀性和可維護性下降。</p>
+<p>小N: 為什麼呢？</p>
+<p>大G: 首先， Boolean Parameter可能會使代碼變得很難理解。當你在閱讀代碼時，如果看到一個 Boolean Parameter，你很難知道這個參數的含義是什麼，它代表的是什麼狀態或行為。另外， Boolean Parameter只有兩個值，真或假，這可能會讓代碼的意圖不夠明確。</p>
+<p>小N: 我明白了。那麼，有什麼替代方案嗎？</p>
+<p>大G: 當然。你可以使用枚舉類型或對象來替代 Boolean Parameter。比如，如果你需要傳遞一個表示狀態的參數，你可以定義一個枚舉類型，列舉出所有可能的狀態，這樣代碼的可讀性就會得到提高。如果你需要傳遞一個表示行為的參數，你可以定義一個對象，封裝行為相關的屬性和方法。</p>
+<p>小N: 謝謝您的建議，大G。我會記住這些，避免過度使用 Boolean Parameter。</p>
+<p>大G: 不客氣，小N。如果你有任何問題，隨時可以問我。</p>
+<p><code class="watch">使用 Enum 取代 Boolean.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">csharp
+Copy code
+<span class="token keyword">public</span> <span class="token keyword">enum</span> <span class="token class-name">State</span>
+<span class="token punctuation">&#123;</span>
+    Idle<span class="token punctuation">,</span>
+    Running<span class="token punctuation">,</span>
+    Jumping
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Player</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Move</span><span class="token punctuation">(</span><span class="token class-name">State</span> state<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>state<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">case</span> State<span class="token punctuation">.</span>Idle<span class="token punctuation">:</span>
+                <span class="token comment">// 玩家進入閒置狀態</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> State<span class="token punctuation">.</span>Running<span class="token punctuation">:</span>
+                <span class="token comment">// 玩家進入奔跑狀態</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> State<span class="token punctuation">.</span>Jumping<span class="token punctuation">:</span>
+                <span class="token comment">// 玩家進入跳躍狀態</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token punctuation">:</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Use-Exception-for-Error"><a href="#Use-Exception-for-Error" class="headerlink" title="Use Exception for Error"></a>Use Exception for Error</h3><p>大G：嗨，小N，你知道為什麼我們在代碼中使用例外 <code class="s">Exception</code> 來處理錯誤嗎？</p>
+<p>小N：嗯，我知道 <code class="s">Exception</code> 是一種代碼異常，它會在程序運行時引發，但是我不太確定為什麼要使用 <code class="s">Exception</code> 來處理錯誤。</p>
+<p>大G：嗯，當我們編寫代碼時，我們通常會遇到各種不同的錯誤情況，例如無效的輸入、數組越界、文件不存在等等。在這些情況下，我們需要在代碼中添加錯誤處理代碼，以保證程序的正確性和可靠性。</p>
+<p>小N：那麼為什麼不能使用 if 或其他方法來處理這些錯誤呢？</p>
+<p>大G：這是因為使用 if 來處理錯誤可能會讓代碼變得冗長。此外，if也不利於代碼的 reuse，因為我們需要在每個需要錯誤處理的地方添加 if 。而使用 <code class="s">Exception</code> 可以讓我們更清晰地區分代碼的正常執行和錯誤處理，也能夠讓我們更好地進行代碼的重用。</p>
+<p>小N：但是，如果我們在代碼中使用了太多的 <code class="s">Exception</code> ，是否會對性能產生影響呢？</p>
+<p>大G：當然，如果 <code class="s">Exception</code> 使用不當，就可能對性能產生影響。因此，我們應該在代碼中適當地使用 <code class="s">Exception</code> ，並盡可能地捕獲和處理常見的錯誤情況。此外，我們還應該避免在性能敏感的代碼區塊中使用 <code class="s">Exception</code> ，例如循環或者經常使用的函數中。</p>
+<h3 id="Set-Warning-As-Error"><a href="#Set-Warning-As-Error" class="headerlink" title="Set Warning As Error"></a>Set Warning As Error</h3><p>大G：嗨，小N，聽說你最近開始使用 Visual Studio 了，我來給你講一下 Set Visual Studio Warning As Error 的重要性。</p>
+<p>小N：好的，謝謝大G。但是，我不太清楚這個設置的作用是什麼？</p>
+<p>大G：這個設置的作用是把 Visual Studio 警告當成錯誤來處理，這樣可以避免在開發過程中出現潛在的問題。因為警告一般都代表了一些不符合最佳實踐的行為，可能會導致潛在的問題，因此我們需要對其進行嚴格的處理。</p>
+<p>小N：那如果我們不進行這個設置，會出現什麼問題呢？</p>
+<p>大G：如果你忽略這些警告，可能會導致一些意想不到的問題。例如，當你在編譯代碼時出現一個警告，你可能會認為這只是一個小問題，但是如果這個警告代表了一個潛在的錯誤，那麼這個問題可能會在運行時發生，從而導致嚴重的後果。</p>
+<p>小N：明白了，那如果我們碰到一些警告不是真正的問題呢？</p>
+<p>大G：如果你確定某個警告不會導致問題，你可以將其排除在警告列表之外。但是，你需要先仔細地檢查警告，確定它們不會導致問題。在設置警告時，我們需要謹慎處理，以確保代碼的品質和穩定性。</p>
+<p><img src="/assets/VisualStudio-Set-Warning-As-Error.png" alt="在每個專案屬性獨立設定"></p>
+<blockquote>
+<p>一開始可能會因為要處理警告訊息造成無法編譯而崩潰，但克服之後就是為軟體的品質前進一大步 😁</p>
+</blockquote>
+<h3 id="Avoid-Too-Many-Parameters"><a href="#Avoid-Too-Many-Parameters" class="headerlink" title="Avoid Too Many Parameters"></a>Avoid Too Many Parameters</h3><p>大G：嗨，小N，最近你在寫程式的時候，是否曾經遇到過需要 Method 使用太多參數的情況？</p>
+<p>小N：是的，有時候我需要傳遞很多不同的參數給一個函數或方法，但是這樣做會讓程式碼看起來很雜亂。</p>
+<p>大G：沒錯，這是一個常見的問題。寫程式的時候，我們應該盡量避免使用太多參數。</p>
+<p>小N：為什麼呢？使用太多參數會對程式碼有什麼不好的影響？</p>
+<p>大G：使用太多參數會讓函數或方法變得很複雜，不易讀取和維護。此外，使用太多參數還會導致以下問題：</p>
+<ol>
+<li>當我們在調用函數或方法時傳遞太多參數時，我們可能會犯錯誤，因為我們很容易搞混這些參數的順序和意義。</li>
+<li>當函數或方法的參數太多時，它們的測試和調試也會變得更加困難。我們需要測試和確認每個參數的不同組合，這樣會耗費更多時間和精力。</li>
+<li>使用太多參數也會讓代碼的可重用性降低。如果我們在不同的函數或方法中多次使用同樣的參數，那麼當我們需要更改這些參數時，我們需要更改所有使用這些參數的函數或方法。</li>
+</ol>
+<p>小N：那麼，如果我們需要傳遞很多不同的參數，應該怎麼做？</p>
+<p>大G：我們可以考慮使用一些替代方案，例如將參數封裝到一個對象中，或者使用默認參數值和可選參數等技巧。這些方法可以讓代碼更加簡潔和易於維護。</p>
+<p><code class="watch">資深工程師這樣寫.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Age <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Email <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Phone <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Address <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserService</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">AddUser</span><span class="token punctuation">(</span><span class="token class-name">User</span> user<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// ...</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">菜鳥工程師這樣寫.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserService</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">AddUser</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> age<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> email<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> phone<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> address<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// ...</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>這樣寫起來好讀多了 😉</p>
+</blockquote>
+<h3 id="Encapsulate-Complex-Expressions"><a href="#Encapsulate-Complex-Expressions" class="headerlink" title="Encapsulate Complex Expressions"></a>Encapsulate Complex Expressions</h3><p>大G: 小N，你有聽過「Encapsulate Complex Expressions」這個概念嗎？</p>
+<p>小N: 有聽過，但不是很清楚這是什麼意思。</p>
+<p>大G: Encapsulate Complex Expressions 是一種軟體設計原則，也是提高程式碼可讀性和可維護性的重要手段之一。簡單來說，它的目的是將複雜的運算和邏輯表達式封裝在一個函數或方法中，以減少重複代碼和提高程式碼的可讀性。</p>
+<p>小N: 為什麼要這樣做呢？</p>
+<p>大G: 好問題。當我們寫一些複雜的運算和邏輯表達式時，如果直接寫在程式碼中，會使得程式碼變得冗長且難以理解。而且，如果這些運算和邏輯表達式在程式碼中多次使用，也會造成代碼的重複，增加了修改和維護的難度。</p>
+<p>小N: 了解了，那麼如何實現 Encapsulate Complex Expressions 呢？</p>
+<p>大G: 簡單來說，你可以將這些複雜的運算和邏輯表達式封裝在一個函數或方法中，然後在需要使用的地方調用該函數或方法。這樣可以避免代碼的重複，同時也提高了程式碼的可讀性和可維護性。</p>
+<p><code class="watch">資深工程師這樣寫.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">if</span> <span class="token punctuation">(</span>account<span class="token punctuation">.</span>IsPastDue<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token range operator">..</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">菜鳥工程師這樣寫.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">if</span> <span class="token punctuation">(</span>account<span class="token punctuation">.</span>Balance <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>account<span class="token punctuation">.</span>IsVip <span class="token operator">&amp;&amp;</span> account<span class="token punctuation">.</span>DueDate <span class="token operator">></span> CurrentDate<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token range operator">..</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>在追求程式碼可讀性的道路，沒有極限 😎</p>
+</blockquote>
+<h3 id="Avoid-Comments"><a href="#Avoid-Comments" class="headerlink" title="Avoid Comments"></a>Avoid Comments</h3><p>大G：嗨，小N，我們今天來聊聊為什麼要避免在程式碼中使用註解。</p>
+<p>小N：為什麼呢？我覺得註解可以讓我們更好地理解代碼。</p>
+<p>大G：是的，註解確實可以提供一些說明和背景信息，但是過多的註解可能會導致代碼難以維護。</p>
+<p>小N：為什麼呢？</p>
+<p>大G：因為註解可能會與程式碼不同步，尤其是當修改程式碼時。當註解不再反映實際代碼時，它們可能會誤導其他開發人員。此外，如果代碼本身不夠清晰易讀，那麼添加註解可能只會掩蓋問題而不是解決問題。</p>
+<p>小N：那麼該怎麼辦呢？</p>
+<p>大G：寫出乾淨易讀的代碼是最好的做法。如果代碼真的需要註解，那麼應該優先考慮修改代碼本身，以使其更易於理解。此外，只添加必要的註解，並且確保它們保持最新。最後，盡可能使用自文檔化的程式設計，例如良好的命名和設計模式，以減少對註解的需求。</p>
+<blockquote>
+<p>個人的體悟是不是完全不寫註解，而是只寫必要有助於閱讀程式碼的註解，而且在 C# 應優先使用 Summary 註解以及 IDE 有特殊支援的 TODO 或 HACK 註解</p>
+</blockquote>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">/// &lt;summary></span>
+<span class="token comment">/// 這個方法用來計算兩個數字的和。</span>
+<span class="token comment">/// &lt;/summary></span>
+<span class="token comment">/// &lt;param name="a">第一個數字。&lt;/param></span>
+<span class="token comment">/// &lt;param name="b">第二個數字。&lt;/param></span>
+<span class="token comment">/// &lt;returns>兩個數字的和。&lt;/returns></span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> a<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> b<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// TODO: 處理錯誤訊息的顯示。</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">DisplayErrorMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// 顯示錯誤訊息。</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// HACK: 這個方法需要重構。</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">DoSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// 複雜的程式碼...</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Avoid-Multiple-Exits"><a href="#Avoid-Multiple-Exits" class="headerlink" title="Avoid Multiple Exits"></a>Avoid Multiple Exits</h3><p>大G：嗨，小N，你聽說過「避免多個出口」這個概念嗎？</p>
+<p>小N：聽過，好像是寫程式時要盡量減少函數或迴圈中的 return、break 等語句，是吧？</p>
+<p>大G：沒錯！這個概念的核心是讓你的程式碼更易於閱讀和維護。如果你在函數或迴圈中使用多個出口，會增加程式的複雜度，使得閱讀和維護變得困難。</p>
+<p>小N：那麼，如果我有一個很長的函數，裡面有很多判斷語句，怎麼辦呢？難道就不能使用多個出口了嗎？</p>
+<p>大G：當然可以，但要控制好數量。你可以使用一個出口作為默認情況，並在必要時添加其他出口。此外，你還可以將函數分解為多個小函數，以使代碼更易於管理。</p>
+<p>Avoid Multiple Exits VS Return Early</p>
+<p>兩者是不同的觀念，Avoid Multiple Exits 建議在函數或迴圈中盡量避免多個出口，以提高代碼的可讀性和可維護性。這意味著讓函數只有一個出口，即使有多個判斷語句，也應該只有一個 return 語句，避免函數的控制流程變得過於複雜。</p>
+<p><code class="watch">Avoid Mutiple Exits.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">Calculate</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> input<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">int</span></span> result <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>input <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        result <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>input <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> input <span class="token operator">&lt;=</span> <span class="token number">10</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        result <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span>
+    <span class="token punctuation">&#123;</span>
+        result <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Return Early 是一種常見的代碼技巧，指在函數開始處檢查一些必要的條件，如果不滿足條件，就提前返回函數，而不是繼續執行函數的主體部分。這種方式可以提高程式碼的可讀性和性能，因為它避免了不必要的代碼執行。</p>
+<p><code class="watch">Return Early.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">CalculateTotalCost</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> baseCost<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> shippingCost<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">bool</span></span> hasDiscount<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// 如果 baseCost 或 shippingCost 為負數，就提前返回函數</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>baseCost <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">||</span> shippingCost <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// 計算總成本</span>
+    <span class="token class-name"><span class="token keyword">int</span></span> totalCost <span class="token operator">=</span> baseCost <span class="token operator">+</span> shippingCost<span class="token punctuation">;</span>
+
+    <span class="token comment">// 如果有折扣，應用折扣</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hasDiscount<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        totalCost <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">(</span>totalCost <span class="token operator">*</span> <span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// 返回總成本</span>
+    <span class="token keyword">return</span> totalCost<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name"><span class="token keyword">double</span></span> <span class="token function">GetDiscountPrice</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">double</span></span> price<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> level<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// 如果價格小於等於 0 ，直接回傳 0</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>price <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 如果會員等級為 VIP ，回傳 8 折</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>level <span class="token operator">==</span> <span class="token string">"VIP"</span><span class="token punctuation">)</span> <span class="token keyword">return</span> price <span class="token operator">*</span> <span class="token number">0.8</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 如果會員等級為 Gold ，回傳 9 折</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>level <span class="token operator">==</span> <span class="token string">"Gold"</span><span class="token punctuation">)</span> <span class="token keyword">return</span> price <span class="token operator">*</span> <span class="token number">0.9</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 其他情況回傳原價</span>
+    <span class="token keyword">return</span> price<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>Avoid Multiple Exits &amp; Return Early 兩者的搭配使用並不衝突 😆</p>
+</blockquote>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2023/01/Clean-Code-Note/">初探 Clean Code</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/thangchung/clean-code-dotnet">Clean Code concepts adapted for .NET/.NET Core | Github</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/03/Clean-Code-Note-2/" data-id="clg3fmabq00f8s4ts36e19pj7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/03/ChatGPT-Tips/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ChatGPT Tips</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/03/CSharp-Extension-Methods/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          C# Extension Methods
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

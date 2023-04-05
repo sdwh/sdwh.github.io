@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>C# Extension Methods | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="C# Extension Methods (擴充方法) 是一種極具彈性和可擴展性的技術，它可以為現有的 Type 添加新的方法，而不需要修改原本的 Type 所在的 Class。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# Extension Methods">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/03/CSharp-Extension-Methods/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="C# Extension Methods (擴充方法) 是一種極具彈性和可擴展性的技術，它可以為現有的 Type 添加新的方法，而不需要修改原本的 Type 所在的 Class。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2023-03-13T11:08:37.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="Generated">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-CSharp-Extension-Methods" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/03/CSharp-Extension-Methods/" class="article-date">
+  <time datetime="2023-03-13T11:08:37.000Z" itemprop="datePublished">2023-03-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C# Extension Methods
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%A2%83%E5%B0%8D%E8%A9%B1"><span class="toc-text">情境對話</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AF%84%E4%BE%8B"><span class="toc-text">範例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linq-%E6%87%89%E7%94%A8"><span class="toc-text">Linq 應用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A5%AD%E7%95%8C%E6%87%89%E7%94%A8"><span class="toc-text">業界應用</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>C# Extension Methods (擴充方法) 是一種極具彈性和可擴展性的技術，它可以為現有的 Type 添加新的方法，而不需要修改原本的 Type 所在的 Class。</p>
+<a href="/posts/2023/03/CSharp-Extension-Methods/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="情境對話"><a href="#情境對話" class="headerlink" title="情境對話"></a>情境對話</h3><div class="conversation">
+<p class="message received message-content">嗨，你對 C# 的 Extension Methods 有沒有聽過？</p>
+
+<p class="message sent message-content">嗯，有聽過，但不太了解它們是什麼。</p>
+
+<p class="message received message-content">Extension Methods 是 C# 中的一種特殊方法，它們可以讓你在不修改原始程式碼的情況下，擴展現有的類別或介面。這個特性在開發大型應用程式時非常有用。</p>
+
+<p class="message sent message-content">這聽起來很不錯。但為什麼我們需要使用 Extension Methods 呢？</p>
+
+<p class="message received message-content">好問題。首先，它們可以讓你更容易地重用程式碼。比如說，如果你經常需要對字串進行一些類型轉換或者其他操作，你可以創建一個專門處理字串的 Extension Method，然後在你的應用程式中任何需要使用這些操作的地方都可以輕鬆地使用這個方法。</p>
+
+<p class="message sent message-content">這確實可以節省很多時間。</p>
+
+<p class="message received message-content">對的，而且 Extension Methods 可以讓你更清晰地組織程式碼。通過將相關的方法放在一個擴展方法中，你可以使你的程式碼更易於維護和理解。</p>
+
+<p class="message sent message-content">那 Extension Methods 會影響程式碼的效能嗎？</p>
+
+<p class="message received message-content">好問題。其實 Extension Methods 在效能方面影響非常小。當你調用一個擴展方法時，實際上是將方法的調用轉換為對靜態方法的調用。這意味著擴展方法的效能與常規靜態方法相當。</p>
+</div>
+
+<h2 id="範例"><a href="#範例" class="headerlink" title="範例"></a>範例</h2><p>使用 Extension Methods 的方法是建立新的靜態類別 (例如 <code class="s">StringExtensions</code>)，並且加入新的靜態方法 (例如 <code class="s">ToInt</code>)，並且在此靜態方法的第一個參數，使用 <code class="s">this</code> 關鍵字，指出要擴充的 Type。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">StringExtensions</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">ToInt</span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name"><span class="token keyword">string</span></span> str<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">int</span></span> result<span class="token punctuation">;</span>
+        <span class="token keyword">int</span><span class="token punctuation">.</span><span class="token function">TryParse</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token keyword">out</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name"><span class="token keyword">string</span></span> str <span class="token operator">=</span> <span class="token string">"123"</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">int</span></span> intValue <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">ToInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">ListExtensions</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token generic-method"><span class="token function">IsNullOrEmpty</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name">List<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> list<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> list <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> list<span class="token punctuation">.</span>Count <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> list <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">bool</span></span> isNullOrEmpty <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">IsNullOrEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">DateTimeExtensions</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">ToShortDate</span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name">DateTime</span> dateTime<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> dateTime<span class="token punctuation">.</span><span class="token function">ToShortDateString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token class-name">DateTime</span> dateTime <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">string</span></span> shortDate <span class="token operator">=</span> dateTime<span class="token punctuation">.</span><span class="token function">ToShortDate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Linq-應用"><a href="#Linq-應用" class="headerlink" title="Linq 應用"></a>Linq 應用</h3><p>C# 的 LINQ (Language Integrated Query) 是一種強大的工具，可以將資料查詢和轉換整合到 C# 程式碼中。而 Extension Methods 可以用來擴充 LINQ 操作，這樣可以讓我們在 LINQ 查詢中使用自定義方法，使 LINQ 的應用範圍更加靈活。</p>
+<p>以下是一個範例，展示如何使用 Extension Methods 擴充 LINQ 的 <code class="s">Where()</code> Operator。</p>
+<p>首先，我們需要創建一個靜態類別，包含我們要定義的 Extension Method。在這個例子中，我們定義了一個名為 <code class="s">WhereIf()</code> 的方法，它接受一個 <code class="s">bool</code> 值 <code class="s">condition</code> 和一個 <code class="s">Func&lt;TSource, bool&gt;</code> 委託 <code class="s">predicate</code>：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">LinqExtensions</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IEnumerable<span class="token punctuation">&lt;</span>TSource<span class="token punctuation">></span></span> <span class="token generic-method"><span class="token function">WhereIf</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>TSource<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>
+        <span class="token keyword">this</span> <span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span>TSource<span class="token punctuation">></span></span> source<span class="token punctuation">,</span> 
+        <span class="token class-name"><span class="token keyword">bool</span></span> condition<span class="token punctuation">,</span> 
+        <span class="token class-name">Func<span class="token punctuation">&lt;</span>TSource<span class="token punctuation">,</span> <span class="token keyword">bool</span><span class="token punctuation">></span></span> predicate<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>condition<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> source<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>predicate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> source<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在這個 Extension Method 中，我們首先檢查 <code class="s">condition</code> 的值。如果為 <code class="s">true</code>，則使用 LINQ 的 <code class="s">Where()</code> Operator來過濾序列，並返回過濾後的結果。如果 <code class="s">condition</code> 為 <code class="s">false</code>，則直接返回原始序列。</p>
+<p>現在，我們可以在 LINQ 查詢中使用 <code class="s">WhereIf()</code> 方法。例如：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span> numbers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">int</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">bool</span></span> condition <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">int</span></span> threshold <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> result <span class="token operator">=</span> numbers
+    <span class="token punctuation">.</span><span class="token function">WhereIf</span><span class="token punctuation">(</span>condition<span class="token punctuation">,</span> n <span class="token operator">=></span> n <span class="token operator">></span> threshold<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>n <span class="token operator">=></span> n <span class="token operator">*</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> result<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在這個範例中，我們創建了一個名為 <code class="s">numbers</code> 的整數列表，並定義了一個名為 <code class="s">condition</code> 的 <code class="s">bool</code> 變數，以及一個名為 <code class="s">threshold</code> 的閾值。</p>
+<p>然後，我們使用 <code class="s">WhereIf()</code> 方法來過濾列表，只保留大於 <code class="s">threshold</code> 的元素，如果 <code class="s">condition</code> 為 <code class="s">false</code>，則直接返回原始列表。最後，我們使用 <code class="s">Select()</code> 將序列中的每個元素乘以 10。</p>
+<p>總而言之 Extension Methods 可以讓我們更加靈活地擴展 LINQ Operator，這對於編寫可重用的 LINQ 查詢非常有用。</p>
+<h3 id="業界應用"><a href="#業界應用" class="headerlink" title="業界應用"></a>業界應用</h3><p>在 <a target="_blank" rel="noopener" href="https://github.com/zzzprojects/Z.ExtensionMethods">C# Extension Methods | Github</a> 的開源專案中，將各種實用但原生 C# 未提供的方法加入為 Extension Methods，以 Nuget 安裝之後，原本的 C# 就像是多了一對翅膀，寫起來如虎添翼更為行雲流水。</p>
+<p>其中一個範例是原本 C# 有提供 Array 的 Exists 方法，但必須使用靜態類別的方式呼叫使用：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">Array<span class="token punctuation">.</span><span class="token function">Exists</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span> <span class="token string">"Mercury"</span><span class="token punctuation">,</span> <span class="token string">"Venus"</span><span class="token punctuation">,</span> <span class="token string">"Earth"</span><span class="token punctuation">,</span> <span class="token string">"Mars"</span><span class="token punctuation">,</span> <span class="token string">"Jupiter"</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token string">"Earth"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>但在 C# Extension Methods 的 <a target="_blank" rel="noopener" href="https://csharp-extension.com/en/method/1002633/array-exists">Array - Exists</a> 則將它擴充為 Extensino Methods，只需要直接在 array instance 上使用即可，用起來直觀也易於理解 😀</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span> <span class="token string">"Mercury"</span><span class="token punctuation">,</span> <span class="token string">"Venus"</span><span class="token punctuation">,</span> <span class="token string">"Earth"</span><span class="token punctuation">,</span> <span class="token string">"Mars"</span><span class="token punctuation">,</span> <span class="token string">"Jupiter"</span><span class="token punctuation">&#125;</span><span class="token punctuation">.</span><span class="token function">Exists</span><span class="token punctuation">(</span><span class="token string">"Earth"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code class="watch">C# Extension Methods - Array - Exists.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">partial</span> <span class="token keyword">class</span> <span class="token class-name">Extensions</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">/// &lt;summary></span>
+    <span class="token comment">///     A T[] extension method that exists.</span>
+    <span class="token comment">/// &lt;/summary></span>
+    <span class="token comment">/// &lt;typeparam name="T">Generic type parameter.&lt;/typeparam></span>
+    <span class="token comment">/// &lt;param name="array">The array to act on.&lt;/param></span>
+    <span class="token comment">/// &lt;param name="match">Specifies the match.&lt;/param></span>
+    <span class="token comment">/// &lt;returns>true if it succeeds, false if it fails.&lt;/returns></span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">Boolean</span> <span class="token generic-method"><span class="token function">Exists</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name">T<span class="token punctuation">[</span><span class="token punctuation">]</span></span> array<span class="token punctuation">,</span> <span class="token class-name">Predicate<span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> match<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Array<span class="token punctuation">.</span><span class="token function">Exists</span><span class="token punctuation">(</span>array<span class="token punctuation">,</span> match<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/03/CSharp-Extension-Methods/" data-id="clg3fmabd00dbs4ts6jeh4e0m" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/03/Clean-Code-Note-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">再探 Clean Code</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/03/HTTP-Protocol-Guide/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          每個 Developer 都要知道的 Http Protocol
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

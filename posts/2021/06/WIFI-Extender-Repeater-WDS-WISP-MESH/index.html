@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>WiFi 無線延伸的解決方案 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何延伸家庭環境中的 WiFi 訊號，以常見的技術方式以及市面上可以考慮的產品為例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WiFi 無線延伸的解決方案">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/06/WIFI-Extender-Repeater-WDS-WISP-MESH/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何延伸家庭環境中的 WiFi 訊號，以常見的技術方式以及市面上可以考慮的產品為例。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="article:published_time" content="2021-06-21T11:36:45.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Wifi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-WIFI-Extender-Repeater-WDS-WISP-MESH" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/06/WIFI-Extender-Repeater-WDS-WISP-MESH/" class="article-date">
+  <time datetime="2021-06-21T11:36:45.000Z" itemprop="datePublished">2021-06-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Network/">Network</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WiFi 無線延伸的解決方案
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8D%E8%A9%9E%E8%A7%A3%E9%87%8B"><span class="toc-text">名詞解釋</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%84%A1%E7%B7%9A%E4%B8%AD%E7%B9%BC%E6%8A%80%E8%A1%93"><span class="toc-text">無線中繼技術</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Repeater-AP-Client"><span class="toc-text">Repeater &#x2F; AP-Client</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WISP"><span class="toc-text">WISP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WDS"><span class="toc-text">WDS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mesh"><span class="toc-text">Mesh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HomePlug"><span class="toc-text">HomePlug</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何延伸家庭環境中的 WiFi 訊號，以常見的技術方式以及市面上可以考慮的產品為例。 </p>
+<a href="/posts/2021/06/WIFI-Extender-Repeater-WDS-WISP-MESH/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>網路的重要性不言而喻，隨著行動化裝置的普及以及物聯網技術的興起，每個家庭環境中擁有為數可觀的聯網設備，基本的包含手機、平板、筆電，進階的可能包括手錶、監視器、智慧插座、智慧燈炮等等。而在網路環境架構上，通常都是由 Cable Modem 或者是中華電信使用 PPPoE 作為網際網路訊號來源，並利用 Modem 本身提供的基本 WiFi 功能作為無線設備的網路連結通道。</p>
+<p>然而 Modem 本身提供的 WiFi 訊號強度有限，在稍受地形阻隔(水泥牆、金屬板)，連線的品質就會大打折扣，讓使用者體驗嚴重下滑。因此自行安裝獨立的 WiFi Router / Access Point 是有必要的。但是更困擾的情境是即使安裝了新的 AP 裝置，可能仍是受限於地形阻隔，造成空間死角沒有辦法順利進行連線。</p>
+<p>因此本篇筆記就是要探討這樣的情形，並說明如何在不用牽實體網路線的方式，進行無線的訊號中繼功能。當然，如果環境是允許牽實體網路線，絕對是優先的考量，因為經過無線傳輸訊號的折損在所難免，使用網路線能夠有最少的干擾並保證網路速度的干擾程度最小。</p>
+<h3 id="名詞解釋"><a href="#名詞解釋" class="headerlink" title="名詞解釋"></a>名詞解釋</h3><div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p><strong>什麼是 WiFi Router ？</strong></p>
+            <p>
+            路由器負責連線網際網路，並具有 DHCP、NAT、Firewall 等功能，提供 WiFi 無線連線形式為其功能之一。
+            </p>
+            <p><strong>什麼是 Access Point, AP ？</strong></p>
+            <p>
+            AP 唯一任務是提供 WiFi 無線連線形式，並不提供其他路由器所提供的多重功能。
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2 id="無線中繼技術"><a href="#無線中繼技術" class="headerlink" title="無線中繼技術"></a>無線中繼技術</h2><h3 id="Repeater-AP-Client"><a href="#Repeater-AP-Client" class="headerlink" title="Repeater / AP-Client"></a>Repeater / AP-Client</h3><p>使用 Repeater 技術，負責中繼的裝置先以 WiFi 的方式無線連回來源 AP，並使用獨立的 SSID 提供 WiFi 服務。也稱為 AP-Client 模式，其中 Client 是指中繼的路由扮演 Client 角色向來源進行連線。此 Client 相當於是中繼設備中的 Lan Port 以無線方式連回來源 AP。</p>
+<p>ASUS 的 AP 設備有所謂的 <strong>Repeater Mode</strong>，TOTOLINK A720R 也有所謂的 <strong>無線中繼模式</strong>，歸屬於此類使用方式。</p>
+<p>支援的設備如 ASUS RT-N12 ($849)、TOTOLINK A720R ($549)</p>
+<p><a target="_blank" rel="noopener" href="https://totolink.tw/articles/faq/5022">A720R - Repeater</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.asus.com/tw/support/FAQ/1036082/">ASUS - Repeater</a></p>
+<h3 id="WISP"><a href="#WISP" class="headerlink" title="WISP"></a>WISP</h3><p>此方案稱為萬用型無線延伸解決方案，負責中繼的裝置先以 WiFi 的方式連回來源 AP，並使用獨立的 SSID 提供 WiFi 服務，在設定上與 Repeater 相當相似，<strong>兩者最大的差別在於 WISP 相當於是將中繼 AP 的 WAN Port 以無線的方式連向來源 AP</strong>，至於效能與穩定度上需要測試方能得知。</p>
+<p>正好 A720R 同時提供 WISP Mode以及 Repeater Mode，兩者的實驗結果待測試 🧪</p>
+<p>支援的設備如 TOTOLINK A720R ($549)</p>
+<p><a target="_blank" rel="noopener" href="https://totolink.tw/articles/faq/5022">A720R - WISP</a></p>
+<h3 id="WDS"><a href="#WDS" class="headerlink" title="WDS"></a>WDS</h3><p>WDS, Wireless Distribution System，需要來源 AP 與中繼 AP 都支援 WDS 協定才能夠進行設定。在架構上與 AP-Client 模式相同，WDS 作為中繼 AP Lan Port 上專門協定的無線網卡 Client 需要與來源 AP 也支援 WDS 協定者相互溝通。</p>
+<p>WDS 的優點在於可以保持單一 SSID，具有漫遊的特性，但必須要來源與中繼都支援 WDS 才能使用，較為限制。</p>
+<p>支援的設備如 ASUS RT-AC1200 V2 ($1,499)</p>
+<h3 id="Mesh"><a href="#Mesh" class="headerlink" title="Mesh"></a>Mesh</h3><p>支援的設備如 NETGEAR EX7700 ($3,699)</p>
+<p>華碩的 AiMesh 強調除了在費用上零缺點的設計，保證效能與傳輸覆蓋範圍，需要華碩特定的無線路由設備才能建構此解決方案。</p>
+<p>支援的設備如 ASUS RT-AC86U ($3,499)</p>
+<h3 id="HomePlug"><a href="#HomePlug" class="headerlink" title="HomePlug"></a>HomePlug</h3><p>電力線是利用電線來進行訊號的傳輸，雖然不是無線傳輸技術，但可以做為無法延伸實體網路線時的替代方案。但使用上受限於電線的特性，也必須考量電路的迴路設計，傳輸性能較受影響。</p>
+<p>Zyxel合勤 PLA5456 ($2,999)</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.twblogs.net/a/5b7cbde32b71770a43dc5cf6">無線路由器的AP、Client、WDS、WISP使用功能圖解(清晰明瞭)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/06/WIFI-Extender-Repeater-WDS-WISP-MESH/" data-id="clg3fmamm01kos4ts6ku3b3t6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Network/" rel="tag">Network</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Wifi/" rel="tag">Wifi</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/06/Microsoft-Cloud-Service-Management/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Microsoft 微軟雲端服務後台管理</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/06/CSharp-Null-Conditional-Operator/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          C# Null Conditional Operator,  Null 條件運算子
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

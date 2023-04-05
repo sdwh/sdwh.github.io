@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>IIS Encrypt Web.config (Single Server, AppSettings, Web Farm) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 IIS 如何對 Web.config 進行加密，以保護連線資料庫的 Login 資訊無法被任意取得 Web.config 檔案者進行檢視。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IIS Encrypt Web.config (Single Server, AppSettings, Web Farm)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/12/IIS-Encrypt-Web-Config/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 IIS 如何對 Web.config 進行加密，以保護連線資料庫的 Login 資訊無法被任意取得 Web.config 檔案者進行檢視。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="article:published_time" content="2022-12-06T11:21:18.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IIS-Encrypt-Web-Config" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/12/IIS-Encrypt-Web-Config/" class="article-date">
+  <time datetime="2022-12-06T11:21:18.000Z" itemprop="datePublished">2022-12-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IIS Encrypt Web.config (Single Server, AppSettings, Web Farm)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SecureAppSettings"><span class="toc-text">SecureAppSettings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WebFarm-Encryption"><span class="toc-text">WebFarm Encryption</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 IIS 如何對 Web.config 進行加密，以保護連線資料庫的 Login 資訊無法被任意取得 Web.config 檔案者進行檢視。</p>
+<a href="/posts/2022/12/IIS-Encrypt-Web-Config/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>加密需要使用 <code class="s">ASPNET_REGISS</code> 並且使用 <code class="s">-pef</code> 參數，並指定要加密的 config 檔部分與資料夾路徑。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">C</span><span class="token label property">:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe</span></span>
+  -pef "connectionStrings" "D:\WebApps\"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>如果要進行解密，可以改使用參數 <code class="s">-pdf</code></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">C</span><span class="token label property">:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe</span></span>
+  -pdf "connectionStrings" "D:\WebApps\"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>加密不限定於 <strong>connectionStrings</strong>，同樣也可以用於加密 <strong>appsettings</strong>：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">C</span><span class="token label property">:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe</span></span>
+  -pef "appsettings" "D:\WebApps\"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="SecureAppSettings"><a href="#SecureAppSettings" class="headerlink" title="SecureAppSettings"></a>SecureAppSettings</h3><p>如果想要加密部分 <strong>appsettings</strong>，其餘部分保持可見，可以將需要加密的部分獨立：</p>
+<p>參考 Anupam Maiti 所分享的方法 <a target="_blank" rel="noopener" href="https://www.c-sharpcorner.com/blogs/how-to-encrypt-a-appsettings-key-in-webconfig">How To Encrypt an AppSettings Key In Web.config</a>，另定義 <strong>secureAppSettings</strong> 用於儲存需要被加密的 key-value。</p>
+<p>首先需要再 <code class="s">configuration</code> 加入：</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configSections</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>secureAppSettings<span class="token punctuation">"</span></span>
+  <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Configuration.NameValueSectionHandler, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configSections</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接著再加入 <strong>secureAppSettings</strong> 於 <code class="s">Web.config</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>secureAppSettings</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>DatabasePW<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>********<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>secureAppSettings</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>接著使用對於 <strong>connectionStrings</strong> 相同加密的方式，進行 <strong>secureAppSettings</strong> 的加密。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">C</span><span class="token label property">:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe</span></span>
+  -pef "secureAppSettings" "D:\WebApps\"
+  -prov "DataProtectionConfigurationProvider"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>讀取資料的方式：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> section <span class="token operator">=</span>
+  System<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Configuration<span class="token punctuation">.</span>WebConfigurationManager<span class="token punctuation">.</span><span class="token function">GetSection</span><span class="token punctuation">(</span><span class="token string">"secureAppSettings"</span><span class="token punctuation">)</span>
+  <span class="token keyword">as</span> <span class="token class-name">NameValueCollection</span><span class="token punctuation">;</span>
+
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>section<span class="token punctuation">[</span><span class="token string">"DatabasePW"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="WebFarm-Encryption"><a href="#WebFarm-Encryption" class="headerlink" title="WebFarm Encryption"></a>WebFarm Encryption</h3><p>參考 Nedim Sahin 的分享 <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/t5/iis-support-blog/connection-string-encryption-and-decryption/ba-p/830094">Connection string encryption and decryption</a>：不同於單一伺服器的 Config 加密方式，如果是 WebFarm 的架構，為了讓不同的機器共同存取的 Config 在不同機器上都能夠被解密讀取，必須使用 <code class="s">RSA key</code> 的方式進行加密。</p>
+<p>首先使用 <code class="s">aspnet_regiis</code> 進行 RSA 金鑰的產生。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">cd</span> C:\Windows\Microsoft.NET\Framework\v4.<span class="token number">0</span>.<span class="token number">30319</span>\</span>
+.\aspnet_regiis.exe -pc "KeyName" -exp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>接著將 RSA 金鑰授予所需要使用的應用程式集區：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\aspnet_regiis.exe -pa "KeyName" "IIS AppPool\ApplicationPoolName" -full<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>接著在 Web.config 加入 RSA Provider：</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configProtectedData</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>providers</span><span class="token punctuation">></span></span>
+         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>RSAProvider<span class="token punctuation">"</span></span>
+              <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Configuration.RsaProtectedConfigurationProvider, System.Configuration, Version=2.0.0.0,
+                    Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a,
+                    processorArchitecture=MSIL<span class="token punctuation">"</span></span>
+              <span class="token attr-name">keyContainerName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>KeyName<span class="token punctuation">"</span></span> 
+              <span class="token attr-name">useMachineContainer</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>providers</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configProtectedData</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>開始進行 Web.config 的加密：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\aspnet_regiis.exe -pe "connectionStrings" -app "/WebApps" -prov "RSAProvider"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在測試站台能夠正確作用後，將 RSA 金鑰匯出以提供 WebFarm 中的其他伺服器使用：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\aspnet_regiis.exe -px "KeyName" "c:\keys.xml" -pri<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>當 RSA 金鑰準備到其他伺服器後，開始進行匯入：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\aspnet_regiis.exe -pi "KeyName" "c:\keys.xml"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>接著再將 RSA 金鑰授予所需要使用的應用程式集區，完成後進行測試：</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch">.\aspnet_regiis.exe -pa "KeyName" "IIS AppPool\ApplicationPoolName" -full<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/08/IIS-MISC/">IIS 筆記整理</a></p>
+<p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/12/IIS-Encrypt-Web-Config/" data-id="clg3fmaej00qxs4ts8lsc221l" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/12/Html-Form-Input-User-Select-All/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Html Form Input User Select All</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/12/WebForms-And-MVC/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WebForms And MVC
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

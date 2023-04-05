@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>超簡單學習 Vue.js 系列 | Vue Ramen (Form) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Vue.js 簡單的示範專案，本次要說明的是 Vue 與表單設計 (form design) 的結合，以客製化拉麵為範例，使用 Vue CLI 實作將所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。本次專案結合使用 Boostrap.css 以及 Animate.css。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超簡單學習 Vue.js 系列 | Vue Ramen (Form)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/01/Vue-Toys-3/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="Vue.js 簡單的示範專案，本次要說明的是 Vue 與表單設計 (form design) 的結合，以客製化拉麵為範例，使用 Vue CLI 實作將所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。本次專案結合使用 Boostrap.css 以及 Animate.css。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/vue-js-logo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sdwh/Vue-Ramen/master/src/assets/Vue-Ramen.gif">
+<meta property="article:published_time" content="2022-01-02T07:21:35.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.987Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="F2E">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/vue-js-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue-Toys-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/01/Vue-Toys-3/" class="article-date">
+  <time datetime="2022-01-02T07:21:35.000Z" itemprop="datePublished">2022-01-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue/">Vue</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      超簡單學習 Vue.js 系列 | Vue Ramen (Form)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E8%A3%BD%E5%8C%96%E6%8B%89%E9%BA%B5-Vue-Ramen"><span class="toc-text">客製化拉麵 Vue Ramen</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E5%BB%BA%E7%AB%8B"><span class="toc-text">專案建立</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#App-vue"><span class="toc-text">App.vue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ramen-vue"><span class="toc-text">Ramen.vue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Github"><span class="toc-text">Github</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>Vue.js 簡單的示範專案，本次要說明的是 Vue 與表單設計 (form design) 的結合，以客製化拉麵為範例，使用 Vue CLI 實作將所學習的知識以及實作需要的功能，藉此將知識實際結合，記得牢、想得到、用得出來。本次專案結合使用 Boostrap.css 以及 Animate.css。</p>
+<a href="/posts/2022/01/Vue-Toys-3/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/vue-js-logo.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="客製化拉麵-Vue-Ramen"><a href="#客製化拉麵-Vue-Ramen" class="headerlink" title="客製化拉麵 Vue Ramen"></a>客製化拉麵 Vue Ramen</h2><p><img src="https://raw.githubusercontent.com/sdwh/Vue-Ramen/master/src/assets/Vue-Ramen.gif"></p>
+<table>
+<thead>
+<tr>
+<th>技術關鍵字</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Animate.css</td>
+<td>簡易讓元素產生動畫效果，讓呈現更為活潑</td>
+</tr>
+<tr>
+<td>Google Font API</td>
+<td>豐富可以使用的字體，必須要客戶端另外安裝，以載入的方式使用</td>
+</tr>
+</tbody></table>
+<h3 id="專案建立"><a href="#專案建立" class="headerlink" title="專案建立"></a>專案建立</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">npm</span> install bootstrap</span>
+<span class="token command"><span class="token keyword">npm</span> install animate.css</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="App-vue"><a href="#App-vue" class="headerlink" title="App.vue"></a>App.vue</h3><pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-lg-7 my-3 p-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text-center<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>麵風屋 Ramen<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Vue logo<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./assets/ramen.png<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ramen-logo<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mt-3 align-self-end<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>台北市信義區松麵路一段5號<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary mt-5
+          animate__bounce animate__infinite<span class="token punctuation">"</span></span>
+          <span class="token attr-name">:class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;
+            animate__animated: smile !== <span class="token punctuation">'</span>😀<span class="token punctuation">'</span>
+          &#125;<span class="token punctuation">"</span></span>
+          <span class="token attr-name">@mouseover</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>smile = <span class="token punctuation">'</span>😀<span class="token punctuation">'</span><span class="token punctuation">"</span></span>
+          <span class="token attr-name">@mouseleave</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>smile = <span class="token punctuation">'</span><span class="token punctuation">'</span><span class="token punctuation">"</span></span> <span class="token punctuation">></span></span>下麵 &#123;&#123; smile &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-lg-5 mx-auto my-3 p-3 rounded border border-info<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Ramen</span><span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在 App.vue Template 上主要用於將左右切割為 7 : 5 的比例，左側為封面 Logo 以及確認按鈕，右側則為可以供客製拉麵內容的表單，表單的部分另外以 Vue Child Component 來實作。</p>
+<p>在效果上，利用 Animates CSS 來讓確認按鈕跳動，當游標停留則停止跳動與改變顯示內容 (增加一個 😀)，結合了 Vue Dynamic CSS 以及 V-On 的指令來達到此效果。</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token atrule"><span class="token rule">@import</span><span class="token string">'~bootstrap/dist/css/bootstrap.css'</span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token string">'~animate.css/animate.css'</span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token function">url</span><span class="token punctuation">(</span>'<span class="token property">https</span><span class="token punctuation">:</span>//fonts.googleapis.com/css2?family=Noto+Sans+<span class="token property">TC</span><span class="token punctuation">:</span>wght<span class="token atrule"><span class="token rule">@100</span><span class="token punctuation">;</span></span></span>300<span class="token punctuation">;</span>400<span class="token punctuation">;</span>500<span class="token punctuation">;</span>700<span class="token punctuation">;</span>900&amp;display=swap'<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token selector">#ramen-logo</span><span class="token punctuation">&#123;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token selector">#app</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'Noto Sans TC'</span><span class="token punctuation">,</span> sans-serif<span class="token punctuation">;</span>
+  ...
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在 App.vue Style 引用 bootstrap, animate.css 以及用 CDN 的方式使用 Google Font API。</p>
+<h3 id="Ramen-vue"><a href="#Ramen-vue" class="headerlink" title="Ramen.vue"></a>Ramen.vue</h3><pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token punctuation">&#123;</span>
+        <span class="token literal-property property">ramenStyle</span> <span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'醬油'</span><span class="token punctuation">,</span> <span class="token string">'味噌'</span><span class="token punctuation">,</span> <span class="token string">'鹽味'</span><span class="token punctuation">,</span> <span class="token string">'豚骨'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">sauces</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'淡'</span><span class="token punctuation">,</span> <span class="token string">'普通'</span><span class="token punctuation">,</span> <span class="token string">'濃'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">oils</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'無'</span><span class="token punctuation">,</span> <span class="token string">'淡'</span><span class="token punctuation">,</span> <span class="token string">'普通'</span><span class="token punctuation">,</span> <span class="token string">'濃'</span><span class="token punctuation">,</span> <span class="token string">'超濃'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">meats</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'無'</span><span class="token punctuation">,</span> <span class="token string">'圓叉燒'</span><span class="token punctuation">,</span> <span class="token string">'方叉燒'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">vegetables</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'青蔥'</span><span class="token punctuation">,</span> <span class="token string">'高麗菜'</span><span class="token punctuation">,</span> <span class="token string">'玉米粒'</span><span class="token punctuation">,</span> <span class="token string">'海苔'</span><span class="token punctuation">,</span> <span class="token string">'黑木耳'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">noodles</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'軟'</span><span class="token punctuation">,</span> <span class="token string">'普通'</span><span class="token punctuation">,</span> <span class="token string">'硬'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">additionals</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'半熟蛋'</span><span class="token punctuation">,</span> <span class="token string">'雙倍叉燒'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">spicy</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">drinks</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'水'</span><span class="token punctuation">,</span> <span class="token string">'可樂'</span><span class="token punctuation">,</span> <span class="token string">'可爾必思'</span><span class="token punctuation">,</span> <span class="token string">'啤酒'</span><span class="token punctuation">]</span>
+      <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">computed</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token function-variable function">howSpicy</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>spicy <span class="token operator">>=</span><span class="token number">3</span> <span class="token operator">?</span> <span class="token string">"這真的很辣"</span> <span class="token operator">:</span> <span class="token string">""</span>
+      <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Script 的部分，包含 Data 以及 Computed，其中 Data 用於渲染 Form 的 Radio 以及 Checkbox 縮減重複的 Code，Computed 則用於增加表單活潑的元素，在特定情境下顯示訊息。<strong>目前表單尚尚未有完整的 Data 雙向綁定用於送給後端的設計，僅作為表面的呈現。</strong></p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>口味 ❤️<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>style in ramenStyle<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>style<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check d-inline-block mx-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-input<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>radio<span class="token punctuation">"</span></span>
+            <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ramenStyle<span class="token punctuation">"</span></span> <span class="token attr-name">:id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>style<span class="token punctuation">"</span></span>
+        <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-label<span class="token punctuation">"</span></span> <span class="token attr-name">:for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>style<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            &#123;&#123; style &#125;&#125;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>湯底醬汁<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sauce in sauces<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sauce<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check d-inline-block mx-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-input<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>radio<span class="token punctuation">"</span></span>
+            <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sauces<span class="token punctuation">"</span></span> <span class="token attr-name">:id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>sauce_<span class="token punctuation">'</span> + sauce<span class="token punctuation">"</span></span>
+        <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-label<span class="token punctuation">"</span></span> <span class="token attr-name">:for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>sauce_<span class="token punctuation">'</span> + sauce<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            &#123;&#123; sauce &#125;&#125;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Radio 的使用方式，需要注意的是在 id 以及 label for 的搭配，如果有重複值不同的 input 項目會互相干擾，因此必須另外用字串的方式做差異化。例如 suace 與 oil 都有淡、普通、濃，因此在 id 與 for 上，分別以 “suace_淡”、”oil_淡” 的方式區別，就不會影響了。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>蔬菜 🌽<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>veg in vegetables<span class="token punctuation">"</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>veg<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check d-inline-block mx-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-input<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span>
+            <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>vegetables<span class="token punctuation">"</span></span> <span class="token attr-name">:id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>veg_<span class="token punctuation">'</span> + veg<span class="token punctuation">"</span></span>
+        <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-label<span class="token punctuation">"</span></span> <span class="token attr-name">:for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>veg_<span class="token punctuation">'</span> + veg<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            &#123;&#123; veg &#125;&#125;
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Checkbox 的使用與 Radio 幾乎無異，只<strong>差別在 input 的 type 要使用 checkbox</strong>。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>辛味 🌶️<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>customRange3<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-label<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; spicy &#125;&#125; 辛 &#123;&#123; howSpicy &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>range<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-range<span class="token punctuation">"</span></span> <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>spicy<span class="token punctuation">"</span></span>
+    <span class="token attr-name">min</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0<span class="token punctuation">"</span></span> <span class="token attr-name">max</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>5<span class="token punctuation">"</span></span> <span class="token attr-name">step</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>1<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>customRange3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Bootstrap 5 的 Input Range Type 呈現相當美觀，這邊搭配 v-model 並結合 Computed 的方式，如果辛辣程度大於等於 3 就顯示警告訊息。</p>
+<h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>來去 Github 專案一探 Source Code 究竟吧 😉</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/sdwh/Vue-Ramen">https://github.com/sdwh/Vue-Ramen</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/01/Vue-Toys-3/" data-id="clg3fmami01kas4ts9y7wgkjs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F2E/" rel="tag">F2E</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/12/Vue-Fetch-With-Json-Server/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">超簡單學習 Vue.js 系列 | Fetch With Json Server</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/01/Modernize-Legacy-Systems/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          關於老系統現代化的各種方式 Modernize Legacy Systems
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

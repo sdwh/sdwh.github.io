@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>如何在 ASP.NET MVC下使用 Sqlite (ASP.NET MVC 5 With Sqlite) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Sqlite 的方便用過都知道，如何在 ASP.NET MVC 下順利地使用呢？幾項步驟，跟著完成就可以使用！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在 ASP.NET MVC下使用 Sqlite (ASP.NET MVC 5 With Sqlite)">
+<meta property="og:url" content="https://sdwh.dev/posts/2020/05/MVC-Sqlite/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="Sqlite 的方便用過都知道，如何在 ASP.NET MVC 下順利地使用呢？幾項步驟，跟著完成就可以使用！">
+<meta property="og:locale">
+<meta property="og:image" content="https://i.imgur.com/KSDCgUE.gif">
+<meta property="og:image" content="https://sdwh.dev/assets/sqlite-compact-toolbox.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/sqlite-gac-install-options.png">
+<meta property="og:image" content="https://sdwh.dev/assets/system-data-sqlite.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/dotAspMvc-Sqlite-New-AdoNetModel.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/dotAspMvc-Sqlite-New-EFDesigner.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/dotAspMvc-Sqlite-New-Provider.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/dotNetMvc-sqlite-conver-fail.jpg">
+<meta property="article:published_time" content="2020-05-27T06:55:38.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.893Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="Sqlite">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/KSDCgUE.gif">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-MVC-Sqlite" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2020/05/MVC-Sqlite/" class="article-date">
+  <time datetime="2020-05-27T06:55:38.000Z" itemprop="datePublished">2020-05-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何在 ASP.NET MVC下使用 Sqlite (ASP.NET MVC 5 With Sqlite)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Env-Setup-Steps"><span class="toc-text">Env Setup Steps</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Install-Toolbox"><span class="toc-text">Install Toolbox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Install-SQLite-in-GAC"><span class="toc-text">Install SQLite in GAC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nuget-Install-System-Data-SQLite"><span class="toc-text">Nuget Install System.Data.SQLite</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Setting-Web-config"><span class="toc-text">Setting Web.config</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dev-Steps"><span class="toc-text">Dev Steps</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A6%8B%E9%8C%AF%E8%AA%A4"><span class="toc-text">常見錯誤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Unable-to-open-the-database-file"><span class="toc-text">Unable to open the database file</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%84%A1%E6%B3%95%E5%AF%AB%E5%85%A5%E6%AA%94%E6%A1%88"><span class="toc-text">無法寫入檔案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BC%89%E5%85%A5%E8%B3%87%E6%96%99%E5%BA%AB%E6%99%82%E7%84%A1%E6%B3%95%E8%BD%89%E5%9E%8B"><span class="toc-text">載入資料庫時無法轉型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>Sqlite 的方便用過都知道，如何在 ASP.NET MVC 下順利地使用呢？幾項步驟，跟著完成就可以使用！</p>
+<p><img src="https://i.imgur.com/KSDCgUE.gif"></p>
+<span id="more"></span>
+
+<h2 id="Env-Setup-Steps"><a href="#Env-Setup-Steps" class="headerlink" title="Env Setup Steps"></a>Env Setup Steps</h2><ol>
+<li>Update Visual Studio 2017 (version &gt;= 15.8 )</li>
+<li>Install Toolbox</li>
+<li>Install SQLite in GAC</li>
+<li>Nuget Install System.Data.SQLite</li>
+<li>Setting Web.config</li>
+</ol>
+<h3 id="Install-Toolbox"><a href="#Install-Toolbox" class="headerlink" title="Install Toolbox"></a>Install Toolbox</h3><p>藉由 <strong>擴充功能和更新</strong> 尋找 <strong>SQLite Compact Toolbox</strong> 後安裝。</p>
+<p><img src="/assets/sqlite-compact-toolbox.jpg"></p>
+<h3 id="Install-SQLite-in-GAC"><a href="#Install-SQLite-in-GAC" class="headerlink" title="Install SQLite in GAC"></a>Install SQLite in GAC</h3><p>安裝版本：sqlite-netFx46-setup-bundle-x86-2015-<strong>1.0.110.0</strong></p>
+<p>安裝時要一併勾選下列選項，否則在使用 EntityFramework 時會出現未安裝正確的 Provider：</p>
+<p><img src="/assets/sqlite-gac-install-options.png" alt="記得勾選相關選項"></p>
+<p><a target="_blank" rel="noopener" href="https://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki">System.Data.SQLite Downloads Page</a></p>
+<h3 id="Nuget-Install-System-Data-SQLite"><a href="#Nuget-Install-System-Data-SQLite" class="headerlink" title="Nuget Install System.Data.SQLite"></a>Nuget Install System.Data.SQLite</h3><p>藉由 Nuget 搜尋 <strong>System.Data.SQLite</strong> 後安裝。</p>
+<p>⚠️ <strong>絕對務必千萬</strong>要裝 <code class="watch">System.Data.SQLite</code>，<br>不要自作主張裝 <code>sqlite</code> 或 <code>Microsoft.Data.Sqlite</code>，否則人生將會消失一個小時在尋找SQLite Provider (simple for ES6 by ErikEJ)。</p>
+<p>⚠️ 要注意 Nuget 安裝的軟體版本必須要小於等於上一步驟 GAC 安裝的版本，否則 EntityFramework 載入資料庫可能發現無法轉型的錯誤。</p>
+<p><img src="/assets/system-data-sqlite.jpg" alt="System.Data.SQLite"></p>
+<h3 id="Setting-Web-config"><a href="#Setting-Web-config" class="headerlink" title="Setting Web.config"></a>Setting Web.config</h3><p>於 Web.config 之 configuration &gt;  entityFramework &gt; providers 加入：</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>provider</span> 
+  <span class="token attr-name">invariantName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Data.SQLite<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Data.SQLite.EF6.SQLiteProviderServices, System.Data.SQLite.EF6<span class="token punctuation">"</span></span> 
+<span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以上完成專案環境設定步驟</p>
+<h2 id="Dev-Steps"><a href="#Dev-Steps" class="headerlink" title="Dev Steps"></a>Dev Steps</h2><ol>
+<li>確認 sqlite 檔案 (.db) 儲存於 App_Data folder</li>
+<li>Models Folder 加入新增項目 <strong>ADO.NET實體資料模型</strong></li>
+</ol>
+<p><img src="/assets/dotAspMvc-Sqlite-New-AdoNetModel.jpg" alt="ADO.NET實體資料模型"></p>
+<ol start="3">
+<li>選擇 <strong>來自資料庫的EF Designer</strong></li>
+</ol>
+<p><img src="/assets/dotAspMvc-Sqlite-New-EFDesigner.jpg" alt="來自資料庫的EF Designer"></p>
+<ol start="4">
+<li>新增連結，資料連結選擇 SQLite Provider (simple for ES6 by ErikEJ)</li>
+</ol>
+<p><img src="/assets/dotAspMvc-Sqlite-New-Provider.jpg" alt="SQLite Provider (simple for ES6 by ErikEJ)"></p>
+<ol start="5">
+<li>Connection String 輸入 (<strong>記得包含</strong> data source = )<br> <strong>開發環境</strong>：<code class="watch">data source = C:\ProjectName\App_Data\datas.db</code><br> <strong>正式環境</strong>：<code class="watch">data source = |DataDirectory|\datas.db</code></li>
+<li>新增 Controller Scaffolding</li>
+<li>選擇 Controller folder right click 新增 &gt; 控制器 並選擇 <strong>具有檢視、使用 Entity Framework 的 MVC5 控制器</strong></li>
+<li>選擇模型類別及資料內容類別</li>
+<li>編譯完成後驗證結果</li>
+<li>在 Web.Release.config 加入 對應之 ConnectionName 與 |DataDirectory|\data.db</li>
+<li>於部署端資料夾設定存取權限</li>
+</ol>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="utf-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span> <span class="token attr-name"><span class="token namespace">xmlns:</span>xdt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://schemas.microsoft.com/XML-Document-Transform<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>connectionStrings</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ConnectionName<span class="token punctuation">"</span></span>
+      <span class="token attr-name">connectionString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>metadata=res://*/Models.GenericContent.csdl|res://*/Models.GenericContent.ssdl|res://*/Models.GenericContent.msl;provider=System.Data.SQLite.EF6;provider connection string=<span class="token punctuation">'</span>data source=<span class="token entity named-entity" title="&quot;">&amp;quot;</span>|DataDirectory|\data.db<span class="token entity named-entity" title="&quot;">&amp;quot;</span><span class="token punctuation">'</span><span class="token punctuation">"</span></span>
+      <span class="token attr-name"><span class="token namespace">xdt:</span>Transform</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>SetAttributes<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">xdt:</span>Locator</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Match(name)<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>connectionStrings</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<div style="margin-top: 2rem;"/>
+
+
+<h2 id="常見錯誤"><a href="#常見錯誤" class="headerlink" title="常見錯誤"></a>常見錯誤</h2><h3 id="Unable-to-open-the-database-file"><a href="#Unable-to-open-the-database-file" class="headerlink" title="Unable to open the database file"></a>Unable to open the database file</h3><p>Connection String 沒有正確設定為 data source = |DataDirectory|\datas.db</p>
+<h3 id="無法寫入檔案"><a href="#無法寫入檔案" class="headerlink" title="無法寫入檔案"></a>無法寫入檔案</h3><p>資料夾的權限設定不足</p>
+<h3 id="載入資料庫時無法轉型"><a href="#載入資料庫時無法轉型" class="headerlink" title="載入資料庫時無法轉型"></a>載入資料庫時無法轉型</h3><p>檢查 GAC 與 System.Data.SQLite 的版本是否一致。</p>
+<p><img src="/assets/dotNetMvc-sqlite-conver-fail.jpg" alt="轉型錯誤，需要安裝新版的 GAC"></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://github.com/ErikEJ/SqlCeToolbox/wiki/EF6-workflow-with-SQLite-DDEX-provider#install-systemdatasqlite-nuget-package">EF6 workflow with SQLite DDEX provider</a></p>
+<p><a target="_blank" rel="noopener" href="https://ronsun.github.io/content/20190907-use-sqlite-with-ef-and-vs2017.html">在 vs2017 中使用 Entity Framework 操作 SQLite</a></p>
+<p><a target="_blank" rel="noopener" href="https://sqlitebrowser.org/">DB Browser For SQLite</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2020/05/MVC-Sqlite/" data-id="clg3fmafg00uns4ts0n0sapyp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Sqlite/" rel="tag">Sqlite</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2020/05/Git/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Git 學習筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2020/05/Git-100/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Git 的 100 個情境應用
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

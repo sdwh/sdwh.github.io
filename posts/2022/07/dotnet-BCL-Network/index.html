@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>.NET BCL Series (TCP Client / HTTP Client) | Network | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 .NET Base Class Library 各式基礎函式庫的使用原理與技巧，讓開發 .NET 程式自然且流暢 🙂">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET BCL Series (TCP Client &#x2F; HTTP Client) | Network">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/07/dotnet-BCL-Network/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 .NET Base Class Library 各式基礎函式庫的使用原理與技巧，讓開發 .NET 程式自然且流暢 🙂">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2022-07-01T13:13:48.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:25.003Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="CSharp">
+<meta property="article:tag" content="dotnet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dotnet-BCL-Network" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/07/dotnet-BCL-Network/" class="article-date">
+  <time datetime="2022-07-01T13:13:48.000Z" itemprop="datePublished">2022-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      .NET BCL Series (TCP Client / HTTP Client) | Network
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCPClient"><span class="toc-text">TCPClient</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HttpClient"><span class="toc-text">HttpClient</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#NTLM"><span class="toc-text">NTLM</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-Upload-File"><span class="toc-text">HTTP Upload File</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#HttpClient-1"><span class="toc-text">HttpClient</span></a></li></ol></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 .NET Base Class Library 各式基礎函式庫的使用原理與技巧，讓開發 .NET 程式自然且流暢 🙂</p>
+<a href="/posts/2022/07/dotnet-BCL-Network/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="TCPClient"><a href="#TCPClient" class="headerlink" title="TCPClient"></a>TCPClient</h3><p>測試伺服器與特定 Port 否啟用，並且以 1 秒鐘立刻逾時 (timeout)。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>Sockets<span class="token punctuation">.</span>TcpClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> success <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token keyword">try</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> task <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">BeginConnect</span><span class="token punctuation">(</span><span class="token string">"web1"</span><span class="token punctuation">,</span> <span class="token number">80</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    success <span class="token operator">=</span> task<span class="token punctuation">.</span>AsyncWaitHandle<span class="token punctuation">.</span><span class="token function">WaitOne</span><span class="token punctuation">(</span>TimeSpan<span class="token punctuation">.</span><span class="token function">FromSeconds</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="HttpClient"><a href="#HttpClient" class="headerlink" title="HttpClient"></a>HttpClient</h3><div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>.NET 推薦在 HTTP 互動的類別上優先使用 HttpClient，早期的 WebClient 以及 WebRequest 已經被警示為 Deprecated。但 HttpClient 無法與 FTP 互動以及顯示傳送進度，仍不可完全取代 WebClient。</p>
+        </div>
+    </div>
+</div>
+
+<p>.NET Framework 當中， HttpClient 的底層仍是 <strong>HttpWebRequest</strong> 到了 .NET 才有獨立的 HttpClient 以 <strong>SocketsHttpHandler</strong> 實作</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>Http</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Net</span><span class="token punctuation">;</span>
+
+<span class="token keyword">static</span> <span class="token keyword">readonly</span> <span class="token class-name">HttpClient</span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>ServicePointManager<span class="token punctuation">.</span>SecurityProtocol <span class="token operator">=</span> SecurityProtocolType<span class="token punctuation">.</span>Tls12<span class="token punctuation">;</span>
+
+<span class="token class-name">HttpResponseMessage</span> response <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span><span class="token function">GetAsync</span><span class="token punctuation">(</span><span class="token string">"https://httpstat.us/404"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>response<span class="token punctuation">.</span>StatusCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">string</span></span> responseBody <span class="token operator">=</span> <span class="token keyword">await</span> response<span class="token punctuation">.</span>Content<span class="token punctuation">.</span><span class="token function">ReadAsStringAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>responseBody<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>預設 HttpClient 可以回應各種 StatusCode，如果要限制成功 (Success 200) 的情況，可以使用 <strong>response.EnsureSuccessStatusCode</strong> 讓不是 200 的 StatusCode Raise Exception。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">response<span class="token punctuation">.</span><span class="token function">EnsureSuccessStatusCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>預設上 .NET 會自動選擇適合的 TLS Portocol，但可能碰到回應 Server 只支援 TLS 1.2 以上而無法成功建立連線的問題，這個時候可以透過 <strong>ServicePointManager.SecurityProtocol</strong> 來指定 Client 端要使用的 TLS 版本。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>SecurityProtocolType<span class="token punctuation">.</span>Ssl3
+System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>SecurityProtocolType<span class="token punctuation">.</span>Tls
+System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>SecurityProtocolType<span class="token punctuation">.</span>Tls11
+System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>SecurityProtocolType<span class="token punctuation">.</span>Tls12
+System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>SecurityProtocolType<span class="token punctuation">.</span>Tls13<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="NTLM"><a href="#NTLM" class="headerlink" title="NTLM"></a>NTLM</h4><p>在 HttpClientHandler 設定 UseDefaultCredentials 為 true，HttpClient 物件在發送 HTTP 請求時，就會使用目前執行緒的 Windows 身分來進行驗證 (NTLM)。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> client <span class="token operator">=</span> 
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClientHandler</span> <span class="token punctuation">&#123;</span> UseDefaultCredentials <span class="token operator">=</span> <span class="token boolean">true</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> response <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span><span class="token function">GetAsync</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>response<span class="token punctuation">.</span>IsSuccessStatusCode<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            result <span class="token operator">=</span> <span class="token keyword">await</span> response<span class="token punctuation">.</span>Content<span class="token punctuation">.</span><span class="token function">ReadAsStringAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="HTTP-Upload-File"><a href="#HTTP-Upload-File" class="headerlink" title="HTTP Upload File"></a>HTTP Upload File</h3><h4 id="HttpClient-1"><a href="#HttpClient-1" class="headerlink" title="HttpClient"></a>HttpClient</h4><p>下列是伺服器端負責接收檔案上傳的 Code，可以接收多個檔案。</p>
+<p><code class="watch">Controller.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Upload</span><span class="token punctuation">(</span><span class="token class-name">HttpPostedFileBase<span class="token punctuation">[</span><span class="token punctuation">]</span></span> files<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> fileUploads <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>FiledUploaded<span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span>  <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> file <span class="token keyword">in</span> files<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> fileUpload <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FiledUploaded</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> Server<span class="token punctuation">.</span><span class="token function">MapPath</span><span class="token punctuation">(</span><span class="token string">"~/Uploads/"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        file<span class="token punctuation">.</span><span class="token function">SaveAs</span><span class="token punctuation">(</span>Path<span class="token punctuation">.</span><span class="token function">Combine</span><span class="token punctuation">(</span>fileUpload<span class="token punctuation">.</span>ServerPath<span class="token punctuation">,</span> fileUpload<span class="token punctuation">.</span>GuidName<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        fileUploads<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>fileUpload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>fileUploads<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>下列是 Client 端負責將檔案進行上傳的 Code，示範多檔上傳的方式。</p>
+<p><code class="watch">UploadProgram.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Net</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Net<span class="token punctuation">.</span>Http</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">string</span></span> url <span class="token operator">=</span> <span class="token string">"https://localhost:12345/Home/Upload"</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> formData <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MultipartFormDataContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+formData<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StreamContent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">FileStream</span><span class="token punctuation">(</span><span class="token string">@"C:\temp\sun.png"</span><span class="token punctuation">,</span> FileMode<span class="token punctuation">.</span>Open<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">,</span><span class="token string">"files"</span> <span class="token comment">// name Mapping Controler's HttpPostedFileBase[] Parameters</span>
+    <span class="token punctuation">,</span><span class="token string">"moon.png"</span> <span class="token comment">// fileName</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+formData<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>
+    <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StreamContent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">FileStream</span><span class="token punctuation">(</span><span class="token string">@"C:\temp\moon.png"</span><span class="token punctuation">,</span> FileMode<span class="token punctuation">.</span>Open<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">,</span><span class="token string">"files"</span>
+    <span class="token punctuation">,</span><span class="token string">"sun.png"</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClient</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpClientHandler</span> <span class="token punctuation">&#123;</span> UseDefaultCredentials <span class="token operator">=</span> <span class="token boolean">true</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> httpResponseMessage <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span><span class="token function">SendAsync</span><span class="token punctuation">(</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">HttpRequestMessage</span><span class="token punctuation">(</span>HttpMethod<span class="token punctuation">.</span>Post<span class="token punctuation">,</span> url<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            Content <span class="token operator">=</span> formData
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>httpResponseMessage<span class="token punctuation">.</span>StatusCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>需要注意的是 <code class="s">MultipartFormDataContent</code> 所加入的 HttpContent 所指定的 name 必須要與接收伺服器端的 Controller 的參數一致，本例都是 <strong>files</strong>。</p>
+<p>如果接收端需要 Windows 驗證，可以在 HttpClient 使用 <code class="s">HttpClientHandler</code> 並且使用 <code class="s">UseDefaultCredentials</code> 會使用目前 Client 端登入的 Windows 驗證進行傳送。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/07/dotnet-BCL-Network/" data-id="clg3fmao901pqs4tsgdj706dq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dotnet/" rel="tag">dotnet</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/06/IIS-Application-Request-Routing-Setup/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">IIS Application Request Routing 部署方式</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/07/dotnet-BCL-Delegate-Events-Lambda/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          .NET BCL Series | Delegate, Events &amp; Lambda
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

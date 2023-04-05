@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="詳細步驟說明 ASP.NET MVC Framework 如何在設計 View 的時候，加入 Vue.js 前端框架，同時結合 Razor 頁面設計的威力以及享用 Vue.js 所帶來的雙向綁定以及宣告式渲染，讓表單 (form) 的設計方式更為活潑多元。 同時使用了 Bootstrap-Vue 框架，讓輕前端解決方案中，不容易設計 Vue 元件的問題有了替代的解決方式。同時本次的說明是以 Vis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="詳細步驟說明 ASP.NET MVC Framework 如何在設計 View 的時候，加入 Vue.js 前端框架，同時結合 Razor 頁面設計的威力以及享用 Vue.js 所帶來的雙向綁定以及宣告式渲染，讓表單 (form) 的設計方式更為活潑多元。 同時使用了 Bootstrap-Vue 框架，讓輕前端解決方案中，不容易設計 Vue 元件的問題有了替代的解決方式。同時本次的說明是以 Vis">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Bootstrap-Vue-Steps-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Bootstrap-Vue-Steps-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Bootstrap-Vue-Steps-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Bootstrap-Vue-Steps-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Bootstrap-Vue-Steps-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-MVC-Bootstrap-Vue-Examples.gif">
+<meta property="article:published_time" content="2021-07-12T23:08:23.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-With-Bootstrap-Vue" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/" class="article-date">
+  <time datetime="2021-07-12T23:08:23.000Z" itemprop="datePublished">2021-07-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC 使用 Bootstrap-Vue 輕前端解決方案
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%96%8B%E7%99%BC%E6%AD%A5%E9%A9%9F"><span class="toc-text">開發步驟</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-ASP-NET-MVC-%E5%B0%88%E6%A1%88"><span class="toc-text">建立 ASP.NET MVC 專案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E%E9%A0%81%E9%9D%A2"><span class="toc-text">新增頁面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E5%85%A5-Style-Scripts-CDN"><span class="toc-text">加入 Style &#x2F; Scripts CDN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Template"><span class="toc-text">使用 Template</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B-Vue-Instance"><span class="toc-text">建立 Vue Instance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%90%E6%9E%9C"><span class="toc-text">成果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%B5%90"><span class="toc-text">小結</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E6%87%89%E7%94%A8"><span class="toc-text">後續應用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>詳細步驟說明 ASP.NET MVC Framework 如何在設計 View 的時候，加入 Vue.js 前端框架，同時結合 Razor 頁面設計的威力以及享用 Vue.js 所帶來的雙向綁定以及宣告式渲染，讓表單 (form) 的設計方式更為活潑多元。</p>
+<p>同時使用了 Bootstrap-Vue 框架，讓輕前端解決方案中，不容易設計 Vue 元件的問題有了替代的解決方式。同時本次的說明是以 Visual Studio 進行說明，有別於使用 Visual Studio Code 的說明方式，要讓原本熟悉 ASP.NET MVC、Visual Studio 的開發人員在熟悉的開發環境中加入 Vue.js 前端框架。</p>
+<a href="/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>ASP.NET MVC 當中的 Razor 其實已足以勝任多數的頁面設計工作，同時用法也相當直覺，如同古早的 ASP、PHP 直接在整個動態產生出所需的 HTML，並組合為整個網頁。同時搭配 jQuery 使用 DOM 的方式對於網頁元素進行操作，對於事件的處理也。此外 MVC 也有提供了 Unobtrusive Ajax Helper，能夠直接與後端的 Controller 合作，使用 Ajax 非同步地更新網頁中部份元件，語法簡便、使用容易，讓網頁不需要重新整理就能夠更新顯示內容，提升使用者的體驗。</p>
+<p>而儘管 ASP.NET MVC 相當美好，隨著應用系統的逐漸複雜，對於前端處理的期待越來越多，藉由前端框架所提供的<strong>雙向綁定</strong>、<strong>宣告式渲染</strong>功能，能夠讓前端的互動更為豐富、多元，然而在缺乏專職前端工程的團隊中，要大動作的將專案拆分為前端、後端並不容易，取而代之的是讓開發人員能夠輕量的使用前端框架，讓 JS Script 隨著系統複雜不易維護的問題有了緩解，同時也是為團隊儲備前端的開發能量，日後有新專案的時候再嘗試分離前、後端。</p>
+<h2 id="開發步驟"><a href="#開發步驟" class="headerlink" title="開發步驟"></a>開發步驟</h2><h3 id="建立-ASP-NET-MVC-專案"><a href="#建立-ASP-NET-MVC-專案" class="headerlink" title="建立 ASP.NET MVC 專案"></a>建立 ASP.NET MVC 專案</h3><p>建立專案的步驟一如以往，請參考圖片。</p>
+<p><img src="/assets/ASPNET-MVC-Bootstrap-Vue-Steps-2.png"><br><img src="/assets/ASPNET-MVC-Bootstrap-Vue-Steps-3.png"><br><img src="/assets/ASPNET-MVC-Bootstrap-Vue-Steps-4.png"></p>
+<p>完成後首先將專案加入原始檔控制，方案版本控制日後開發過程的變化。</p>
+<p><img src="/assets/ASPNET-MVC-Bootstrap-Vue-Steps-1.png"></p>
+<h3 id="新增頁面"><a href="#新增頁面" class="headerlink" title="新增頁面"></a>新增頁面</h3><p>為簡化設計的過程，由 Controller 加入一個新的 Action 並回傳不具 Layout 的 View，專供 Vue.js 使用。後續再隨著 Vue.js 的應用範圍，可以有專門的 Layout 或者者加入共用的 Layout 使每個頁面都可以使用 Vue.js。</p>
+<p><img src="/assets/ASPNET-MVC-Bootstrap-Vue-Steps-5.png"></p>
+<h3 id="加入-Style-Scripts-CDN"><a href="#加入-Style-Scripts-CDN" class="headerlink" title="加入 Style / Scripts CDN"></a>加入 Style / Scripts CDN</h3><p>首先在 Head element 的地方加入 CDN，如果為 Intranet 環境可以改以 LibMan 自行管理相關元件。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>要注意的是 Vue.js 的引入必須在 Head 之中，如果 Script 引入放置在 Body 後，網頁會先出現未渲染前的 Html Element，然後在閃現進行元件渲染，使用者體驗比較不好。</p>
+        </div>
+    </div>
+</div>
+
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>Vue<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- Add this to &lt;head> --></span>
+    <span class="token comment">&lt;!-- Load required Bootstrap and BootstrapVue CSS --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text/css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>//unpkg.com/bootstrap/dist/css/bootstrap.min.css<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text/css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+    <span class="token comment">&lt;!-- Load polyfills to support older browsers --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver<span class="token punctuation">"</span></span> <span class="token attr-name">crossorigin</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>anonymous<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+    <span class="token comment">&lt;!-- Load Vue followed by BootstrapVue --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>//unpkg.com/vue@latest/dist/vue.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+    <span class="token comment">&lt;!-- Load the following for BootstrapVueIcons support --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="使用-Template"><a href="#使用-Template" class="headerlink" title="使用 Template"></a>使用 Template</h3><p>在 Body 當中使用 Div 搭配 Id 為 #App，提供 Vue.js 實體掛載的地方以及控制權，而任何要使用的 Bootstrap-Vue Components 都必須於 <code class="s">#App</code> Div 之中，才能夠正確渲染。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>App<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- 示範載入 Bootstrap-Vue 的元件--></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b-button</span><span class="token punctuation">></span></span>Button<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b-button</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b-button</span> <span class="token attr-name">variant</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>danger<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Button<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b-button</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b-button</span> <span class="token attr-name">variant</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>success<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Button<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b-button</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b-button</span> <span class="token attr-name">variant</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>outline-primary<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Button<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b-button</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hr</span> <span class="token punctuation">/></span></span>
+
+    <span class="token comment">&lt;!-- 示範使用 Vue.js 的雙向綁定 --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-4<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>msg<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-control w-50<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-4<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-control w-50<span class="token punctuation">"</span></span> 
+              <span class="token attr-name"><span class="token namespace">v-bind:</span>value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>upperCase<span class="token punctuation">"</span></span> <span class="token attr-name">disabled</span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hr</span> <span class="token punctuation">/></span></span>
+
+    <span class="token comment">&lt;!-- 示範使用 Vue.js v-for 來迭代物件 --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b-form-input</span> <span class="token attr-name">list</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-list-id<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b-form-input</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>datalist</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-list-id<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>option</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tech in techs<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>&#123;&#123; tech &#125;&#125;<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>option</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>datalist</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="建立-Vue-Instance"><a href="#建立-Vue-Instance" class="headerlink" title="建立 Vue Instance"></a>建立 Vue Instance</h3><p>使用的是 Vue 3.x 的 Options API ，並將 Vue Instance vm 掛載於 HTML Element Div#App。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+    <span class="token keyword">let</span> vm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+        <span class="token comment">//el: '#App',</span>
+        <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token punctuation">&#123;</span>
+                <span class="token literal-property property">msg</span><span class="token operator">:</span> <span class="token string">"hello"</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">show</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">techs</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'Microsoft'</span><span class="token punctuation">,</span> <span class="token string">'Google'</span><span class="token punctuation">,</span> <span class="token string">'Apple'</span><span class="token punctuation">,</span> <span class="token string">'Netflix'</span><span class="token punctuation">,</span> <span class="token string">'Medium'</span><span class="token punctuation">]</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">computed</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token function">upperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>msg<span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">methods</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    vm<span class="token punctuation">.</span><span class="token function">$mount</span><span class="token punctuation">(</span><span class="token string">'#App'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h3><p>第一部分測試載入 Bootstrap-Vue 的元件，僅以簡單的 Button 為例，有成功渲染。而在輕前端的架構中，其實不用需要特別去使用 Bootstrap-Vue 的 Button，使用 Bootstrap 的 Button 即可，除非是要搭配 Data Binding 等方式來渲染 / 控制 Button 的出現。此外可以觀察到使用 Bootstrap-Vue 的 Button 對於 Style 的控制有些許不同，例如以為是用 Class 來定義 Button 的語意如 Primary, Success, Danger，在 Bootstrap-Vue 則是使用 variant。</p>
+<p>第二部分則是輕前端的重點應用所在，Vue.js 來達成雙向綁定，以外要處理這樣的效果必須動用 jQuery 偵測事件、操作 DOM。現在使用 Vue.js 則易如反掌，行雲流水。</p>
+<p>第三部分示範 v-for 功能來迭代渲染物件，而在 ASP.NET MVC 其實可以藉由 Razor 來達到同樣的功能，這邊僅是做 Vue.js 功能上的測試。</p>
+<p><img src="/assets/ASPNET-MVC-Bootstrap-Vue-Examples.gif"></p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>現在前端開發蓬勃發展，但傳統 IT 團隊還沒有細分專職前端、後端工程師的情境下，開發人員先從輕前端的方案開始著手，逐漸培養團隊的前端工具使用能量，不失為一個開發團隊發展的選擇。在 ASP.NET MVC 中能夠使用 Vue.js 後，為設計使用者介面、使用者互動提供了更好的工具，專案能夠視需求漸進式的使用 Vue.js，太棒了 😁</p>
+<h3 id="後續應用"><a href="#後續應用" class="headerlink" title="後續應用"></a>後續應用</h3><ul>
+<li>將 CDN 調整為 Libman</li>
+<li>將 Page Script / CSS 提升為 Layout Script / CSS</li>
+<li>與後端讀取、寫入資料進行測試</li>
+</ul>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://blog.darkthread.net/blog/category/vue">黑暗執行緒 - 輕前端 Vue</a></p>
+<p><a target="_blank" rel="noopener" href="https://bootstrap-vue.org/">BootstrapVue</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/07/ASPNET-MVC-With-Bootstrap-Vue/" data-id="clg3fma9w006bs4ts80uddgai" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/07/Windows-Useful-Cmd/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Windows Command Line, CMD, 命令提示字元 使用指南</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/07/Vue-Cli-First-Projects/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          初心者教學：使用 Vue CLI 打造 Vue App 前端應用服務
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

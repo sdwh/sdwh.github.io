@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>初探 Clean Code | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於 Clean Code 的設計實務之道。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初探 Clean Code">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/01/Clean-Code-Note/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於 Clean Code 的設計實務之道。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Clean-Code-Measure-Index-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Clean-Code-Measure-Index-2.png">
+<meta property="article:published_time" content="2023-01-25T11:43:26.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="CSharp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Clean-Code-Note" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/01/Clean-Code-Note/" class="article-date">
+  <time datetime="2023-01-25T11:43:26.000Z" itemprop="datePublished">2023-01-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      初探 Clean Code
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-Clean-Code"><span class="toc-text">Why Clean Code</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%89%87%E8%88%87%E6%8A%80%E5%B7%A7"><span class="toc-text">原則與技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Naming"><span class="toc-text">Naming</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conditoinals"><span class="toc-text">Conditoinals</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Clean-Method"><span class="toc-text">Clean Method</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Clean-Class"><span class="toc-text">Clean Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Clean-Comment"><span class="toc-text">Clean Comment</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E4%BD%9C"><span class="toc-text">實作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AA%A2%E9%A9%97%E6%8C%87%E6%A8%99"><span class="toc-text">檢驗指標</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code-Smells"><span class="toc-text">Code Smells</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於 Clean Code 的設計實務之道。</p>
+<a href="/posts/2023/01/Clean-Code-Note/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Clean Code 強調的是程式碼的可讀性 (Readability)，因為任何人都可以寫出電腦看得懂 (Compiler &amp; Interpreter 可以通過) 的程式碼，但卻很難寫出讓未來的自己或其他人看得懂的程式碼。</p>
+<p>筆記源自 Cory House 在 Pluralsight 的 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/csharp-clean-coding-principles/exercise-files">Clean Coding Principles in C#</a>，</p>
+<p>進階參考資源包含 Steve McConnell 的 <a href="#">Code Complete</a>、Robert C.Martin 的 <a href="#">Clean Code</a> 以及 Andrew Hunt 與 David Thomas 的 <a href="#">The Pragmatic Programmer</a>。</p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/sdwh/Clean-Code-Examples" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> Github
+  </a>
+</div>
+
+<hr>
+<p>根據 Cory House 指出，Clean Code 有三個原則，分別是用正確的工具處理工作、讓程式碼呈現資訊而非噪音 (signal to noise ratio) 以及讓程式碼本身就是文件 (Self-Documenting)。</p>
+<p><strong>用正確的工具處理工作</strong></p>
+<p>注意程式碼的邊界，不要互相干涉以及混雜再一起，例如 MVC 專案當中 C#、HTML、CSS 以及 JS 各司其職，不要越俎代庖 (避免用一種程式語言去組合另一種程式語言)，儘量用 Convention over Configuration 以及大家有共識的方式去處理問題。</p>
+<p>太過複雜的 Regex 不要用，相較於硬體資源上的效率，可讀性仍是處在第一位重要。</p>
+<p><strong>讓程式碼呈現資訊而非噪音</strong></p>
+<p>訊號 (signal) 的特質包含 TED (Terse, Expressive, Does one thing)；相對地噪音 (noise) 則是具有高 cyclomatic complexity、浮誇的縮排、不好的命名、重複的程式碼、冗長的單一函式以及巨大的類別等。</p>
+<p><strong>讓程式碼本身就是文件</strong></p>
+<p>透過程式碼排版的技巧來增進可讀性，讓程式碼的縮排 (Indent)與層次 (Layer)等結構本身向閱讀者傳達訊息，而非透過註解來傳達。</p>
+<h3 id="Why-Clean-Code"><a href="#Why-Clean-Code" class="headerlink" title="Why Clean Code"></a>Why Clean Code</h3><p>在程式碼的開發過程中，反覆閱讀程式碼的時間勝過撰寫程式碼，因此程式碼的可讀性特別重要，而好閱讀的程式碼能夠為需求改變或功能擴充帶來更快的實踐。</p>
+<h2 id="原則與技巧"><a href="#原則與技巧" class="headerlink" title="原則與技巧"></a>原則與技巧</h2><h3 id="Naming"><a href="#Naming" class="headerlink" title="Naming"></a>Naming</h3><p>類別的命名，使用明確的名詞，命名要能夠反映出單一責任與高內聚的特性，例如 User, Account, QueryBuilder, ProductRepository。</p>
+<blockquote>
+<p>避免命名出現 And, If, Or，如果有這樣的命名表示類別的責任太多了，應該再切割為更小的類別</p>
+</blockquote>
+<blockquote>
+<p>命名必須要與信任感，不要有命名預期外的狀況 (例如讀取的功能卻會造成資料寫入)</p>
+</blockquote>
+<blockquote>
+<p>布林值的命名技巧: <code class="s">isOpem</code>, <code class="s">isActive</code>, <code class="s">loggedIn</code></p>
+</blockquote>
+<h3 id="Conditoinals"><a href="#Conditoinals" class="headerlink" title="Conditoinals"></a>Conditoinals</h3><p>適當的簡化條件的布林值，可以提升程式碼可讀性：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">❌
+<span class="token keyword">if</span> <span class="token punctuation">(</span>loggedIn <span class="token operator">==</span> ture<span class="token punctuation">)</span>
+
+✔️
+<span class="token keyword">if</span> <span class="token punctuation">(</span>loggedIn<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">❌
+<span class="token class-name"><span class="token keyword">bool</span></span> doSomeThing<span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>weather <span class="token operator">==</span> Weather<span class="token punctuation">.</span>Sunny<span class="token punctuation">)</span>
+  doSomeThing <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token keyword">else</span>
+  doSomeThing <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+✔️
+<span class="token class-name"><span class="token keyword">bool</span></span> doSomeThing <span class="token operator">=</span> weather <span class="token operator">==</span> Weather<span class="token punctuation">.</span>Sunny<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在條件撰寫上避免使用雙重否定。</p>
+<p>適當使用三元運算子 (Ternary) 增進可讀性。</p>
+<p>使用強型別 (Enum) 進行比較，減少使用字串比較。</p>
+<p>避免使用 Magic Number (使用有意義命名的變數或者 Enum 替代)。</p>
+<p>如果條件的判斷式有多項，另外抽成有意義命名的變數替代，增進可讀性。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">❌
+<span class="token keyword">if</span> <span class="token punctuation">(</span>employee<span class="token punctuation">.</span>Age <span class="token operator">></span> <span class="token number">65</span> <span class="token operator">&amp;&amp;</span> employee<span class="token punctuation">.</span>IsRetired<span class="token punctuation">)</span>
+
+✔️
+<span class="token class-name"><span class="token keyword">bool</span></span> eligibleForPension <span class="token operator">=</span> employee<span class="token punctuation">.</span>Age <span class="token operator">></span> <span class="token number">65</span> <span class="token operator">&amp;&amp;</span> employee<span class="token punctuation">.</span>IsRetired<span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>eligibleForPension<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果複雜到變數 hold 不住，就抽出封裝成 Method。</p>
+<p>使用多形 (Polymorphism) 取代 Switch 分歧。</p>
+<p>使用陳述性的方式處理邏輯 (Linq 的 Predicate)。</p>
+<p>提高程式碼的可維護性，使用 Table Driven 將資料儲存在資料庫當中，而非直接在程式碼的邏輯中處理。</p>
+<h3 id="Clean-Method"><a href="#Clean-Method" class="headerlink" title="Clean Method"></a>Clean Method</h3><p>考慮將程式碼抽為 Method 或 Function 的時機，包含發現程式碼出現相似的規律 (Pattern) 以及重複的程式碼時；出現箭頭形狀的縮排 (Arrow Code) 造成程式碼可讀性下降時；程式碼的用途不明確時。</p>
+<p>此外在處理 Arrow Code 時，除了抽為 Method，也可以利用 Fail Fast 的技巧，打破巢狀的 If 讓會報錯直接被處理。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">❌
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">RegisterUser</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> username<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> password<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">isNullOrWhitespace</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">isNullOrWhitespace</span><span class="token punctuation">(</span>password<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token range operator">..</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+✔️
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">RegisterUser</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> username<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> password<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">isNullOrWhitespace</span><span class="token punctuation">(</span>username<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">isNullOrWhitespace</span><span class="token punctuation">(</span>password<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而當程式碼的用途不明確時，也應該抽為 Method，例如：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">❌
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>fileExtension <span class="token operator">==</span> <span class="token string">".jpg"</span> <span class="token operator">||</span> fileExtension <span class="token operator">==</span> <span class="token string">".png"</span> <span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> isFileExists<span class="token punctuation">)</span>
+
+✔️
+<span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">ValidaFileExists</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> fileExtension<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">bool</span></span> isFileExists<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token class-name"><span class="token keyword">var</span></span> validFileExtensions <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token string">".jpg"</span><span class="token punctuation">,</span> <span class="token string">".png"</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> validFileExtensions<span class="token punctuation">.</span><span class="token function">Contains</span><span class="token punctuation">(</span>fileExtension<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> isFileExists<span class="token punctuation">;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>💡 在 Method 內部的變數使用上，不要集中宣告在開頭，而是要緊鄰使用此內部變數的程式碼段落，讓閱讀上可以更容易識別變數的用途。</p>
+<p>💡 如果 Method 的參數過多，可以將參數另外設計為類別 (Class) 提升可讀性。</p>
+<p>💡 避免在 Method 加入 Flag 參數，這樣會讓單一 Method 負擔額外的工作，分開成不同的 Method。</p>
+<h3 id="Clean-Class"><a href="#Clean-Class" class="headerlink" title="Clean Class"></a>Clean Class</h3><p>類別的設計上，首重高內聚 (Cohesion)，設計上要避免讓類別淪為龐雜的程式碼聚合，以提升類別程式碼的可讀性以及被重複使用的可能。（相對於類別過於龐雜的問題，很少發生類別被抱怨設計的太”迷你”）。</p>
+<p>在物件導向設計上，要避免　Primitive Obsession (偏好使用 int, double, string 等基本型別) 而忽略使用類別 (Class) 藉由封裝所帶來的可讀性提升。</p>
+<h3 id="Clean-Comment"><a href="#Clean-Comment" class="headerlink" title="Clean Comment"></a>Clean Comment</h3><p>正：寫註解是為了提升程式碼的可讀性</p>
+<p>反：不寫註解，讓程式碼表現意義則是提升程式碼的可讀性</p>
+<p>合：原則上不寫註解，正確的使用註解以提升可讀性</p>
+<p>💡 避免廢話類型的註解 (這個變數宣告為 int 並賦值)</p>
+<p>💡 避免用註解表現程式碼用途，使變數、方法、類別的命名賦予用途</p>
+<p>💡 移除註解掉的程式碼，讓版本控制工具來管理被移除的程式碼</p>
+<p>💡 移除<strong>分隔程式碼段落</strong>的註解以及<strong>標註程式碼起始</strong>的註解</p>
+<p>💡 移除作者資訊以及程式碼用途摘要</p>
+<p>使用 Visual Studio 所支援的 <code class="s">//TODO</code> 以及 <code class="s">//HACK</code>，對於類別或者方法，使用 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/dotnet/csharp/language-reference/xmldoc/recommended-tags">Summary</a></p>
+<h2 id="實作"><a href="#實作" class="headerlink" title="實作"></a>實作</h2><h3 id="檢驗指標"><a href="#檢驗指標" class="headerlink" title="檢驗指標"></a>檢驗指標</h3><p>Maintainability Index</p>
+<p><img src="/assets/Clean-Code-Measure-Index-1.png"></p>
+<p>Cyclomatic</p>
+<p><img src="/assets/Clean-Code-Measure-Index-2.png"></p>
+<h3 id="Code-Smells"><a href="#Code-Smells" class="headerlink" title="Code Smells"></a>Code Smells</h3><p>Arrow Code</p>
+<ul>
+<li>Nested Ifs</li>
+<li>Guard Clause</li>
+<li>Indents</li>
+</ul>
+<p>Comments</p>
+<ul>
+<li>Repeat</li>
+<li>Version Control</li>
+</ul>
+<p>Mayfly Variables</p>
+<ul>
+<li>Check dependency</li>
+</ul>
+<p>Failing Fast</p>
+<p>Table Driven</p>
+<p>Tests before Refactoring</p>
+<p>Avoid Abbreviation</p>
+<ul>
+<li>Long descriptive name is accepted</li>
+</ul>
+<p>TED Principles</p>
+<ul>
+<li>Terse</li>
+<li>Expressive</li>
+<li>Doe one thing</li>
+</ul>
+<p>Readability</p>
+<ul>
+<li>Naming</li>
+<li>Short &amp; Simple</li>
+<li>Linq Predicate</li>
+</ul>
+<p>Extension Method over Loop Methods</p>
+<p>Least Surprise Principle</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://github.com/thangchung/clean-code-dotnet">Clean Code concepts adapted for .NET/.NET Core</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/01/Clean-Code-Note/" data-id="clg3fmabr00fbs4tsesn50gia" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/" rel="tag">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/01/Ten-Steps-To-Learn-Anything-Quickly/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">十步驟學習法 (Ten Steps To Learn Anything Quickly)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/01/CSharp-Linq-To-Sqlite/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          C# Linq To Sqlite (Linq to SQL)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

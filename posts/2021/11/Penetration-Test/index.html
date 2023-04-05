@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Penetration Test 滲透測試筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記滲透測試的步驟與使用工具，彙整各式的滲透測試工具與方法，綜合而成能夠自我實作的滲透測試步驟，在請滲透測試專業公司進行之前，能夠先以最少的費用來得到報告。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Penetration Test 滲透測試筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/11/Penetration-Test/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記滲透測試的步驟與使用工具，彙整各式的滲透測試工具與方法，綜合而成能夠自我實作的滲透測試步驟，在請滲透測試專業公司進行之前，能夠先以最少的費用來得到報告。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openemoji-magnifier.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openemoji-bowarrow.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-desert.svg">
+<meta property="article:published_time" content="2021-11-30T13:17:49.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.909Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="LearningNote">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/CyberSecurityLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Penetration-Test" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/11/Penetration-Test/" class="article-date">
+  <time datetime="2021-11-30T13:17:49.000Z" itemprop="datePublished">2021-11-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CyberSecurity/">CyberSecurity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Penetration Test 滲透測試筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BB%B2%E9%80%8F%E6%B8%AC%E8%A9%A6%E6%AD%A5%E9%A9%9F"><span class="toc-text">滲透測試步驟</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%B5%E6%9F%A5-Explore"><span class="toc-text">偵查 Explore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E6%93%8A-Attack"><span class="toc-text">攻擊 Attack</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%B1%E5%91%8A-Report"><span class="toc-text">報告 Report</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記滲透測試的步驟與使用工具，彙整各式的滲透測試工具與方法，綜合而成能夠自我實作的滲透測試步驟，在請滲透測試專業公司進行之前，能夠先以最少的費用來得到報告。</p>
+<a href="/posts/2021/11/Penetration-Test/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/CyberSecurityLogo.svg" alt="logo" width="350px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="滲透測試步驟"><a href="#滲透測試步驟" class="headerlink" title="滲透測試步驟"></a>滲透測試步驟</h2><p>本次的滲透測試以 Web Application 為主旨進行說明，<strong>執行滲透測試一定要記得取得受測單位的同意，否則有相關的法律責任。</strong></p>
+<h3 id="偵查-Explore"><a href="#偵查-Explore" class="headerlink" title="偵查 Explore"></a>偵查 Explore</h3><img src="/assets/openemoji-magnifier.svg" width="150px;">
+
+<p>偵查階段可以調查 DNS 登記資訊，使用 WHOIS 來查詢，確認域名的註冊者身分，可以取得電話與電子郵件用於推測後台登入的帳號。</p>
+<p><a target="_blank" rel="noopener" href="https://mxtoolbox.com/SuperTool.aspx">DNS Lookup</a><br><a target="_blank" rel="noopener" href="https://who.is/">DNS Query - Whois</a><br><a target="_blank" rel="noopener" href="https://dnsdumpster.com/">DNSDUMPSTER</a></p>
+<p>檢查 HTTP Header 的 Security 以及判斷是否使用 HTTPS 並判斷使用的 Cipher 與 Protocol 是否存在漏洞。</p>
+<p><a target="_blank" rel="noopener" href="https://securityheaders.com/">Http Headers Scan</a><br><a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Server Test</a></p>
+<p>瀏覽 Web App 的程式碼判斷是否存在有幫助的註解，觀察介接的 XML、JSON、API 等服務，使用 Wappalyzer 確認 Web App 使用的框架與第三方元件，對於 Web App 的 finger Printing 進行識別。</p>
+<p><a target="_blank" rel="noopener" href="https://hackertarget.com/whatweb-scan/">WhatWeb &amp; Wappalyzer Scan</a></p>
+<p>使用 OWASP ZAP 自動化 Enumerate 管理者後台(Admin)、尋找任何可供利用的檔案 (bak, md, git, db) 等等。</p>
+<p>使用 Burp Suite 與 OWASP ZAP 來進行 URL Fuzzing 的 Forced Browse，檢查任何隱藏的網址，並使用 Spider 來爬出 Web App 的架構輪廓。</p>
+<p>此外也可以使用 DirBuster 來對 Directory Traversal 搜尋是否有未直接公開的檔案及路徑。</p>
+<p>稍具侵略性可以使用 NMAP 來觀察 Web Server 有開啟的 Service 與 Port，從而判斷可以攻擊的管道。</p>
+<p>侵略性提升可以使用弱點掃描工具，例如 OpenVAS 以及 Nikto 來進行掃描，自動化地取得 Web App 可能存在的弱點。</p>
+<h3 id="攻擊-Attack"><a href="#攻擊-Attack" class="headerlink" title="攻擊 Attack"></a>攻擊 Attack</h3><img src="/assets/openemoji-bowarrow.svg" width="150px;">
+
+<p>如果 QueryString 或者 Post 搭配資料庫的 Web App 設計，使用 SQLMAP 驗證是否存在 SQL Injection 漏洞。</p>
+<p>如果有任何可以供輸入資料的 input，測試各種 XSS、Command Injection 與 SQL Injection 的可能。</p>
+<p>測試是否可以藉由修改 DOM 來達到 XSS。</p>
+<p>使用 Metasploit 驗證弱點是否可以被利用。</p>
+<p>使用 Mimikatz 攻擊來取得作業系統的密碼。</p>
+<h3 id="報告-Report"><a href="#報告-Report" class="headerlink" title="報告 Report"></a>報告 Report</h3><img src="/assets/openmoji-desert.svg" width="150px;">
+
+<p>滲透測試的目的不是攻陷網站，而是產生出有價值的報告，幫助受測者改善網站的弱點。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/11/Penetration-Test/" data-id="clg3fmag800xws4ts9jgd0e56" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LearningNote/" rel="tag">LearningNote</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET MVC 回鍋開發的參考筆記</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/12/SQL-Server-Indexes-Maintenance/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Indexes Maintenance 索引維護
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

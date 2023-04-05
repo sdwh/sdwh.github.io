@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Core Constructor Depedency Injection (DI) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記在 ASP.NET Core 經常使用的預設 DI Container 以及從撰寫 Interface 到使用 Class 的流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Core Constructor Depedency Injection (DI)">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/10/ASPNET-Core-Constructor-Depedency-Injection/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記在 ASP.NET Core 經常使用的預設 DI Container 以及從撰寫 Interface 到使用 Class 的流程。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2022-10-17T14:30:17.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="ASPNETCore">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Core-Constructor-Depedency-Injection" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/10/ASPNET-Core-Constructor-Depedency-Injection/" class="article-date">
+  <time datetime="2022-10-17T14:30:17.000Z" itemprop="datePublished">2022-10-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Core Constructor Depedency Injection (DI)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%BB%8B%E9%9D%A2%E9%A1%9E%E5%88%A5"><span class="toc-text">建立介面類別</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E5%AF%A6%E4%BD%9C%E9%A1%9E%E5%88%A5"><span class="toc-text">建立實作類別</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E5%AE%B9%E5%99%A8%E8%A8%BB%E5%86%8A"><span class="toc-text">向容器註冊</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E9%A1%9E%E5%88%A5%E5%BB%BA%E6%A7%8B%E5%AD%90"><span class="toc-text">注入類別建構子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E9%A1%9E%E5%88%A5"><span class="toc-text">使用類別</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記在 ASP.NET Core 經常使用的預設 DI Container 以及從撰寫 Interface 到使用 Class 的流程。</p>
+<a href="/posts/2022/10/ASPNET-Core-Constructor-Depedency-Injection/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>在 ASP.NET Core 開始，不論是 MVC 專案或者是 Razor Pages 專案，預設上就必須使用 DI Container，而不再像是 .NET Framework 時代，需要自行使用第三方的 DI Container 來實作依賴注入 (Dependency Injection) 的設計模式。</p>
+<p>本次比次 ASP.NET Core 依照下列步驟，完成預設依賴注入的使用，本次範例說明的是智慧推薦餐點的服務 (Suggestion.cs)。</p>
+<h3 id="建立介面類別"><a href="#建立介面類別" class="headerlink" title="建立介面類別"></a>建立介面類別</h3><p>關鍵的第一步就是要設計介面，讓整個系統的依賴於抽象 (abstract)，而非依賴於實作 (concrete)。</p>
+<p>在專案中加入 <code class="s">Services</code> 資料夾，並建立 <code class="s">ISuggestion.cs</code>，</p>
+<p>介面當中只有一個函式簽名，就是會回傳字串的函式 <code class="s">Suggest</code>。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">CodeRestaurant<span class="token punctuation">.</span>Services</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ISuggestion</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">Suggest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="建立實作類別"><a href="#建立實作類別" class="headerlink" title="建立實作類別"></a>建立實作類別</h3><p>在 <code class="s">Services</code> 資料夾，建立實作 <code class="s">ISuggestion</code> 的兩個實作類別：</p>
+<p><code class="watch">Services/Suggestion.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">CodeRestaurant<span class="token punctuation">.</span>Services</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Suggestion</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ISuggestion</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">Suggest</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> meals <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span> 
+              <span class="token string">"漢堡"</span><span class="token punctuation">,</span> 
+              <span class="token string">"義大利麵"</span><span class="token punctuation">,</span> 
+              <span class="token string">"拉麵"</span><span class="token punctuation">,</span> 
+              <span class="token string">"叉燒飯"</span><span class="token punctuation">,</span> 
+              <span class="token string">"咖哩飯"</span> 
+            <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> random <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Random</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> meals<span class="token punctuation">[</span>random<span class="token punctuation">.</span><span class="token function">Next</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> meals<span class="token punctuation">.</span>Count <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Services/HamburgeSuggestion.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">CodeRestaurant<span class="token punctuation">.</span>Services</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HamburgerSuggestion</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ISuggestion</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">Suggest</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">.</span>DayOfWeek <span class="token operator">==</span> DayOfWeek<span class="token punctuation">.</span>Sunday <span class="token punctuation">?</span> 
+                <span class="token string">"牛肉漢堡"</span> <span class="token punctuation">:</span> <span class="token string">"豬排漢堡"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="向容器註冊"><a href="#向容器註冊" class="headerlink" title="向容器註冊"></a>向容器註冊</h3><p>接著在容器中註冊介面以及要使用的類別。</p>
+<p><code class="watch">Program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">CodeRestaurant<span class="token punctuation">.</span>Services</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> WebApplication<span class="token punctuation">.</span><span class="token function">CreateBuilder</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Add services to the container.</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddRazorPages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ISuggestion<span class="token punctuation">,</span> Suggestion<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="注入類別建構子"><a href="#注入類別建構子" class="headerlink" title="注入類別建構子"></a>注入類別建構子</h3><p>本次範例專案是以 Razor Pages 為例，因此使用其中一個 Page 來示範。</p>
+<p>DI 容器會將所註冊的類別傳入建構子，因此只須在類別模型中，將類別注入到 <code class="s">ISuggestion</code> 型別的內部成員 <code class="s">_suggestion</code>，就可以在程式中使用，例如在 OnGet 就可以使用介面的方法 <code class="s">Suggest</code> 得到智慧推薦的餐點。</p>
+<p><code class="watch">Index.cshtml.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">CodeRestaurant<span class="token punctuation">.</span>Services</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">CodeRestaurant<span class="token punctuation">.</span>Pages</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">IndexModel</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">PageModel</span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">ISuggestion</span> _suggestion<span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Dinner <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token function">IndexModel</span><span class="token punctuation">(</span><span class="token class-name">ISuggestion</span> suggestion<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            _suggestion <span class="token operator">=</span> suggestion<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            Dinner <span class="token operator">=</span> _suggestion<span class="token punctuation">.</span><span class="token function">Suggest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="使用類別"><a href="#使用類別" class="headerlink" title="使用類別"></a>使用類別</h3><p>在頁面中，因為有先在 IndexModel 定義自動變數 <code class="s">Dinner</code>，只需要在 Razor 中使用 <code class="s">@Model.Dinner</code> 即可使用注入的類別的運算結果。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@page
+@model IndexModel
+@<span class="token punctuation">&#123;</span>
+    ViewData<span class="token punctuation">[</span><span class="token string">"Title"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"Home page"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"border border-1 border-primary p-3 display-1"</span><span class="token operator">></span>
+    @Model<span class="token punctuation">.</span>Dinner
+<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>而依賴注入的優點為何？答案就是更好的擴充與維護性。</p>
+<p>當開發人員要替換掉原本的餐點推薦函式時，例如由原本的 <code class="s">Suggestion.cs</code> 改為 <code class="s">HamburgerSuggestion.cs</code> 的時候，</p>
+<p>只要在 DI 容器調整所要注入的類別即可。</p>
+<p><code class="watch">Program.cs 調整前</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddRazorPages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ISuggestion<span class="token punctuation">,</span> Suggestion<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Program.cs 調整後</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddRazorPages</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ISuggestion<span class="token punctuation">,</span> HamburgerSuggestion<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/10/ASPNET-Core-Constructor-Depedency-Injection/" data-id="clg3fma8m0018s4tsgyqs7slf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNETCore/" rel="tag">ASPNETCore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/10/Python-Check-Server-Port-Is-Available/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python Check Server Port Is Available (socket)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/10/Cyber-Security-Outsourcing-Consideration/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          委外資安服務的考量要點 (滲透測試、弱點掃描、資安健診)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

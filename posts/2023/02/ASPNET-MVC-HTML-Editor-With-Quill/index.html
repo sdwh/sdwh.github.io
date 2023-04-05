@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC HTML Editor With Quill | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明如何使用 Quill 作為 Html Edtior，提供使用者在後台介面輸出資料、維護內容的便捷方式。相較於老牌的 CKEditor 以及 TinyMCE，本次所要介紹的新世代的 Html Editor Quill。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC HTML Editor With Quill">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/02/ASPNET-MVC-HTML-Editor-With-Quill/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明如何使用 Quill 作為 Html Edtior，提供使用者在後台介面輸出資料、維護內容的便捷方式。相較於老牌的 CKEditor 以及 TinyMCE，本次所要介紹的新世代的 Html Editor Quill。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="article:published_time" content="2023-02-26T10:52:58.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.799Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="Examples">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-HTML-Editor-With-Quill" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/02/ASPNET-MVC-HTML-Editor-With-Quill/" class="article-date">
+  <time datetime="2023-02-26T10:52:58.000Z" itemprop="datePublished">2023-02-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC HTML Editor With Quill
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#View-Html-Partial"><span class="toc-text">View (Html Partial)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Controller"><span class="toc-text">Controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Model"><span class="toc-text">Model</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%8C%E7%BA%8C%E8%A1%8C%E5%8B%95"><span class="toc-text">後續行動</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E9%80%A3%E7%B5%90"><span class="toc-text">參考連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明如何使用 Quill 作為 Html Edtior，提供使用者在後台介面輸出資料、維護內容的便捷方式。相較於老牌的 CKEditor 以及 TinyMCE，本次所要介紹的新世代的 Html Editor <strong>Quill</strong>。</p>
+<a href="/posts/2023/02/ASPNET-MVC-HTML-Editor-With-Quill/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><div style="display: flex; justify-content:center;">
+  <a href="https://github.com/quilljs/quill/" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> Github
+  </a>
+</div>
+
+<h3 id="View-Html-Partial"><a href="#View-Html-Partial" class="headerlink" title="View (Html Partial)"></a>View (Html Partial)</h3><p>在需要使用的 View 使用相關的 css 以及 js，示範使用 cdn 的方式，也可以使用 Client Side Library Manager (LibMan) 的方式管理與使用。</p>
+<p>由於使用會需要以 js 註冊 Editor 以及將 Html 元素賦值對照的關係，因此以 HTML Partial 的方式方便反覆使用。</p>
+<p><code class="watch">_QuillHtmlEditor.cshtml</code></p>
+<pre class="line-numbers language-cshtml" data-language="cshtml"><code class="language-cshtml"><span class="token comment">&lt;!-- Include the Quill Styles --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.quilljs.com/1.3.7/quill.snow.css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+<span class="token comment">&lt;!-- Include the Quill library --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.quilljs.com/1.3.7/quill.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+
+<span class="token comment">&lt;!-- Initialize Quill editor --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+    <span class="token keyword">var</span> toolbarOptions <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">[</span><span class="token string">'bold'</span><span class="token punctuation">,</span> <span class="token string">'italic'</span><span class="token punctuation">,</span> <span class="token string">'underline'</span><span class="token punctuation">,</span> <span class="token string">'strike'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token string">'blockquote'</span><span class="token punctuation">,</span> <span class="token string">'code-block'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'color'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'background'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'header'</span><span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'header'</span><span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'list'</span><span class="token operator">:</span> <span class="token string">'ordered'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'list'</span><span class="token operator">:</span> <span class="token string">'bullet'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'script'</span><span class="token operator">:</span> <span class="token string">'sub'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'script'</span><span class="token operator">:</span> <span class="token string">'super'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'indent'</span><span class="token operator">:</span> <span class="token string">'-1'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token string-property property">'indent'</span><span class="token operator">:</span> <span class="token string">'+1'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'direction'</span><span class="token operator">:</span> <span class="token string">'rtl'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'size'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'small'</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">'large'</span><span class="token punctuation">,</span> <span class="token string">'huge'</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'header'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token punctuation">&#123;</span> <span class="token string-property property">'align'</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token string">'image'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token string">'clean'</span><span class="token punctuation">]</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 註冊 Quill 在 #editor Element</span>
+    <span class="token keyword">var</span> quill <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Quill</span><span class="token punctuation">(</span><span class="token string">'#editor'</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+        <span class="token literal-property property">modules</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token literal-property property">toolbar</span><span class="token operator">:</span> toolbarOptions<span class="token punctuation">,</span>
+            <span class="token literal-property property">imageResize</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+                <span class="token literal-property property">displaySize</span><span class="token operator">:</span> <span class="token boolean">true</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">placeholder</span><span class="token operator">:</span> <span class="token string">'Enter some text here...'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">theme</span><span class="token operator">:</span> <span class="token string">'snow'</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 加入 Listener 處理 Quill 編輯的結果至 Form Input</span>
+    document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"DOMContentLoaded"</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'form'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'submit'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#Content'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>value <span class="token operator">=</span> quill<span class="token punctuation">.</span>root<span class="token punctuation">.</span>innerHTML<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Create.cshtml</code></p>
+<p>在 Create 的 View 當中，需要加入 <code class="s">#editor</code> 的元素，讓 Quill 渲染為 Html Editor，原本應該用於提供使用者輸入的 Input Content 則刪除，並透先前的註冊，在 Form Submit 時做對照的賦值，提供後端進行使用。</p>
+<pre class="line-numbers language-cshtml" data-language="cshtml"><code class="language-cshtml"><span class="token directive"><span class="token keyword">@model</span> <span class="token csharp language-csharp">NorthwindShop2<span class="token punctuation">.</span>Web<span class="token punctuation">.</span>Models<span class="token punctuation">.</span>CMS<span class="token punctuation">.</span>Article</span></span>
+
+<span class="token block"><span class="token keyword">@</span><span class="token csharp language-csharp"><span class="token punctuation">&#123;</span>
+    ViewBag<span class="token punctuation">.</span>Title <span class="token operator">=</span> <span class="token string">"Create"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>New Article<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hr</span> <span class="token punctuation">/></span></span>
+
+<span class="token block"><span class="token keyword">@using</span> <span class="token csharp language-csharp"><span class="token punctuation">(</span>Html<span class="token punctuation">.</span><span class="token function">BeginForm</span><span class="token punctuation">(</span><span class="token string">"Create"</span><span class="token punctuation">,</span> <span class="token string">"Article"</span><span class="token punctuation">,</span> FormMethod<span class="token punctuation">.</span>Post<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> enctype <span class="token operator">=</span> <span class="token string">"multipart/form-data"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    @Html<span class="token punctuation">.</span><span class="token function">AntiForgeryToken</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-horizontal<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">ValidationSummary</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"text-danger"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">LabelFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Title<span class="token punctuation">,</span> <span class="token named-parameter punctuation">htmlAttributes</span><span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"control-label col-md-2"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">EditorFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Title<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> htmlAttributes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"form-control"</span> <span class="token punctuation">&#125;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+                <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">ValidationMessageFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Title<span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"text-danger"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-group mb-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">LabelFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Content<span class="token punctuation">,</span> <span class="token named-parameter punctuation">htmlAttributes</span><span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"control-label col-md-2"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>editor<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fs-6<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+                <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">HiddenFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Content<span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">LabelFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Attachments<span class="token punctuation">,</span> <span class="token named-parameter punctuation">htmlAttributes</span><span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"control-label col-md-2"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>attachments<span class="token punctuation">"</span></span> <span class="token attr-name">multiple</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-control<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">ValidationMessageFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Attachments<span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"text-danger"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-offset-2 col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Create<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-outline-primary me-3<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+                <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">ActionLink</span><span class="token punctuation">(</span><span class="token string">"Back to List"</span><span class="token punctuation">,</span> <span class="token string">"Index"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"btn btn-outline-secondary me-3"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></span>
+<span class="token punctuation">&#125;</span></span></span>
+
+<span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">Partial</span><span class="token punctuation">(</span><span class="token string">"_QuillHtmlEditor"</span><span class="token punctuation">)</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Edit 在 View 的差別是將已經存在的 Content 使用 <code class="s">Html.Raw</code> 的方式加入倒 <code class="s">#editor</code> 的 innerHtml。</p>
+<p><code class="watch">Edit.cshtml</code></p>
+<pre class="line-numbers language-cshtml" data-language="cshtml"><code class="language-cshtml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-group mb-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">LabelFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Content<span class="token punctuation">,</span> <span class="token named-parameter punctuation">htmlAttributes</span><span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> @<span class="token keyword">class</span> <span class="token operator">=</span> <span class="token string">"control-label col-md-2"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-10<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>editor<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">Raw</span><span class="token punctuation">(</span>Model<span class="token punctuation">.</span>Content<span class="token punctuation">)</span></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+        <span class="token value variable"><span class="token keyword">@</span><span class="token csharp language-csharp">Html<span class="token punctuation">.</span><span class="token function">HiddenFor</span><span class="token punctuation">(</span>model <span class="token operator">=></span> model<span class="token punctuation">.</span>Content<span class="token punctuation">)</span></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><p><code class="watch">ArticleController.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ValidateAntiForgeryToken</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Create</span><span class="token punctuation">(</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Bind</span><span class="token attribute-arguments"><span class="token punctuation">(</span>Include <span class="token operator">=</span> <span class="token string">"Title,Content"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token class-name">Article</span> article<span class="token punctuation">,</span>
+  <span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span>HttpPostedFileBase<span class="token punctuation">></span></span> attachments<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    article<span class="token punctuation">.</span>DatePublished <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ModelState<span class="token punctuation">.</span>IsValid<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        db<span class="token punctuation">.</span>Articles<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>article<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        db<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> file <span class="token keyword">in</span> attachments<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>file <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> file<span class="token punctuation">.</span>ContentLength <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> attachment <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Attachment</span>
+                <span class="token punctuation">&#123;</span>
+                    FileName <span class="token operator">=</span> Path<span class="token punctuation">.</span><span class="token function">GetFileName</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>FileName<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    FileType <span class="token operator">=</span> file<span class="token punctuation">.</span>ContentType<span class="token punctuation">,</span>
+                    ArticleId <span class="token operator">=</span> article<span class="token punctuation">.</span>Id
+                <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+                <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">BinaryReader</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>InputStream<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    attachment<span class="token punctuation">.</span>FileData <span class="token operator">=</span> reader<span class="token punctuation">.</span><span class="token function">ReadBytes</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>ContentLength<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+                db<span class="token punctuation">.</span>Attachments<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>attachment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        db<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"Index"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>article<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h3><p>Html Editor 會製作出 Html Tag 的內容，因此 Model 需要設定 <code class="s">AllowHtml</code>。</p>
+<p><code class="watch">Article.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Article</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Title <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">AllowHtml</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Content <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> DatePublished <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token keyword">virtual</span> <span class="token return-type class-name">List<span class="token punctuation">&lt;</span>Attachment<span class="token punctuation">></span></span> Attachments <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="後續行動"><a href="#後續行動" class="headerlink" title="後續行動"></a>後續行動</h2><p>相對於 TinyMCE 的持續更新，目前 Quill 最新的更新是在 2019，也考慮到 TinyMCE 的普及以及社群的討論熱度，未來打算在驗證使用 TinyMCE 結合 ASP.NET MVC 的方式。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>TinyMCE</th>
+<th>Quill</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Functions</td>
+<td>支援多種文本格式、表格、媒體等元素的編輯和管理</td>
+<td>支援常用的文本格式和樣式，也可擴展功能</td>
+</tr>
+<tr>
+<td>Extensionality</td>
+<td>提供了豐富的 API 和事件處理函數，可以方便地進行自定義和擴展</td>
+<td>使用模組化架構，也可進行自定義和擴展</td>
+</tr>
+<tr>
+<td>Usage</td>
+<td>使用簡單直觀，支援多種語言和鍵盤快捷鍵</td>
+<td>使用簡單直觀，支援多種語言和快捷鍵</td>
+</tr>
+<tr>
+<td>Stability</td>
+<td>歷史久、瀏覽器兼容性佳</td>
+<td>使用 Virtual DOM 達到渲染快速的效能</td>
+</tr>
+<tr>
+<td>License</td>
+<td>MIT License</td>
+<td>BSD 3-Clause “New” or “Revised” License</td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://quilljs.com/guides/comparison-with-other-rich-text-editors/">Comparison with Other Rich Text Editors | Quill</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.tiny.cloud/tinymce-vs-quill/">Quill vs TinyMCE | TinyMCE</a></p>
+<h2 id="參考連結"><a href="#參考連結" class="headerlink" title="參考連結"></a>參考連結</h2><p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20139359/ironman/4447?page=1">深入 slate.js ｘ 一起打造專屬的富文字編輯器吧！| iThome</a></p>
+<p><a target="_blank" rel="noopener" href="https://progressbar.tw/posts/71">是佛心還是惡霸條例，了解GPL開源(Open Source)許可證的風險與感染性</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/02/ASPNET-MVC-HTML-Editor-With-Quill/" data-id="clg3fma9d0042s4ts7ozk0rv8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/02/OOP-Anaemic-Domain-Model-And-Rich-Domain-Model/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Anaemic Domain Model (ADM) And Rich Domain Model (RDM)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/02/Bloom-Bump-Into-ASPNET-MVC-Learning/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          當教育學 Bloom 遇上 Web 解決方案 ASP.NET MVC
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

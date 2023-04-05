@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Certificate CertUtil &amp; OpenSSL | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="說明如何使用 Windows 內建的 CertUtil 工具來檢視 .pfx 格式的憑證檔案，在更新 HTTPS 憑證時能夠派上用場；說明 OpenSSL 來處理各式與憑證相關的需求 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Certificate CertUtil &amp; OpenSSL">
+<meta property="og:url" content="https://sdwh.dev/posts/2022/05/Certificate-CertUtil-OpenSSL/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="說明如何使用 Windows 內建的 CertUtil 工具來檢視 .pfx 格式的憑證檔案，在更新 HTTPS 憑證時能夠派上用場；說明 OpenSSL 來處理各式與憑證相關的需求 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SSL-Apply-Cer-From-RootCA.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SSL-PFX-Combinations-CER-KEY.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SSL-Get-Cer-From-Browser.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Chrome-Export-Cer.png">
+<meta property="article:published_time" content="2022-05-31T07:22:58.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.831Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="CyberSecurity">
+<meta property="article:tag" content="Windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Certificate-CertUtil-OpenSSL" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2022/05/Certificate-CertUtil-OpenSSL/" class="article-date">
+  <time datetime="2022-05-31T07:22:58.000Z" itemprop="datePublished">2022-05-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Certificate CertUtil &amp; OpenSSL
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CertUtil"><span class="toc-text">CertUtil</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenSSL"><span class="toc-text">OpenSSL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#key-%E5%8F%96%E5%BE%97%E6%96%B9%E5%BC%8F"><span class="toc-text">.key 取得方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#key-%E5%85%A7%E5%AE%B9"><span class="toc-text">.key 內容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cer-%E5%8F%96%E5%BE%97%E6%96%B9%E5%BC%8F"><span class="toc-text">.cer 取得方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DER-%E7%B7%A8%E7%A2%BC%E8%88%87-Base64-%E7%B7%A8%E7%A2%BC%E6%A0%BC%E5%BC%8F"><span class="toc-text">DER 編碼與 Base64 編碼格式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cer-%E5%85%A7%E5%AE%B9"><span class="toc-text">.cer 內容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference-Information"><span class="toc-text">Reference Information</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>說明如何使用 Windows 內建的 CertUtil 工具來檢視 .pfx 格式的憑證檔案，在更新 HTTPS 憑證時能夠派上用場；說明 OpenSSL 來處理各式與憑證相關的需求 😎</p>
+<a href="/posts/2022/05/Certificate-CertUtil-OpenSSL/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="CertUtil"><a href="#CertUtil" class="headerlink" title="CertUtil"></a>CertUtil</h2><p>檢視憑證的資訊</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">certutil</span> c:\users\sdwh\cert.pfx</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/windows-server/administration/windows-commands/certutil">certutil | learn.microsoft</a></p>
+<h2 id="OpenSSL"><a href="#OpenSSL" class="headerlink" title="OpenSSL"></a>OpenSSL</h2><p><img src="/assets/SSL-Apply-Cer-From-RootCA.png"></p>
+<p>憑證檔 .pfx = 伺服器憑證 .cer + 私鑰 .key</p>
+<p><img src="/assets/SSL-PFX-Combinations-CER-KEY.png"></p>
+<p>使用 <code class="s">openssl</code> 可以將 .pfx 拆解，或者將 .cer 與 .key 合成為 .pfx。</p>
+<h3 id="key-取得方式"><a href="#key-取得方式" class="headerlink" title=".key 取得方式"></a>.key 取得方式</h3><p>主動產生，憑證出現的源頭</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">openssl</span> genkey -algorithm RSA rsa_keygen_bits:<span class="token number">2048</span> -out key.pem</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>從 .pfx 拆出 .key</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">openssl</span> pkcs12 -in server.pfx -password <span class="token string">"pass:********"</span> -out key</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="key-內容"><a href="#key-內容" class="headerlink" title=".key 內容"></a>.key 內容</h3><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Bag Attributes
+    Microsoft Local Key set: &lt;No Values>
+    localKeyID: 01 00 00 00 
+    friendlyName: &#123;FE2BF4A3-FD3E-4D3D-BC31-366C11559F36&#125;
+    
+    Microsoft CSP Name: Microsoft RSA SChannel Cryptographic Provider
+Key Attributes
+    X509v3 Key Usage: 10 
+
+-----BEGIN PRIVATE KEY-----
+...
+-----END PRIVATE KEY-----
+
+Bag Attributes
+    localKeyID: 01 00 00 00 
+    friendlyName: *.sdwh.dev
+subject=C = TW, L = , CN =
+
+issuer=C = TW, O = "Chunghwa Telecom Co., Ltd.", OU = Public Certification Authority - G2
+
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="cer-取得方式"><a href="#cer-取得方式" class="headerlink" title=".cer 取得方式"></a>.cer 取得方式</h3><p>從 .pfx 拆出 .key，再轉換成 x509 格式並儲存為 .cer</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">openssl</span> pkcs12 -in server.pfx -password <span class="token string">"pass:********"</span> -nokeys </span>
+  | openssl x509 -out server.cer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>也可以直接從網站直接匯出（前提當然是網站已經掛好憑證並且完成繫結😉）</p>
+<p><img src="/assets/SSL-Get-Cer-From-Browser.png"></p>
+<p><img src="/assets/Chrome-Export-Cer.png"></p>
+<h4 id="DER-編碼與-Base64-編碼格式"><a href="#DER-編碼與-Base64-編碼格式" class="headerlink" title="DER 編碼與 Base64 編碼格式"></a>DER 編碼與 Base64 編碼格式</h4><table>
+<thead>
+<tr>
+<th>格式</th>
+<th>DER</th>
+<th>Base64</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>certutil</td>
+<td>無法檢視</td>
+<td>可以檢視</td>
+</tr>
+</tbody></table>
+<h3 id="cer-內容"><a href="#cer-內容" class="headerlink" title=".cer 內容"></a>.cer 內容</h3><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            03:5e:a4:50:da:ac:e8:8d:b6:70:89:58:d1:f6:b3:1d:a3:94
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = US, O = Let's Encrypt, CN = R3
+        Validity
+            Not Before: Apr 13 01:47:17 2022 GMT
+            Not After : Jul 12 01:47:16 2022 GMT
+        Subject: CN = sdwh.dev
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:ab:c7:1b:0c:ed:c6:01:f8:ea:a9:b3:cf:08:17:
+                    4f:a2:cb:7c:34:c4:66:12:e6:ef:f3:98:17:79:c9:
+                    65:ee:66:4c:1f:9a:92:7d:33:ee:07:fa:2e:15:62:
+                    f7:b4:f3:1f:d5:4f:2e:b1:67:a8:49:42:bf:e3:cc:
+                    9a:b7:30:46:c2:68:f5:28:a9:64:69:6f:4c:4b:64:
+                    24:c9:dc:ed:46:9f:a4:1f:c2:ef:6f:36:d0:bc:69:
+                    27:b8:e2:d6:18:70:40:2c:b4:f5:ee:8f:f7:0d:8c:
+                    6e:03:92:e7:5d:d6:3e:bc:bb:c9:5b:28:10:a0:5a:
+                    f6:37:f5:e1:9e:15:23:72:6e:8e:69:01:09:a4:8c:
+                    a4:c9:d7:db:05:01:90:48:4b:90:20:8c:38:7a:0a:
+                    60:74:79:18:26:30:8e:60:0b:17:b9:24:a0:80:df:
+                    3f:14:00:d3:09:e7:34:47:35:63:7c:54:d2:a0:9d:
+                    e1:57:d1:cb:13:d3:3c:30:24:97:8e:ea:34:00:9f:
+                    cc:6c:0c:6a:f7:54:bc:5e:60:dc:46:31:c2:09:de:
+                    d9:c3:e3:63:1e:8f:1c:c5:90:90:e8:da:86:be:7d:
+                    f1:c3:1f:1a:86:69:9b:0b:e0:b2:0c:47:08:c8:92:
+                    59:2b:66:2f:fa:a1:38:a1:2f:10:65:f6:97:fd:16:
+                    87:33
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                63:4E:15:85:56:5A:A4:94:02:C2:16:42:A4:A5:97:9A:38:02:57:97
+            X509v3 Authority Key Identifier: 
+                keyid:14:2E:B3:17:B7:58:56:CB:AE:50:09:40:E6:1F:AF:9D:8B:14:C2:C6
+
+            Authority Information Access: 
+                OCSP - URI:http://r3.o.lencr.org
+                CA Issuers - URI:http://r3.i.lencr.org/
+
+            X509v3 Subject Alternative Name: 
+                DNS:sdwh.dev, DNS:www.sdwh.dev
+            X509v3 Certificate Policies: 
+                Policy: 2.23.140.1.2.1
+                Policy: 1.3.6.1.4.1.44947.1.1.1
+                  CPS: http://cps.letsencrypt.org
+
+            CT Precertificate SCTs: 
+                Signed Certificate Timestamp:
+                    Version   : v1 (0x0)
+                    Log ID    : 41:C8:CA:B1:DF:22:46:4A:10:C6:A1:3A:09:42:87:5E:
+                                4E:31:8B:1B:03:EB:EB:4B:C7:68:F0:90:62:96:06:F6
+                    Timestamp : Apr 13 02:47:17.484 2022 GMT
+                    Extensions: none
+                    Signature : ecdsa-with-SHA256
+                                30:44:02:20:4F:01:93:0F:72:D2:83:F3:B6:86:CD:D5:
+                                9D:30:35:9B:13:FC:80:93:1A:AF:D3:A9:34:98:62:61:
+                                3B:2B:87:53:02:20:39:F9:28:05:86:9D:4B:9F:E7:E9:
+                                E4:16:1D:1E:1F:B1:FB:D7:75:6E:4C:DD:92:B0:B0:90:
+                                A3:35:76:7E:1F:9B
+                Signed Certificate Timestamp:
+                    Version   : v1 (0x0)
+                    Log ID    : 46:A5:55:EB:75:FA:91:20:30:B5:A2:89:69:F4:F3:7D:
+                                11:2C:41:74:BE:FD:49:B8:85:AB:F2:FC:70:FE:6D:47
+                    Timestamp : Apr 13 02:47:17.671 2022 GMT
+                    Extensions: none
+                    Signature : ecdsa-with-SHA256
+                                30:45:02:21:00:D7:E9:0F:91:3A:1F:0F:1C:92:6F:EA:
+                                7B:1A:99:FB:53:D7:FA:1F:B3:5E:62:87:82:5B:E8:9C:
+                                F4:A0:57:D7:5B:02:20:60:AD:DA:CE:30:24:1C:FC:63:
+                                CD:F3:86:F3:90:91:04:F8:DF:20:88:9A:96:FC:6B:DF:
+                                02:0C:C5:54:2A:C3:2D
+    Signature Algorithm: sha256WithRSAEncryption
+         49:03:a9:b7:5c:17:4a:47:03:c5:b8:23:e9:78:2f:8c:b7:ec:
+         98:6e:7f:dd:6d:59:b3:36:86:81:01:08:af:1e:47:8c:16:5a:
+         84:30:72:5b:92:56:7c:91:99:23:b4:d8:58:f6:81:52:a3:f6:
+         a3:39:9c:12:a1:88:f6:04:9f:4b:3c:1e:1c:ee:53:25:d1:e8:
+         4b:e3:f8:db:df:e6:e5:6d:65:ae:7b:99:31:09:30:e1:b3:f2:
+         8a:4e:6b:ab:d8:c3:cb:45:63:fe:11:bc:28:e1:85:b8:bf:34:
+         bc:f7:4c:56:84:3b:4e:41:0a:a9:9f:ed:12:69:b4:86:b6:cd:
+         99:b5:7c:0a:54:b6:2e:95:f2:d1:ed:b1:c9:47:e8:a0:e6:ce:
+         06:d1:43:5a:1a:9e:47:18:a7:67:62:94:11:b9:cc:20:3a:af:
+         56:84:3e:05:d6:9c:63:27:ca:78:5f:38:00:d7:02:89:14:7b:
+         1e:15:0f:13:05:1a:de:df:29:a1:17:5a:d5:36:91:3e:cf:3e:
+         61:c3:e9:c3:32:bd:ce:0c:b3:51:4b:f4:3c:2b:40:41:56:7a:
+         95:0b:6b:f2:13:d5:85:80:fe:a8:36:2e:72:74:9b:73:7a:50:
+         5b:9b:e4:8a:6d:ea:f4:39:84:f6:98:a9:25:e5:2a:08:7e:e7:
+         28:3f:c9:3f<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<hr>
+<h2 id="Reference-Information"><a href="#Reference-Information" class="headerlink" title="Reference Information"></a>Reference Information</h2><p><a target="_blank" rel="noopener" href="https://www.zoeydc.com/zh/posts/2021-06-04-certutil-store-ssl/">https://www.zoeydc.com/zh/posts/2021-06-04-certutil-store-ssl/</a></p>
+<p><a target="_blank" rel="noopener" href="http://jianiau.blogspot.com/2015/07/openssl-generating-rsa-key.html">http://jianiau.blogspot.com/2015/07/openssl-generating-rsa-key.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2019/04/17/Convert-PFX-and-CER-format-using-OpenSSL">https://blog.miniasp.com/post/2019/04/17/Convert-PFX-and-CER-format-using-OpenSSL</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2022/05/Certificate-CertUtil-OpenSSL/" data-id="clg3fmabl00eos4ts92n23trt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2022/05/Japan-History/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Japan History</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2022/06/Government-Configuration-Baseline-TroubleShooting/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows Server GCB 疑難排解
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Developing SQL Databases | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 20762 - Developing SQL Server 學習心得以及反思具體可以用於資料庫開發與管理的實踐。項目包含資料庫壓縮、索引設計、索引檢視表、In-Memory Database、FileStream 以及各種資料庫物件的靈活使用，讓系統開發能夠與資料庫應用有更好的結合。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Developing SQL Databases">
+<meta property="og:url" content="https://sdwh.dev/posts/2021/11/SQL-Server-Developing-SQL-Databases/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 20762 - Developing SQL Server 學習心得以及反思具體可以用於資料庫開發與管理的實踐。項目包含資料庫壓縮、索引設計、索引檢視表、In-Memory Database、FileStream 以及各種資料庫物件的靈活使用，讓系統開發能夠與資料庫應用有更好的結合。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-In-Memory-Table-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-In-Memory-Table-2.png">
+<meta property="og:image" content="https://i.imgur.com/ooTIL6s.png">
+<meta property="article:published_time" content="2021-11-27T11:58:56.000Z">
+<meta property="article:modified_time" content="2023-04-01T12:13:24.940Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Developing-SQL-Databases" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2021/11/SQL-Server-Developing-SQL-Databases/" class="article-date">
+  <time datetime="2021-11-27T11:58:56.000Z" itemprop="datePublished">2021-11-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Developing SQL Databases
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E8%A8%88%E5%92%8C%E5%AF%A6%E6%96%BD%E8%A1%A8"><span class="toc-text">設計和實施表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%B2%E9%9A%8E%E8%B3%87%E6%96%99%E8%A1%A8%E8%A8%AD%E8%A8%88"><span class="toc-text">進階資料表設計</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-text">資料完整性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Indexs-Design"><span class="toc-text">Indexs Design</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Columnstore-Index"><span class="toc-text">Columnstore Index</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#View-Deisgn"><span class="toc-text">View Deisgn</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#System-View"><span class="toc-text">System View</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Indexed-View"><span class="toc-text">Indexed View</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Partition-View"><span class="toc-text">Partition View</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stored-Procedure"><span class="toc-text">Stored Procedure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#User-Defined-Function"><span class="toc-text">User Defined Function</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trigger"><span class="toc-text">Trigger</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#In-Memory-Table"><span class="toc-text">In-Memory Table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-FileStream"><span class="toc-text">SQL Server FileStream</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-Server-Concurrency"><span class="toc-text">SQL Server Concurrency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B7%E7%9F%A5%E8%AD%98"><span class="toc-text">冷知識</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Terms"><span class="toc-text">Terms</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E7%89%A9%E4%BB%B6"><span class="toc-text">資料庫物件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 20762 - Developing SQL Server 學習心得以及反思具體可以用於資料庫開發與管理的實踐。項目包含資料庫壓縮、索引設計、索引檢視表、In-Memory Database、FileStream 以及各種資料庫物件的靈活使用，讓系統開發能夠與資料庫應用有更好的結合。</p>
+<a href="/posts/2021/11/SQL-Server-Developing-SQL-Databases/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="設計和實施表"><a href="#設計和實施表" class="headerlink" title="設計和實施表"></a>設計和實施表</h3><p>參考 AdventureWorks 的資料庫物件命名慣例：</p>
+<ul>
+<li>CamelCase</li>
+<li>資料表不加 Prefix</li>
+<li>善用 Schema 來管理資料庫物件</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Objects</th>
+<th>Prefix</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Table</td>
+<td>Schema</td>
+<td>HumanResources.Employee</td>
+</tr>
+<tr>
+<td>View</td>
+<td>v</td>
+<td>Sales.vSalesPerson</td>
+</tr>
+<tr>
+<td>Stored Procedure</td>
+<td>ups</td>
+<td>dbo.uspPrintError</td>
+</tr>
+<tr>
+<td>Clustered Index</td>
+<td>PK_</td>
+<td>PK_Password_BusinessEntityID</td>
+</tr>
+<tr>
+<td>NonClustered Index</td>
+<td>IX_</td>
+<td>IX_Person_LastName_FirstName_MiddleName</td>
+</tr>
+<tr>
+<td>Pirmary Key</td>
+<td>PK_</td>
+<td>PK_Password_BusinessEntityID</td>
+</tr>
+<tr>
+<td>Foreign Key</td>
+<td>FK_</td>
+<td>FK_Password_Person_BusinessEntityID</td>
+</tr>
+<tr>
+<td>Functions</td>
+<td>ufn</td>
+<td>dbo.ufnGetContactInformation</td>
+</tr>
+</tbody></table>
+<p>💡 避免使用 Deprecated Data Types: text, ntext 等<br>💡 Datetime2 資料比 Datetime 更為精準</p>
+<p>🐸 <strong>檢查資料表的相依關係</strong></p>
+<p>💡 臨時的資料表 <strong>tempdb</strong> 或者 <strong>@ 變數</strong></p>
+<h3 id="進階資料表設計"><a href="#進階資料表設計" class="headerlink" title="進階資料表設計"></a>進階資料表設計</h3><p>🐸 <strong>Partition Table</strong></p>
+<p>利用分散於不同磁區的檔案群組，將資料表的資料列分散到不同的檔案群組中。用於增加資料讀寫速度，並於 archive 磁區的資料可以降低備份頻率。但如果資料庫伺服器沒有辦法使用多個讀頭讀寫磁區是否仍有使用價值？</p>
+<p>需要先加入 FileGroup，並設計 Partition Function 以及 Partition Schema 以達到 Partition Table 的作用。</p>
+<p>🐸 壓縮資料庫</p>
+<p>資料庫的壓縮包含<strong>備份壓縮</strong>、<strong>資料庫壓縮</strong>用於釋放 SQL Server 佔據磁碟但未使用的空間，最後則是<strong>資料表壓縮</strong>。</p>
+<p>資料表壓縮不是一次性的設定，而是會將資料表永遠保持在壓縮的情況下。優點是減少儲存空間，缺點是讀取需要運算時間。</p>
+<p>🐸 Temporal Tables</p>
+<p>應用程式需要客製追蹤資料表異動情形的解決方案。</p>
+<h3 id="資料完整性"><a href="#資料完整性" class="headerlink" title="資料完整性"></a>資料完整性</h3><p>💡 使用 Check<br>💡 使用 Constraint</p>
+<ul>
+<li>Default Constraint</li>
+<li>Primary Key Constraint</li>
+<li>Identity Constraint</li>
+<li>Foreign Key Constraint</li>
+</ul>
+<p>🐸 Foreign Key &amp; Cascading Referential Integrity</p>
+<h3 id="Indexs-Design"><a href="#Indexs-Design" class="headerlink" title="Indexs Design"></a>Indexs Design</h3><p>資料表的資料列保存方式是以 8K Data Page 進行保存，在沒有叢集索引的情況下，資料表會以 Heap 的方式保存，其中子葉為 Data Page。而如果有叢集索引，則會按叢集索引的方式保存，子葉同樣為 Data Page，因此每張資料表只能有一個叢集索引（nvarchar(MAX) 等長文資料不是保存在 8K Data Page，而是另有專門的資料保存方式）。</p>
+<p>而資料表的非叢集索引則可以高達 999 個，其子葉為 Heap 或者叢集索引的 Link。</p>
+<p>資料表的索引，需要考慮實際使用的 Query 去做設計，而索引帶來最大的好處就是在搭配正確的 Query 之下能夠提升查詢的速度，但索引本身需要儲存空間，約為資料表的 40%，不可不謂一筆成本。此外索引在資料寫入、更新時會同步改變，因此會造成額外的效能需求。同時索引會隨著資料的異動有碎片化的問題發生，必須定期重組 (ReOrganize) 或者重建索引 (ReBuild)。</p>
+<p>按照經驗法則 30% 以上的碎片化 (Fragmentation) 就需要進行 ReBuild。</p>
+<p>索引的設計上必須根據實際使用情形，可量複合索引 (Composite) 此外複合索引的索引順序會影響查詢速度，<strong>Include Column</strong> 作為複合索引的特別需求解決方案。</p>
+<p>並非建立索引 SQL Server 就會使用，SQL Server 有演算機制評估是否使用索引，可以從執行計畫上看到 SQL Server 是否使用索引，如果是 <strong>SCAN</strong> 就沒有，<strong>SEEK</strong> 則有。需要注意的是即使是 <strong>SCAN</strong> 索引，也是沒有使用索引的！</p>
+<p><strong>使用 Database Engine Tuning Advisor 可以由系統建議適合的索引建立。</strong></p>
+<p>🐸 <strong>關於 Fill Factor 的補充</strong></p>
+<p>🐸 <strong>關於 Merge Join, Hash Match, Nested Loop 的補充 (6-20)</strong></p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>索引的代價在於建立成本、儲存空間與維護成本<br/>不適合作為索引的欄位有下列特性：重複值太多、經常修改以及長文類型資料。</p>
+        </div>
+    </div>
+</div>
+
+
+<h3 id="Columnstore-Index"><a href="#Columnstore-Index" class="headerlink" title="Columnstore Index"></a>Columnstore Index</h3><p>以欄位的方式進行索引建立，適合資料倉儲的情境，可能有異想不到的效能優化功效。</p>
+<h3 id="View-Deisgn"><a href="#View-Deisgn" class="headerlink" title="View Deisgn"></a>View Deisgn</h3><p>View 將資料查詢語句封裝後提供使用，可以限縮使用的資料欄位，並由多個資料表、資料來源做合併 (Join)。按照 AdeventrueWorks 的 Naming Convention 使用小寫 v 作為自首，在以 CamelCase 的方式命名，例如 vSalesPerson。</p>
+<h4 id="System-View"><a href="#System-View" class="headerlink" title="System View"></a>System View</h4><p>SQL Server 預設提供了豐富好用的 System View，包括 <strong>Catalog View</strong> 以及 <strong>DMV 系列</strong>的 View，提供客製資料庫管理上所需要的各種查詢方式。</p>
+<p><strong>實用的 Catalog View</strong></p>
+<table>
+<thead>
+<tr>
+<th>Catalog</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sys.sysconfigures</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>sys.assemblies</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>sys.databases</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>sys.sql_logins</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>sys.servers</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>sys.linked_logins</td>
+<td>Server</td>
+</tr>
+<tr>
+<td>sys.sysusers</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.tables</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.database_files</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.filegroups</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.foreign_keys</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.default_constraints</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.key_constraints</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.check_constraints</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.all_views</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>sys.all_columns</td>
+<td>Database</td>
+</tr>
+</tbody></table>
+<h4 id="Indexed-View"><a href="#Indexed-View" class="headerlink" title="Indexed View"></a>Indexed View</h4><p>將 View 實體化儲存於磁碟空間，可以提升查詢的效率，但會有寫入、更新的資料的額外成本，同時不是所有的 View 都能建立為 Indexed View，限制包含：</p>
+<p>實際適用的場景如：</p>
+<ol>
+<li>彙整函數的使用</li>
+<li>簡單的大量資料表 Join</li>
+</ol>
+<h4 id="Partition-View"><a href="#Partition-View" class="headerlink" title="Partition View"></a>Partition View</h4><p>將分散在多個來源（資料表、資料庫、資料庫伺服器）的資料表，利用 UNION ALL 結合為 View，提供單一的存取介面。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Create</span> <span class="token keyword">View</span> vPartitionView
+<span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Server1<span class="token punctuation">.</span>MIS<span class="token punctuation">.</span>Person
+  <span class="token keyword">UNION</span> <span class="token keyword">ALL</span>
+  <span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Server1<span class="token punctuation">.</span>FINANCE<span class="token punctuation">.</span>Person
+  <span class="token keyword">UNION</span> <span class="token keyword">ALL</span>
+  <span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Server2<span class="token punctuation">.</span>SALES<span class="token punctuation">.</span>Person<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Stored-Procedure"><a href="#Stored-Procedure" class="headerlink" title="Stored Procedure"></a>Stored Procedure</h3><p>Stored Procedure 將資料庫 CRUD 的動作封裝起來重複使用，並可以解決下列 View 沒有辦法做到的事情：</p>
+<ol>
+<li>Order By 等 SQL 語法</li>
+<li>Parameters 參數，讓 Stored Prcocedure CRUD 有著更為彈性的重複使用便利</li>
+<li>多個 Select 語法並搭配 Temporary Table 來設計查詢</li>
+</ol>
+<p>在設計 Stored Procedure 常會開頭搭配 <strong>SET NOCOUNT ON</strong> 來避免無關的資訊顯示，在錯誤提示上應使用 <strong>RAISEERROR()</strong> 函式來通知，而非使用 <strong>PRINT</strong>。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">PROCEDURE</span> AddNumbers
+   <span class="token variable">@N1</span> <span class="token keyword">smallint</span><span class="token punctuation">,</span>
+   <span class="token variable">@N2</span> <span class="token keyword">smallint</span><span class="token punctuation">,</span>
+   <span class="token variable">@SUM</span> <span class="token keyword">smallint</span> OUTPUT
+<span class="token keyword">AS</span>
+  <span class="token keyword">SET</span> NOCOUNT <span class="token keyword">ON</span><span class="token punctuation">;</span>
+   <span class="token keyword">SET</span> <span class="token variable">@SUM</span> <span class="token operator">=</span> <span class="token variable">@N1</span> <span class="token operator">+</span> <span class="token variable">@N2</span>
+GO
+
+<span class="token keyword">Declare</span> <span class="token variable">@Ans</span> <span class="token keyword">int</span>
+<span class="token keyword">EXEC</span> AddNumbers <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token variable">@Ans</span> Output
+<span class="token keyword">SELECT</span> <span class="token variable">@ANS</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="User-Defined-Function"><a href="#User-Defined-Function" class="headerlink" title="User Defined Function"></a>User Defined Function</h3><table>
+<thead>
+<tr>
+<th>FunctionType</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scalar</td>
+<td>回傳單一值</td>
+</tr>
+<tr>
+<td>Table-Valued</td>
+<td>回傳資料表，可以做為 FROM 的來源</td>
+</tr>
+<tr>
+<td>Multistatement Table-Valued</td>
+<td>自行組建資料表並回傳</td>
+</tr>
+</tbody></table>
+<h3 id="Trigger"><a href="#Trigger" class="headerlink" title="Trigger"></a>Trigger</h3><p>Trigger 太多會拖慢資料庫的寫入、更新。但 Trigger 適合用於資料列內容修改時，自動更新欄位最後異動時間的使用情境。</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Update Trigger</td>
+<td>Trigger</td>
+<td>在資料被更新時觸發，進行資料的修改，可用於修改編輯時間等</td>
+</tr>
+<tr>
+<td>Instead Of Trigger</td>
+<td>Trigger</td>
+<td>修改欄位而非刪除資料</td>
+</tr>
+</tbody></table>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TRIGGER</span> del_ins_trigger1
+   <span class="token keyword">ON</span>  <span class="token punctuation">[</span><span class="token keyword">Order</span> details<span class="token punctuation">]</span>
+   instead <span class="token keyword">of</span> <span class="token keyword">delete</span>
+<span class="token keyword">AS</span> 
+<span class="token keyword">BEGIN</span>
+	<span class="token keyword">SET</span> NOCOUNT <span class="token keyword">ON</span><span class="token punctuation">;</span>
+	<span class="token keyword">update</span> <span class="token punctuation">[</span><span class="token keyword">Order</span> Details<span class="token punctuation">]</span> <span class="token keyword">set</span> deleted <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">from</span> <span class="token punctuation">[</span><span class="token keyword">Order</span> Details<span class="token punctuation">]</span> <span class="token keyword">as</span> od <span class="token keyword">inner</span> <span class="token keyword">join</span> deleted <span class="token keyword">as</span> d
+	<span class="token keyword">on</span> od<span class="token punctuation">.</span>OrderID <span class="token operator">=</span> d<span class="token punctuation">.</span>OrderID <span class="token operator">and</span> od<span class="token punctuation">.</span>ProductID <span class="token operator">=</span> d<span class="token punctuation">.</span>ProductID
+<span class="token keyword">END</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="In-Memory-Table"><a href="#In-Memory-Table" class="headerlink" title="In-Memory Table"></a>In-Memory Table</h3><p>藉由將資料表儲存於記憶體中，達到極快速的資料讀取與寫入速度，尤其適合需要大量寫入以及刪除資料的資料表使用情境。</p>
+<p>而要讓 In-Memory Table 發揮最佳的效能，必須搭配 <strong>Native StoredProcedures</strong>。</p>
+<p>在使用時，必須先建立 <strong>Memory Optimized Data</strong> 的 FileGroup，在於資料庫中加入新的 Database File。</p>
+<p><img src="/assets/SQL-Server-In-Memory-Table-1.png"></p>
+<p><img src="/assets/SQL-Server-In-Memory-Table-2.png"></p>
+<p>建立資料表時，因為 In-Memory Table 不支援 Clustered Primary Key ，因此 Primary Key 必須指定為 NonClustered。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> MemDemo
+GO
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> dbo<span class="token punctuation">.</span>MemoryTable
+<span class="token punctuation">(</span>id <span class="token keyword">INTEGER</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">NONCLUSTERED</span> <span class="token keyword">HASH</span> <span class="token keyword">WITH</span> <span class="token punctuation">(</span>BUCKET_COUNT <span class="token operator">=</span> <span class="token number">1000000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+ date_value <span class="token keyword">DATETIME</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span>
+<span class="token keyword">WITH</span> <span class="token punctuation">(</span>MEMORY_OPTIMIZED <span class="token operator">=</span> <span class="token keyword">ON</span><span class="token punctuation">,</span> DURABILITY <span class="token operator">=</span> SCHEMA_AND_DATA<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>下表為作為對照用的 Table 使用 Disk Filegroop。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> dbo<span class="token punctuation">.</span>DiskTable
+<span class="token punctuation">(</span>id <span class="token keyword">INTEGER</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">NONCLUSTERED</span><span class="token punctuation">,</span>
+ date_value <span class="token keyword">DATETIME</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>在效能的驗證上，Disk Table 大約花費 10 秒完成資料寫入；Memory Optimized Table 則約 5 秒。</p>
+<p><strong>Memory Optimized</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">BEGIN</span> <span class="token keyword">TRAN</span>
+	<span class="token keyword">DECLARE</span> <span class="token variable">@Memid</span> <span class="token keyword">int</span> <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">WHILE</span> <span class="token variable">@Memid</span> <span class="token operator">&lt;=</span> <span class="token number">500000</span>
+	<span class="token keyword">BEGIN</span>
+		<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> dbo<span class="token punctuation">.</span>MemoryTable <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token variable">@Memid</span><span class="token punctuation">,</span> GETDATE<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">SET</span> <span class="token variable">@Memid</span> <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">END</span>
+<span class="token keyword">COMMIT</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>Disk</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">BEGIN</span> <span class="token keyword">TRAN</span>
+	<span class="token keyword">DECLARE</span> <span class="token variable">@Diskid</span> <span class="token keyword">int</span> <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">WHILE</span> <span class="token variable">@Diskid</span> <span class="token operator">&lt;=</span> <span class="token number">500000</span>
+	<span class="token keyword">BEGIN</span>
+		<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> dbo<span class="token punctuation">.</span>DiskTable <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token variable">@Diskid</span><span class="token punctuation">,</span> GETDATE<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">SET</span> <span class="token variable">@Diskid</span> <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">END</span>
+<span class="token keyword">COMMIT</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>確認目前 MemoryTable 的資訊：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> o<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> m<span class="token punctuation">.</span><span class="token operator">*</span>
+<span class="token keyword">FROM</span>
+  sys<span class="token punctuation">.</span>dm_db_xtp_table_memory_stats m
+<span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>sysobjects o
+  <span class="token keyword">ON</span> m<span class="token punctuation">.</span>object_id <span class="token operator">=</span> o<span class="token punctuation">.</span>id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="https://i.imgur.com/ooTIL6s.png"></p>
+<p>而一旦結合 Native Stored Procedure 後，可以得到 ms 等級的完成速度，甚至將規模放大為 5,000,000 也只需要約 4 秒😮</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">PROCEDURE</span> dbo<span class="token punctuation">.</span>InsertData
+	<span class="token keyword">WITH</span> NATIVE_COMPILATION<span class="token punctuation">,</span> SCHEMABINDING<span class="token punctuation">,</span> <span class="token keyword">EXECUTE</span> <span class="token keyword">AS</span> OWNER
+<span class="token keyword">AS</span>
+<span class="token keyword">BEGIN</span> ATOMIC <span class="token keyword">WITH</span> <span class="token punctuation">(</span><span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION</span> <span class="token keyword">LEVEL</span> <span class="token operator">=</span> <span class="token keyword">SNAPSHOT</span><span class="token punctuation">,</span> <span class="token keyword">LANGUAGE</span> <span class="token operator">=</span> <span class="token string">'us_english'</span><span class="token punctuation">)</span>
+	<span class="token keyword">DECLARE</span> <span class="token variable">@Memid</span> <span class="token keyword">int</span> <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">WHILE</span> <span class="token variable">@Memid</span> <span class="token operator">&lt;=</span> <span class="token number">500000</span>
+	<span class="token keyword">BEGIN</span>
+		<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> dbo<span class="token punctuation">.</span>MemoryTable <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token variable">@Memid</span><span class="token punctuation">,</span> GETDATE<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">SET</span> <span class="token variable">@Memid</span> <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">END</span>
+<span class="token keyword">END</span><span class="token punctuation">;</span>
+
+<span class="token keyword">DELETE</span> <span class="token keyword">FROM</span> dbo<span class="token punctuation">.</span>MemoryTable
+<span class="token keyword">EXEC</span> dbo<span class="token punctuation">.</span>InsertData<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="SQL-Server-FileStream"><a href="#SQL-Server-FileStream" class="headerlink" title="SQL Server FileStream"></a>SQL Server FileStream</h3><p>🐸 如何使用 FileStream 並結合 FileGroup 的設定，讓應用程式可以將 BLOB 檔案儲存於資料庫伺服器的 FileSystem，並使用 FileTable 來管理檔案的異動紀錄。</p>
+<h3 id="SQL-Server-Concurrency"><a href="#SQL-Server-Concurrency" class="headerlink" title="SQL Server Concurrency"></a>SQL Server Concurrency</h3><p>釐清 Share Lock、Update Lock、Exclusive Lock 以及 Intent Lock。</p>
+<p>從交易機制去解決 Lock 問題。</p>
+<p>💡 資料庫應該開始 Read_Committed_SnapShot 設定，避免查詢上的 Lock。</p>
+<h3 id="冷知識"><a href="#冷知識" class="headerlink" title="冷知識"></a>冷知識</h3><ol>
+<li>SQL Server 如何實作 .NET 物件 以及載入 ASSEMBLY</li>
+<li>Spacial Data Type</li>
+</ol>
+<h2 id="Terms"><a href="#Terms" class="headerlink" title="Terms"></a>Terms</h2><dl>
+  <dt>Foreign Key</dt>
+  <dd>...</dd>
+  <dt>Surrogate Key</dt>
+  <dd>...</dd>
+  <dt>Seek</dt>
+  <dd>...</dd>
+  <dt>Scan</dt>
+  <dd>...</dd>
+  <dt>ColumnStore Index</dt>
+  <dd>...</dd>
+  <dt>Clustered Index</dt>
+  <dd>...</dd>
+  <dt>NonClustered Index</dt>
+  <dd>...</dd>
+  <dt>Query Store</dt>
+  <dd>...</dd>
+  <dt>Database Engine Tuning Advisor</dt>
+  <dd>...</dd>
+  <dt>Excution Plans</dt>
+  <dd>...</dd>
+  <dt>Heaps</dt>
+  <dd>...</dd>
+  <dt>Composite Indexes</dt>
+  <dd>...</dd>
+  <dt>Temporal Tables</dt>
+  <dd>...</dd>
+  <dt>Temorary Tables</dt>
+  <dd>...</dd>
+  <dt>Index Fragmentation</dt>
+  <dd>...</dd>
+  <dt>Covering Index</dt>
+  <dd>...</dd>
+  <dt>Fill Factor</dt>
+  <dd>...</dd>
+  <dt>Pad Index</dt>
+  <dd>...</dd>
+  <dt>Constraints</dt>
+  <dd>...</dd>
+  <dt>Dynamic Management Views</dt>
+  <dd>...</dd>
+  <dt>Catalog Views</dt>
+  <dd>...</dd>
+</dl>
+
+<h3 id="資料庫物件"><a href="#資料庫物件" class="headerlink" title="資料庫物件"></a>資料庫物件</h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Indexed View</td>
+<td>View</td>
+<td>實體化的 View，增加查詢效率，以儲存空間為成本</td>
+</tr>
+<tr>
+<td>Partitino View</td>
+<td>View</td>
+<td>利用 UNION ALL 將 View 分散在多資料庫、伺服器</td>
+</tr>
+<tr>
+<td>Simple Select</td>
+<td>Stored Procedures</td>
+<td>相較於 View 支援 Order By</td>
+</tr>
+<tr>
+<td>Parametered</td>
+<td>Stored Procedures</td>
+<td>可以使用參數的方式傳入資料</td>
+</tr>
+<tr>
+<td>Result</td>
+<td>Stored Procedures</td>
+<td>可以將結果保存並進行回傳</td>
+</tr>
+<tr>
+<td>Cross DB</td>
+<td>Stored Procedures</td>
+<td>需要注意 Permissions 的問題</td>
+</tr>
+<tr>
+<td>Scalar</td>
+<td>Function</td>
+<td>可以回傳單一數值，需要注意 Loop 效能問題</td>
+</tr>
+<tr>
+<td>Table-Valued</td>
+<td>Function</td>
+<td>可以將結果回傳為 Table，只能單一 Select</td>
+</tr>
+<tr>
+<td>Multistatements Table-Valued</td>
+<td>Function</td>
+<td>自行定義空白 Table 並使用多組 Select 填充資料後回傳 Table</td>
+</tr>
+</tbody></table>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2021/11/SQL-Server-Developing-SQL-Databases/" data-id="clg3fmaim016ps4ts7nkc90x9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2021/11/SQL-Server-XML-Data/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server XML Data (FOR XML / OPENXML)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2021/11/ASPNET-MVC-Recall-Develop-Memory/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET MVC 回鍋開發的參考筆記
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/FFMPEG-Merge-All-MP3-Files-To-One/">Using ffmpeg Merge All MP3 Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerShell-Concate-All-Text-Files-To-One/">PowerShell Concate All Text Files To One</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/PowerBI-Report-Schedule-Management/">PowerBI Report Schedule Management</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/03/Midjourney-Tips/">Midjourney Tips</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">137</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">210</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">66</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">56</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
