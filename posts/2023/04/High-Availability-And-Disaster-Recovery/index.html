@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>High Availability And Disaster Recovery | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在追求數位韌性的時代，先來回顧一下 IT 日常生活大家琅琅上口的 HA 以及 DR，還有備份、備援、抄寫以及容錯分別代表的意涵，最後枚舉 Microsoft 所提供的各式 Solutions 😁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="High Availability And Disaster Recovery">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/04/High-Availability-And-Disaster-Recovery/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="在追求數位韌性的時代，先來回顧一下 IT 日常生活大家琅琅上口的 HA 以及 DR，還有備份、備援、抄寫以及容錯分別代表的意涵，最後枚舉 Microsoft 所提供的各式 Solutions 😁">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2023-04-09T01:22:58.000Z">
+<meta property="article:modified_time" content="2023-04-09T07:10:04.461Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="Microsoft">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-High-Availability-And-Disaster-Recovery" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/04/High-Availability-And-Disaster-Recovery/" class="article-date">
+  <time datetime="2023-04-09T01:22:58.000Z" itemprop="datePublished">2023-04-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      High Availability And Disaster Recovery
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solutions"><span class="toc-text">Solutions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#High-Availability-Solutions"><span class="toc-text">High Availability Solutions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Disaster-Recovery-Solutions"><span class="toc-text">Disaster Recovery Solutions</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>在追求數位韌性的時代，先來回顧一下 IT 日常生活大家琅琅上口的 HA 以及 DR，還有備份、備援、抄寫以及容錯分別代表的意涵，最後枚舉 Microsoft 所提供的各式 Solutions 😁</p>
+<a href="/posts/2023/04/High-Availability-And-Disaster-Recovery/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>High Availability (HA) 的目標在於最小化服務的 <strong>Downtime</strong> (停機時間)，並且藉由 <strong>Redundancy</strong> (備援) 以及 <strong>Failover</strong> (容錯) 的技術來達成。</p>
+<p><strong>Redundancy</strong> 是以備援的系統元件，在主系統元件異常時，可以使用備援系統元件提供服務，包含硬體上 (伺服器、儲存裝置與網路) 的備援，技術的名詞包含 <strong>Cluster</strong> (叢集) 或者是 <strong>Standby</strong> (預備) Mode；軟體上則是使用 <strong>Virtualization</strong> (虛擬化)或者 <strong>Containerization</strong> (容器化) 的方式在不同的硬體上執行相同的 <strong>Application Instance</strong> (應用程式實體)。</p>
+<p><strong>Failover</strong> 在系統元件問題發生時，具備自動切換至備援系統元件的功能，稱為容錯移轉。在方式上包含 <strong>Active-Passive Failover</strong>，主系統元件平時負責所有的服務需求，保持主動狀態，在問題發生時才交棒給備援系統元件，平時備援系統元件保持在被動狀態。另一種方式則是 <strong>Active-Active Failover</strong>，主系統元件與備援系統元件平時就同時分擔所有的服務需求，當問題發生時由正常的系統元件繼續提供服務。</p>
+<p>為了達成 HA 的 Redundancy 以及 Failover，會使用到 <strong>Health Checks</strong> 機制以及確保元件之間的資料與設定 <strong>synchronization</strong> (同步化)。</p>
+<p>Disaster Recovery (DR) 的目標在於降低災難發生時資料損失的程度 (Recovery Point Object) 以及減少服務的 <strong>Downtime</strong>，並且藉由 <strong>Backup</strong> (備份) 以及 <strong>Replication</strong> (抄寫) 的技術來達成。</p>
+<p><strong>Backups</strong> 是將資料儲存至不同的裝置，例如磁帶、磁碟或雲端儲存空間，技術的名稱包含：</p>
+<ul>
+<li><strong>Full Backups</strong> (完整備份): 完整備份目前的所有資料，並作為其他備份的基礎點。</li>
+<li><strong>Differential Backups</strong> (差異備份): 備份來自於上一次完整備份後差異的資料內容。</li>
+<li><strong>Incremental Backups</strong> (增量備份): 備份來自於上一次完整備份及增量備份後差異的資料內容。</li>
+<li><strong>Log Backups</strong> (交易紀錄備份): 關聯式資料庫常見的備份方式，藉由備份對資料庫操作的紀錄來達到備份與復原資料的功能。</li>
+</ul>
+<p>在 <strong>Backups</strong> 需要確保備份資料的安全性，例如使用加密的方式進行備份資料的保護。</p>
+<p><strong>Replication</strong> 是將資料以 <strong>real-time</strong> (即時) 或近乎即時的方式複製到不同的地點，在層度上分為： <strong>Database Replication</strong>, <strong>Server Replication</strong> 以及 <strong>Site Replication</strong>。</p>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><blockquote>
+<p>Exhaustive List High Availability or Disaster Recovery Solustions about Windows Server, SQL Server and IIS in format</p>
+</blockquote>
+<h3 id="High-Availability-Solutions"><a href="#High-Availability-Solutions" class="headerlink" title="High Availability Solutions"></a>High Availability Solutions</h3><p><strong>Windows Server</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-server/failover-clustering/create-failover-cluster">Failover Clustering</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/windows-server/networking/technologies/network-load-balancing">Network Load Balancing (NLB)</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/manage/set-up-hyper-v-replica">Hyper-V Replica</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-server/storage/storage-replica/storage-replica-overview">Storage Replica</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-server/failover-clustering/sofs-overview">Scale-Out File Server</a></li>
+<li>Storage Spaces Direct (S2D)</li>
+</ul>
+<p><strong>SQL Server</strong></p>
+<ul>
+<li>Always On Availability Groups</li>
+<li>Failover Cluster Instances (FCI)</li>
+</ul>
+<p><a href="/posts/2020/12/SQL-Server-High-Availability/">SQL Server High Availability 高可用性架構解決方案</a></p>
+<p><a href="/posts/2021/07/SQL-Server-Availability-Group-Deploy-Guide/">SQL Server Always On Availability Group 可用性群組安裝筆記</a></p>
+<p><a href="/posts/2021/10/SQL-Server-Cluster/">AlwaysOn Failover Cluster Instance, FCI (SQL Server Cluster)</a></p>
+<p><strong>IIS</strong></p>
+<ul>
+<li>Web Farm Framework (WFF)</li>
+<li>Application Request Routing (ARR)</li>
+</ul>
+<p><a href="/posts/2021/11/IIS-Application-Request-Routing/">IIS Work With Application Request Routing, ARR</a></p>
+<h3 id="Disaster-Recovery-Solutions"><a href="#Disaster-Recovery-Solutions" class="headerlink" title="Disaster Recovery Solutions"></a>Disaster Recovery Solutions</h3><p><strong>Windows Server</strong></p>
+<ul>
+<li>Backup and Restore</li>
+<li>Hyper-V Replica</li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-server/storage/storage-replica/storage-replica-overview">Storage Replica</a></li>
+<li>Azure Site Recovery</li>
+</ul>
+<p><strong>SQL Server</strong></p>
+<ul>
+<li>Database Mirroring</li>
+<li>Log Shipping</li>
+<li>Backup and Restore</li>
+<li>Geo-Replication for Azure SQL Database</li>
+</ul>
+<p><a href="/posts/2023/04/SQL-Server-Log-Shipping/">SQL Server Log Shipping </a></p>
+<p><strong>IIS</strong></p>
+<ul>
+<li>Backup and Restore of IIS Configuration</li>
+<li>Web Deploy</li>
+<li>Azure Traffic Manager</li>
+</ul>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/04/High-Availability-And-Disaster-Recovery/" data-id="clg9cmxbd00pgcgts3x3z616a" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/04/SQL-Server-Log-Shipping/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Log Shipping</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/04/Windows-Server-Domain-Controller/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows Server Domain Controller
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/">SQL Server Group Managed Service Account As Service Identity (gMSA)</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/Windows-Server-Domain-Controller/">Windows Server Domain Controller</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/High-Availability-And-Disaster-Recovery/">High Availability And Disaster Recovery</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Log-Shipping/">SQL Server Log Shipping</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">139</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">211</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">67</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">60</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

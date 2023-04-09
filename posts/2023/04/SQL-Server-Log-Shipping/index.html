@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Log Shipping | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server Log Shipping 的設定方式以及應用作為 HA &#x2F; DR 以及 Migration 解決方案的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Log Shipping">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/04/SQL-Server-Log-Shipping/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server Log Shipping 的設定方式以及應用作為 HA &#x2F; DR 以及 Migration 解決方案的方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Log-Shipping-9.png">
+<meta property="article:published_time" content="2023-04-07T02:29:07.000Z">
+<meta property="article:modified_time" content="2023-04-09T11:56:08.769Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="Generated">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Log-Shipping" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/04/SQL-Server-Log-Shipping/" class="article-date">
+  <time datetime="2023-04-07T02:29:07.000Z" itemprop="datePublished">2023-04-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Log Shipping
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Benefits-About-Log-Shipping"><span class="toc-text">Benefits About Log Shipping</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Architecture"><span class="toc-text">Architecture</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Servers"><span class="toc-text">Servers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Jobs"><span class="toc-text">Jobs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Database-State"><span class="toc-text">Database State</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A0%90%E5%85%88%E6%AD%A5%E9%A9%9F"><span class="toc-text">預先步驟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%A9%9F"><span class="toc-text">建立步驟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Log-Shipping-%E9%80%B2%E8%A1%8C%E6%96%B9%E5%BC%8F"><span class="toc-text">Log Shipping 進行方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server Log Shipping 的設定方式以及應用作為 HA / DR 以及 Migration 解決方案的方式。</p>
+<a href="/posts/2023/04/SQL-Server-Log-Shipping/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>Log Shipping 由於無法主動 Failover，更適合使用的情境是 Disaster Recovery 而非 High Availability。 藉由 Log Shipping，以交易紀錄的方式達到同步出第二台，甚至是多台資料庫伺服器。這些同步後的伺服器則可以做為備援的節點，在原本的伺服器發生狀況的時候接手工作 (但需要人工介入，例如調整應用程式的連線字串或者是調整資料庫伺服器的 IP 等方式)。此外也可以用 Log Shipping 的方式作為同步遷移 (Migration) 資料庫的措施。</p>
+<p>Log Shipping 是 HA / DR 設定門檻最低的解決方案，不需要 WSFC、沒有相同網域的限制，並且只需要標準版的授權即可使用。</p>
+<p>實作的原理是藉由主要資料庫伺服器，透過交易紀錄備份，提供次要資料庫伺服器還原使用，以保持資料的同步。同時可以再搭配 Optional 的 Monitor 資料庫伺服器，確保藉由交易紀錄達成的同步有正常運作。</p>
+<p>啟用 Log Shipping 會需要保存交易紀錄，可以搭配<strong>備份壓縮</strong>來減少所產生的資料量。</p>
+<h3 id="Benefits-About-Log-Shipping"><a href="#Benefits-About-Log-Shipping" class="headerlink" title="Benefits About Log Shipping"></a>Benefits About Log Shipping</h3><ol>
+<li><p><strong>Disaster recovery</strong>: Log shipping can be used as a disaster recovery solution to maintain a secondary copy of the database at a remote location. In the event of a primary server failure, the secondary server can be used to bring the database back online with minimal data loss.</p>
+</li>
+<li><p><strong>Reduced downtime</strong>: With log shipping, the secondary database is kept in sync with the primary database, which means that in the event of a failure, failover to the secondary database can be done quickly and with minimal downtime.</p>
+</li>
+<li><p><strong>Customizable failover</strong>: Log shipping allows you to customize the failover process to meet your specific business needs. You can choose to manually failover to the secondary database, or you can set up automatic failover based on specific criteria such as database health or network latency.</p>
+</li>
+<li><p><strong>Multiple secondary databases</strong>: You can configure log shipping to maintain multiple secondary databases, which provides added redundancy and availability for your critical data.</p>
+</li>
+<li><p><strong>Granular backup and recovery</strong>: With log shipping, you can choose to backup and restore individual transaction logs, which allows for more granular backup and recovery options.</p>
+</li>
+<li><p><strong>Cost-effective</strong>: Log shipping is a cost-effective solution for disaster recovery since it does not require expensive hardware or software.</p>
+</li>
+</ol>
+<h2 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h2><h3 id="Servers"><a href="#Servers" class="headerlink" title="Servers"></a>Servers</h3><dl>
+  <dt>Primary database server</dt>
+  <dd>The primary database server is the server that contains the database that is being backed up and copied to a secondary server.</dd>
+  <dt>Secondary database server</dt>
+  <dd>The secondary database server is the server that receives and restores the transaction log backups from the primary server.</dd>
+  <dt>Monitor server</dt>
+  <dd>The monitor server is an optional component of log shipping that provides a centralized location for monitoring and managing log shipping.</dd>
+</dl>
+
+<h3 id="Jobs"><a href="#Jobs" class="headerlink" title="Jobs"></a>Jobs</h3><dl>
+  <dt>Backup job</dt>
+  <dd>This job is responsible for taking transaction log backups of the primary database on a scheduled basis.</dd>
+  <dt>Copy job</dt>
+  <dd>This job is responsible for copying the transaction log backups from the primary server to the secondary server.</dd>
+  <dt>Restore job</dt>
+  <dd>This job is responsible for restoring the transaction log backups on the secondary server.</dd>
+  <dt>Log shipping alerting</dt>
+  <dd>Log shipping alerting is another optional component that allows you to set up alerts to notify you of log shipping failures or issues.</dd>
+</dl>
+
+<h3 id="Database-State"><a href="#Database-State" class="headerlink" title="Database State"></a>Database State</h3><dl>
+  <dt>Recovery mode</dt>
+  <dd>When restoring a database in Recovery mode, the database is fully recovered, and it is available for use. This mode is the default mode for restoring a database, and it is used when you want to restore the database to its most recent state.</dd>
+  <dt>NoRecovery mode</dt>
+  <dd>When restoring a database in NoRecovery mode, the database is not fully recovered, and it remains in a state where it cannot be used. This mode is used when you want to restore additional backups to the database before making it available for use. This mode is typically used when you want to restore a differential or log backup.</dd>
+  <dt>STANDBY mode</dt>
+  <dd>When restoring a database in STANDBY mode, the database is recovered, but it remains in a read-only state. This mode allows you to use the database for read-only operations, but you cannot modify the data in the database. This mode is typically used when you want to perform reporting or other read-only operations on the database while it is being restored.</dd>
+</dl>
+
+<h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><h3 id="預先步驟"><a href="#預先步驟" class="headerlink" title="預先步驟"></a>預先步驟</h3><p>本次示範首先建立 Group Managed Service Accounts <code class="s">SQLService</code>，提供 SQL1 (Primary Server) 以及 SQL2 (Primary Server) 的 SQL Server Service 以及 SQL Server Agent Service 作為 Identity。</p>
+<p><img src="/assets/Log-Shipping-2.png"></p>
+<table>
+<thead>
+<tr>
+<th>IP</th>
+<th>Name</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.127.100</td>
+<td>DC</td>
+<td></td>
+</tr>
+<tr>
+<td>192.168.127.101</td>
+<td>SQL1</td>
+<td>Primary Server</td>
+</tr>
+<tr>
+<td>192.168.127.102</td>
+<td>SQL2</td>
+<td>Secondary Server</td>
+</tr>
+</tbody></table>
+<p>在 Share Folder 上，分別於 SQL1 以及 SQL2 建立 <code class="s">C:\LogShipping</code> 並且開啟共用與安全性，授予 <code class="s">SQLService</code> 具有讀取與寫入權限。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/troubleshoot/sql/database-engine/log-shipping/configure-security-log-shipping">Configure security for SQL Server log shipping | learn.microsoft</a></p>
+<h3 id="建立步驟"><a href="#建立步驟" class="headerlink" title="建立步驟"></a>建立步驟</h3><p>Log Shipping 的設定方式 By Database，本次示範以 AdventureWorksLT 進行示範。</p>
+<p>首先啟用<strong>交易紀錄傳送</strong>，在啟動前必須先進行該資料庫的完整備份。</p>
+<p><img src="/assets/Log-Shipping-3.png"></p>
+<p>接著設定用於儲存交易紀錄備份地點的共用資料夾，並調整備份交易紀錄 JOB 的備份排程，預設是 15 分鐘。</p>
+<p><img src="/assets/Log-Shipping-4.png"></p>
+<p>如果 Secondary 不存在目標資料庫，可以使用初始化次要資料庫進行建立。</p>
+<p><img src="/assets/Log-Shipping-5.png"></p>
+<p>接著設定複製交易紀錄的 JOB，設定 Secondary 的路徑以及進行複製的排程，預設是 15 分鐘。</p>
+<p><img src="/assets/Log-Shipping-6.png"></p>
+<p>最後設定還原交易紀錄的 JOB，預設是 15 分鐘，這個步驟可以設定 Secondary Server 要保持在 Recovery (無法被讀取、寫入) 或是 Standby (可以被讀取) 等狀態。</p>
+<p><img src="/assets/Log-Shipping-7.png"></p>
+<p>接著可以使用第三台資料庫伺服器扮演監視伺服器，用以確認交易紀錄的還原的同步程度。</p>
+<p><img src="/assets/Log-Shipping-8.png"></p>
+<p>一切順利，大功告成 😍</p>
+<p><img src="/assets/Log-Shipping-9.png"></p>
+<h3 id="Log-Shipping-進行方式"><a href="#Log-Shipping-進行方式" class="headerlink" title="Log Shipping 進行方式"></a>Log Shipping 進行方式</h3><p>每 15 分鐘，在 Primary Server 的 Back Up Job 會觸發，從 Primary Server 複製交易紀錄並儲存在共用資料夾，使用的身分是 Primary Server SQL Server Service。</p>
+<p>每 15 分鐘，在 Secondary Server 的 Copy Job 會觸發，從共用資料夾複製交易紀錄至 Secondary Server 的資料夾，使用的身分是 Secondary Server SQL Server Agent。</p>
+<p>每 15 分鐘，在 Secondary Server 的 Restore Job 會觸發，將 Secondary Server 資料夾當中的交易紀錄進行還原，使用的身分是 Secondary Server SQL Server Agent。</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/04/SQL-Server-Log-Shipping/" data-id="clg9cmxh8019mcgtse13c4cyq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">English Learning Dialogs About Life</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/04/High-Availability-And-Disaster-Recovery/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          High Availability And Disaster Recovery
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/">SQL Server Group Managed Service Account As Service Identity (gMSA)</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/Windows-Server-Domain-Controller/">Windows Server Domain Controller</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/High-Availability-And-Disaster-Recovery/">High Availability And Disaster Recovery</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Log-Shipping/">SQL Server Log Shipping</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/English-Learning-Dialogs-About-Life/">English Learning Dialogs About Life</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">139</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">211</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">67</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">60</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
