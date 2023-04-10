@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
 <meta property="article:published_time" content="2023-04-09T09:51:51.000Z">
-<meta property="article:modified_time" content="2023-04-09T09:57:24.885Z">
+<meta property="article:modified_time" content="2023-04-10T11:28:48.237Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Database">
 <meta property="article:tag" content="SQLServer">
@@ -111,7 +111,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AD-Server"><span class="toc-text">AD Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Client-Server"><span class="toc-text">Client Server</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AD-Server"><span class="toc-text">AD Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Client-Server"><span class="toc-text">Client Server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%80%85%E6%AC%8A%E9%99%90%E6%8C%87%E6%B4%BE"><span class="toc-text">使用者權限指派</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
     </div>
   
   
@@ -135,6 +135,9 @@
 <span class="token function">Import-Module</span> ActiveDirectory
 <span class="token function">Install-ADServiceAccount</span> <span class="token operator">-</span>Identity SQLService<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
+<h3 id="使用者權限指派"><a href="#使用者權限指派" class="headerlink" title="使用者權限指派"></a>使用者權限指派</h3><p>一旦變更了執行 Service 的身分後，「鎖定記憶體中的分頁」與「執行磁碟區維護工作權限」也必須配合進行調整。</p>
+<p><kbd>Win + R</kbd> 輸入 <code class="s">secpol.msc</code></p>
+<p><a href="/posts/2022/01/SQL-Server-Installation-Detailed/#%E4%BD%BF%E7%94%A8%E8%80%85%E6%AC%8A%E9%99%90%E6%8C%87%E6%B4%BE">SQL Server Installation Detailed 安裝流程與規劃詳細說明</a></p>
 <h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
 <p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
 <p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
@@ -144,7 +147,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/" data-id="clg9cmxgr0182cgtsczig37g0" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/" data-id="clgarjhxl017zfstseucid3tu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/" rel="tag">OS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
