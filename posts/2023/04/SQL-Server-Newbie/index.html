@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>沒有任何防備，突然被指派為 SQL Server 管理員的求生指南 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="面對突如其來的職位指派，只能硬著頭皮面對了。但初來乍到一定要有指南在手，增加勝任指派的可能性 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="沒有任何防備，突然被指派為 SQL Server 管理員的求生指南">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/04/SQL-Server-Newbie/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="面對突如其來的職位指派，只能硬著頭皮面對了。但初來乍到一定要有指南在手，增加勝任指派的可能性 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2023-04-22T00:38:43.000Z">
+<meta property="article:modified_time" content="2023-04-23T12:02:17.645Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Newbie" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/04/SQL-Server-Newbie/" class="article-date">
+  <time datetime="2023-04-22T00:38:43.000Z" itemprop="datePublished">2023-04-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      沒有任何防備，突然被指派為 SQL Server 管理員的求生指南
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Scripts"><span class="toc-text">Scripts</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Backup-History"><span class="toc-text">Backup History</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Job-History"><span class="toc-text">Job History</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SQL-Server-ErrorLog"><span class="toc-text">SQL Server ErrorLog</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Check-Alerts"><span class="toc-text">Check Alerts</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SQL-Server-Services"><span class="toc-text">SQL Server Services</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Drive-Space"><span class="toc-text">Drive Space</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Long-Running-Jobs"><span class="toc-text">Long Running Jobs</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%BA%AB%E7%AE%A1%E7%90%86%E8%80%85%E7%9A%84%E5%B9%AB%E6%89%8B"><span class="toc-text">資料庫管理者的幫手</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ken-Fisher%E2%80%99s-Security-Scripts"><span class="toc-text">Ken Fisher’s Security Scripts</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>面對突如其來的職位指派，只能硬著頭皮面對了。但初來乍到一定要有指南在手，增加勝任指派的可能性 😎</p>
+<a href="/posts/2023/04/SQL-Server-Newbie/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>首先是盤點管理的資料庫伺服器與資料庫的範圍，第一步是先釐清 SQL Server 管理員週期性的工作，</p>
+<p>每日作業：</p>
+<ul>
+<li>確認備份情形 (Backup History)</li>
+<li>確定排程作業的進行 (Agent Job Monitor)</li>
+<li>監控系統資源和事件日誌 (Activity Monitor &amp; ErrorLog)</li>
+</ul>
+<p>每週作業：</p>
+<ul>
+<li>執行索引重建和統計更新 (Indexes &amp; Statistics)</li>
+<li>檢查資料庫的完整性 (DBCC CHECKDB)</li>
+</ul>
+<p>每月作業：</p>
+<ul>
+<li>清理資料庫日誌和過期的備份 (Backup File &amp; Hisotry Clean)</li>
+<li>測試資料庫還原 (Restore Tests)</li>
+</ul>
+<p>每季作業：</p>
+<ul>
+<li>資料庫 Patch Update</li>
+<li>評估和優化 SQL Server 的配置</li>
+</ul>
+<h3 id="Scripts"><a href="#Scripts" class="headerlink" title="Scripts"></a>Scripts</h3><p>以下由 Kevin Hill 在 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/getting-started-sql-server-maintenance/table-of-contents">Getting Started with SQL Server Maintenance</a> 課程中所分享的 Scripts 有助於批次在註冊伺服器上查詢所有的資料庫實體相關資訊：</p>
+<h4 id="Backup-History"><a href="#Backup-History" class="headerlink" title="Backup History"></a>Backup History</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Use</span> msdb<span class="token punctuation">;</span> 
+go
+<span class="token keyword">Select</span>  
+	backup_start_date<span class="token punctuation">,</span> database_name<span class="token punctuation">,</span> <span class="token keyword">type</span><span class="token punctuation">,</span>	backup_size<span class="token operator">/</span><span class="token number">1024</span><span class="token operator">/</span><span class="token number">1024</span><span class="token operator">/</span><span class="token number">1024</span> <span class="token keyword">as</span> <span class="token punctuation">[</span><span class="token keyword">backup</span> size <span class="token punctuation">(</span>GB<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+	compressed_backup_size<span class="token operator">/</span><span class="token number">1024</span><span class="token operator">/</span><span class="token number">1024</span><span class="token operator">/</span><span class="token number">1024</span> <span class="token keyword">as</span> <span class="token punctuation">[</span>Compressed <span class="token keyword">backup</span> size <span class="token punctuation">(</span>GB<span class="token punctuation">)</span><span class="token punctuation">]</span>
+	<span class="token punctuation">,</span>Physical_device_name <span class="token keyword">as</span> <span class="token punctuation">[</span><span class="token keyword">Backup</span> location<span class="token punctuation">]</span>	
+<span class="token keyword">from</span> msdb<span class="token punctuation">.</span><span class="token punctuation">.</span>backupset <span class="token keyword">join</span> msdb<span class="token punctuation">.</span><span class="token punctuation">.</span>backupmediafamily bmf <span class="token keyword">on</span> backupset<span class="token punctuation">.</span>media_set_id <span class="token operator">=</span> bmf<span class="token punctuation">.</span>media_set_id
+<span class="token keyword">where</span> 	<span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span>
+	<span class="token comment">--and type = 'D' 	-- valid options: D (Full), I (Differential), L (Transaction Log)</span>
+	<span class="token operator">and</span> database_name <span class="token operator">=</span> <span class="token string">'MyDatabase'</span> <span class="token comment">--&lt;&lt;&lt;&lt;&lt; change this</span>
+<span class="token keyword">order</span> <span class="token keyword">by</span> 	backup_start_date <span class="token keyword">desc</span>
+<span class="token comment">--exec master.sys.xp_fixeddrives</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Job-History"><a href="#Job-History" class="headerlink" title="Job History"></a>Job History</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Select</span> 
+	j<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span><span class="token punctuation">,</span> 
+	jh<span class="token punctuation">.</span>step_name<span class="token punctuation">,</span> 
+	run_status<span class="token punctuation">,</span> 
+	run_date<span class="token punctuation">,</span> 
+	run_time<span class="token punctuation">,</span> 
+	run_duration<span class="token punctuation">,</span> 
+	<span class="token punctuation">[</span>server<span class="token punctuation">]</span>
+<span class="token keyword">From</span> <span class="token punctuation">[</span>msdb<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>sysjobhistory<span class="token punctuation">]</span> jh
+	<span class="token keyword">join</span> <span class="token punctuation">[</span>msdb<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span>sysjobs j 
+	<span class="token keyword">on</span> jh<span class="token punctuation">.</span>job_id <span class="token operator">=</span> j<span class="token punctuation">.</span>job_id
+<span class="token keyword">Where</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span> 
+	<span class="token operator">and</span> run_status <span class="token operator">not</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span>
+	<span class="token operator">and</span> run_date <span class="token operator">></span> <span class="token number">20171110</span> <span class="token comment">-- Change date</span>
+	<span class="token operator">and</span> <span class="token punctuation">[</span>step_name<span class="token punctuation">]</span> <span class="token operator">&lt;></span> <span class="token string">'(Job outcome)'</span>
+	<span class="token comment">-- and run_time > 60000</span>
+<span class="token keyword">Order</span> <span class="token keyword">by</span> 
+	run_date <span class="token keyword">desc</span><span class="token punctuation">,</span> 
+	run_time <span class="token keyword">desc</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="SQL-Server-ErrorLog"><a href="#SQL-Server-ErrorLog" class="headerlink" title="SQL Server ErrorLog"></a>SQL Server ErrorLog</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Create</span> <span class="token keyword">Table</span> <span class="token comment">#Errorlog </span>
+	<span class="token punctuation">(</span>Logdate <span class="token keyword">datetime</span><span class="token punctuation">,</span> 
+	 ProcessInfo <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+	 LogText <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">5000</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment">--Dump all the things into the table</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token comment">#Errorlog</span>
+<span class="token keyword">EXEC</span> sys<span class="token punctuation">.</span>xp_readerrorlog 
+	<span class="token number">0</span>			<span class="token comment">-- Current ERRORLOG</span>
+	<span class="token punctuation">,</span><span class="token number">1</span>			<span class="token comment">-- SQL ERRORLOG (not Agent)</span>
+
+<span class="token comment">--Query just like you would anything else:</span>
+<span class="token keyword">Select</span> <span class="token operator">*</span> 
+<span class="token keyword">from</span> <span class="token comment">#Errorlog </span>
+<span class="token keyword">Where</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span>
+	<span class="token comment">--and LogText like '(c) Microsoft Corporation%'</span>
+	<span class="token operator">and</span> <span class="token punctuation">(</span>LogText <span class="token operator">like</span> <span class="token string">'%Error%'</span>	<span class="token operator">or</span> LogText <span class="token operator">like</span> <span class="token string">'%Fail%'</span><span class="token operator">or</span> LogText <span class="token operator">like</span> <span class="token string">'%deadlock%'</span>
+	<span class="token punctuation">)</span>
+	<span class="token operator">And</span> Logdate <span class="token operator">></span> getdate<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token number">2</span>
+	<span class="token operator">And</span> LogText <span class="token operator">Not</span> <span class="token operator">Like</span> <span class="token string">'%CheckDB%'</span>
+	<span class="token operator">And</span> LogText <span class="token operator">not</span> <span class="token operator">like</span> <span class="token string">'%35262%'</span>
+	<span class="token operator">And</span> LogText <span class="token operator">not</span> <span class="token operator">like</span> <span class="token string">'%35250%'</span>
+
+<span class="token comment">--Clean up your mess, you weren't raised in a barn!</span>
+<span class="token keyword">Drop</span> <span class="token keyword">Table</span> <span class="token comment">#Errorlog</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Check-Alerts"><a href="#Check-Alerts" class="headerlink" title="Check Alerts"></a>Check Alerts</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+	<span class="token punctuation">[</span>name<span class="token punctuation">]</span><span class="token punctuation">,</span> 
+	event_source<span class="token punctuation">,</span> 
+	last_occurrence_date<span class="token punctuation">,</span> 
+	last_occurrence_time<span class="token punctuation">,</span> 
+	occurrence_count
+	<span class="token comment">--, * </span>
+<span class="token keyword">FROM</span> 
+	msdb<span class="token punctuation">.</span><span class="token punctuation">.</span>sysalerts
+<span class="token keyword">Where</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span>
+	<span class="token operator">and</span> last_occurrence_date <span class="token operator">>=</span> <span class="token number">20181109</span>
+	<span class="token operator">and</span> severity <span class="token operator">>=</span> <span class="token number">16</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="SQL-Server-Services"><a href="#SQL-Server-Services" class="headerlink" title="SQL Server Services"></a>SQL Server Services</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Select</span> 
+	servicename<span class="token punctuation">,</span> 
+	status_desc<span class="token punctuation">,</span> 
+	service_account<span class="token punctuation">,</span> 
+	instant_file_initialization_enabled
+<span class="token keyword">From</span> sys<span class="token punctuation">.</span>dm_server_services<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Drive-Space"><a href="#Drive-Space" class="headerlink" title="Drive Space"></a>Drive Space</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> 
+	RTRIM<span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
+	groupid<span class="token punctuation">,</span>
+	filename<span class="token punctuation">,</span>
+	CAST<span class="token punctuation">(</span>size<span class="token operator">/</span><span class="token number">128.0</span> <span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+	CAST<span class="token punctuation">(</span>FILEPROPERTY<span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'SpaceUsed'</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">128.0</span> <span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+	CAST<span class="token punctuation">(</span><span class="token punctuation">[</span>maxsize<span class="token punctuation">]</span><span class="token operator">/</span><span class="token number">128.0</span> <span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+	CAST<span class="token punctuation">(</span>size<span class="token operator">/</span><span class="token number">128.0</span><span class="token operator">-</span><span class="token punctuation">(</span>FILEPROPERTY<span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'SpaceUsed'</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">128.0</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+	CAST<span class="token punctuation">(</span><span class="token punctuation">(</span>CAST<span class="token punctuation">(</span>FILEPROPERTY<span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'SpaceUsed'</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">128.0</span> 
+		<span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">/</span>CAST<span class="token punctuation">(</span>size<span class="token operator">/</span><span class="token number">128.0</span> 
+		<span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">100</span> 
+		<span class="token keyword">AS</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">FROM</span> sysfiles<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Long-Running-Jobs"><a href="#Long-Running-Jobs" class="headerlink" title="Long Running Jobs"></a>Long Running Jobs</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> j<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span><span class="token punctuation">,</span> jh<span class="token punctuation">.</span>step_name<span class="token punctuation">,</span> run_date<span class="token punctuation">,</span> run_time
+<span class="token keyword">FROM</span> <span class="token punctuation">[</span>msdb<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>sysjobhistory<span class="token punctuation">]</span> jh
+  <span class="token keyword">JOIN</span> <span class="token punctuation">[</span>msdb<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span>sysjobs j
+  <span class="token keyword">ON</span> jh<span class="token punctuation">.</span>job_id <span class="token operator">=</span> j<span class="token punctuation">.</span>job_id
+<span class="token keyword">WHERE</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span> <span class="token operator">AND</span> run_stats <span class="token operator">=</span> <span class="token number">4</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> run_date <span class="token keyword">desc</span><span class="token punctuation">,</span> run_time <span class="token keyword">desc</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="資料庫管理者的幫手"><a href="#資料庫管理者的幫手" class="headerlink" title="資料庫管理者的幫手"></a>資料庫管理者的幫手</h2><p><a target="_blank" rel="noopener" href="https://github.com/olahallengren/sql-server-maintenance-solution">Ola Hallengren Maintenance Solution | Github</a><br><a target="_blank" rel="noopener" href="https://github.com/BrentOzarULTD/SQL-Server-First-Responder-Kit">SQL-Server-First-Responder-Kit | Github</a><br><a target="_blank" rel="noopener" href="https://github.com/dataplat/dbatools">dbatools | Github</a><br><a target="_blank" rel="noopener" href="https://github.com/amachanic/sp_whoisactive">sp_WhoIsActive | Github</a></p>
+<h3 id="Ken-Fisher’s-Security-Scripts"><a href="#Ken-Fisher’s-Security-Scripts" class="headerlink" title="Ken Fisher’s Security Scripts"></a>Ken Fisher’s Security Scripts</h3><p><a target="_blank" rel="noopener" href="https://gist.github.com/sqlstudent144/f1a9e15f1fc8d2201e073020f4da74da">sp_SrvPermissions.sql</a><br><a target="_blank" rel="noopener" href="https://gist.github.com/sqlstudent144/b5158a2c32537eb9db42f44295a080c3">sp_DBPermissions.sql</a></p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://www.sqlskills.com/help/accidental-dba/">Accidental DBA | SQLSkills</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/04/SQL-Server-Newbie/" data-id="clgtd3ivc01a5h8ts75oj98g0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Group Managed Service Account As Service Identity (gMSA)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Newbie/">沒有任何防備，突然被指派為 SQL Server 管理員的求生指南</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/">SQL Server Group Managed Service Account As Service Identity (gMSA)</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/Windows-Server-Domain-Controller/">Windows Server Domain Controller</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/High-Availability-And-Disaster-Recovery/">High Availability And Disaster Recovery</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/04/SQL-Server-Log-Shipping/">SQL Server Log Shipping</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">140</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">211</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">67</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">61</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
