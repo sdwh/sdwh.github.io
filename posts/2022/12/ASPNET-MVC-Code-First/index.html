@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
 <meta property="article:published_time" content="2022-12-10T10:11:15.000Z">
-<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:modified_time" content="2023-04-27T12:47:49.401Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="MVC">
 <meta property="article:tag" content="ASPNET">
@@ -266,6 +266,15 @@
 <h3 id="Migrations"><a href="#Migrations" class="headerlink" title="Migrations"></a>Migrations</h3><p>而雖然有了資料庫初始化策略，但隨著開發過程的深入，使用者可能在資料庫已經留下許多的測試資料，不適合再貿然重置整個資料庫，這個時候就可以加入 <code class="s">Migrations</code> 機制，為資料庫的異動建立版本控制，兼顧開發過程中，資料庫的升版與退版功能。</p>
 <p>而在 Migrations 的使用，可以分為 Auto Migrations 以及 Code-Based Migrations。</p>
 <h4 id="Auto-Migrations"><a href="#Auto-Migrations" class="headerlink" title="Auto Migrations"></a>Auto Migrations</h4><p>使用 Auto Migrations 後，當 POCO 以及 Model 發生變化時，會自動進行資料庫綱要的變更，同時會在資料庫的 <code class="s">__MigrationHistory</code> 資料表加上紀錄。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>注意要使用的是 Nuget 套件管理員中的「套件管理主控台」，而非使用「開發人員 PowerShell」，否則會發生「 無法辨識 'enable-migration' 詞彙是否為 Cmdlet、函數、指令檔或可執行程式的名稱。請檢查名稱拼字是否正確，如果包含路徑的話，請確認路徑是否正確，然後再試一次。」的問題 😑</p>
+        </div>
+    </div>
+</div>
+
 <p>要使用 Auto Migrations 需要在 Package Manager Console 執行 <code class="s">Enable-Migrations</code></p>
 <pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Enable-Migrations</span> <span class="token operator">-</span>EnableAutomaticMigration:<span class="token boolean">$true</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
@@ -311,7 +320,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2022/12/ASPNET-MVC-Code-First/" data-id="clgtd3il3002ph8tsdl7b0b79" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2022/12/ASPNET-MVC-Code-First/" data-id="clgz4ex5n002tdgts836nd70h" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ADONET/" rel="tag">ADONET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
