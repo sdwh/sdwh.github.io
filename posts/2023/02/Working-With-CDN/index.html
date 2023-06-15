@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/CDN-Server-Architecture-2.svg">
 <meta property="og:image" content="https://sdwh.dev/assets/CDN-Server-Architecture-3.svg">
 <meta property="article:published_time" content="2023-02-18T11:10:00.000Z">
-<meta property="article:modified_time" content="2023-05-20T07:36:35.830Z">
+<meta property="article:modified_time" content="2023-06-15T11:57:32.583Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="CyberSecurity">
 <meta property="article:tag" content="IIS">
@@ -114,7 +114,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97%E4%BC%BA%E6%9C%8D%E5%99%A8%E6%86%91%E8%AD%89%E3%80%81%E4%B8%AD%E7%B9%BC%E6%86%91%E8%AD%89%E4%BB%A5%E5%8F%8A%E7%A7%81%E5%AF%86%E9%87%91%E9%91%B0"><span class="toc-text">取得伺服器憑證、中繼憑證以及私密金鑰</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E9%83%A8-DNS-%E8%A8%AD%E5%AE%9A"><span class="toc-text">外部 DNS 設定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CDN-%E4%BC%BA%E6%9C%8D%E5%99%A8%E8%88%87%E5%8E%9F%E4%BC%BA%E6%9C%8D%E5%99%A8%E9%97%9C%E4%BF%82"><span class="toc-text">CDN 伺服器與原伺服器關係</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A-CDN-%E5%BE%8C%E5%8F%B0"><span class="toc-text">設定 CDN 後台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%AC%E8%A9%A6-CDN"><span class="toc-text">測試 CDN</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97%E4%BC%BA%E6%9C%8D%E5%99%A8%E6%86%91%E8%AD%89%E3%80%81%E4%B8%AD%E7%B9%BC%E6%86%91%E8%AD%89%E4%BB%A5%E5%8F%8A%E7%A7%81%E5%AF%86%E9%87%91%E9%91%B0"><span class="toc-text">取得伺服器憑證、中繼憑證以及私密金鑰</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%B0%87-cer-%E7%94%B1-binary-%E8%BD%89%E7%82%BA-text-pem"><span class="toc-text">如何將 cer 由 binary 轉為 text (pem)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%AA%A2%E8%A6%96-Certificate-Text-%E2%80%94%E2%80%93BEGIN-CERTIFICATE%E2%80%94%E2%80%93"><span class="toc-text">如何檢視 Certificate Text (—–BEGIN CERTIFICATE—–)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%A2%BA%E8%AA%8D%E7%B6%B2%E7%AB%99%E7%9A%84%E6%86%91%E8%AD%89%E9%8F%88%E4%BB%A5%E5%8F%8A%E6%86%91%E8%AD%89-Certificate-Text"><span class="toc-text">如何確認網站的憑證鏈以及憑證 Certificate Text</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%BF%E5%BA%9C%E5%AE%A2%E6%88%B6%E5%B8%B8%E8%A6%8B%E7%9A%84%E6%86%91%E8%AD%89%E7%B7%B4"><span class="toc-text">政府客戶常見的憑證練</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E9%83%A8-DNS-%E8%A8%AD%E5%AE%9A"><span class="toc-text">外部 DNS 設定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CDN-%E4%BC%BA%E6%9C%8D%E5%99%A8%E8%88%87%E5%8E%9F%E4%BC%BA%E6%9C%8D%E5%99%A8%E9%97%9C%E4%BF%82"><span class="toc-text">CDN 伺服器與原伺服器關係</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A8%AD%E5%AE%9A-CDN-%E5%BE%8C%E5%8F%B0"><span class="toc-text">設定 CDN 後台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%AC%E8%A9%A6-CDN"><span class="toc-text">測試 CDN</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%88%A5%E8%A8%AD%E5%AE%9A"><span class="toc-text">特別設定</span></a></li></ol>
     </div>
   
   
@@ -131,8 +131,143 @@
 <p>在分離過程如果有明文密碼，例如密碼為 <code class="s">seCretPa55W0rd</code> 要輸入為參數才能夠進行分離。</p>
 <pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">openssl</span>.exe pkcs12 -in .\cert.pfx -out server.cer -nodes -password <span class="token string">"pass:seCretPa55W0rd"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>注意：密碼必須包含 pass:，否則建議不要輸入密碼，讓系統介面跳出輸入密碼的提示後再輸入。</p>
+        </div>
+    </div>
+</div>
+
 <p>分離的結果會儲存在 <code class="s">server.cer</code> 檔案之中，包含包含私密金鑰、伺服器憑證以及相關的中繼憑證 (可能為多個)。</p>
 <p>進階參考保哥所分享的 <a target="_blank" rel="noopener" href="https://blog.miniasp.com/post/2019/04/17/Convert-PFX-and-CER-format-using-OpenSSL">如何在收到 PFX 或 CER 憑證檔之後使用 OpenSSL 進行常見的格式轉換</a></p>
+<h4 id="如何將-cer-由-binary-轉為-text-pem"><a href="#如何將-cer-由-binary-轉為-text-pem" class="headerlink" title="如何將 cer 由 binary 轉為 text (pem)"></a>如何將 cer 由 binary 轉為 text (pem)</h4><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">openssl</span> x509 -inform der -in .\server.cer -outform pem -out .\server.pem</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="如何檢視-Certificate-Text-—–BEGIN-CERTIFICATE—–"><a href="#如何檢視-Certificate-Text-—–BEGIN-CERTIFICATE—–" class="headerlink" title="如何檢視 Certificate Text (—–BEGIN CERTIFICATE—–)"></a>如何檢視 Certificate Text (—–BEGIN CERTIFICATE—–)</h4><p>使用 SSL Shopper 的 <a target="_blank" rel="noopener" href="https://www.sslshopper.com/certificate-decoder.html">Certificate Decoder</a> 來進行解譯與檢視。</p>
+<h4 id="如何確認網站的憑證鏈以及憑證-Certificate-Text"><a href="#如何確認網站的憑證鏈以及憑證-Certificate-Text" class="headerlink" title="如何確認網站的憑證鏈以及憑證 Certificate Text"></a>如何確認網站的憑證鏈以及憑證 Certificate Text</h4><p>不要透過瀏覽器，使用 <code class="s">openssl</code> 來確認才能達到正確的答案 (一個小時的血淚心得)。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">openssl</span>.exe s_client -showcerts -connect gcp.nat.gov.tw:<span class="token number">443</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="政府客戶常見的憑證練"><a href="#政府客戶常見的憑證練" class="headerlink" title="政府客戶常見的憑證練"></a>政府客戶常見的憑證練</h4><p>依序由中繼憑證到根憑證。</p>
+<p>Common Name: 政府伺服器數位憑證管理中心 - G1<br>Subject Alternative Names:<br>Organization: 行政院<br>Organization Unit:<br>Locality:<br>State:<br>Country: TW<br>Valid From: July 18, 2019<br>Valid To: August 18, 2031<br>Issuer: ePKI Root Certification Authority - G2, Chunghwa Telecom Co., Ltd.<br>Key Size: 4096 bit<br>Serial Number: 996d5fe9ade16cdc8ecdbfedb14a3295</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">-----BEGIN CERTIFICATE-----
+MIIGtjCCBJ6gAwIBAgIRAJltX+mt4Wzcjs2/7bFKMpUwDQYJKoZIhvcNAQELBQAw
+YzELMAkGA1UEBhMCVFcxIzAhBgNVBAoMGkNodW5naHdhIFRlbGVjb20gQ28uLCBM
+dGQuMS8wLQYDVQQDDCZlUEtJIFJvb3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkg
+LSBHMjAeFw0xOTA3MTkwNjQ2NDVaFw0zMTA4MTkwNjQ2NDVaMFgxCzAJBgNVBAYT
+AlRXMRIwEAYDVQQKDAnooYzmlL/pmaIxNTAzBgNVBAMMLOaUv+W6nOS8uuacjeWZ
+qOaVuOS9jeaGkeitieeuoeeQhuS4reW/gyAtIEcxMIICIjANBgkqhkiG9w0BAQEF
+AAOCAg8AMIICCgKCAgEAwg5R4LGoDj+mZIXmcHmRYv501jsSLIm7EoX/KAt74uN2
+yDR436V2EWkFeWhD+TS4sx2/3JCRW+KE+IX8NYBKjsWuK9OMY4Gu4FEWJpBu1XCW
+YjTPKyhHdEhDpxRxv91g3Zk68XgK7j2U5sEzCPx13QjkH7qc/Mo5BFiro8YsYAfx
+gCoa/rZFEsXyZKXRJeIDw7t+iPxVy2cbQ0uNloO9670LGoOVzYVkYABv3IwZo+JR
+tj+j7rLjB7xQKYmfJOA2Jc96yPm6li7zHrIQYfohGPdANmwR9opNNqYOo+LtsIYo
+t3/cLp9YgAaiGdrAiKrbbEVkYH+zKzAHolf5mPBn+h3OElYfygESitWRBp2bwfOG
+JwAYseTuorQHpyQps1GGcn9vcfnLhvLxa3DMrCAvSJb3SvHCyqahQz0KR0IPcu+V
+LW3icaqlbJausGIGYqp8VSN6FJ0pgmYdbunBLYc1v23VvjmVMl+xNJoaSFEUscmS
+qA4CuYANhkWSANk8HI9rNbvmzuyWhSv7tUXY6UB67mHp4ypGcKYbXrjiKqahv6QL
+UEb7S8FD71Ds75F2vMeO4O77i6joBs/L2E6WZJvSronzJCXL0IwmpYaOAsoFOf0e
+GVsPBVKn+z4Bq0WA0+r7plfWofDbUGmx9Zun++rWhoDXrma+odubN1Xj1RjlL3sC
+AwEAAaOCAW4wggFqMB8GA1UdIwQYMBaAFHJbuqpyOO4lkCS1lCL6CYjKiwr7MB0G
+A1UdDgQWBBTW6y2dYf4ru3CILrgHsVmw9IMiajAOBgNVHQ8BAf8EBAMCAYYwPAYD
+VR0fBDUwMzAxoC+gLYYraHR0cDovL2VjYS5oaW5ldC5uZXQvcmVwb3NpdG9yeS9D
+UkwyL0NBLmNybDCBggYIKwYBBQUHAQEEdjB0MDsGCCsGAQUFBzAChi9odHRwOi8v
+ZWNhLmhpbmV0Lm5ldC9yZXBvc2l0b3J5L0NlcnRzL2VDQUcyLmNydDA1BggrBgEF
+BQcwAYYpaHR0cDovL29jc3AuZWNhLmhpbmV0Lm5ldC9PQ1NQL29jc3BHMnNoYTIw
+EgYDVR0TAQH/BAgwBgEB/wIBADAiBgNVHSAEGzAZMA0GCysGAQQBgbcjZAADMAgG
+BmeBDAECAjAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcN
+AQELBQADggIBAEyrsJ9vUi6nEfwO0vgAoFefXpCRF+uDsmG/8F6OV9VRnbtzBwaz
+HbxVmaBvDRVofLfoXWr+Nd8dd3BXVUNxemNrkZa8Hdgdv4s8yFbRs0W6fRTWkhCc
+c39RpQtSeV7kyxCP1rMTYRSqCA9F+FcDMLXJIzZrzl7Tn6guIyqcfZv6sRN7CbbT
+rYKSc0JX4t26WGFun2zLjzH8kx1TZ457TE4yyjl1oSZdgiWL6Hz7l+nbTe6WqPVV
+m4am2AAmaQaLGncsGLasl7PIHx9Nc4sy7KdOMTc5r0BPCGhAiJ6ueQ6aVd49pra7
+BDIqFMA7Myy4pXRYfqFnjq9RuROWYiIluzLNUSxlaFtTMUVQnWjJxnlXlBDLX9L4
+OAxTOvdbtcNNS1GK+W1cWiYdTOWF4HTu5pvdUn/+8yVE4E7MPb0vGuxv3S11QG6J
+tVPuHkX6BGqRXHo253gY77HZU0g3g9qVs9UaZjWS5UTcqdgLmmOQnH7USaJ9/4rX
+Ru/P8IWMPG2s6tv1dRVQV5xfq21PQ4y53ytVd0+/lp0L743+1AjnOw0I8t9QxP6c
+2ti+oo43rxM8YE3etVLQBeWsmJc00GOWa/XmFACsy8Lkctx0QScAAYwCfB2accfx
+j9hEX1c6MAeVUVp04YJx4dtjoIFTPI1/MFX+FkxMq4Fs6k+mxSm7tNvv
+-----END CERTIFICATE-----<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Common Name: ePKI Root Certification Authority - G2<br>Subject Alternative Names:<br>Organization: Chunghwa Telecom Co., Ltd.<br>Organization Unit:<br>Locality:<br>State:<br>Country: TW<br>Valid From: November 17, 2015<br>Valid To: December 19, 2034<br>Issuer: Chunghwa Telecom Co., Ltd.<br>Key Size: 4096 bit<br>Serial Number: afcd8d642c62d645067dc857fda8f15d</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">-----BEGIN CERTIFICATE-----
+MIIHZDCCBUygAwIBAgIRAK/NjWQsYtZFBn3IV/2o8V0wDQYJKoZIhvcNAQELBQAw
+XjELMAkGA1UEBhMCVFcxIzAhBgNVBAoMGkNodW5naHdhIFRlbGVjb20gQ28uLCBM
+dGQuMSowKAYDVQQLDCFlUEtJIFJvb3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkw
+HhcNMTUxMTE3MDg1MTM1WhcNMzQxMjIwMDIzMTI3WjBjMQswCQYDVQQGEwJUVzEj
+MCEGA1UECgwaQ2h1bmdod2EgVGVsZWNvbSBDby4sIEx0ZC4xLzAtBgNVBAMMJmVQ
+S0kgUm9vdCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEcyMIICIjANBgkqhkiG
+9w0BAQEFAAOCAg8AMIICCgKCAgEApFkfoC/fvuD76dy1if5alwPJOnenjlyv8uMY
+OfWq3Q9G0mgPV5ynY2DTWM41wqf2iMJPfxso6dCnAMQXTW3iD8UOJiMgq/c6KKJM
+CgvMjs7mAJpaQA3UUBqb0Q2clPnb7lzQ8YoHzZorQCxJpF1iX6dr3+5WCFDzQhhs
+MbBe5ZxzkrwO0gx9xThXvLtY2yYZAu3jQ4SKTlZr262hMdnMImeWeP93ncxkxTIg
+au9OMNUkJf2Iea9xGv7VSxsViLwYcKq9rTgKZjBG5YmF1XYkqamz5llgD7SpU8I6
+nUUa1q7jd17EYjYzLzDEv5XxLTildejRapMuRYdLSqLfv1gnmspiGape1LGASZbd
+K+xfj5vgnZeI9YQDo6+zpXMtQbrlB7dva3H398lar2mZsy/IT0LrbGtxZ3jfCqxP
+10qFAEYa1c24n+qVnQ980cYFheYI3ogXgfbVtW7qoRzXYarjWUKJnFl+sXxkNN1h
+Iyo5tRCr/IapUxrF62rigE5ZkcA4if6zXdb7kenXsH3ZeAjM9SvMK+Gh1pRzwf5R
+9Ix9CrWairn12uDJs9iPqoKDjWlTLf0ABBhKoNpU4XmMiet/9YLnoLl3Ta75ugI7
+iHbrfF2zWhPbfCkWa5nRHeRIIaINXgGI6L7xmE0+xxZXHF/hCG8cTFhDVveAZYxx
+DqIEZ08CAwEAAaOCAhYwggISMB8GA1UdIwQYMBaAFB4M97Zn8uGSJglFwFU5Lnc/
+QkqiMB0GA1UdDgQWBBRyW7qqcjjuJZAktZQi+gmIyosK+zAOBgNVHQ8BAf8EBAMC
+AQYwQAYDVR0fBDkwNzA1oDOgMYYvaHR0cDovL2VjYS5oaW5ldC5uZXQvcmVwb3Np
+dG9yeS9DUkxfU0hBMi9DQS5jcmwwgYIGCCsGAQUFBwEBBHYwdDA7BggrBgEFBQcw
+AoYvaHR0cDovL2VjYS5oaW5ldC5uZXQvcmVwb3NpdG9yeS9DZXJ0cy9lQ0FHMS5j
+cnQwNQYIKwYBBQUHMAGGKWh0dHA6Ly9vY3NwLmVjYS5oaW5ldC5uZXQvT0NTUC9v
+Y3NwRzFzaGEyMA8GA1UdEwEB/wQFMAMBAf8wgecGA1UdIASB3zCB3DANBgsrBgEE
+AYG3I2QAATANBgsrBgEEAYG3I2QAAjANBgsrBgEEAYG3I2QAAzANBgsrBgEEAYG3
+I2QABDANBgsrBgEEAYG3I2QACTANBgsrBgEEAYG3I2QAADANBgsrBgEEAYG3I2QE
+ATANBgsrBgEEAYG3I2QEAjANBgsrBgEEAYG3I2QEAzAJBgdghnYBZAABMAkGB2CG
+dgFkAAIwCQYHYIZ2AWQAAzAJBgdghnYBZAAEMAkGB2CGdgFkAAAwCAYGZ4EMAQIB
+MAgGBmeBDAECAjAIBgZngQwBAgMwDQYJKoZIhvcNAQELBQADggIBALwy4mxatKA6
+X+UM2IDpnWajNmek00EM4qh5E7eiQY0yZV5Eit9D/8q9h0hD77NjVaYPwsOWqWAi
+VtDAro+nWDHfkAG14ptRNBoGjJjzZi/+OeI2WTc8ZER6C8rAjQ7b/RxMzwxfDjRt
+gCbT2qq01rPiJ+qDgyUniDstbyQj08bSo3GJWp6ZsSNDAP26ygODpSgL0Ja806By
+k2b4npQevdkmQ0k43S9IU0MeSlWT8hxzluyFlPRl4yuev5le91outdEdpV98KvYc
+gLAWwW5UcFOM6SRsYTBS2dfSRgKreDnMNdbUHmbAVsb3wLD6WqLoe6LyRNOeXctK
+PA6+e5i/JN6NZnqejcMopuS+pyWyrNiHlRShGUfTiXrcbT8fbyOswAT8JsX4fWyZ
+Yub0kKfFG8hEKQsIxNiyKH4cw6HBih31EYaYS9IEj19NxfHl0KbPm22cpBJoGwkZ
+Wgg//PflFFHNTdKSalDxPHMKdyZbTBugLtqFVkV+vu1y6WRoGfHwzpa9aQsMWAwL
+YRnBZnSYzfN9QFZsoHCSDJJVt30Oi6fURJy34+dtvs+sQihiN886uYTJ0Cex1R+O
+b9HXCKFrGTumgwD+nitt7hwlB74K9lqrKQrtfgfBFFMG9Tu/E/OI6JoST2j8KmSN
+1rpcxoMH3tamxqm3+xpLM9HekbBoJ0V2
+-----END CERTIFICATE-----<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Common Name:<br>Subject Alternative Names:<br>Organization: Chunghwa Telecom Co., Ltd.<br>Organization Unit: ePKI Root Certification Authority<br>Locality:<br>State:<br>Country: TW<br>Valid From: December 19, 2004<br>Valid To: December 19, 2034<br>Issuer: Chunghwa Telecom Co., Ltd.<br>Key Size: 4096 bit<br>Serial Number: 15c8bd65475cafb897005ee406d2bc9d</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">-----BEGIN CERTIFICATE-----
+MIIFsDCCA5igAwIBAgIQFci9ZUdcr7iXAF7kBtK8nTANBgkqhkiG9w0BAQUFADBe
+MQswCQYDVQQGEwJUVzEjMCEGA1UECgwaQ2h1bmdod2EgVGVsZWNvbSBDby4sIEx0
+ZC4xKjAoBgNVBAsMIWVQS0kgUm9vdCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAe
+Fw0wNDEyMjAwMjMxMjdaFw0zNDEyMjAwMjMxMjdaMF4xCzAJBgNVBAYTAlRXMSMw
+IQYDVQQKDBpDaHVuZ2h3YSBUZWxlY29tIENvLiwgTHRkLjEqMCgGA1UECwwhZVBL
+SSBSb290IENlcnRpZmljYXRpb24gQXV0aG9yaXR5MIICIjANBgkqhkiG9w0BAQEF
+AAOCAg8AMIICCgKCAgEA4SUP7o3biDN1Z82tH306Tm2d0y8U82N0ywEhajfqhFAH
+SyZbCUNsIZ5qyNUD9WBpj8zwIuQf5/dqIjG3LBXy4P4AakP/h2XGtRrBp0xtInAh
+ijHyl3SJCRImHJ7K2RKilTza6We/CKBk49ZCt0Xvl/T29de1ShUCWH2YWEtgvM3X
+DZoTM1PRYfl61dd4s5oz9wCGzh1NlDivqOx4UXCKXBCDUSH3ET00hl7lSM2XgYI1
+TBnsZfZrxQWh7kcT1rMhJ5QQCtkkO7q+RBNGMD+XPNjX12ruOzjjK9SXDrkb5wdJ
+fzcq+Xd4z1TtW0ado4AOkUPB1ltfFLqfpo0kR0BZv3I4sjZsN/+Z0V0OWQqraffA
+sgRFelQArr5T9rXn4fg8ozHSqf4hUmTFpmfwdQcGlBSBVcYn5AGPF8Fqcde+S/uU
+WH1+ETOxQvdibBjWzwloPn9s9h6PYq2lY9sJpx8iQkEeb5mKPtf5P0B6ebClAZLS
+nT0IFaUQAS2zMnaolQ2zepr7BxB4EW/hj8e6DyUadCrlHJhBmd8hh+iVBmoKs2pH
+dmX2Os+PYhcZewoozRrSgx4hxyy/vv9haLdnG7t4TY3OZ+XkwY63I2binZB1NJip
+NiuKmpS5nezMirH4JYlcWrYvjB9teSSnUmjDhDXiZo1jDiVN1Rmy5nk3pyKdVDEC
+AwEAAaNqMGgwHQYDVR0OBBYEFB4M97Zn8uGSJglFwFU5Lnc/QkqiMAwGA1UdEwQF
+MAMBAf8wOQYEZyoHAAQxMC8wLQIBADAJBgUrDgMCGgUAMAcGBWcqAwAABBRFsMLH
+ClZ87lt4DJX5GFPBphzYEDANBgkqhkiG9w0BAQUFAAOCAgEACbODU1kBPpVJufGB
+uvl2ICO1J2B01GqZNF5sAFPZn/KmsSQHRGoqxqWOeBLoR9lYGxMqXnmbnwoqZ6Yl
+PwZpVnPDimZI+ymBV3QGypzqKOg4ZyYr8dW1P2WT+DZdjo2NQCCHGervJ8A9tDkP
+JXtoUHRVnAxZfVo9QZQlUgjgRywVMRnVvwdVxrsStZf0X4OFunHB2WyBEXYKCrC/
+gpf36j36+uwtqSiUO1bd0lEursC9CBWMd1I0ltabrNMdjmEPNXubrjlpC2JgQCA2
+j6/7Nu4tCEoduL+bXPjqpRugc6bY+G7gMwRfaKonh+3ZwZCc7b3jajWvY9+rGNm6
+5ulK6lCKD2GTHuItGeIwlDWSXQ62B68ZgI9HkFFLLk3dheLSClIKF5r8GrBQAuUB
+o2M3IUxExJtRmREOc5wGj1QupyheRDmHVi03vYVElOEMSyycw5KFNGHLD7ibSkNS
+/jQ6fbjpKdx2qcgw+BRxgMYeNkh0IkFch4LoGHGLQYlE535YW6i4jRPpp2zDR+2z
+Gp1iro2C6pSe3VkQw63d4k3jMdXH7OjysP6SHhYKGvzZ8/gntsm+HbRsZJB/9OTE
+W9c3rkIO3aQab3yIVMUWbuF6aC74Or8NpDyJO3inTmODBCEIZ43ygknQW/2xzQ+D
+hNQ+IIX3Sj0rnP0qCglN6oH4EZw=
+-----END CERTIFICATE-----<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="外部-DNS-設定"><a href="#外部-DNS-設定" class="headerlink" title="外部 DNS 設定"></a>外部 DNS 設定</h3><p>為了保持原本提供服務的域名持續使用，必須要另設一個新的域名提供 CDN 專門指向，而原本的域名則以 CNAME 的方式指向 CDN 伺服器。</p>
 <p><strong>調整前：</strong></p>
 <table>
@@ -229,11 +364,17 @@
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="特別設定"><a href="#特別設定" class="headerlink" title="特別設定"></a>特別設定</h2><p>防火牆需要放行中華電信的 CDN 節點。</p>
+<p>原站的標頭可以使用實際的網域名稱。</p>
+<p>搭配 WAF 需要注意封鎖行為要針對實際連線的 IP 而非 CDN 節點的 IP。</p>
+<p>快取的時間越長，原站的負擔越小，但資料的即時性越低，解決的方式可以透過 CDN API 主動清除，或者是降低快取的時間，搭配 Use Cache Stale 的方式來確保網頁的即時性。</p>
+
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/02/Working-With-CDN/" data-id="clhw22tll01pw70tsfnc807ec" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/02/Working-With-CDN/" data-id="clix370kr01nrawts9cq77jn9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CyberSecurity/" rel="tag">CyberSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li></ul>
@@ -278,6 +419,14 @@
       <ul>
         
           <li>
+            <a href="/posts/2023/06/IIS-Redirect-With-Subfolder-And-QueryString/">IIS Redirect (URL Rewrite) 網址重新導向指南書</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/05/SQL-Server-TroubleShooting-With-Performance-Counter/">SQL Server TroubleShooting With Performance Counter</a>
+          </li>
+        
+          <li>
             <a href="/posts/2023/05/Windows-Folder-GodMode/">Windows 上帝模式 / God Mode</a>
           </li>
         
@@ -289,14 +438,6 @@
             <a href="/posts/2023/05/ASPNET-Core-WebAPI/">ASP.NET Core WebAPI</a>
           </li>
         
-          <li>
-            <a href="/posts/2023/04/SQL-Server-Newbie/">沒有任何防備，突然被指派為 SQL Server 管理員的求生指南</a>
-          </li>
-        
-          <li>
-            <a href="/posts/2023/04/SQL-Server-Group-Managed-Service-Account-As-Service-Identity/">SQL Server Group Managed Service Account As Service Identity (gMSA)</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -306,7 +447,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">140</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">212</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">68</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">141</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">212</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">68</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -316,7 +457,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">64</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">66</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
