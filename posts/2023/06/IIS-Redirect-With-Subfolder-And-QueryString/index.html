@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
 <meta property="article:published_time" content="2023-06-12T11:09:58.000Z">
-<meta property="article:modified_time" content="2023-06-15T11:53:43.661Z">
+<meta property="article:modified_time" content="2023-06-15T13:32:22.313Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Microsoft">
 <meta property="article:tag" content="IIS">
@@ -111,7 +111,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-TO-HTTPS"><span class="toc-text">HTTP TO HTTPS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E4%B8%A6%E5%8C%85%E5%90%AB-Query-String"><span class="toc-text">重導網址並包含 Query String</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP-TO-HTTPS"><span class="toc-text">HTTP TO HTTPS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E4%B8%A6%E5%8C%85%E5%90%AB-Query-String"><span class="toc-text">重導網址並包含 Query String</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80-Domain"><span class="toc-text">重導網址 Domain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80-SubFolder"><span class="toc-text">重導網址 SubFolder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E6%94%B9%E8%AE%8A-SubFolder-amp-QueryString"><span class="toc-text">重導網址改變 SubFolder &amp; QueryString</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E6%94%B9%E8%AE%8A%E9%A0%86%E5%BA%8F"><span class="toc-text">重導網址改變順序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E7%B0%A1%E5%8C%96%E7%B6%B2%E5%9D%80-%E6%8F%90%E5%8D%87-SEO"><span class="toc-text">重導網址簡化網址 提升 SEO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E7%B0%A1%E5%8C%96%E7%B6%B2%E5%9D%80-%E6%8F%90%E5%8D%87-SEO-2"><span class="toc-text">重導網址簡化網址 提升 SEO 2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%B0%8E%E7%B6%B2%E5%9D%80%E7%B0%A1%E5%8C%96%E7%B6%B2%E5%9D%80-%E6%8F%90%E5%8D%87-SEO-3"><span class="toc-text">重導網址簡化網址 提升 SEO 3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IIS-Server-Variables"><span class="toc-text">IIS Server Variables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
     </div>
   
   
@@ -142,6 +142,169 @@
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h3 id="重導網址-Domain"><a href="#重導網址-Domain" class="headerlink" title="重導網址 Domain"></a>重導網址 Domain</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//www.oldsite.com
+<span class="token key atrule">des</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//www.newsite.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect to New Site<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>(.*)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;HTTP_HOST&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^www\.oldsite\.com$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.newsite.com/&#123;R:1&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">redirectType</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Permanent<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="重導網址-SubFolder"><a href="#重導網址-SubFolder" class="headerlink" title="重導網址 SubFolder"></a>重導網址 SubFolder</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//example.com/products
+<span class="token key atrule">des</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//example.com/shop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect Products to Shop<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^products(/?)(.*)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;HTTP_HOST&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^example\.com$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://example.com/shop/&#123;R:2&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">redirectType</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Permanent<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="重導網址改變-SubFolder-amp-QueryString"><a href="#重導網址改變-SubFolder-amp-QueryString" class="headerlink" title="重導網址改變 SubFolder &amp; QueryString"></a>重導網址改變 SubFolder &amp; QueryString</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/products/details.aspx<span class="token punctuation">?</span>id=123
+<span class="token key atrule">des</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/product/123<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Product Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^products/details\.aspx$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;QUERY_STRING&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>id=(\d+)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/product/&#123;C:1&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">appendQueryString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="重導網址改變順序"><a href="#重導網址改變順序" class="headerlink" title="重導網址改變順序"></a>重導網址改變順序</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/news/2021/06/article.html
+<span class="token key atrule">des</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/news/article/2021/06<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>News Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^news/(\d&#123;4&#125;)/(\d&#123;2&#125;)/([^/]+)\.html$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/news/&#123;R:3&#125;/&#123;R:1&#125;/&#123;R:2&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">appendQueryString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="重導網址簡化網址-提升-SEO"><a href="#重導網址簡化網址-提升-SEO" class="headerlink" title="重導網址簡化網址 提升 SEO"></a>重導網址簡化網址 提升 SEO</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/category.aspx<span class="token punctuation">?</span>name=books<span class="token important">&amp;page=2</span>
+<span class="token key atrule">des</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/books/2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Category Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^category\.aspx$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;QUERY_STRING&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>name=(\w+)<span class="token entity named-entity" title="&amp;">&amp;amp;</span>page=(\d+)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/&#123;C:1&#125;/&#123;C:2&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">appendQueryString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="重導網址簡化網址-提升-SEO-2"><a href="#重導網址簡化網址-提升-SEO-2" class="headerlink" title="重導網址簡化網址 提升 SEO 2"></a>重導網址簡化網址 提升 SEO 2</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/blog/post<span class="token punctuation">?</span>id=9876<span class="token important">&amp;title=my-blog-post</span>
+<span class="token key atrule">des</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/posts/my<span class="token punctuation">-</span>blog<span class="token punctuation">-</span>post<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Blog Post Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^blog/post$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;QUERY_STRING&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>id=(\d+)<span class="token entity named-entity" title="&amp;">&amp;amp;</span>title=([^<span class="token entity named-entity" title="&amp;">&amp;amp;</span>]+)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/posts/&#123;C:2&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">appendQueryString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="重導網址簡化網址-提升-SEO-3"><a href="#重導網址簡化網址-提升-SEO-3" class="headerlink" title="重導網址簡化網址 提升 SEO 3"></a>重導網址簡化網址 提升 SEO 3</h3><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">src</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/events/2022/conference<span class="token punctuation">?</span>id=abcd1234
+<span class="token key atrule">des</span><span class="token punctuation">:</span> https<span class="token punctuation">:</span>//www.example.com/conference/abcd1234<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rewrite</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rule</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Event Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">stopProcessing</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>^events/(\d&#123;4&#125;)/conference$<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>conditions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">input</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>&#123;QUERY_STRING&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>id=([a-zA-Z0-9]+)<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>conditions</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Redirect<span class="token punctuation">"</span></span> <span class="token attr-name">url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/conference/&#123;C:1&#125;<span class="token punctuation">"</span></span> <span class="token attr-name">appendQueryString</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rule</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rewrite</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="IIS-Server-Variables"><a href="#IIS-Server-Variables" class="headerlink" title="IIS Server Variables"></a>IIS Server Variables</h2><table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>{R:0}</td>
+<td>代表與整個模式相符的 URL。在重寫中用於重新定向或轉換 URL。</td>
+</tr>
+<tr>
+<td>{R:1}、{R:2}</td>
+<td>代表在模式中使用括號的子模式的結果。例如，在正則表達式中使用括號進行分組時，{R:1} 代表第一個子模式的結果，{R:2} 代表第二個子模式的結果，以此類推。常用於重寫 URL 時保留特定部分的值。</td>
+</tr>
+<tr>
+<td>{R:n}</td>
+<td>引用<strong>規則</strong>中的捕獲組。數字 n 表示第 n 個捕獲組。例如，{R:1} 表示規則中的第一個捕獲組。</td>
+</tr>
+<tr>
+<td>{C:n}</td>
+<td><strong>條件</strong>中的捕獲組（Capture Group）。數字 n 表示第 n 個捕獲組。例如，{C:1} 表示條件中的第一個捕獲組。</td>
+</tr>
+<tr>
+<td>{HTTP_HOST}</td>
+<td>代表 HTTP 請求中的主機名部分（域名）。常用於根據不同的主機名進行轉址或重寫規則。</td>
+</tr>
+<tr>
+<td>{HTTPS}</td>
+<td>代表是否使用 HTTPS 協議進行連接，值為 “on” 或 “off”。可用於條件判斷以進行適當的轉址或重寫。</td>
+</tr>
+<tr>
+<td>{QUERY_STRING}</td>
+<td>代表 URL 中的查詢字串部分。可用於條件判斷或重寫 URL 時保留查詢參數。</td>
+</tr>
+<tr>
+<td>{REQUEST_URI}</td>
+<td>代表完整的請求 URI（不包括主機名部分）。常用於重寫 URL 時進行條件判斷或提取 URI 的一部分。</td>
+</tr>
+<tr>
+<td>{URL}</td>
+<td>代表相對於應用程序的 URL 部分。常用於重寫規則和轉址規則中，操作 URL 的路徑部分。</td>
+</tr>
+<tr>
+<td>{REQUEST_FILENAME}</td>
+<td>代表相對於磁碟上的實際文件路徑。可用於條件判斷，例如檢查文件是否存在或判斷檔案類型。</td>
+</tr>
+<tr>
+<td>{REQUEST_METHOD}</td>
+<td>代表請求的 HTTP 方法（GET、POST、PUT 等）。常用於根據不同的請求方法進行重寫或轉址。</td>
+</tr>
+<tr>
+<td>{REMOTE_ADDR}</td>
+<td>代表發起請求的客戶端的 IP 地址。可用於根據客戶端 IP 地址進行條件判斷或限制訪問。</td>
+</tr>
+<tr>
+<td>{SERVER_PORT}</td>
+<td>代表伺服器接聽的連接埠號碼。常用於根據不同的連接埠進行轉址或重寫規則。</td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/iis/web-dev-reference/server-variables">https://learn.microsoft.com/en-us/iis/web-dev-reference/server-variables</a></p>
 <h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/08/IIS-MISC/">IIS 筆記整理</a></p>
 <p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
 
@@ -149,7 +312,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/06/IIS-Redirect-With-Subfolder-And-QueryString/" data-id="clix370ar00qnawts3tl08tkb" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/06/IIS-Redirect-With-Subfolder-And-QueryString/" data-id="clixv976i00qm28ts61o08osj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
