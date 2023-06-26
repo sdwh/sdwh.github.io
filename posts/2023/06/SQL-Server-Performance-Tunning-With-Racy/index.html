@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>2023 SQL Server Performance Tunning Note | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 2023 處理文學書房 SQL Server 資料庫效能問題的過程與心得。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2023 SQL Server Performance Tunning Note">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 2023 處理文學書房 SQL Server 資料庫效能問題的過程與心得。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Performance-Tuning-Methodology.svg">
+<meta property="article:published_time" content="2023-06-20T11:11:24.000Z">
+<meta property="article:modified_time" content="2023-06-26T11:25:29.482Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="Generated">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Performance-Tunning-With-Racy" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/" class="article-date">
+  <time datetime="2023-06-20T11:11:24.000Z" itemprop="datePublished">2023-06-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      2023 SQL Server Performance Tunning Note
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-Query-Slow-From-Different-Expert"><span class="toc-text">Why Query Slow From Different Expert</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Performance-Tuning-Expert"><span class="toc-text">Performance Tuning Expert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Developer"><span class="toc-text">Developer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Infrastructure"><span class="toc-text">Infrastructure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DBA"><span class="toc-text">DBA</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Methodology"><span class="toc-text">Methodology</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Analyzing-Operator-Properties"><span class="toc-text">Analyzing Operator Properties</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Webber-Script"><span class="toc-text">Webber Script</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Racy-Script"><span class="toc-text">Racy Script</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E8%A8%8A"><span class="toc-text">參考資訊</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 2023 處理文學書房 SQL Server 資料庫效能問題的過程與心得。</p>
+<a href="/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Why-Query-Slow-From-Different-Expert"><a href="#Why-Query-Slow-From-Different-Expert" class="headerlink" title="Why Query Slow From Different Expert"></a>Why Query Slow From Different Expert</h2><h3 id="Performance-Tuning-Expert"><a href="#Performance-Tuning-Expert" class="headerlink" title="Performance Tuning Expert"></a>Performance Tuning Expert</h3><ul>
+<li><p>Lack of Proper Indexing: Insufficient or inappropriate indexing can result in queries performing full table scans or index scans, leading to decreased performance.</p>
+</li>
+<li><p>Incorrect Indexing Strategy: Creating too many or unnecessary indexes can increase the cost of write operations and degrade write performance.</p>
+</li>
+<li><p>Locking Contention: Concurrent transactions can result in locking contention, particularly in long-running transactions or high-concurrency environments, causing performance bottlenecks and blocking.</p>
+</li>
+<li><p>Disk I/O Bottleneck: Slow disks or excessive disk I/O operations can lead to performance issues. This could be due to disk failures, improper configurations, incorrect disk partitioning, or incorrect I/O operations.</p>
+</li>
+<li><p>Poor Query Writing: Poorly written queries can contribute to performance degradation. This includes unnecessary joins, subqueries, incorrect predicates, and inappropriate query plans.</p>
+</li>
+<li><p>Excessive Query Parameterization: Over-parameterization when the same query is executed multiple times with different parameters can lead to performance degradation. This may be caused by cache invalidation and frequent recompilations.</p>
+</li>
+<li><p>Improper Memory Configuration: Incorrect memory configuration can result in low buffer cache hit ratios, increasing disk I/O operations. Additionally, incorrect max memory settings can lead to memory pressure and performance issues.</p>
+</li>
+<li><p>Inadequate Hardware Resources: Insufficient server hardware resources, such as CPU, memory, and disk, can cause performance bottlenecks. This may require hardware upgrades or reconfiguring server setups.</p>
+</li>
+<li><p>Inaccurate Statistics: Outdated or inaccurate statistics can cause SQL Server to make incorrect query plan decisions, impacting performance.</p>
+</li>
+<li><p>Incorrect Parallelism Settings: Improperly configured parallel query settings can result in excessive parallelism, consuming significant CPU and memory resources. This may require adjusting the max degree of parallelism setting appropriately.</p>
+</li>
+</ul>
+<h3 id="Developer"><a href="#Developer" class="headerlink" title="Developer"></a>Developer</h3><ul>
+<li><p>Poorly Written Queries: Inefficient queries with complex joins, subqueries, or excessive data retrieval can lead to slow performance.</p>
+</li>
+<li><p>Lack of Indexes: Insufficient or missing indexes on frequently queried columns can result in table scans or high I/O operations, impacting performance.</p>
+</li>
+<li><p>Incorrect Data Types: Inappropriate data types can lead to implicit conversions, reducing query performance.</p>
+</li>
+<li><p>Improperly Designed Database Schema: Inadequate normalization, lack of proper relationships, or excessive denormalization can cause inefficient queries and slow performance.</p>
+</li>
+<li><p>Lack of Parameterization: Failure to use parameterized queries allows for SQL injection vulnerabilities and can lead to unnecessary query compilation and decreased performance.</p>
+</li>
+<li><p>Insufficient Connection Pooling: Inefficient connection management, such as opening and closing connections for each query, can result in performance degradation due to increased overhead.</p>
+</li>
+<li><p>Missing or Inadequate Caching: Not implementing caching mechanisms or utilizing caching techniques effectively can result in redundant database queries and slower performance.</p>
+</li>
+<li><p>Improper Transaction Management: Long-running or poorly managed transactions can cause blocking and lock contention, leading to performance issues.</p>
+</li>
+<li><p>Inadequate Error Handling: Insufficient error handling and exception management can result in repeated query execution or unnecessary rollbacks, impacting performance.</p>
+</li>
+<li><p>Lack of Query Plan Optimization: Failure to analyze and optimize query execution plans can lead to suboptimal plans, inefficient index usage, and poor performance.</p>
+</li>
+</ul>
+<h3 id="Infrastructure"><a href="#Infrastructure" class="headerlink" title="Infrastructure"></a>Infrastructure</h3><ul>
+<li><p>Insufficient Memory: Inadequate memory allocation for SQL Server can lead to excessive disk I/O operations, as data pages are frequently read from and written to disk.</p>
+</li>
+<li><p>Slow Disk Subsystem: Slow or misconfigured disk subsystem, including disks with low RPM or improper RAID configurations, can result in high disk latency and poor I/O performance.</p>
+</li>
+<li><p>CPU Bottleneck: Inadequate CPU resources can lead to high CPU utilization, causing queries to wait in a runnable state and impacting overall performance.</p>
+</li>
+<li><p>Network Latency: Slow or congested network connections between the application server and SQL Server can result in delayed query execution and decreased performance.</p>
+</li>
+<li><p>Inadequate Server Configuration: Improper configuration of SQL Server settings, such as max degree of parallelism, maximum server memory, or priority boost, can negatively impact performance.</p>
+</li>
+<li><p>Lack of Maintenance: Failure to regularly update statistics, perform database maintenance tasks, and optimize indexes can lead to degraded performance over time.</p>
+</li>
+<li><p>Inadequate Backup and Recovery Strategy: Improper backup and recovery mechanisms can cause increased disk I/O, impacting performance during backup and restore operations.</p>
+</li>
+<li><p>Inefficient Virtualization: Poorly configured or overcommitted virtual environments can result in resource contention, affecting SQL Server performance.</p>
+</li>
+<li><p>Firewall and Security Settings: Restrictive firewall rules or misconfigured security settings can cause network delays and authentication issues, impacting query performance.</p>
+</li>
+<li><p>Inadequate Monitoring and Capacity Planning: Insufficient monitoring of server performance metrics and lack of capacity planning can lead to unexpected resource limitations and performance degradation.</p>
+</li>
+</ul>
+<h3 id="DBA"><a href="#DBA" class="headerlink" title="DBA"></a>DBA</h3><ul>
+<li><p>Poor Indexing Strategy: Inadequate or missing indexes can lead to excessive disk I/O, increased CPU usage, and slower query performance.</p>
+</li>
+<li><p>Outdated Statistics: Out-of-date statistics can result in inaccurate cardinality estimates, leading to suboptimal query plans and decreased performance.</p>
+</li>
+<li><p>Fragmented Indexes: Fragmented indexes can cause increased disk I/O operations and decreased query performance. Regular index maintenance is essential.</p>
+</li>
+<li><p>Inefficient Query Execution Plans: Suboptimal query plans, such as scans instead of seeks or improper join algorithms, can lead to performance degradation. Reviewing and optimizing execution plans is crucial.</p>
+</li>
+<li><p>Blocking and Locking Contention: Long-running transactions, insufficient isolation levels, or concurrent access to the same resources can cause blocking and locking contention, impacting performance.</p>
+</li>
+<li><p>Insufficient Memory Allocation: Inadequate memory allocation to SQL Server can result in excessive disk I/O, as data pages are frequently read from and written to disk.</p>
+</li>
+<li><p>Tempdb Bottlenecks: Tempdb contention due to high usage, improper configuration, or lack of multiple data files can degrade performance for queries using temporary objects.</p>
+</li>
+<li><p>Inadequate Server Configuration: Incorrect configuration settings, such as max worker threads, parallelism, or memory settings, can impact SQL Server performance.</p>
+</li>
+<li><p>Disk Configuration Issues: Inappropriate disk configurations, such as using RAID 5 for write-intensive workloads or placing log files and data files on the same physical disks, can lead to performance problems.</p>
+</li>
+<li><p>Resource Contentions: Insufficient CPU, memory, or disk resources can result in resource contention, causing slower response times and degraded performance.</p>
+</li>
+</ul>
+<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><p><img src="/assets/SQL-Server-Performance-Tuning-Methodology.svg"></p>
+<ul>
+<li><p>蒐集使用數據、查詢語法、執行計畫</p>
+</li>
+<li><p>分析是否組態設定問題</p>
+</li>
+<li><p>分析索引維護問題</p>
+</li>
+<li><p>分析是否缺少索引或者索引設計不佳</p>
+</li>
+<li><p>分析是否查詢語法設計不佳</p>
+</li>
+<li><p>分析是否硬體規格不足</p>
+</li>
+<li><p>處理組態設定與維護排程 (C)</p>
+</li>
+<li><p>處理遺漏的索引或調整索引設計 (I)</p>
+</li>
+<li><p>處理程式設計與查詢與改 (Q)</p>
+</li>
+<li><p>處理硬體設備強化 (H)</p>
+</li>
+</ul>
+<h3 id="Analyzing-Operator-Properties"><a href="#Analyzing-Operator-Properties" class="headerlink" title="Analyzing Operator Properties"></a>Analyzing Operator Properties</h3><p><strong>Estimated and Actual Rows</strong>: Compare the estimated number of rows with the actual number of rows processed by an operator. Significant discrepancies (差異) between the estimates and actuals may indicate issues such as outdated statistics or incorrect cardinality estimates.</p>
+<blockquote>
+<p><strong>Cardinality estimates</strong> in SQL Server refer to the estimated number of rows that will be returned or processed by a specific operation or operator in the query execution plan. These estimates are crucial for SQL Server to determine the most efficient execution plan and allocate appropriate resources for query processing.</p>
+</blockquote>
+<p><strong>I/O and CPU Statistics</strong>: Look at the I/O and CPU statistics for each operator. High I/O or CPU usage could suggest areas for performance improvement, such as optimizing indexes or rewriting queries.</p>
+<p><strong>Predicates</strong>: Predicates refer to the conditions used to filter or join data. Evaluate the predicates associated with each operator to ensure they match your intended query logic. <strong>If there are unnecessary or incorrect predicates</strong>, it may affect performance.</p>
+<p>When analyzing predicates in an execution plan, pay attention to the following values and metrics:</p>
+<ul>
+<li><p>Selectivity: Evaluate the selectivity of predicates, which refers to the percentage of rows that satisfy a specific condition. Higher selectivity can lead to more efficient query plans.</p>
+</li>
+<li><p>Predicate Pushdown: Determine if predicates are pushed down to the underlying table scans or seeks. Pushing predicates closer to the data source can reduce the amount of data processed, improving performance. (使 Table 或 Index 儘量早的使用 Predicate 縮限資料量，而非在執行計畫的最後才進行 Predicate)</p>
+</li>
+<li><p>CPU and I/O Statistics: Assess the CPU and I/O statistics associated with operators using predicates. High CPU or I/O usage can indicate performance bottlenecks that may require optimization.</p>
+</li>
+</ul>
+<p><strong>Access Methods</strong>: Depending on the operator, there may be specific access methods used, such as <strong>index scans or seeks</strong>. Check whether the access methods align with your expectations and consider potential improvements, such as <strong>adding or modifying indexes</strong>.</p>
+<p><strong>Parallelism</strong>: Some operators may have parallel execution properties, indicated by parallel arrows connecting them. Evaluate the use of parallelism and assess its impact on query performance.</p>
+<h2 id="Webber-Script"><a href="#Webber-Script" class="headerlink" title="Webber Script"></a>Webber Script</h2><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> 
+    qs<span class="token punctuation">.</span>creation_time<span class="token punctuation">,</span>
+    qs<span class="token punctuation">.</span>execution_count<span class="token punctuation">,</span>
+    qs<span class="token punctuation">.</span>total_worker_time<span class="token punctuation">,</span>
+    qs<span class="token punctuation">.</span>total_elapsed_time<span class="token punctuation">,</span>
+    qs<span class="token punctuation">.</span>total_logical_reads<span class="token punctuation">,</span>
+    SUBSTRING<span class="token punctuation">(</span>st<span class="token punctuation">.</span><span class="token keyword">text</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>qs<span class="token punctuation">.</span>statement_start_offset<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> 
+                <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">CASE</span> qs<span class="token punctuation">.</span>statement_end_offset
+                    <span class="token keyword">WHEN</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token keyword">THEN</span> DATALENGTH<span class="token punctuation">(</span>st<span class="token punctuation">.</span><span class="token keyword">text</span><span class="token punctuation">)</span>
+                    <span class="token keyword">ELSE</span> qs<span class="token punctuation">.</span>statement_end_offset
+                <span class="token keyword">END</span> <span class="token operator">-</span> qs<span class="token punctuation">.</span>statement_start_offset<span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> statement_text
+<span class="token keyword">FROM</span> 
+    sys<span class="token punctuation">.</span>dm_exec_query_stats <span class="token keyword">AS</span> qs
+<span class="token keyword">CROSS</span> <span class="token keyword">APPLY</span> 
+    sys<span class="token punctuation">.</span>dm_exec_sql_text<span class="token punctuation">(</span>qs<span class="token punctuation">.</span>sql_handle<span class="token punctuation">)</span> <span class="token keyword">AS</span> st
+<span class="token keyword">WHERE</span>
+	qs<span class="token punctuation">.</span>execution_count <span class="token operator">></span> <span class="token number">1000</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span> 
+    <span class="token punctuation">(</span>qs<span class="token punctuation">.</span>total_worker_time <span class="token operator">/</span> qs<span class="token punctuation">.</span>execution_count<span class="token punctuation">)</span> <span class="token keyword">DESC</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>數值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>creation_time</td>
+<td>查詢的創建時間，可以用來判斷查詢執行的時間範圍</td>
+</tr>
+<tr>
+<td>execution_count</td>
+<td>查詢執行的次數，如果某個查詢的執行次數非常高，可能是效能問題的源頭</td>
+</tr>
+<tr>
+<td>total_worker_time</td>
+<td>查詢執行所花費的總工作時間，可以用來評估查詢的效能消耗</td>
+</tr>
+<tr>
+<td>total_elapsed_time</td>
+<td>查詢執行所花費的總經過時間，包括等待和執行時間</td>
+</tr>
+<tr>
+<td>total_logical_reads</td>
+<td>查詢執行的總邏輯讀取次數，表示從緩衝區中讀取的頁數</td>
+</tr>
+<tr>
+<td>statement_text</td>
+<td>查詢的原始 SQL 文本，可以根據需要進一步分析查詢的內容</td>
+</tr>
+</tbody></table>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>根據這些統計資訊，可以識別哪些查詢消耗了大量的資源，並進一步分析和優化這些查詢，以改善 SQL Server 的效能。需要注意的是 sys.dm_exec_query_stats 只會保留一定數量的執行統計資訊，所以在進行分析之前，確保收集到足夠的統計資料。</p>
+        </div>
+    </div>
+</div>
+
+<p>輔助產生遺漏索引的 Script：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> mig<span class="token punctuation">.</span>index_group_handle<span class="token punctuation">,</span>
+       mid<span class="token punctuation">.</span>index_handle<span class="token punctuation">,</span>
+       <span class="token keyword">CONVERT</span><span class="token punctuation">(</span><span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">28</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> migs<span class="token punctuation">.</span>avg_total_user_cost <span class="token operator">*</span> migs<span class="token punctuation">.</span>avg_user_impact <span class="token operator">*</span>
+                               <span class="token punctuation">(</span>
+                               migs<span class="token punctuation">.</span>user_seeks <span class="token operator">+</span> migs<span class="token punctuation">.</span>user_scans <span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">AS</span>
+       improvement_measure<span class="token punctuation">,</span>
+       <span class="token string">'CREATE INDEX [IX_'</span>
+       <span class="token operator">+</span> Quotename<span class="token punctuation">(</span>mid<span class="token punctuation">.</span><span class="token punctuation">[</span>statement<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'_'</span>
+       <span class="token operator">+</span> Quotename<span class="token punctuation">(</span>mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token keyword">CASE</span> <span class="token keyword">WHEN</span> mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span>
+       <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+       <span class="token keyword">THEN</span> <span class="token string">'_'</span> <span class="token operator">+</span> Quotename<span class="token punctuation">(</span>mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">)</span> <span class="token keyword">ELSE</span> <span class="token string">''</span> <span class="token keyword">END</span> <span class="token operator">+</span> <span class="token string">']'</span>
+       <span class="token operator">+</span> <span class="token string">' ON '</span> <span class="token operator">+</span> mid<span class="token punctuation">.</span><span class="token punctuation">[</span>statement<span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token string">' ('</span>
+       <span class="token operator">+</span> Isnull<span class="token punctuation">(</span>mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token keyword">CASE</span> <span class="token keyword">WHEN</span> mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span>
+       <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+       <span class="token operator">AND</span> mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">THEN</span> <span class="token string">','</span> <span class="token keyword">ELSE</span> <span class="token string">''</span> <span class="token keyword">END</span>
+       <span class="token operator">+</span> Isnull<span class="token punctuation">(</span>mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">')'</span>
+       <span class="token operator">+</span> Isnull<span class="token punctuation">(</span><span class="token string">' INCLUDE ('</span> <span class="token operator">+</span> mid<span class="token punctuation">.</span>included_columns <span class="token operator">+</span> <span class="token string">')'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>      <span class="token keyword">AS</span>
+       create_index_statement<span class="token punctuation">,</span>
+       migs<span class="token punctuation">.</span><span class="token operator">*</span>
+<span class="token keyword">FROM</span>   sys<span class="token punctuation">.</span>dm_db_missing_index_groups mig
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats migs
+               <span class="token keyword">ON</span> migs<span class="token punctuation">.</span>group_handle <span class="token operator">=</span> mig<span class="token punctuation">.</span>index_group_handle
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>dm_db_missing_index_details mid
+               <span class="token keyword">ON</span> mig<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> mid<span class="token punctuation">.</span>index_handle
+<span class="token keyword">ORDER</span>  <span class="token keyword">BY</span> improvement_measure <span class="token keyword">DESC</span><span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Racy-Script"><a href="#Racy-Script" class="headerlink" title="Racy Script"></a>Racy Script</h2><p>透過以下 Script 找出耗費 I/O 最多的 SQL Handle 及 Plan Handle，進而求出 SQL Script 及執行計畫，從執行計畫尋找是否有使用造成效能不佳的 Scan (Table or Clustered Index Scan)</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token keyword">TOP</span> <span class="token number">10</span> <span class="token punctuation">(</span> total_logical_reads <span class="token operator">/</span> execution_count <span class="token punctuation">)</span>  <span class="token keyword">AS</span> avg_logical_reads<span class="token punctuation">,</span>
+              <span class="token punctuation">(</span> total_logical_writes <span class="token operator">/</span> execution_count <span class="token punctuation">)</span> <span class="token keyword">AS</span> avg_logical_writes<span class="token punctuation">,</span>
+              <span class="token punctuation">(</span> total_physical_reads <span class="token operator">/</span> execution_count <span class="token punctuation">)</span> <span class="token keyword">AS</span> avg_phys_reads<span class="token punctuation">,</span>
+              execution_count<span class="token punctuation">,</span>
+              <span class="token comment">--statement_start_offset as stmt_start_offset,</span>
+              <span class="token comment">--sql_handle,</span>
+              <span class="token comment">--plan_handle,</span>
+              q<span class="token punctuation">.</span><span class="token keyword">text</span><span class="token punctuation">,</span>
+              queryplan<span class="token punctuation">.</span>query_plan
+<span class="token keyword">FROM</span>   sys<span class="token punctuation">.</span>dm_exec_query_stats stat
+       <span class="token keyword">CROSS</span> <span class="token keyword">apply</span> sys<span class="token punctuation">.</span>Dm_exec_sql_text<span class="token punctuation">(</span>stat<span class="token punctuation">.</span>sql_handle<span class="token punctuation">)</span> <span class="token keyword">AS</span> q
+       <span class="token keyword">CROSS</span> <span class="token keyword">apply</span> sys<span class="token punctuation">.</span>Dm_exec_query_plan<span class="token punctuation">(</span>stat<span class="token punctuation">.</span>plan_handle<span class="token punctuation">)</span> <span class="token keyword">AS</span> queryplan
+<span class="token keyword">ORDER</span>  <span class="token keyword">BY</span> <span class="token punctuation">(</span> total_logical_reads <span class="token operator">+</span> total_logical_writes <span class="token punctuation">)</span> <span class="token keyword">DESC</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>數值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>avg_logical_reads, avg_logical_writes &amp; avg_phys_reads</td>
+<td>數值越高，表示該查詢需要讀取或寫入的資料越多，可能需要進行效能優化。</td>
+</tr>
+<tr>
+<td>execution_count</td>
+<td>數值越高，表示該查詢被執行的次數越多，可能是一個常用的查詢或存在重複執行的問題</td>
+</tr>
+</tbody></table>
+<p>搭配 sys.dm_db_missing_index_details, sys.dm_db_missing_index_groups, sys.dm_db_missing_index_columns 等 DMV，判斷是否存在遺漏索引的問題：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> mig<span class="token punctuation">.</span><span class="token operator">*</span><span class="token punctuation">,</span>
+       statement <span class="token keyword">AS</span> table_name<span class="token punctuation">,</span>
+       column_id<span class="token punctuation">,</span>
+       column_name<span class="token punctuation">,</span>
+       column_usage
+<span class="token keyword">FROM</span>   sys<span class="token punctuation">.</span>dm_db_missing_index_details <span class="token keyword">AS</span> mid
+       <span class="token keyword">CROSS</span> <span class="token keyword">apply</span> sys<span class="token punctuation">.</span>Dm_db_missing_index_columns <span class="token punctuation">(</span>mid<span class="token punctuation">.</span>index_handle<span class="token punctuation">)</span>
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>dm_db_missing_index_groups <span class="token keyword">AS</span> mig
+               <span class="token keyword">ON</span> mig<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> mid<span class="token punctuation">.</span>index_handle
+<span class="token keyword">ORDER</span>  <span class="token keyword">BY</span> mig<span class="token punctuation">.</span>index_group_handle<span class="token punctuation">,</span>
+          mig<span class="token punctuation">.</span>index_handle<span class="token punctuation">,</span>
+          column_id<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>數值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mig.index_group_handle &amp; mig.index_handle</td>
+<td>數值代表索引群組和索引的識別碼，可以用來識別具有相同索引需求的查詢</td>
+</tr>
+<tr>
+<td>column_id</td>
+<td>欄位的 ID，可以用來識別該欄位在表中的位置</td>
+</tr>
+<tr>
+<td>column_name</td>
+<td>代表欄位的名稱，指出可能需要建立索引的欄位</td>
+</tr>
+<tr>
+<td>column_usage</td>
+<td>描述欄位的使用情況，例如 <strong>「EQUALITY」</strong> 表示該欄位用於等值比較，<strong>「INCLUDE」</strong> 表示該欄位需要包含在索引中</td>
+</tr>
+</tbody></table>
+<p>相當於使用以下 Script 判斷索引遺漏對於查詢的影響：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token keyword">TOP</span> <span class="token number">10</span> statement <span class="token keyword">AS</span> <span class="token punctuation">[</span><span class="token keyword">database</span><span class="token punctuation">.</span>scheme<span class="token punctuation">.</span><span class="token keyword">table</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+              column_id<span class="token punctuation">,</span>
+              column_name<span class="token punctuation">,</span>
+              column_usage<span class="token punctuation">,</span>
+              migs<span class="token punctuation">.</span>user_seeks<span class="token punctuation">,</span>
+              migs<span class="token punctuation">.</span>user_scans<span class="token punctuation">,</span>
+              migs<span class="token punctuation">.</span>last_user_seek<span class="token punctuation">,</span>
+              migs<span class="token punctuation">.</span>avg_total_user_cost<span class="token punctuation">,</span>
+              migs<span class="token punctuation">.</span>avg_user_impact
+<span class="token keyword">FROM</span>   sys<span class="token punctuation">.</span>dm_db_missing_index_details <span class="token keyword">AS</span> mid
+       <span class="token keyword">CROSS</span> <span class="token keyword">apply</span> sys<span class="token punctuation">.</span>Dm_db_missing_index_columns <span class="token punctuation">(</span>mid<span class="token punctuation">.</span>index_handle<span class="token punctuation">)</span>
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>dm_db_missing_index_groups <span class="token keyword">AS</span> mig
+               <span class="token keyword">ON</span> mig<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> mid<span class="token punctuation">.</span>index_handle
+       <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats <span class="token keyword">AS</span> migs
+               <span class="token keyword">ON</span> mig<span class="token punctuation">.</span>index_group_handle <span class="token operator">=</span> migs<span class="token punctuation">.</span>group_handle
+<span class="token keyword">ORDER</span>  <span class="token keyword">BY</span> migs<span class="token punctuation">.</span>avg_user_impact <span class="token keyword">DESC</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>數值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>database.scheme.table</td>
+<td>遺漏索引所在的資料庫、架構和表名稱，提供了需要建立索引的目標物件</td>
+</tr>
+<tr>
+<td>column_id</td>
+<td>欄位的 ID，可以用來識別該欄位在表中的位置</td>
+</tr>
+<tr>
+<td>column_name</td>
+<td>欄位的名稱，指出可能需要建立索引的欄位</td>
+</tr>
+<tr>
+<td>column_usage</td>
+<td>描述欄位的使用情況，例如「EQUALITY」表示該欄位用於等值比較，「INCLUDE」表示該欄位需要包含在索引中</td>
+</tr>
+<tr>
+<td>migs.user_seeks</td>
+<td>使用者查詢的次數，顯示該索引對使用者查詢的使用頻率</td>
+</tr>
+<tr>
+<td>migs.user_scans</td>
+<td>使用者掃描的次數，顯示該索引對使用者掃描操作的使用頻率</td>
+</tr>
+<tr>
+<td>migs.last_user_seek</td>
+<td>最後一次使用者查詢的時間，可用於了解索引最近的使用情況</td>
+</tr>
+<tr>
+<td>migs.avg_total_user_cost</td>
+<td>平均總成本，顯示在使用者查詢中該索引的平均成本</td>
+</tr>
+<tr>
+<td>migs.avg_user_impact</td>
+<td>平均使用者影響程度，顯示該索引對使用者查詢效能的平均影響程度，<strong>數值越大表示影響越大</strong></td>
+</tr>
+</tbody></table>
+<p>使用 sys.dm_db_missing_index_details Script，可以看出沒有使用正確索引查詢所需要的成本：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token keyword">TOP</span> <span class="token number">10</span> <span class="token operator">*</span>
+<span class="token keyword">FROM</span>   sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats
+<span class="token keyword">ORDER</span>  <span class="token keyword">BY</span>
+  avg_total_user_cost <span class="token operator">*</span> avg_user_impact <span class="token operator">*</span> <span class="token punctuation">(</span> user_seeks <span class="token operator">+</span> user_scans <span class="token punctuation">)</span> <span class="token keyword">DESC</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用 Management Studio 進行查詢將找到高成本的 Disk I/O 的 Query，搭配實際的執行計畫，以找出遺漏索引的提示，並且補上遺漏的索引。</p>
+<h2 id="參考資訊"><a href="#參考資訊" class="headerlink" title="參考資訊"></a>參考資訊</h2><p><a target="_blank" rel="noopener" href="https://www.mssqltips.com/tip.asp?tip=1634">Using SQL Server DMVs to Identify Missing Indexes</a></p>
+<p><a target="_blank" rel="noopener" href="https://technet.microsoft.com/en-us/library/cc966540.aspx">Troubleshooting Performance Problems in SQL Server 2005 (I/O Bottlenecks)</a></p>
+<p><a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/ms187974.aspx">Index Related Dynamic Management Views and Functions (Transact-SQL)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/" data-id="cljcuwe1u02tu64tschacag0s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/06/IIS-Redirect-With-Subfolder-And-QueryString/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">IIS Redirect (URL Rewrite) 網址重新導向指南書</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/06/Folders-And-Files-Comparison/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Windows Folder And Files Hashes Comparison 資料夾與檔案雜湊值清單與比較
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/06/Folders-And-Files-Comparison/">Windows Folder And Files Hashes Comparison 資料夾與檔案雜湊值清單與比較</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/">2023 SQL Server Performance Tunning Note</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/06/IIS-Redirect-With-Subfolder-And-QueryString/">IIS Redirect (URL Rewrite) 網址重新導向指南書</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/05/SQL-Server-TroubleShooting-With-Performance-Counter/">SQL Server TroubleShooting With Performance Counter</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/05/Windows-Folder-GodMode/">Windows 上帝模式 / God Mode</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">142</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">212</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">68</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/powershell.svg">
 <meta property="article:published_time" content="2022-05-05T13:03:30.000Z">
-<meta property="article:modified_time" content="2023-04-01T12:13:24.909Z">
+<meta property="article:modified_time" content="2023-06-26T12:23:43.726Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Microsoft">
 <meta property="article:tag" content="PowerShell">
@@ -123,7 +123,7 @@
 
 <span id="more"></span>
 
-<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token keyword">while</span><span class="token punctuation">(</span>1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token function">Get-Process</span> <span class="token punctuation">|</span> ?<span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>ProcessName <span class="token operator">-like</span> <span class="token string">'so*'</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token function">Start-Sleep</span> <span class="token operator">-</span>seconds 3<span class="token punctuation">;</span>cls<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token keyword">while</span><span class="token punctuation">(</span>1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token function">Get-Process</span> <span class="token punctuation">|</span> ?<span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>ProcessName <span class="token operator">-like</span> <span class="token string">'so*'</span><span class="token punctuation">&#125;</span> <span class="token punctuation">|</span> <span class="token function">ft</span><span class="token punctuation">;</span><span class="token function">Start-Sleep</span> <span class="token operator">-</span>seconds 3<span class="token punctuation">;</span>cls<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
 ------    -----      -----     ------      --  -- -----------
@@ -134,7 +134,7 @@
     <div class="shadow">
         <div class="tab-info tab-icon"><i></i></div>
         <div class="colorbox-body">
-            <p>目前存在一個小問題，就是 <code class="s">cls</code> 之後，指令的結果的標頭會消失，檢視上較不方便，需要找到方法來處理。</p>
+            <p>目前存在一個小問題，就是 <code class="s">cls</code> 之後，指令的結果的標頭會消失，檢視上較不方便，需要找到方法來處理。加上 <code class="s">| ft</code> 後，順利解決囉！</p>
         </div>
     </div>
 </div>
@@ -148,7 +148,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2022/05/PowerShell-Loop-Command-Infinitely/" data-id="clixv979d00y528ts0exkf700" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2022/05/PowerShell-Loop-Command-Infinitely/" data-id="cljcuwdkb00y764tshrx66m2m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
@@ -193,6 +193,14 @@
       <ul>
         
           <li>
+            <a href="/posts/2023/06/Folders-And-Files-Comparison/">Windows Folder And Files Hashes Comparison 資料夾與檔案雜湊值清單與比較</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/">2023 SQL Server Performance Tunning Note</a>
+          </li>
+        
+          <li>
             <a href="/posts/2023/06/IIS-Redirect-With-Subfolder-And-QueryString/">IIS Redirect (URL Rewrite) 網址重新導向指南書</a>
           </li>
         
@@ -204,14 +212,6 @@
             <a href="/posts/2023/05/Windows-Folder-GodMode/">Windows 上帝模式 / God Mode</a>
           </li>
         
-          <li>
-            <a href="/posts/2023/05/LibreOffice-ODT-Paragraph-Margin/">討厭的 LibreOffice 段落排版一次搞定 😎</a>
-          </li>
-        
-          <li>
-            <a href="/posts/2023/05/ASPNET-Core-WebAPI/">ASP.NET Core WebAPI</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -221,7 +221,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">141</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">212</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">68</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">142</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">212</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -231,7 +231,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">66</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">68</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
