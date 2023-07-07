@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>深入 IIS 課程筆記 (IIS In Depth Note) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 IIS Administration in Depth 的課程心得。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入 IIS 課程筆記 (IIS In Depth Note)">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/07/IIS-In-Depth-Note/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 IIS Administration in Depth 的課程心得。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+<meta property="article:published_time" content="2023-07-06T01:50:08.000Z">
+<meta property="article:modified_time" content="2023-07-07T10:04:19.199Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Microsoft">
+<meta property="article:tag" content="IIS">
+<meta property="article:tag" content="WebServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-IIS-In-Depth-Note" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/07/IIS-In-Depth-Note/" class="article-date">
+  <time datetime="2023-07-06T01:50:08.000Z" itemprop="datePublished">2023-07-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/IIS/">IIS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深入 IIS 課程筆記 (IIS In Depth Note)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Performance-Tuning"><span class="toc-text">Performance Tuning</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Keep-Alvie-Header"><span class="toc-text">Keep-Alvie Header</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Static-Content"><span class="toc-text">Static Content</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Output-Cache"><span class="toc-text">Output Cache</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 <a target="_blank" rel="noopener" href="https://app.pluralsight.com/library/courses/iis-administration-in-depth/table-of-contents">IIS Administration in Depth</a> 的課程心得。</p>
+<a href="/posts/2023/07/IIS-In-Depth-Note/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/IIS-Logo.svg" alt="logo" width="450px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Performance-Tuning"><a href="#Performance-Tuning" class="headerlink" title="Performance Tuning"></a>Performance Tuning</h2><h3 id="Keep-Alvie-Header"><a href="#Keep-Alvie-Header" class="headerlink" title="Keep-Alvie Header"></a>Keep-Alvie Header</h3><p>HTTP Keep-Alive 的用途：</p>
+<ol>
+<li><p>降低連接建立的成本：建立 TCP 連接需要額外的時間和資源。使用 Keep-Alive，客戶端和服務器之間可以在同一個連接上完成多個請求和響應，避免了重複建立連接的成本。</p>
+</li>
+<li><p>減少延遲：在 Keep-Alive 連接上，連接已經建立，可以立即發送下一個請求，而無需等待建立新連接的握手過程。這減少了請求和響應之間的等待時間，提高了請求的速度和效率。</p>
+</li>
+<li><p>提高效能：由於建立和關閉連接的成本被減少，服務器可以更有效地處理更多的請求，提高了服務器的效能和吞吐量。</p>
+</li>
+<li><p>節省頻寬：使用 Keep-Alive，多個請求和響應可以在同一個連接上進行，減少了每個請求的成本，從而節省了帶寬的使用。</p>
+</li>
+<li><p>支援流式傳輸和長輪詢：HTTP Keep-Alive 提供了連接的持久性，使得流式傳輸和長輪詢等應用變得更加容易實現，例如即時通訊和實時更新的 Web 應用。</p>
+</li>
+</ol>
+<p>但要注意的是根據 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-tw/HTTP%E6%8C%81%E4%B9%85%E8%BF%9E%E6%8E%A5">Wiki</a> 的說明 Keep-Alvie 「對於單個檔案被不斷請求的服務（例如圖片存放網站），Keep-Alive可能會極大的影響效能，因為它在檔案被請求之後還保持了不必要的連接很長時間。」</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>httpProtocol</span> <span class="token attr-name">allowKeepAlive</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Static-Content"><a href="#Static-Content" class="headerlink" title="Static Content"></a>Static Content</h3><p>IIS Caching 和 staticContent 是兩個在IIS中用於提供靜態資源緩存的不同功能。以下是它們之間的差異：</p>
+<p>IIS Caching（IIS緩存）：</p>
+<p>IIS Caching 是一個較為通用的緩存機制，用於緩存Web應用程式的動態和靜態內容。它可以在IIS層級配置，以緩存整個Web應用程式的輸出，包括HTML頁面、動態輸出和圖像等。<br>IIS Caching 可以提高Web應用程式的性能，減少對後端服務器的負載。它通常用於動態頁面的緩存，以減少每次請求時重新生成內容的成本。<br>IIS Caching 的配置選項包括緩存持續時間、VaryByParams、VaryByHeaders 等，用於控制緩存的行為和條件。</p>
+<p>staticContent（靜態內容）：</p>
+<p>staticContent 是IIS的一個模組，專門用於處理和提供靜態資源，如 Images、CSS、JS 等。<br>staticContent 提供了靜態資源的高效輸出，並支援靜態資源的緩存機制。</p>
+<p>靜態內容可以通過設定 IIS 的 web.config 文件中的 <code class="s">staticContent</code> 元素進行配置。你可以指定靜態資源的 MIME 類型、緩存控制、壓縮等相關設置。</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>staticContent</span><span class="token punctuation">></span></span>
+         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>clientCache</span> <span class="token attr-name">cacheControlMode</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UseMaxAge<span class="token punctuation">"</span></span> <span class="token attr-name">cacheControlMaxAge</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>7.00:00:00<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>staticContent</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Output-Cache"><a href="#Output-Cache" class="headerlink" title="Output Cache"></a>Output Cache</h3><p>使用 IIS 設定 Cache，分為 User Mode 以及 Kernel Mode。</p>
+<p><code class="s">User Mode</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>caching</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>profiles</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">extension</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>.aspx<span class="token punctuation">"</span></span> <span class="token attr-name">policy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CacheUntilChange<span class="token punctuation">"</span></span> <span class="token attr-name">kernelCachePolicy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CacheUntilChange<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>profiles</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>caching</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="s">Kernel Mode</code></p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>caching</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>profiles</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">extension</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>.aspx<span class="token punctuation">"</span></span> <span class="token attr-name">policy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CacheUntilChange<span class="token punctuation">"</span></span> <span class="token attr-name">kernelCachePolicy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>CacheUntilChange<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>profiles</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>kernelCache</span> <span class="token attr-name">enabled</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>caching</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所有支援的 Policy 包含 <code class="s">DontCache</code>、<code class="s">CacheUntilChange</code>、<code class="s">CacheForTimePerios</code> 及 <code class="s">DisableCache</code>，詳細可以參考 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/iis/configuration/system.webserver/caching/profiles/add">Adding Caching Profiles <add> | learn.microsoft</a></p>
+<p>與 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/aspnet/mvc/overview/older-versions-1/controllers-and-routing/improving-performance-with-output-caching-cs">ASP.NET MVC OutputCacheAttribute</a> 的比較：</p>
+<p>範圍：</p>
+<p>IIS Output Cache：IIS Output Cache 是 IIS 層級的緩存機制，可以在多個應用程式中共享。它可以緩存靜態內容和動態內容，並且可以根據請求的URL和其他標識符進行緩存。<br>OutputCacheAttribute：ASP.NET MVC 5 的 OutputCacheAttribute 是在控制器或操作方法級別上應用的屬性，它僅對單個MVC應用程序中的特定控制器或操作方法起作用。</p>
+<p>配置靈活性：</p>
+<p>IIS Output Cache：IIS Output Cache 提供了更多的配置選項，例如緩存持續時間、忽略的參數、自定義緩存鍵等。可以在IIS的網站或應用程序配置中進行進一步的細粒度配置。<br>OutputCacheAttribute：OutputCacheAttribute 提供了一組基本的配置選項，例如緩存持續時間、VaryByParam、VaryByCustom 等。它的配置是通過屬性的方式直接應用於控制器或操作方法。</p>
+<p>緩存位置：</p>
+<p>IIS Output Cache：IIS Output Cache 可以將緩存結果保存在Web伺服器的記憶體中，也可以將其保存在磁碟上，提供更高的緩存效能。<br>OutputCacheAttribute：OutputCacheAttribute 默認情況下將緩存結果保存在Web伺服器的記憶體中，但也可以配置為將緩存保存在其他存儲位置，如 SQL 資料庫或 AppFabric 等。</p>
+<p>緩存粒度：</p>
+<p>IIS Output Cache：IIS Output Cache 的緩存粒度可以更細，可以根據請求的 URL、HTTP方法、HTTP 標頭等進行更細粒度的區分。<br>OutputCacheAttribute：OutputCacheAttribute 的緩存粒度通常是根據請求的 URL 進行區分，較難在控制器或操作方法級別進行更細粒度的區分。</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2020/08/IIS-MISC/">IIS 筆記整理</a></p>
+<p><a href="/posts/2020/10/IIS-Security-Configuration/">IIS 網頁伺服器的安全設定 (IIS Security Configuration)</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/07/IIS-In-Depth-Note/" data-id="cljshkawv00q6astsgvtk4svl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/07/Happy-Coding-Json-To-CSharp-Class/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Happy Coding Json To C# Class (Mendeleev’s periodic table)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-recent-post-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/posts/2023/07/IIS-In-Depth-Note/">深入 IIS 課程筆記 (IIS In Depth Note)</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/07/Happy-Coding-Json-To-CSharp-Class/">Happy Coding Json To C# Class (Mendeleev’s periodic table)</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/06/Web-Speech-API/">Web Speech API (SpeechSynthesisUtterance)</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/06/Folders-And-Files-Comparison/">Windows Folder And Files Hashes Comparison 資料夾與檔案雜湊值清單與比較</a>
+          </li>
+        
+          <li>
+            <a href="/posts/2023/06/SQL-Server-Performance-Tunning-With-Racy/">2023 SQL Server Performance Tunning Note</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">213</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
