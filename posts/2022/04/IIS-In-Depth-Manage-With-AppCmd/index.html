@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/IIS-Logo.svg">
 <meta property="article:published_time" content="2022-04-10T05:58:08.000Z">
-<meta property="article:modified_time" content="2023-07-07T10:04:19.198Z">
+<meta property="article:modified_time" content="2023-07-29T08:33:10.450Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Microsoft">
 <meta property="article:tag" content="IIS">
@@ -187,6 +187,30 @@
 
 <h3 id="Disable-Upload-Folder-Script-⭐"><a href="#Disable-Upload-Folder-Script-⭐" class="headerlink" title="Disable Upload Folder Script ⭐"></a>Disable Upload Folder Script ⭐</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">appcmd</span> set config <span class="token string">"Default Web Site/MyApp/Upload"</span> <span class="token parameter attr-name">/section<span class="token punctuation">:</span></span>system.webServer<span class="token parameter attr-name">/handlers</span> <span class="token parameter attr-name">/accessPolicy<span class="token punctuation">:</span></span>Read <span class="token parameter attr-name">/commit<span class="token punctuation">:</span></span>url</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
+<table>
+<thead>
+<tr>
+<th>commit</th>
+<th>位置</th>
+<th>範例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>site</td>
+<td>寫在整個 Site 層級</td>
+<td>D:\Websites\</td>
+</tr>
+<tr>
+<td>app</td>
+<td>寫在 ApplicationHost 層級</td>
+<td>D:\Websites\App1</td>
+</tr>
+<tr>
+<td>url</td>
+<td>寫在特定路徑</td>
+<td>D:\Websites\App1\Upload</td>
+</tr>
+</tbody></table>
 <h3 id="Add-Site"><a href="#Add-Site" class="headerlink" title="Add Site"></a>Add Site</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">appcmd</span> add site <span class="token parameter attr-name">/name<span class="token punctuation">:</span></span>MySite <span class="token parameter attr-name">/bindings<span class="token punctuation">:</span></span>http://*:<span class="token number">80</span> <span class="token parameter attr-name">/physicalpath<span class="token punctuation">:</span></span><span class="token string">"D:\Websites"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <h3 id="Add-Application-Pool-4-0-2-0-No-Managed-Code"><a href="#Add-Application-Pool-4-0-2-0-No-Managed-Code" class="headerlink" title="Add Application Pool (4.0, 2.0, No Managed Code)"></a>Add Application Pool (4.0, 2.0, No Managed Code)</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">appcmd</span> add apppool <span class="token parameter attr-name">/name<span class="token punctuation">:</span></span>MyAppPool <span class="token parameter attr-name">/managedRuntimeVersion<span class="token punctuation">:</span></span>v4.<span class="token number">0</span></span>
@@ -245,7 +269,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2022/04/IIS-In-Depth-Manage-With-AppCmd/" data-id="clkjor5e500q9istsbtmfdjf3" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2022/04/IIS-In-Depth-Manage-With-AppCmd/" data-id="clks93h8v00qacwts1xg6htu4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
