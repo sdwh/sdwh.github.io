@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>政府機關單位統一編號方式 (OpenData) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近的任務經常需要處理機關單位的統一編號，特別整理目前從 OpenData 可以取得的相關資料來源。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="政府機關單位統一編號方式 (OpenData)">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/09/Data-With-Government-OId/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="最近的任務經常需要處理機關單位的統一編號，特別整理目前從 OpenData 可以取得的相關資料來源。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="article:published_time" content="2023-09-02T04:22:25.000Z">
+<meta property="article:modified_time" content="2023-09-02T09:10:22.188Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="LifeHack">
+<meta property="article:tag" content="OpenData">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Data-With-Government-OId" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/09/Data-With-Government-OId/" class="article-date">
+  <time datetime="2023-09-02T04:22:25.000Z" itemprop="datePublished">2023-09-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LifeHack/">LifeHack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      政府機關單位統一編號方式 (OpenData)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B8%E4%BD%8D%E7%99%BC%E5%B1%95%E9%83%A8-%E6%94%BF%E5%BA%9C%E6%A9%9F%E9%97%9C%E5%94%AF%E4%B8%80%E8%AD%98%E5%88%A5%E4%BB%A3%E7%A2%BC-OID"><span class="toc-text">數位發展部 - 政府機關唯一識別代碼 (OID)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%8B%E5%AE%B6%E7%99%BC%E5%B1%95%E5%A7%94%E5%93%A1%E6%9C%83-%E5%85%AC%E6%96%87%E9%9B%BB%E5%AD%90%E4%BA%A4%E6%8F%9B%E7%B3%BB%E7%B5%B1%E5%9C%B0%E5%9D%80%E7%B0%BF"><span class="toc-text">國家發展委員會 - 公文電子交換系統地址簿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E6%94%BF%E9%99%A2%E4%BA%BA%E4%BA%8B%E7%B8%BD%E8%99%95-%E8%A1%8C%E6%94%BF%E9%99%A2%E6%89%80%E5%B1%AC%E4%B8%AD%E5%A4%AE%E5%8F%8A%E5%9C%B0%E6%96%B9%E6%A9%9F%E9%97%9C%E4%BB%A3%E7%A2%BC"><span class="toc-text">行政院人事總處 - 行政院所屬中央及地方機關代碼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B2%A1%E6%94%BF%E9%83%A8%E8%B2%A1%E6%94%BF%E8%B3%87%E8%A8%8A%E4%B8%AD%E5%BF%83-%E4%B8%AD%E5%A4%AE%E6%94%BF%E5%BA%9C%E6%A9%9F%E9%97%9C%E8%B3%87%E6%96%99%E9%9B%86"><span class="toc-text">財政部財政資訊中心 - 中央政府機關資料集</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>最近的任務經常需要處理機關單位的統一編號，特別整理目前從 OpenData 可以取得的相關資料來源。</p>
+<a href="/posts/2023/09/Data-With-Government-OId/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="數位發展部-政府機關唯一識別代碼-OID"><a href="#數位發展部-政府機關唯一識別代碼-OID" class="headerlink" title="數位發展部 - 政府機關唯一識別代碼 (OID)"></a>數位發展部 - 政府機關唯一識別代碼 (OID)</h3><p><a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/7081">政府機關唯一識別代碼 (OID)</a></p>
+<p>🐧 資料格式</p>
+<table>
+<thead>
+<tr>
+<th>機關名稱</th>
+<th>OID</th>
+<th>DN</th>
+<th>機關代號</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>中央研究院</td>
+<td>2.16.886.101.20002.20001</td>
+<td>ou=中央研究院,o=總統府,c=TW</td>
+<td>201000000A</td>
+</tr>
+<tr>
+<td>人事軍務處</td>
+<td>2.16.886.101.20003.20003.20056.20011</td>
+<td>ou=人事軍務處,ou=陸軍司令部,ou=國防部,o=行政院,c=TW</td>
+<td>A05110000C</td>
+</tr>
+</tbody></table>
+<p>DN 中的 OU 有多層，可以藉由分析 DN 來取得機關的層級；另外有機關地址與電話可以參考。</p>
+<h3 id="國家發展委員會-公文電子交換系統地址簿"><a href="#國家發展委員會-公文電子交換系統地址簿" class="headerlink" title="國家發展委員會 - 公文電子交換系統地址簿"></a>國家發展委員會 - 公文電子交換系統地址簿</h3><p><a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/7617">公文電子交換系統地址簿</a></p>
+<p>🐧 資料格式</p>
+<table>
+<thead>
+<tr>
+<th>ORGID</th>
+<th>ORGNAME</th>
+<th>STATUSCODE</th>
+<th>UPDATETIME</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>201000000A</td>
+<td>中央研究院</td>
+<td>T</td>
+<td>2021-05-13 17:32:43</td>
+</tr>
+<tr>
+<td>A05110000CU10H010</td>
+<td>國防部陸軍司令部人事軍務處</td>
+<td>T</td>
+<td>2023-07-26 17:02:49</td>
+</tr>
+</tbody></table>
+<p><strong>ORGID</strong> 與政府機關唯一識別代碼當中的<strong>機關代號</strong>部分相同，但 ORGID 在電子公文交換系統中長度更為詳盡。</p>
+<p>例如陸軍司令部的人事軍務處，在<strong>公文電子交換系統地址簿</strong> ORGID 為 A05110000CU10H010，而在 <strong>政府機關唯一識別代碼 (OID)</strong> 僅為 A05110000C。</p>
+<p>STATUSCODE 包含 T, F, D，其中 T 表示政府機關(構)、F 表示民間法人機構、D 表示已停用。</p>
+<h3 id="行政院人事總處-行政院所屬中央及地方機關代碼"><a href="#行政院人事總處-行政院所屬中央及地方機關代碼" class="headerlink" title="行政院人事總處 - 行政院所屬中央及地方機關代碼"></a>行政院人事總處 - 行政院所屬中央及地方機關代碼</h3><p><a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/7307">行政院所屬中央及地方機關代碼</a></p>
+<p>🐧 資料格式</p>
+<table>
+<thead>
+<tr>
+<th>機關代碼</th>
+<th>機關名稱</th>
+<th>機關英文名稱</th>
+<th>主管機關代碼</th>
+<th>主管機關名稱</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>201000000A</td>
+<td>中央研究院</td>
+<td>Academia Sinica</td>
+<td>200000000A</td>
+<td>總統府</td>
+</tr>
+</tbody></table>
+<p>在本份資料集中找不到陸軍司令部的人事軍務處，所以資料量的完整度不如上述的兩份資料集。</p>
+<p>但本資料集有郵遞區號、機關地址、機關電話、裁撤註記、新機關代碼、新、舊機關代碼、名稱等資訊，相當詳盡，但如同資料集名稱所述只包含行政院所屬及地方機關的單位 😮</p>
+<h3 id="財政部財政資訊中心-中央政府機關資料集"><a href="#財政部財政資訊中心-中央政府機關資料集" class="headerlink" title="財政部財政資訊中心 - 中央政府機關資料集"></a>財政部財政資訊中心 - 中央政府機關資料集</h3><p><a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/44806">中央政府機關資料集</a></p>
+<p>🐧 資料格式</p>
+<table>
+<thead>
+<tr>
+<th>統一編號</th>
+<th>機關單位名稱</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>03732303</td>
+<td>財政部</td>
+</tr>
+</tbody></table>
+<p>如同資料集開宗明義地介紹「本清單統一編號係由各機關提供並同意開放，倘無法於本清單查得統一編號者，係各該機關考量」，本資料集查無中央研究院與陸軍司令部。</p>
+<p>所以如果想用統一編號當成政府機關單位的唯一識別，可能不太適合。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/09/Data-With-Government-OId/" data-id="clm1uokr800hdt4ts2d4i6upa" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LifeHack/" rel="tag">LifeHack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenData/" rel="tag">OpenData</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/08/Presentation-Note/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">關於簡報的那些事兒 (Presentation &amp; Slides)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">223</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">44</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
