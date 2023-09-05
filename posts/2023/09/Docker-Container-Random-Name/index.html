@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Docker Container Random Name | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 Docker Container 隨機名稱的排列組合以及典故 🤔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Container Random Name">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/09/Docker-Container-Random-Name/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 Docker Container 隨機名稱的排列組合以及典故 🤔">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Docker-Logo.png">
+<meta property="article:published_time" content="2023-09-05T11:44:49.000Z">
+<meta property="article:modified_time" content="2023-09-05T12:18:31.915Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Toys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Docker-Logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Docker-Container-Random-Name" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/09/Docker-Container-Random-Name/" class="article-date">
+  <time datetime="2023-09-05T11:44:49.000Z" itemprop="datePublished">2023-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Docker Container Random Name
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 Docker Container 隨機名稱的排列組合以及典故 🤔</p>
+<a href="/posts/2023/09/Docker-Container-Random-Name/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/Docker-Logo.png" alt="Docker logo" width="500px">
+</a>
+
+<span id="more"></span>
+
+<style>
+  dt {
+    margin-top: 1rem;
+  }
+</style>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>有關 Docker 如果建立 Cotainer 但沒有指定 name 的時候，會隨機產生一個名稱，結構為 <code class="s">形容詞_名詞</code> 的組合。</p>
+<p>而這個隨機產生的原始碼為 <a target="_blank" rel="noopener" href="https://github.com/moby/moby/blob/master/pkg/namesgenerator/names-generator.go">names-generator.go | GitHub</a></p>
+<p>組合總數：108 (形容詞) × 237 (人名 ) = 25,596</p>
+<p>形容詞的選項如下：</p>
+<table>
+<thead>
+<tr>
+<th>Left</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>admiring</td>
+<td>欣賞的</td>
+</tr>
+<tr>
+<td>adoring</td>
+<td>崇拜的</td>
+</tr>
+<tr>
+<td>affectionate</td>
+<td>充滿愛的</td>
+</tr>
+<tr>
+<td>agitated</td>
+<td>激動的</td>
+</tr>
+<tr>
+<td>amazing</td>
+<td>令人驚嘆的</td>
+</tr>
+<tr>
+<td>angry</td>
+<td>生氣的</td>
+</tr>
+<tr>
+<td>awesome</td>
+<td>驚人的</td>
+</tr>
+<tr>
+<td>beautiful</td>
+<td>美麗的</td>
+</tr>
+<tr>
+<td>blissful</td>
+<td>幸福的</td>
+</tr>
+<tr>
+<td>bold</td>
+<td>大膽的</td>
+</tr>
+<tr>
+<td>boring</td>
+<td>乏味的</td>
+</tr>
+<tr>
+<td>brave</td>
+<td>勇敢的</td>
+</tr>
+<tr>
+<td>busy</td>
+<td>忙碌的</td>
+</tr>
+<tr>
+<td>charming</td>
+<td>迷人的</td>
+</tr>
+<tr>
+<td>clever</td>
+<td>聰明的</td>
+</tr>
+<tr>
+<td>compassionate</td>
+<td>有同情心的</td>
+</tr>
+<tr>
+<td>competent</td>
+<td>有能力的</td>
+</tr>
+<tr>
+<td>condescending</td>
+<td>居高臨下的</td>
+</tr>
+<tr>
+<td>confident</td>
+<td>自信的</td>
+</tr>
+<tr>
+<td>cool</td>
+<td>酷的</td>
+</tr>
+<tr>
+<td>cranky</td>
+<td>暴躁的</td>
+</tr>
+<tr>
+<td>crazy</td>
+<td>瘋狂的</td>
+</tr>
+<tr>
+<td>dazzling</td>
+<td>眼花繚亂的</td>
+</tr>
+<tr>
+<td>determined</td>
+<td>堅定的</td>
+</tr>
+<tr>
+<td>distracted</td>
+<td>分心的</td>
+</tr>
+<tr>
+<td>dreamy</td>
+<td>夢幻的</td>
+</tr>
+<tr>
+<td>eager</td>
+<td>渴望的</td>
+</tr>
+<tr>
+<td>ecstatic</td>
+<td>狂喜的</td>
+</tr>
+<tr>
+<td>elastic</td>
+<td>有彈性的</td>
+</tr>
+<tr>
+<td>elated</td>
+<td>興高采烈的</td>
+</tr>
+<tr>
+<td>elegant</td>
+<td>優雅的</td>
+</tr>
+<tr>
+<td>eloquent</td>
+<td>能言善道的</td>
+</tr>
+<tr>
+<td>epic</td>
+<td>史詩的</td>
+</tr>
+<tr>
+<td>exciting</td>
+<td>刺激的</td>
+</tr>
+<tr>
+<td>fervent</td>
+<td>熱情的</td>
+</tr>
+<tr>
+<td>festive</td>
+<td>歡樂的</td>
+</tr>
+<tr>
+<td>flamboyant</td>
+<td>華麗的</td>
+</tr>
+<tr>
+<td>focused</td>
+<td>專注的</td>
+</tr>
+<tr>
+<td>friendly</td>
+<td>友好的</td>
+</tr>
+<tr>
+<td>frosty</td>
+<td>冷淡的</td>
+</tr>
+<tr>
+<td>funny</td>
+<td>有趣的</td>
+</tr>
+<tr>
+<td>gallant</td>
+<td>俠義的</td>
+</tr>
+<tr>
+<td>gifted</td>
+<td>有天賦的</td>
+</tr>
+<tr>
+<td>goofy</td>
+<td>愚蠢的</td>
+</tr>
+<tr>
+<td>gracious</td>
+<td>有禮貌的</td>
+</tr>
+<tr>
+<td>great</td>
+<td>優秀的</td>
+</tr>
+<tr>
+<td>happy</td>
+<td>快樂的</td>
+</tr>
+<tr>
+<td>hardcore</td>
+<td>極度的</td>
+</tr>
+<tr>
+<td>heuristic</td>
+<td>啟發式的</td>
+</tr>
+<tr>
+<td>hopeful</td>
+<td>充滿希望的</td>
+</tr>
+<tr>
+<td>hungry</td>
+<td>飢渴的</td>
+</tr>
+<tr>
+<td>infallible</td>
+<td>無懈可擊的</td>
+</tr>
+<tr>
+<td>inspiring</td>
+<td>鼓舞人心的</td>
+</tr>
+<tr>
+<td>intelligent</td>
+<td>聰明的</td>
+</tr>
+<tr>
+<td>interesting</td>
+<td>有趣的</td>
+</tr>
+<tr>
+<td>jolly</td>
+<td>快樂的</td>
+</tr>
+<tr>
+<td>jovial</td>
+<td>愉快的</td>
+</tr>
+<tr>
+<td>keen</td>
+<td>敏銳的</td>
+</tr>
+<tr>
+<td>kind</td>
+<td>仁慈的</td>
+</tr>
+<tr>
+<td>laughing</td>
+<td>歡笑的</td>
+</tr>
+<tr>
+<td>loving</td>
+<td>充滿愛的</td>
+</tr>
+<tr>
+<td>lucid</td>
+<td>清晰的</td>
+</tr>
+<tr>
+<td>magical</td>
+<td>神奇的</td>
+</tr>
+<tr>
+<td>modest</td>
+<td>謙虛的</td>
+</tr>
+<tr>
+<td>musing</td>
+<td>沉思的</td>
+</tr>
+<tr>
+<td>mystifying</td>
+<td>令人困惑的</td>
+</tr>
+<tr>
+<td>naughty</td>
+<td>頑皮的</td>
+</tr>
+<tr>
+<td>nervous</td>
+<td>緊張的</td>
+</tr>
+<tr>
+<td>nice</td>
+<td>友善的</td>
+</tr>
+<tr>
+<td>nifty</td>
+<td>精巧的</td>
+</tr>
+<tr>
+<td>nostalgic</td>
+<td>懷舊的</td>
+</tr>
+<tr>
+<td>objective</td>
+<td>客觀的</td>
+</tr>
+<tr>
+<td>optimistic</td>
+<td>樂觀的</td>
+</tr>
+<tr>
+<td>peaceful</td>
+<td>和平的</td>
+</tr>
+<tr>
+<td>pedantic</td>
+<td>賣弄學問的</td>
+</tr>
+<tr>
+<td>pensive</td>
+<td>沉思的</td>
+</tr>
+<tr>
+<td>practical</td>
+<td>實際的</td>
+</tr>
+<tr>
+<td>priceless</td>
+<td>無價的</td>
+</tr>
+<tr>
+<td>quirky</td>
+<td>古怪的</td>
+</tr>
+<tr>
+<td>quizzical</td>
+<td>疑問的</td>
+</tr>
+<tr>
+<td>recursing</td>
+<td>遞歸的</td>
+</tr>
+<tr>
+<td>relaxed</td>
+<td>輕鬆的</td>
+</tr>
+<tr>
+<td>reverent</td>
+<td>尊敬的</td>
+</tr>
+<tr>
+<td>romantic</td>
+<td>浪漫的</td>
+</tr>
+<tr>
+<td>sad</td>
+<td>悲傷的</td>
+</tr>
+<tr>
+<td>serene</td>
+<td>寧靜的</td>
+</tr>
+<tr>
+<td>sharp</td>
+<td>敏銳的</td>
+</tr>
+<tr>
+<td>silly</td>
+<td>愚蠢的</td>
+</tr>
+<tr>
+<td>sleepy</td>
+<td>瞌睡的</td>
+</tr>
+<tr>
+<td>stoic</td>
+<td>堅忍的</td>
+</tr>
+<tr>
+<td>strange</td>
+<td>奇怪的</td>
+</tr>
+<tr>
+<td>stupefied</td>
+<td>目瞪口呆的</td>
+</tr>
+<tr>
+<td>suspicious</td>
+<td>懷疑的</td>
+</tr>
+<tr>
+<td>sweet</td>
+<td>甜美的</td>
+</tr>
+<tr>
+<td>tender</td>
+<td>溫柔的</td>
+</tr>
+<tr>
+<td>thirsty</td>
+<td>渴望的</td>
+</tr>
+<tr>
+<td>trusting</td>
+<td>信任的</td>
+</tr>
+<tr>
+<td>unruffled</td>
+<td>不慌不忙的</td>
+</tr>
+<tr>
+<td>upbeat</td>
+<td>樂觀的</td>
+</tr>
+<tr>
+<td>vibrant</td>
+<td>充滿活力的</td>
+</tr>
+<tr>
+<td>vigilant</td>
+<td>警惕的</td>
+</tr>
+<tr>
+<td>vigorous</td>
+<td>精力旺盛的</td>
+</tr>
+<tr>
+<td>wizardly</td>
+<td>魔法的</td>
+</tr>
+<tr>
+<td>wonderful</td>
+<td>美好的</td>
+</tr>
+<tr>
+<td>xenodochial</td>
+<td>好客的</td>
+</tr>
+<tr>
+<td>youthful</td>
+<td>年輕的</td>
+</tr>
+<tr>
+<td>zealous</td>
+<td>熱情的</td>
+</tr>
+<tr>
+<td>zen</td>
+<td>禪意的</td>
+</tr>
+</tbody></table>
+<p>人名選項如下：</p>
+<dl>
+  <dt>agnesi</dt>
+  <dd>Maria Gaetana Agnesi - Italian mathematician, philosopher, theologian and humanitarian. She was the first woman to write a mathematics handbook and the first woman appointed as a Mathematics Professor at a University.</dd>
+  <dt>albattani</dt>
+  <dd>Muhammad ibn Jābir al-Ḥarrānī al-Battānī was a founding father of astronomy.</dd>
+  <dt>allen</dt>
+  <dd>Frances E. Allen, became the first female IBM Fellow in 1989. In 2006, she became the first female recipient of the ACM's Turing Award.</dd>
+  <dt>almeida</dt>
+  <dd>June Almeida - Scottish virologist who took the first pictures of the rubella virus.</dd>
+  <dt>antonelli</dt>
+  <dd>Kathleen Antonelli, American computer programmer and one of the six original programmers of the ENIAC.</dd>
+  <dt>archimedes</dt>
+  <dd>Archimedes was a physicist, engineer and mathematician who invented too many things to list them here.</dd>
+  <dt>ardinghelli</dt>
+  <dd>Maria Ardinghelli - Italian translator, mathematician and physicist.</dd>
+  <dt>aryabhata</dt>
+  <dd>Aryabhata - Ancient Indian mathematician-astronomer during 476-550 CE .</dd>
+  <dt>austin</dt>
+  <dd>Wanda Austin - Wanda Austin is the President and CEO of The Aerospace Corporation, a leading architect for the US security space programs.</dd>
+  <dt>babbage</dt>
+  <dd>Charles Babbage invented the concept of a programmable computer.</dd>
+  <dt>banach</dt>
+  <dd>Stefan Banach - Polish mathematician, was one of the founders of modern functional analysis.</dd>
+  <dt>banzai</dt>
+    <dd>Buckaroo Banzai and his mentor Dr. Hikita perfected the "oscillation overthruster</dt>
+  <dd>a device that allows one to pass through solid matter.</dd>
+  <dt>bardeen</dt>
+  <dd>John Bardeen co-invented the transistor.</dd>
+  <dt>bartik</dt>
+  <dd>Jean Bartik, born Betty Jean Jennings, was one of the original programmers for the ENIAC computer.</dd>
+  <dt>bassi</dt>
+  <dd>Laura Bassi, the world's first female professor .</dd>
+  <dt>beaver</dt>
+  <dd>Hugh Beaver, British engineer, founder of the Guinness Book of World Records .</dd>
+  <dt>bell</dt>
+  <dd>Alexander Graham Bell - an eminent Scottish-born scientist, inventor, engineer and innovator who is credited with inventing the first practical telephone.</dd>
+  <dt>benz</dt>
+  <dd>Karl Friedrich Benz - a German automobile engineer. Inventor of the first practical motorcar.</dd>
+  <dt>bhabha</dt>
+  <dd>Homi J Bhabha - was an Indian nuclear physicist, founding director, and professor of physics at the Tata Institute of Fundamental Research. Colloquially known as "father of Indian nuclear programme"- .</dd>
+  <dt>bhaskara</dt>
+  <dd>Bhaskara II - Ancient Indian mathematician-astronomer whose work on calculus predates Newton and Leibniz by over half a millennium.</dd>
+  <dt>black</dt>
+  <dd>Sue Black - British computer scientist and campaigner. She has been instrumental in saving Bletchley Park, the site of World War II codebreaking.</dd>
+  <dt>blackburn</dt>
+  <dd>Elizabeth Helen Blackburn - Australian-American Nobel laureate; best known for co-discovering telomerase.</dd>
+  <dt>blackwell</dt>
+  <dd>Elizabeth Blackwell - American doctor and first American woman to receive a medical degree.</dd>
+  <dt>bohr</dt>
+  <dd>Niels Bohr is the father of quantum theory.</dd>
+  <dt>booth</dt>
+  <dd>Kathleen Booth, she's credited with writing the first assembly language.</dd>
+  <dt>borg</dt>
+  <dd>Anita Borg - Anita Borg was the founding director of the Institute for Women and Technology (IWT).</dd>
+  <dt>bose</dt>
+  <dd>Satyendra Nath Bose - He provided the foundation for Bose–Einstein statistics and the theory of the Bose–Einstein condensate.</dd>
+  <dt>bouman</dt>
+  <dd>Katherine Louise Bouman is an imaging scientist and Assistant Professor of Computer Science at the California Institute of Technology. She researches computational methods for imaging, and developed an algorithm that made possible the picture first visualization of a black hole using the Event Horizon Telescope.</dd>
+  <dt>boyd</dt>
+  <dd>Evelyn Boyd Granville - She was one of the first African-American woman to receive a Ph.D. in mathematics; she earned it in 1949 from Yale University.</dd>
+  <dt>brahmagupta</dt>
+  <dd>Brahmagupta - Ancient Indian mathematician during 598-670 CE who gave rules to compute with zero.</dd>
+  <dt>brattain</dt>
+  <dd>Walter Houser Brattain co-invented the transistor.</dd>
+  <dt>brown</dt>
+  <dd>Emmett Brown invented time travel.</dd>
+  <dt>buck</dt>
+  <dd>Linda Brown Buck - American biologist and Nobel laureate best known for her genetic and molecular analyses of the mechanisms of smell.</dd>
+  <dt>burnell</dt>
+  <dd>Dame Susan Jocelyn Bell Burnell - Northern Irish astrophysicist who discovered radio pulsars and was the first to analyse them.</dd>
+  <dt>cannon</dt>
+  <dd>Annie Jump Cannon - pioneering female astronomer who classified hundreds of thousands of stars and created the system we use to understand stars today.</dd>
+  <dt>carson</dt>
+  <dd>Rachel Carson - American marine biologist and conservationist, her book Silent Spring and other writings are credited with advancing the global environmental movement.</dd>
+  <dt>cartwright</dt>
+  <dd>Dame Mary Lucy Cartwright - British mathematician who was one of the first to study what is now known as chaos theory. Also known for Cartwright's theorem which finds applications in signal processing.</dd>
+  <dt>carver</dt>
+  <dd>George Washington Carver - American agricultural scientist and inventor. He was the most prominent black scientist of the early 20th century.</dd>
+  <dt>cerf</dt>
+  <dd>Vinton Gray Cerf - American Internet pioneer, recognised as one of "the fathers of the Internet". With Robert Elliot Kahn, he designed TCP and IP, the primary data communication protocols of the Internet and other computer networks.</dd>
+  <dt>chandrasekhar</dt>
+  <dd>Subrahmanyan Chandrasekhar - Astrophysicist known for his mathematical theory on different stages and evolution in structures of the stars. He has won nobel prize for physics.</dd>
+  <dt>chaplygin</dt>
+  <dd>Sergey Alexeyevich Chaplygin (Russian: Серге́й Алексе́евич Чаплы́гин; April 5, 1869 – October 8, 1942) was a Russian and Soviet physicist, mathematician, and mechanical engineer. He is known for mathematical formulas such as Chaplygin's equation and for a hypothetical substance in cosmology called Chaplygin gas, named after him.</dd>
+  <dt>chatelet</dt>
+  <dd>Émilie du Châtelet - French natural philosopher, mathematician, physicist, and author during the early 1730s, known for her translation of and commentary on Isaac Newton's book Principia containing basic laws of physics.</dd>
+  <dt>chatterjee</dt>
+  <dd>Asima Chatterjee was an Indian organic chemist noted for her research on vinca alkaloids, development of drugs for treatment of epilepsy and malaria.</dd>
+  <dt>chaum</dt>
+  <dd>David Lee Chaum - American computer scientist and cryptographer. Known for his seminal contributions in the field of anonymous communication.</dd>
+  <dt>chebyshev</dt>
+  <dd>Pafnuty Chebyshev - Russian mathematician. He is known fo his works on probability, statistics, mechanics, analytical geometry and number theory .</dd>
+  <dt>clarke</dt>
+  <dd>Joan Clarke - Bletchley Park code breaker during the Second World War who pioneered techniques that remained top secret for decades. Also an accomplished numismatist .</dd>
+  <dt>cohen</dt>
+  <dd>Bram Cohen - American computer programmer and author of the BitTorrent peer-to-peer protocol.</dd>
+  <dt>colden</dt>
+  <dd>Jane Colden - American botanist widely considered the first female American botanist.</dd>
+  <dt>cori</dt>
+  <dd>Gerty Theresa Cori - American biochemist who became the third woman—and first American woman—to win a Nobel Prize in science, and the first woman to be awarded the Nobel Prize in Physiology or Medicine. Cori was born in Prague.</dd>
+  <dt>cray</dt>
+  <dd>Seymour Roger Cray was an American electrical engineer and supercomputer architect who designed a series of computers that were the fastest in the world for decades.</dd>
+  <dt>curie</dt>
+  <dd>Marie Curie discovered radioactivity.</dd>
+  <dt>curran</dt>
+  <dd>Samuel Curran was an Irish physicist who worked alongside his wife during WWII and invented the proximity fuse.</dd>
+  <dt>darwin</dt>
+  <dd>Charles Darwin established the principles of natural evolution.</dd>
+  <dt>davinci</dt>
+  <dd>Leonardo Da Vinci invented too many things to list here.</dd>
+  <dt>dewdney</dt>
+  <dd>A. K. (Alexander Keewatin) Dewdney, Canadian mathematician, computer scientist, author and filmmaker. Contributor to Scientific American's "Computer Recreations" from 1984 to 1991. Author of Core War (program), The Planiverse, The Armchair Universe, The Magic Machine, The New Turing Omnibus, and more.</dd>
+  <dt>dhawan</dt>
+  <dd>Satish Dhawan - Indian mathematician and aerospace engineer, known for leading the successful and indigenous development of the Indian space programme.</dd>
+  <dt>diffie</dt>
+  <dd>Bailey Whitfield Diffie - American cryptographer and one of the pioneers of public-key cryptography.</dd>
+  <dt>dijkstra</dt>
+  <dd>Edsger Wybe Dijkstra was a Dutch computer scientist and mathematical scientist.</dd>
+  <dt>dirac</dt>
+  <dd>Paul Adrien Maurice Dirac - English theoretical physicist who made fundamental contributions to the early development of both quantum mechanics and quantum electrodynamics.</dd>
+  <dt>driscoll</dt>
+  <dd>Agnes Meyer Driscoll - American cryptanalyst during World Wars I and II who successfully cryptanalysed a number of Japanese ciphers. She was also the co-developer of one of the cipher machines of the US Navy, the CM.</dd>
+  <dt>dubinsky</dt>
+  <dd>Donna Dubinsky - played an integral role in the development of personal digital assistants (PDAs) serving as CEO of Palm, Inc. and co-founding Handspring.</dd>
+  <dt>easley</dt>
+  <dd>Annie Easley - She was a leading member of the team which developed software for the Centaur rocket stage and one of the first African-Americans in her field.</dd>
+  <dt>edison</dt>
+  <dd>Thomas Alva Edison, prolific inventor .</dd>
+  <dt>einstein</dt>
+  <dd>Albert Einstein invented the general theory of relativity.</dd>
+  <dt>elbakyan</dt>
+  <dd>Alexandra Asanovna Elbakyan (Russian: Алекса́ндра Аса́новна Элбакя́н) is a Kazakhstani graduate student, computer programmer, internet pirate in hiding, and the creator of the site Sci-Hub. Nature has listed her in 2016 in the top ten people that mattered in science, and Ars Technica has compared her to Aaron Swartz.</dd>
+  <dt>elgamal</dt>
+  <dd>Taher A. ElGamal - Egyptian cryptographer best known for the ElGamal discrete log cryptosystem and the ElGamal digital signature scheme.</dd>
+  <dt>elion</dt>
+  <dd>Gertrude Elion - American biochemist, pharmacologist and the 1988 recipient of the Nobel Prize in Medicine.</dd>
+  <dt>ellis</dt>
+  <dd>James Henry Ellis - British engineer and cryptographer employed by the GCHQ. Best known for conceiving for the first time, the idea of public-key cryptography.</dd>
+  <dt>engelbart</dt>
+  <dd>Douglas Engelbart gave the mother of all demos: .</dd>
+  <dt>euclid</dt>
+  <dd>Euclid invented geometry.</dd>
+  <dt>euler</dt>
+  <dd>Leonhard Euler invented large parts of modern mathematics. https://de.wikipedia.org/wiki/Leonhard_Euler.</dd>
+  <dt>faraday</dt>
+  <dd>Michael Faraday - British scientist who contributed to the study of electromagnetism and electrochemistry.</dd>
+  <dt>feistel</dt>
+  <dd>Horst Feistel - German-born American cryptographer who was one of the earliest non-government researchers to study the design and theory of block ciphers. Co-developer of DES and Lucifer. Feistel networks, a symmetric structure used in the construction of block ciphers are named after him.</dd>
+  <dt>fermat</dt>
+  <dd>Pierre de Fermat pioneered several aspects of modern mathematics.</dd>
+  <dt>fermi</dt>
+  <dd>Enrico Fermi invented the first nuclear reactor.</dd>
+  <dt>feynman</dt>
+  <dd>Richard Feynman was a key contributor to quantum mechanics and particle physics.</dd>
+  <dt>franklin</dt>
+  <dd>Benjamin Franklin is famous for his experiments in electricity and the invention of the lightning rod.</dd>
+  <dt>gagarin</dt>
+  <dd>Yuri Alekseyevich Gagarin - Soviet pilot and cosmonaut, best known as the first human to journey into outer space.</dd>
+  <dt>galileo</dt>
+  <dd>Galileo was a founding father of modern astronomy, and faced politics and obscurantism to establish scientific truth.  .</dd>
+  <dt>galois</dt>
+  <dd>Évariste Galois - French mathematician whose work laid the foundations of Galois theory and group theory, two major branches of abstract algebra, and the subfield of Galois connections, all while still in his late teens.</dd>
+  <dt>ganguly</dt>
+  <dd>Kadambini Ganguly - Indian physician, known for being the first South Asian female physician, trained in western medicine, to graduate in South Asia.</dd>
+  <dt>gates</dt>
+  <dd>William Henry "Bill" Gates III is an American business magnate, philanthropist, investor, computer programmer, and inventor.</dd>
+  <dt>gauss</dt>
+  <dd>Johann Carl Friedrich Gauss - German mathematician who made significant contributions to many fields, including number theory, algebra, statistics, analysis, differential geometry, geodesy, geophysics, mechanics, electrostatics, magnetic fields, astronomy, matrix theory, and optics.</dd>
+  <dt>germain</dt>
+  <dd>Marie-Sophie Germain - French mathematician, physicist and philosopher. Known for her work on elasticity theory, number theory and philosophy.</dd>
+  <dt>goldberg</dt>
+  <dd>Adele Goldberg, was one of the designers and developers of the Smalltalk language.</dd>
+  <dt>goldstine</dt>
+  <dd>Adele Goldstine, born Adele Katz, wrote the complete technical description for the first electronic digital computer, ENIAC.</dd>
+  <dt>goldwasser</dt>
+  <dd>Shafi Goldwasser is a computer scientist known for creating theoretical foundations of modern cryptography. Winner of 2012 ACM Turing Award.</dd>
+  <dt>golick</dt>
+  <dd>James Golick, all around gangster.</dd>
+  <dt>goodall</dt>
+  <dd>Jane Goodall - British primatologist, ethologist, and anthropologist who is considered to be the world's foremost expert on chimpanzees.</dd>
+  <dt>gould</dt>
+  <dd>Stephen Jay Gould was was an American paleontologist, evolutionary biologist, and historian of science. He is most famous for the theory of punctuated equilibrium.</dd>
+  <dt>greider</dt>
+  <dd>Carolyn Widney Greider - American molecular biologist and joint winner of the 2009 Nobel Prize for Physiology or Medicine for the discovery of telomerase.</dd>
+  <dt>grothendieck</dt>
+  <dd>Alexander Grothendieck - German-born French mathematician who became a leading figure in the creation of modern algebraic geometry.</dd>
+  <dt>haibt</dt>
+  <dd>Lois Haibt - American computer scientist, part of the team at IBM that developed FORTRAN.</dd>
+  <dt>hamilton</dt>
+  <dd>Margaret Hamilton - Director of the Software Engineering Division of the MIT Instrumentation Laboratory, which developed on-board flight software for the Apollo space program.</dd>
+  <dt>haslett</dt>
+  <dd>Caroline Harriet Haslett - English electrical engineer, electricity industry administrator and champion of women's rights. Co-author of British Standard 1363 that specifies AC power plugs and sockets used across the United Kingdom (which is widely considered as one of the safest designs).</dd>
+  <dt>hawking</dt>
+  <dd>Stephen Hawking pioneered the field of cosmology by combining general relativity and quantum mechanics.</dd>
+  <dt>heisenberg</dt>
+  <dd>Werner Heisenberg was a founding father of quantum mechanics.</dd>
+  <dt>hellman</dt>
+  <dd>Martin Edward Hellman - American cryptologist, best known for his invention of public-key cryptography in co-operation with Whitfield Diffie and Ralph Merkle.</dd>
+  <dt>hermann</dt>
+  <dd>Grete Hermann was a German philosopher noted for her philosophical work on the foundations of quantum mechanics.</dd>
+  <dt>herschel</dt>
+  <dd>Caroline Lucretia Herschel - German astronomer and discoverer of several comets.</dd>
+  <dt>hertz</dt>
+  <dd>Heinrich Rudolf Hertz - German physicist who first conclusively proved the existence of the electromagnetic waves.</dd>
+  <dt>heyrovsky</dt>
+  <dd>Jaroslav Heyrovský was the inventor of the polarographic method, father of the electroanalytical method, and recipient of the Nobel Prize in 1959. His main field of work was polarography.</dd>
+  <dt>hodgkin</dt>
+  <dd>Dorothy Hodgkin was a British biochemist, credited with the development of protein crystallography. She was awarded the Nobel Prize in Chemistry in 1964.</dd>
+  <dt>hofstadter</dt>
+  <dd>Douglas R. Hofstadter is an American professor of cognitive science and author of the Pulitzer Prize and American Book Award-winning work Goedel, Escher, Bach: An Eternal Golden Braid in 1979. A mind-bending work which coined Hofstadter's Law: "It always takes longer than you expect, even when you take into account Hofstadter's Law." .</dd>
+  <dt>hoover</dt>
+  <dd>Erna Schneider Hoover revolutionized modern communication by inventing a computerized telephone switching method.</dd>
+  <dt>hopper</dt>
+  <dd>Grace Hopper developed the first compiler for a computer programming language and  is credited with popularizing the term "debugging" for fixing computer glitches.</dd>
+  <dt>hugle</dt>
+  <dd>Frances Hugle, she was an American scientist, engineer, and inventor who contributed to the understanding of semiconductors, integrated circuitry, and the unique electrical principles of microscopic materials.</dd>
+  <dt>hypatia</dt>
+  <dd>Hypatia - Greek Alexandrine Neoplatonist philosopher in Egypt who was one of the earliest mothers of mathematics.</dd>
+  <dt>ishizaka</dt>
+  <dd>Teruko Ishizaka - Japanese scientist and immunologist who co-discovered the antibody class Immunoglobulin E.</dd>
+  <dt>jackson</dt>
+  <dd>Mary Jackson, American mathematician and aerospace engineer who earned the highest title within NASA's engineering department.</dd>
+  <dt>jang</dt>
+  <dd>Yeong-Sil Jang was a Korean scientist and astronomer during the Joseon Dynasty; he invented the first metal printing press and water gauge.</dd>
+  <dt>jemison</dt>
+  <dd>Mae Carol Jemison -  is an American engineer, physician, and former NASA astronaut. She became the first black woman to travel in space when she served as a mission specialist aboard the Space Shuttle Endeavour.</dd>
+  <dt>jennings</dt>
+  <dd>Betty Jennings - one of the original programmers of the ENIAC.</dd>
+  <dt>jepsen</dt>
+  <dd>Mary Lou Jepsen, was the founder and chief technology officer of One Laptop Per Child (OLPC), and the founder of Pixel Qi.</dd>
+  <dt>johnson</dt>
+  <dd>Katherine Coleman Goble Johnson - American physicist and mathematician contributed to the NASA.</dd>
+  <dt>joliot</dt>
+  <dd>Irène Joliot-Curie - French scientist who was awarded the Nobel Prize for Chemistry in 1935. Daughter of Marie and Pierre Curie.</dd>
+  <dt>jones</dt>
+  <dd>Karen Spärck Jones came up with the concept of inverse document frequency, which is used in most search engines today.</dd>
+  <dt>kalam</dt>
+  <dd>A. P. J. Abdul Kalam - is an Indian scientist aka Missile Man of India for his work on the development of ballistic missile and launch vehicle technology.</dd>
+  <dt>kapitsa</dt>
+  <dd>Sergey Petrovich Kapitsa (Russian: Серге́й Петро́вич Капи́ца; 14 February 1928 – 14 August 2012) was a Russian physicist and demographer. He was best known as host of the popular and long-running Russian scientific TV show, Evident, but Incredible. His father was the Nobel laureate Soviet-era physicist Pyotr Kapitsa, and his brother was the geographer and Antarctic explorer Andrey Kapitsa.</dd>
+  <dt>kare</dt>
+  <dd>Susan Kare, created the icons and many of the interface elements for the original Apple Macintosh in the 1980s, and was an original employee of NeXT, working as the Creative Director.</dd>
+  <dt>keldysh</dt>
+  <dd>Mstislav Keldysh - a Soviet scientist in the field of mathematics and mechanics, academician of the USSR Academy of Sciences (1946), President of the USSR Academy of Sciences (1961–1975), three times Hero of Socialist Labor (1956, 1961, 1971), fellow of the Royal Society of Edinburgh (1968).</dd>
+  <dt>keller</dt>
+  <dd>Mary Kenneth Keller, Sister Mary Kenneth Keller became the first American woman to earn a PhD in Computer Science in 1965.</dd>
+  <dt>kepler</dt>
+  <dd>Johannes Kepler, German astronomer known for his three laws of planetary motion.</dd>
+  <dt>khayyam</dt>
+  <dd>Omar Khayyam - Persian mathematician, astronomer and poet. Known for his work on the classification and solution of cubic equations, for his contribution to the understanding of Euclid's fifth postulate and for computing the length of a year very accurately.</dd>
+  <dt>khorana</dt>
+  <dd>Har Gobind Khorana - Indian-American biochemist who shared the 1968 Nobel Prize for Physiology.</dd>
+  <dt>kilby</dt>
+  <dd>Jack Kilby invented silicon integrated circuits and gave Silicon Valley its name.</dd>
+  <dt>kirch</dt>
+  <dd>Maria Kirch - German astronomer and first woman to discover a comet.</dd>
+  <dt>knuth</dt>
+  <dd>Donald Knuth - American computer scientist, author of "The Art of Computer Programming" and creator of the TeX typesetting system.</dd>
+  <dt>kowalevski</dt>
+  <dd>Sophie Kowalevski - Russian mathematician responsible for important original contributions to analysis, differential equations and mechanics.</dd>
+  <dt>lalande</dt>
+  <dd>Marie-Jeanne de Lalande - French astronomer, mathematician and cataloguer of stars.</dd>
+  <dt>lamarr</dt>
+  <dd>Hedy Lamarr - Actress and inventor. The principles of her work are now incorporated into modern Wi-Fi, CDMA and Bluetooth technology.</dd>
+  <dt>lamport</dt>
+  <dd>Leslie B. Lamport - American computer scientist. Lamport is best known for his seminal work in distributed systems and was the winner of the 2013 Turing Award.</dd>
+  <dt>leakey</dt>
+  <dd>Mary Leakey - British paleoanthropologist who discovered the first fossilized Proconsul skull.</dd>
+  <dt>leavitt</dt>
+  <dd>Henrietta Swan Leavitt - she was an American astronomer who discovered the relation between the luminosity and the period of Cepheid variable stars.</dd>
+  <dt>lederberg</dt>
+  <dd>Esther Miriam Zimmer Lederberg - American microbiologist and a pioneer of bacterial genetics.</dd>
+  <dt>lehmann</dt>
+  <dd>Inge Lehmann - Danish seismologist and geophysicist. Known for discovering in 1936 that the Earth has a solid inner core inside a molten outer core.</dd>
+  <dt>lewin</dt>
+  <dd>Daniel Lewin - Mathematician, Akamai co-founder, soldier, 9/11 victim-- Developed optimization techniques for routing traffic on the internet. Died attempting to stop the 9-11 hijackers.</dd>
+  <dt>lichterman</dt>
+  <dd>Ruth Lichterman - one of the original programmers of the ENIAC.</dd>
+  <dt>liskov</dt>
+  <dd>Barbara Liskov - co-developed the Liskov substitution principle. Liskov was also the winner of the Turing Prize in 2008.</dd>
+  <dt>lovelace</dt>
+  <dd>Ada Lovelace invented the first algorithm.</dd>
+  <dt>lumiere</dt>
+  <dd>Auguste and Louis Lumière - the first filmmakers in history.</dd>
+  <dt>mahavira</dt>
+  <dd>Mahavira - Ancient Indian mathematician during 9th century AD who discovered basic algebraic identities.</dd>
+  <dt>margulis</dt>
+  <dd>Lynn Margulis (b. Lynn Petra Alexander) - an American evolutionary theorist and biologist, science author, educator, and popularizer, and was the primary modern proponent for the significance of symbiosis in evolution.</dd>
+  <dt>matsumoto</dt>
+  <dd>Yukihiro Matsumoto - Japanese computer scientist and software programmer best known as the chief designer of the Ruby programming language.</dd>
+  <dt>maxwell</dt>
+  <dd>James Clerk Maxwell - Scottish physicist, best known for his formulation of electromagnetic theory.</dd>
+  <dt>mayer</dt>
+  <dd>Maria Mayer - American theoretical physicist and Nobel laureate in Physics for proposing the nuclear shell model of the atomic nucleus.</dd>
+  <dt>mccarthy</dt>
+  <dd>John McCarthy invented LISP: .</dd>
+  <dt>mcclintock</dt>
+  <dd>Barbara McClintock - a distinguished American cytogeneticist, 1983 Nobel Laureate in Physiology or Medicine for discovering transposons.</dd>
+  <dt>mclaren</dt>
+  <dd>Anne Laura Dorinthea McLaren - British developmental biologist whose work helped lead to human in-vitro fertilisation.</dd>
+  <dt>mclean</dt>
+  <dd>Malcolm McLean invented the modern shipping container: .</dd>
+  <dt>mcnulty</dt>
+  <dd>Kay McNulty - one of the original programmers of the ENIAC.</dd>
+  <dt>meitner</dt>
+  <dd>Lise Meitner - Austrian/Swedish physicist who was involved in the discovery of nuclear fission. The element meitnerium is named after her.</dd>
+  <dt>mendel</dt>
+  <dd>Gregor Johann Mendel - Czech scientist and founder of genetics.</dd>
+  <dt>mendeleev</dt>
+  <dd>Dmitri Mendeleev - a chemist and inventor. He formulated the Periodic Law, created a farsighted version of the periodic table of elements, and used it to correct the properties of some already discovered elements and also to predict the properties of eight elements yet to be discovered.</dd>
+  <dt>meninsky</dt>
+  <dd>Carla Meninsky, was the game designer and programmer for Atari 2600 games Dodge 'Em and Warlords.</dd>
+  <dt>merkle</dt>
+  <dd>Ralph C. Merkle - American computer scientist, known for devising Merkle's puzzles - one of the very first schemes for public-key cryptography. Also, inventor of Merkle trees and co-inventor of the Merkle-Damgård construction for building collision-resistant cryptographic hash functions and the Merkle-Hellman knapsack cryptosystem.</dd>
+  <dt>mestorf</dt>
+  <dd>Johanna Mestorf - German prehistoric archaeologist and first female museum director in Germany.</dd>
+  <dt>mirzakhani</dt>
+  <dd>Maryam Mirzakhani - an Iranian mathematician and the first woman to win the Fields Medal.</dd>
+  <dt>montalcini</dt>
+  <dd>Rita Levi-Montalcini - Won Nobel Prize in Physiology or Medicine jointly with colleague Stanley Cohen for the discovery of nerve growth factor (.</dd>
+  <dt>moore</dt>
+  <dd>Gordon Earle Moore - American engineer, Silicon Valley founding father, author of Moore's law.</dd>
+  <dt>morse</dt>
+  <dd>Samuel Morse - contributed to the invention of a single-wire telegraph system based on European telegraphs and was a co-developer of the Morse code.</dd>
+  <dt>moser</dt>
+  <dd>May-Britt Moser - Nobel prize winner neuroscientist who contributed to the discovery of grid cells in the brain.</dd>
+  <dt>murdock</dt>
+  <dd>Ian Murdock - founder of the Debian project.</dd>
+  <dt>napier</dt>
+  <dd>John Napier of Merchiston - Scottish landowner known as an astronomer, mathematician and physicist. Best known for his discovery of logarithms.</dd>
+  <dt>nash</dt>
+  <dd>John Forbes Nash, Jr. - American mathematician who made fundamental contributions to game theory, differential geometry, and the study of partial differential equations.</dd>
+  <dt>neumann</dt>
+  <dd>John von Neumann - todays computer architectures are based on the von Neumann architecture.</dd>
+  <dt>newton</dt>
+  <dd>Isaac Newton invented classic mechanics and modern optics.</dd>
+  <dt>nightingale</dt>
+  <dd>Florence Nightingale, more prominently known as a nurse, was also the first female member of the Royal Statistical Society and a pioneer in statistical graphics .</dd>
+  <dt>nobel</dt>
+  <dd>Alfred Nobel - a Swedish chemist, engineer, innovator, and armaments manufacturer (inventor of dynamite).</dd>
+  <dt>noether</dt>
+  <dd>Emmy Noether, German mathematician. Noether's Theorem is named after her.</dd>
+  <dt>northcutt</dt>
+  <dd>Poppy Northcutt. Poppy Northcutt was the first woman to work as part of NASA’s Mission Control.</dd>
+  <dt>noyce</dt>
+  <dd>Robert Noyce invented silicon integrated circuits and gave Silicon Valley its name.</dd>
+  <dt>panini</dt>
+  <dd>Panini - Ancient Indian linguist and grammarian from 4th century CE who worked on the world's first formal system.</dd>
+  <dt>pare</dt>
+  <dd>Ambroise Pare invented modern surgery.</dd>
+  <dt>pascal</dt>
+  <dd>Blaise Pascal, French mathematician, physicist, and inventor.</dd>
+  <dt>pasteur</dt>
+  <dd>Louis Pasteur discovered vaccination, fermentation and pasteurization.</dd>
+  <dt>payne</dt>
+  <dd>Cecilia Payne-Gaposchkin was an astronomer and astrophysicist who, in 1925, proposed in her Ph.D. thesis an explanation for the composition of stars in terms of the relative abundances of hydrogen and helium.</dd>
+  <dt>perlman</dt>
+  <dd>Radia Perlman is a software designer and network engineer and most famous for her invention of the spanning-tree protocol (STP).</dd>
+  <dt>pike</dt>
+  <dd>Rob Pike was a key contributor to Unix, Plan 9, the X graphic system, utf-8, and the Go programming language.</dd>
+  <dt>poincare</dt>
+  <dd>Henri Poincaré made fundamental contributions in several fields of mathematics.</dd>
+  <dt>poitras</dt>
+  <dd>Laura Poitras is a director and producer whose work, made possible by open source crypto tools, advances the causes of truth and freedom of information by reporting disclosures by whistleblowers such as Edward Snowden.</dd>
+  <dt>proskuriakova</dt>
+  <dd>Tat’yana Avenirovna Proskuriakova (Russian: Татья́на Авени́ровна Проскуряко́ва) (January 23 [O.S. January 10] 1909 – August 30, 1985) was a Russian-American Mayanist scholar and archaeologist who contributed significantly to the deciphering of Maya hieroglyphs, the writing system of the pre-Columbian Maya civilization of Mesoamerica.</dd>
+  <dt>ptolemy</dt>
+  <dd>Claudius Ptolemy - a Greco-Egyptian writer of Alexandria, known as a mathematician, astronomer, geographer, astrologer, and poet of a single epigram in the Greek Anthology.</dd>
+  <dt>raman</dt>
+  <dd>C. V. Raman - Indian physicist who won the Nobel Prize in 1930 for proposing the Raman effect.</dd>
+  <dt>ramanujan</dt>
+  <dd>Srinivasa Ramanujan - Indian mathematician and autodidact who made extraordinary contributions to mathematical analysis, number theory, infinite series, and continued fractions.</dd>
+  <dt>rhodes</dt>
+  <dd>Ida Rhodes - American pioneer in computer programming, designed the first computer used for Social Security.</dd>
+  <dt>ride</dt>
+  <dd>Sally Kristen Ride was an American physicist and astronaut. She was the first American woman in space, and the youngest American astronaut.</dd>
+  <dt>ritchie</dt>
+  <dd>Dennis Ritchie - co-creator of UNIX and the C programming language.</dd>
+  <dt>robinson</dt>
+  <dd>Julia Hall Bowman Robinson - American mathematician renowned for her contributions to the fields of computability theory and computational complexity theory.</dd>
+  <dt>roentgen</dt>
+  <dd>Wilhelm Conrad Röntgen - German physicist who was awarded the first Nobel Prize in Physics in 1901 for the discovery of X-rays (Röntgen rays).</dd>
+  <dt>rosalind</dt>
+  <dd>Rosalind Franklin - British biophysicist and X-ray crystallographer whose research was critical to the understanding of DNA.</dd>
+  <dt>rubin</dt>
+  <dd>Vera Rubin - American astronomer who pioneered work on galaxy rotation rates.</dd>
+  <dt>saha</dt>
+  <dd>Meghnad Saha - Indian astrophysicist best known for his development of the Saha equation, used to describe chemical and physical conditions in stars.</dd>
+  <dt>sammet</dt>
+  <dd>Jean E. Sammet developed FORMAC, the first widely used computer language for symbolic manipulation of mathematical formulas.</dd>
+  <dt>sanderson</dt>
+  <dd>Mildred Sanderson - American mathematician best known for Sanderson's theorem concerning modular invariants.</dd>
+  <dt>satoshi</dt>
+  <dd>Satoshi Nakamoto is the name used by the unknown person or group of people who developed bitcoin, authored the bitcoin white paper, and created and deployed bitcoin's original reference implementation.</dd>
+  <dt>shamir</dt>
+  <dd>Adi Shamir - Israeli cryptographer whose numerous inventions and contributions to cryptography include the Ferge Fiat Shamir identification scheme, the Rivest Shamir Adleman (RSA) public-key cryptosystem, the Shamir's secret sharing scheme, the breaking of the Merkle-Hellman cryptosystem, the TWINKLE and TWIRL factoring devices and the discovery of differential cryptanalysis (with Eli Biham).</dd>
+  <dt>shannon</dt>
+  <dd>Claude Shannon - The father of information theory and founder of digital circuit design theory. (.</dd>
+  <dt>shaw</dt>
+  <dd>Carol Shaw - Originally an Atari employee, Carol Shaw is said to be the first female video game designer.</dd>
+  <dt>shirley</dt>
+  <dd>Dame Stephanie "Steve" Shirley - Founded a software company in 1962 employing women working from home.</dd>
+  <dt>shockley</dt>
+  <dd>William Shockley co-invented the transistor.</dd>
+  <dt>shtern</dt>
+  <dd>Lina Solomonovna Stern (or Shtern; Russian: Лина Соломоновна Штерн; 26 August 1878 – 7 March 1968) was a Soviet biochemist, physiologist and humanist whose medical discoveries saved thousands of lives at the fronts of World War II. She is best known for her pioneering work on blood–brain barrier, which she described as hemato-encephalic barrier in 1921.</dd>
+  <dt>sinoussi</dt>
+  <dd>Françoise Barré-Sinoussi - French virologist and Nobel Prize Laureate in Physiology or Medicine; her work was fundamental in identifying HIV as the cause of AIDS.</dd>
+  <dt>snyder</dt>
+  <dd>Betty Snyder - one of the original programmers of the ENIAC.</dd>
+  <dt>solomon</dt>
+  <dd>Cynthia Solomon - Pioneer in the fields of artificial intelligence, computer science and educational computing. Known for creation of Logo, an educational programming language.  .</dd>
+  <dt>spence</dt>
+  <dd>Frances Spence - one of the original programmers of the ENIAC.</dd>
+  <dt>stonebraker</dt>
+  <dd>Michael Stonebraker is a database research pioneer and architect of Ingres, Postgres, VoltDB and SciDB. Winner of 2014 ACM Turing Award.</dd>
+  <dt>sutherland</dt>
+  <dd>Ivan Edward Sutherland - American computer scientist and Internet pioneer, widely regarded as the father of computer graphics.</dd>
+  <dt>swanson</dt>
+  <dd>Janese Swanson (with others) developed the first of the Carmen Sandiego games. She went on to found Girl Tech.</dd>
+  <dt>swartz</dt>
+  <dd>Aaron Swartz was influential in creating RSS, Markdown, Creative Commons, Reddit, and much of the internet as we know it today. He was devoted to freedom of information on the web. https://en.wikiquote.org/wiki/Aaron_Swartz.</dd>
+  <dt>swirles</dt>
+  <dd>Bertha Swirles was a theoretical physicist who made a number of contributions to early quantum theory.</dd>
+  <dt>taussig</dt>
+  <dd>Helen Brooke Taussig - American cardiologist and founder of the field of paediatric cardiology.</dd>
+  <dt>tesla</dt>
+  <dd>Nikola Tesla invented the AC electric system and every gadget ever used by a James Bond villain.</dd>
+  <dt>tharp</dt>
+  <dd>Marie Tharp - American geologist and oceanic cartographer who co-created the first scientific map of the Atlantic Ocean floor. Her work led to the acceptance of the theories of plate tectonics and continental drift.</dd>
+  <dt>thompson</dt>
+  <dd>Ken Thompson - co-creator of UNIX and the C programming language.</dd>
+  <dt>torvalds</dt>
+  <dd>Linus Torvalds invented Linux and Git.</dd>
+  <dt>tu</dt>
+  <dd>Youyou Tu - Chinese pharmaceutical chemist and educator known for discovering artemisinin and dihydroartemisinin, used to treat malaria, which has saved millions of lives. Joint winner of the 2015 Nobel Prize in Physiology or Medicine.</dd>
+  <dt>turing</dt>
+  <dd>Alan Turing was a founding father of computer science.</dd>
+  <dt>varahamihira</dt>
+  <dd>Varahamihira - Ancient Indian mathematician who discovered trigonometric formulae during 505-587 CE.</dd>
+  <dt>vaughan</dt>
+  <dd>Dorothy Vaughan was a NASA mathematician and computer programmer on the SCOUT launch vehicle program that put America's first satellites into space.</dd>
+  <dt>villani</dt>
+  <dd>Cédric Villani - French mathematician, won Fields Medal, Fermat Prize and Poincaré Price for his work in differential geometry and statistical mechanics.</dd>
+  <dt>visvesvaraya</dt>
+  <dd>Sir Mokshagundam Visvesvaraya - is a notable Indian engineer.  He is a recipient of the Indian Republic's highest honour, the Bharat Ratna, in 1955. On his birthday, 15 September is celebrated as Engineer's Day in India in his memory.</dd>
+  <dt>volhard</dt>
+  <dd>Christiane Nüsslein-Volhard - German biologist, won Nobel Prize in Physiology or Medicine in 1995 for research on the genetic control of embryonic development.</dd>
+  <dt>wescoff</dt>
+  <dd>Marlyn Wescoff - one of the original programmers of the ENIAC.</dd>
+  <dt>wilbur</dt>
+  <dd>Sylvia B. Wilbur - British computer scientist who helped develop the ARPANET, was one of the first to exchange email in the UK and a leading researcher in computer-supported collaborative work.</dd>
+  <dt>wiles</dt>
+  <dd>Andrew Wiles - Notable British mathematician who proved the enigmatic Fermat's Last Theorem.</dd>
+  <dt>williams</dt>
+  <dd>Roberta Williams, did pioneering work in graphical adventure games for personal computers, particularly the King's Quest series.</dd>
+  <dt>williamson</dt>
+  <dd>Malcolm John Williamson - British mathematician and cryptographer employed by the GCHQ. Developed in 1974 what is now known as Diffie-Hellman key exchange (Diffie and Hellman first published the scheme in 1976).</dd>
+  <dt>wilson</dt>
+  <dd>Sophie Wilson designed the first Acorn Micro-Computer and the instruction set for ARM processors.</dd>
+  <dt>wing</dt>
+  <dd>Jeannette Wing - co-developed the Liskov substitution principle.</dd>
+  <dt>wozniak</dt>
+  <dd>Steve Wozniak invented the Apple I and Apple II.</dd>
+  <dt>wright</dt>
+  <dd>The Wright brothers, Orville and Wilbur - credited with inventing and building the world's first successful airplane and making the first controlled, powered and sustained heavier-than-air human flight.</dd>
+  <dt>wu</dt>
+  <dd>Chien-Shiung Wu - Chinese-American experimental physicist who made significant contributions to nuclear physics.</dd>
+  <dt>yalow</dt>
+  <dd>Rosalyn Sussman Yalow - Rosalyn Sussman Yalow was an American medical physicist, and a co-winner of the 1977 Nobel Prize in Physiology or Medicine for development of the radioimmunoassay technique.</dd>
+  <dt>yonath</dt>
+  <dd>Ada Yonath - an Israeli crystallographer, the first woman from the Middle East to win a Nobel prize in the sciences.</dd>
+  <dt>zhukovsky</dt>
+  <dd>Nikolay Yegorovich Zhukovsky (Russian: Никола́й Его́рович Жуко́вский, January 17 1847 – March 17, 1921) was a Russian scientist, mathematician and engineer, and a founding father of modern aero- and hydrodynamics. Whereas contemporary scientists scoffed at the idea of human flight, Zhukovsky was the first to undertake the study of airflow. He is often called the Father of Russian Aviation.</dd>
+</dl>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/09/Docker-Container-Random-Name/" data-id="clm6a4gg902yvykts1wqs1se7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Toys/" rel="tag">Toys</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/09/Data-With-Government-OId/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">政府機關單位統一編號方式 (OpenData)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">224</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">44</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
