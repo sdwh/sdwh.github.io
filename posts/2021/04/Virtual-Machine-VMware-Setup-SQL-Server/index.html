@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Enable-TCP-IP-1.png">
 <meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Enable-TCP-IP-2.png">
 <meta property="article:published_time" content="2021-04-04T23:05:12.000Z">
-<meta property="article:modified_time" content="2023-04-09T09:36:45.215Z">
+<meta property="article:modified_time" content="2023-09-08T12:22:02.317Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="SQLServer">
 <meta property="article:tag" content="OS">
@@ -152,13 +152,31 @@
 <p><img src="/assets/VMware-Setup-2.png"><br><img src="/assets/VMware-Setup-3.png"></p>
 <p>要注意的是如果指定 Source，VMware 可能會安裝失敗，建議另外以光碟機掛載 iso 的方式來進行安裝。</p>
 <h3 id="安裝-Windows-Server"><a href="#安裝-Windows-Server" class="headerlink" title="安裝 Windows Server"></a>安裝 Windows Server</h3><p>使用的 Source 為 Windows Server Evaluation，<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-tw/evalcenter/evaluate-windows-server">下載來源</a>。</p>
+<div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon"><i></i></div>
+        <div class="colorbox-body">
+            <p>如果使用 VM Clone 的方式，Clone 後新的虛擬機要使用 sysprep 來重新設定 SID。</p>
+        </div>
+    </div>
+</div>
+
 <h2 id="Windows-Server"><a href="#Windows-Server" class="headerlink" title="Windows Server"></a>Windows Server</h2><h3 id="綜合設定"><a href="#綜合設定" class="headerlink" title="綜合設定"></a>綜合設定</h3><ol>
-<li>停用逾時螢幕關閉的設定避免需要反覆登入</li>
+<li>停用逾時螢幕關閉的設定，避免需要反覆登入 🤨</li>
 <li>關閉<strong>搜尋方塊</strong>並重新啟動 <code class="s">Explorer</code></li>
+<li>調整<strong>檔案總管</strong>預設開啟的位置為<strong>本機</strong>，避免每次開啟都要點選左邊的<strong>本機</strong> 😉</li>
 </ol>
-<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">Powercfg <span class="token operator">-</span>Change <span class="token operator">-</span>monitor-timeout-<span class="token function">ac</span> 0
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token comment"># Disable screen timeout</span>
+Powercfg <span class="token operator">-</span>Change <span class="token operator">-</span>monitor-timeout-<span class="token function">ac</span> 0
+
+<span class="token comment"># Disable search box</span>
 <span class="token function">Set-ItemProperty</span> <span class="token operator">-</span>Path <span class="token string">'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search'</span> <span class="token operator">-</span>Name <span class="token string">'SearchboxTaskbarMode'</span> <span class="token operator">-</span>Value 0
-<span class="token function">Stop-Process</span> <span class="token operator">-</span>Name explorer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<span class="token comment"># Restart explorer</span>
+<span class="token function">Stop-Process</span> <span class="token operator">-</span>Name explorer
+
+<span class="token comment"># Explorer Default This PC</span>
+<span class="token function">Set-ItemProperty</span> <span class="token operator">-</span>Path <span class="token string">"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"</span> <span class="token operator">-</span>Name <span class="token string">"LaunchTo"</span> <span class="token operator">-</span>Value 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="安裝-NET-Framework-3-5"><a href="#安裝-NET-Framework-3-5" class="headerlink" title="安裝 .NET Framework 3.5"></a>安裝 .NET Framework 3.5</h3><p>尚不確定是否為 SQL Server 安裝所依賴的元件，只是習慣會安裝以相容其他應用系統。</p>
 <p>要注意的是使用伺服器管理員安裝的時候，必須指定 source 否則會無法正確安裝。</p>
@@ -184,7 +202,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/" data-id="clm6anth801itagts1zarcsti" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2021/04/Virtual-Machine-VMware-Setup-SQL-Server/" data-id="clmdfkpgx01m9wgts157c0m0s" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/" rel="tag">OS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VMware/" rel="tag">VMware</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VirtualMachine/" rel="tag">VirtualMachine</a></li></ul>
@@ -226,7 +244,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">225</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">44</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">224</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">44</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">69</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -236,7 +254,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">92</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">96</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
