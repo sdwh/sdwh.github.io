@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Windows System32 Something Interesting | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 Windows Run &amp; CLI 可以使用的指令與工具大全，藉由這些工具可以自動化工作，提升伺服器的管理效能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows System32 Something Interesting">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/09/Windows-System32-Something-Interesting/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 Windows Run &amp; CLI 可以使用的指令與工具大全，藉由這些工具可以自動化工作，提升伺服器的管理效能。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+<meta property="article:published_time" content="2023-09-18T10:58:55.000Z">
+<meta property="article:modified_time" content="2023-09-18T12:15:33.487Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="List">
+<meta property="article:tag" content="CheatSheet">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="CLI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Windows-System32-Something-Interesting" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/09/Windows-System32-Something-Interesting/" class="article-date">
+  <time datetime="2023-09-18T10:58:55.000Z" itemprop="datePublished">2023-09-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OS/">OS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Windows System32 Something Interesting
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#net-share-amp-icacls"><span class="toc-text">net share &amp; icacls</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E5%80%8B%E5%AD%97%E5%85%83%E4%BB%A5%E4%B8%8B%E7%9A%84%E7%9F%AD%E6%8C%87%E4%BB%A4"><span class="toc-text">五個字元以下的短指令</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 Windows Run &amp; CLI 可以使用的指令與工具大全，藉由這些工具可以自動化工作，提升伺服器的管理效能。</p>
+<a href="/posts/2023/09/Windows-System32-Something-Interesting/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/WindowsServerLogo.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="net-share-amp-icacls"><a href="#net-share-amp-icacls" class="headerlink" title="net share &amp; icacls"></a>net share &amp; icacls</h2><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token comment">REM Show all share folder</span>
+<span class="token command"><span class="token keyword">net</span> share</span>
+
+<span class="token comment">REM Show share folder permission</span>
+<span class="token command"><span class="token keyword">net</span> share sharename</span>
+
+<span class="token comment">REM Show share folder NTFS permission</span>
+<span class="token command"><span class="token keyword">icacls</span> folderpath</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token comment"># Show all share folder</span>
+<span class="token function">Get-SmbShare</span>
+
+<span class="token comment"># Show share folder permission</span>
+<span class="token function">Get-SmbShareAccess</span> sharename <span class="token punctuation">|</span> <span class="token function">ogv</span>
+
+<span class="token comment"># Show share folder NTFS permission</span>
+<span class="token function">Get-Acl</span> folderpath <span class="token punctuation">|</span> <span class="token function">ogv</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token comment"># Define folder path and share name</span>
+<span class="token variable">$shareName</span> = <span class="token string">"A"</span>
+<span class="token variable">$folderPath</span> = <span class="token punctuation">(</span><span class="token function">Get-SmbShare</span> <span class="token operator">-</span>Name <span class="token variable">$shareName</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Path
+
+<span class="token comment"># Get ACL permissions for the folder</span>
+<span class="token variable">$aclPermissions</span> = <span class="token punctuation">(</span><span class="token function">Get-Acl</span> <span class="token operator">-</span>Path <span class="token variable">$folderPath</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Access <span class="token punctuation">|</span> <span class="token function">ForEach-Object</span> <span class="token punctuation">&#123;</span> <span class="token variable">$_</span><span class="token punctuation">.</span>FileSystemRights <span class="token punctuation">&#125;</span>
+
+<span class="token comment"># Get SMB share permissions</span>
+<span class="token variable">$sharePermissions</span> = <span class="token punctuation">(</span><span class="token function">Get-SmbShareAccess</span> <span class="token operator">-</span>Name <span class="token variable">$shareName</span><span class="token punctuation">)</span><span class="token punctuation">.</span>AccessRight
+
+<span class="token comment"># Calculate minimum permissions by combining both sets of permissions</span>
+<span class="token variable">$minimumPermissions</span> = <span class="token variable">$aclPermissions</span> <span class="token operator">+</span> <span class="token variable">$sharePermissions</span> <span class="token punctuation">|</span> <span class="token function">Sort-Object</span> <span class="token operator">-</span>Unique
+
+<span class="token comment"># Output the minimum permissions</span>
+<span class="token function">Write-Host</span> <span class="token string">"Minimum permissions for the folder:"</span>
+<span class="token variable">$minimumPermissions</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="五個字元以下的短指令"><a href="#五個字元以下的短指令" class="headerlink" title="五個字元以下的短指令"></a>五個字元以下的短指令</h2><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ARP.EXE</td>
+<td>ARP（地址解析協議）命令行工具</td>
+</tr>
+<tr>
+<td>at.exe</td>
+<td>計劃任務命令行工具</td>
+</tr>
+<tr>
+<td>bash.exe</td>
+<td>Windows  Subsystem for Linux（WSL）Bash殼</td>
+</tr>
+<tr>
+<td>cacls.exe</td>
+<td>更改文件和文件夾的訪問控制列表（ACL）權限</td>
+</tr>
+<tr>
+<td>calc.exe</td>
+<td>Windows  計算器</td>
+</tr>
+<tr>
+<td>clip.exe</td>
+<td>將文本復制到剪貼板</td>
+</tr>
+<tr>
+<td>cmd.exe</td>
+<td>Windows  命令提示符</td>
+</tr>
+<tr>
+<td>cmstp.exe</td>
+<td>連接管理器配置工具</td>
+</tr>
+<tr>
+<td>comp.exe</td>
+<td>比較文件內容</td>
+</tr>
+<tr>
+<td>csrss.exe</td>
+<td>客戶/服務器運行時子系統</td>
+</tr>
+<tr>
+<td>curl.exe</td>
+<td>使用cURL庫進行文件傳輸</td>
+</tr>
+<tr>
+<td>dccw.exe</td>
+<td>顯示顏色校準精度向導</td>
+</tr>
+<tr>
+<td>Dism.exe</td>
+<td>部署映像服務和管理工具</td>
+</tr>
+<tr>
+<td>djoin.exe</td>
+<td>將計算機加入域的命令行工具</td>
+</tr>
+<tr>
+<td>dwm.exe</td>
+<td>Windows  桌面視窗管理器</td>
+</tr>
+<tr>
+<td>DWWIN.EXE</td>
+<td>Dr. Watson調試程式</td>
+</tr>
+<tr>
+<td>efsui.exe</td>
+<td>加密文件系統（EFS）用戶界面</td>
+</tr>
+<tr>
+<td>EM.exe</td>
+<td>非法系統調用監視器</td>
+</tr>
+<tr>
+<td>fc.exe</td>
+<td>比較文件內容</td>
+</tr>
+<tr>
+<td>find.exe</td>
+<td>在文本文件中查找字元串</td>
+</tr>
+<tr>
+<td>fltMC.exe</td>
+<td>文件過濾器管理器命令行工具</td>
+</tr>
+<tr>
+<td>FsIso.exe</td>
+<td>IMAPI文件系統映像生成器</td>
+</tr>
+<tr>
+<td>ftp.exe</td>
+<td>文件傳輸協議（FTP）客戶端</td>
+</tr>
+<tr>
+<td>help.exe</td>
+<td>獲取幫助和命令的信息</td>
+</tr>
+<tr>
+<td>klist.exe</td>
+<td>列出Kerberos票據信息</td>
+</tr>
+<tr>
+<td>label.exe</td>
+<td>更改捲標（磁盤驅動器名稱）</td>
+</tr>
+<tr>
+<td>lsass.exe</td>
+<td>本地安全身份驗證子系統</td>
+</tr>
+<tr>
+<td>MCU.exe</td>
+<td>媒體控制單元</td>
+</tr>
+<tr>
+<td>MdRes.exe</td>
+<td>Windows 模塊驅動程式資源管理器</td>
+</tr>
+<tr>
+<td>mfpmp.exe</td>
+<td>媒體基礎保護管理器進程</td>
+</tr>
+<tr>
+<td>mmc.exe</td>
+<td>Microsoft管理控制台</td>
+</tr>
+<tr>
+<td>MRT.exe</td>
+<td>惡意軟體刪除工具</td>
+</tr>
+<tr>
+<td>msdt.exe</td>
+<td>Microsoft故障排除工具</td>
+</tr>
+<tr>
+<td>msdtc.exe</td>
+<td>Microsoft分佈式事務協調器</td>
+</tr>
+<tr>
+<td>mshta.exe</td>
+<td>HTML應用程式宿主</td>
+</tr>
+<tr>
+<td>msiexec.exe</td>
+<td>Windows 安裝程式</td>
+</tr>
+<tr>
+<td>msra.exe</td>
+<td>遠程協助</td>
+</tr>
+<tr>
+<td>mstsc.exe</td>
+<td>遠程桌面連接</td>
+</tr>
+<tr>
+<td>net.exe</td>
+<td>網路命令行工具</td>
+</tr>
+<tr>
+<td>net1.exe</td>
+<td>網路命令行工具（舊版本）</td>
+</tr>
+<tr>
+<td>netsh.exe</td>
+<td>網路Shell命令</td>
+</tr>
+<tr>
+<td>osk.exe</td>
+<td>屏幕鍵盤</td>
+</tr>
+<tr>
+<td>pcaui.exe</td>
+<td>父母控制活動報告器用戶界面</td>
+</tr>
+<tr>
+<td>PING.EXE</td>
+<td>發送網路請求以測試連接</td>
+</tr>
+<tr>
+<td>poqexec.exe</td>
+<td>安裝、卸載、修復或管理Windows更新</td>
+</tr>
+<tr>
+<td>print.exe</td>
+<td>列印文本文件</td>
+</tr>
+<tr>
+<td>psr.exe</td>
+<td>問題步驟記錄器</td>
+</tr>
+<tr>
+<td>RdpSa.exe</td>
+<td>遠程桌面連接（RDP）安全屏幕適配器</td>
+</tr>
+<tr>
+<td>reg.exe</td>
+<td>註冊表編輯器</td>
+</tr>
+<tr>
+<td>relog.exe</td>
+<td>Windows 性能日誌和警報命令行工具</td>
+</tr>
+<tr>
+<td>ROUTE.EXE</td>
+<td>查看或更改本地路由表</td>
+</tr>
+<tr>
+<td>runas.exe</td>
+<td>以不同的用戶身份運行程式</td>
+</tr>
+<tr>
+<td>sc.exe</td>
+<td>服務控制管理器命令行工具</td>
+</tr>
+<tr>
+<td>sdclt.exe</td>
+<td>備份和還原中心</td>
+</tr>
+<tr>
+<td>sethc.exe</td>
+<td>Sticky Keys輔助工具</td>
+</tr>
+<tr>
+<td>setx.exe</td>
+<td>設置環境變量</td>
+</tr>
+<tr>
+<td>sfc.exe</td>
+<td>系統文件檢查器</td>
+</tr>
+<tr>
+<td>slui.exe</td>
+<td>Windows 啟動客戶端</td>
+</tr>
+<tr>
+<td>smss.exe</td>
+<td>Windows 會話管理器子系統</td>
+</tr>
+<tr>
+<td>sort.exe</td>
+<td>對文本文件進行排序</td>
+</tr>
+<tr>
+<td>subst.exe</td>
+<td>創建、更改或刪除驅動器別名</td>
+</tr>
+<tr>
+<td>tar.exe</td>
+<td>解壓和壓縮tar歸檔文件</td>
+</tr>
+<tr>
+<td>ucsvc.exe</td>
+<td>用戶模式文件系統驅動程式</td>
+</tr>
+<tr>
+<td>upfc.exe</td>
+<td>用戶模式進程分析工具</td>
+</tr>
+<tr>
+<td>vds.exe</td>
+<td>虛擬磁盤服務</td>
+</tr>
+<tr>
+<td>vmwp.exe</td>
+<td>Windows 虛擬內存寫入進程</td>
+</tr>
+<tr>
+<td>VSSVC.exe</td>
+<td>捲影副本服務</td>
+</tr>
+<tr>
+<td>w32tm.exe</td>
+<td>Windows 時間服務</td>
+</tr>
+<tr>
+<td>WFS.exe</td>
+<td>Windows 搜索文件系統</td>
+</tr>
+<tr>
+<td>where.exe</td>
+<td>在系統上搜索文件</td>
+</tr>
+<tr>
+<td>winrs.exe</td>
+<td>Windows 遠程Shell</td>
+</tr>
+<tr>
+<td>wpr.exe</td>
+<td>Windows 性能工具記錄器</td>
+</tr>
+<tr>
+<td>write.exe</td>
+<td>文本編輯器</td>
+</tr>
+<tr>
+<td>wsl.exe</td>
+<td>Windows 子系統Linux</td>
+</tr>
+<tr>
+<td>wusa.exe</td>
+<td>Windows 更新和服務包管理器</td>
+</tr>
+<tr>
+<td>xcopy.exe</td>
+<td>復制文件和目錄</td>
+</tr>
+</tbody></table>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/09/Windows-System32-Something-Interesting/" data-id="clmoutgfl01sm1wts7g633uib" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLI/" rel="tag">CLI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CheatSheet/" rel="tag">CheatSheet</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/List/" rel="tag">List</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/09/Python-Play-Encoding/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python Play Encoding</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">226</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">44</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">70</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">99</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
