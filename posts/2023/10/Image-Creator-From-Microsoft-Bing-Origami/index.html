@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Image Creator From Microsoft Bing (紙動物) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用 Microsoft Bing Image Creator 所發展的紙動物，搭配 PIL 設計為 Photo Grids。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Image Creator From Microsoft Bing (紙動物)">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/10/Image-Creator-From-Microsoft-Bing-Origami/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="使用 Microsoft Bing Image Creator 所發展的紙動物，搭配 PIL 設計為 Photo Grids。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/Animals_Photo_Grids.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/Animals.jpg">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Zebra.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Yellow-Fish.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-White-Tiger.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-White-Dolphin.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Whale.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Walrus.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Tuna.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Tiger.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Tern.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Squirrel.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Spider.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Snow-Leopard.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Small-Kangaroo.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Shrimp.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Shrimp-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Sheep.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Shark.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Sealion.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Seal.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Sea-Turtle.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Royalblue-Fish.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Rex.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Red-horse.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Python.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Platypus.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Pikachu.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Pig.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Penguin.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Owl.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mouse.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mottled-Pink-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Monkey.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mocasin-Kangaroo.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Dog.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Dog-4.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Dog-3.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Dog-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Cat.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Cat-4.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Cat-3.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mixed-Cat-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Mallard-Duck.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Lobster.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Lion.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Koala.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Khaki-Kangaroo.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Kangaroo.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Jellyfish.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Inu.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Husky.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Green-snake.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Green-dragon.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Gray-Rabbit.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Goose.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Gold-monkey.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Goat.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Frog.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Fox.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Elephant.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Eagle.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Yellow-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Red-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Green-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Blue-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Bisque-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Azure-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dotted-Aquamarine-Egg.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dolphin.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dolphin-3.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Dolphin-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Deer.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Deer-3.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Deer-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Cyan-Crab.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Cute-Lion.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Crocodile.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Crab.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Crab-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Cow.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Colorful-Ox.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Colorful-Crab.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Colorful-Aries.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Chicken.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Chameleon.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Cat.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Brown-rabiit.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Brown-Bear.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Brown-Bear-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Brontosaurus.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Red-Horse.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-ox.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Goose.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Goat.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Dog.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Cat.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Cat-2.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Bear.jfif">
+<meta property="og:image" content="https://sdwh.dev/assets/Origami-Black-Bear-2.jfif">
+<meta property="article:published_time" content="2023-10-04T11:47:48.000Z">
+<meta property="article:modified_time" content="2023-10-04T12:02:05.873Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Misc">
+<meta property="article:tag" content="Generated">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Art">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/Animals_Photo_Grids.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Image-Creator-From-Microsoft-Bing-Origami" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/10/Image-Creator-From-Microsoft-Bing-Origami/" class="article-date">
+  <time datetime="2023-10-04T11:47:48.000Z" itemprop="datePublished">2023-10-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Image Creator From Microsoft Bing (紙動物)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Script"><span class="toc-text">Script</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Animals"><span class="toc-text">Animals</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>使用 Microsoft Bing Image Creator 所發展的紙動物，搭配 PIL 設計為 Photo Grids。</p>
+<a href="/posts/2023/10/Image-Creator-From-Microsoft-Bing-Origami/" title="logo" class="fancybox" rel="article0">
+<img src="/assets/Animals_Photo_Grids.jpg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">origami brown kangaroo with white body, detailed, white background<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/assets/Animals.jpg"></p>
+<h3 id="Script"><a href="#Script" class="headerlink" title="Script"></a>Script</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> PIL <span class="token keyword">import</span> Image
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> glob
+<span class="token keyword">import</span> uuid
+
+images <span class="token operator">=</span> glob<span class="token punctuation">.</span>glob<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span> <span class="token string">"*.jfif"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+imageSize <span class="token operator">=</span> <span class="token number">300</span>
+
+horizontal_photo_count <span class="token operator">=</span> <span class="token number">3</span> 
+vertical_photo_count <span class="token operator">=</span> <span class="token number">3</span>
+
+image_spacing <span class="token operator">=</span> <span class="token number">2</span>
+spacing_color <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span>
+
+canvas_width <span class="token operator">=</span> horizontal_photo_count <span class="token operator">*</span> imageSize <span class="token operator">+</span> <span class="token punctuation">(</span>horizontal_photo_count <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> image_spacing
+canvas_height <span class="token operator">=</span> vertical_photo_count <span class="token operator">*</span> imageSize <span class="token operator">+</span> <span class="token punctuation">(</span>vertical_photo_count <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> image_spacing
+canvas <span class="token operator">=</span> Image<span class="token punctuation">.</span>new<span class="token punctuation">(</span><span class="token string">'RGB'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>canvas_width<span class="token punctuation">,</span> canvas_height<span class="token punctuation">)</span><span class="token punctuation">,</span> spacing_color<span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> y <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>horizontal_photo_count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> x <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>vertical_photo_count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        image_filename <span class="token operator">=</span> images<span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        img <span class="token operator">=</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>image_filename<span class="token punctuation">)</span>
+        img <span class="token operator">=</span> img<span class="token punctuation">.</span>resize<span class="token punctuation">(</span><span class="token punctuation">(</span>imageSize<span class="token punctuation">,</span> imageSize<span class="token punctuation">)</span><span class="token punctuation">,</span> Image<span class="token punctuation">.</span>ANTIALIAS<span class="token punctuation">)</span>
+        
+        paste_x <span class="token operator">=</span> x <span class="token operator">*</span> <span class="token punctuation">(</span>imageSize <span class="token operator">+</span> image_spacing<span class="token punctuation">)</span>
+        paste_y <span class="token operator">=</span> y <span class="token operator">*</span> <span class="token punctuation">(</span>imageSize <span class="token operator">+</span> image_spacing<span class="token punctuation">)</span>
+        
+        canvas<span class="token punctuation">.</span>paste<span class="token punctuation">(</span>img<span class="token punctuation">,</span> <span class="token punctuation">(</span>paste_x<span class="token punctuation">,</span> paste_y<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+canvas<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Grids_</span><span class="token interpolation"><span class="token punctuation">&#123;</span>uuid<span class="token punctuation">.</span>uuid1<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token string">.jpg'</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Animals"><a href="#Animals" class="headerlink" title="Animals"></a>Animals</h3><style>
+  .animal{
+    width: 30%;
+    display: inline-block;
+  }
+</style>
+
+<div style="text-align: center">
+<img src="/assets/Origami-Zebra.jfif" class="animal">
+<img src="/assets/Origami-Yellow-Fish.jfif" class="animal">
+<img src="/assets/Origami-White-Tiger.jfif" class="animal">
+<img src="/assets/Origami-White-Dolphin.jfif" class="animal">
+<img src="/assets/Origami-Whale.jfif" class="animal">
+<img src="/assets/Origami-Walrus.jfif" class="animal">
+<img src="/assets/Origami-Tuna.jfif" class="animal">
+<img src="/assets/Origami-Tiger.jfif" class="animal">
+<img src="/assets/Origami-Tern.jfif" class="animal">
+<img src="/assets/Origami-Squirrel.jfif" class="animal">
+<img src="/assets/Origami-Spider.jfif" class="animal">
+<img src="/assets/Origami-Snow-Leopard.jfif" class="animal">
+<img src="/assets/Origami-Small-Kangaroo.jfif" class="animal">
+<img src="/assets/Origami-Shrimp.jfif" class="animal">
+<img src="/assets/Origami-Shrimp-2.jfif" class="animal">
+<img src="/assets/Origami-Sheep.jfif" class="animal">
+<img src="/assets/Origami-Shark.jfif" class="animal">
+<img src="/assets/Origami-Sealion.jfif" class="animal">
+<img src="/assets/Origami-Seal.jfif" class="animal">
+<img src="/assets/Origami-Sea-Turtle.jfif" class="animal">
+<img src="/assets/Origami-Royalblue-Fish.jfif" class="animal">
+<img src="/assets/Origami-Rex.jfif" class="animal">
+<img src="/assets/Origami-Red-horse.jfif" class="animal">
+<img src="/assets/Origami-Python.jfif" class="animal">
+<img src="/assets/Origami-Platypus.jfif" class="animal">
+<img src="/assets/Origami-Pikachu.jfif" class="animal">
+<img src="/assets/Origami-Pig.jfif" class="animal">
+<img src="/assets/Origami-Penguin.jfif" class="animal">
+<img src="/assets/Origami-Owl.jfif" class="animal">
+<img src="/assets/Origami-Mouse.jfif" class="animal">
+<img src="/assets/Origami-Mottled-Pink-Egg.jfif" class="animal">
+<img src="/assets/Origami-Monkey.jfif" class="animal">
+<img src="/assets/Origami-Mocasin-Kangaroo.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Dog.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Dog-4.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Dog-3.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Dog-2.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Cat.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Cat-4.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Cat-3.jfif" class="animal">
+<img src="/assets/Origami-Mixed-Cat-2.jfif" class="animal">
+<img src="/assets/Origami-Mallard-Duck.jfif" class="animal">
+<img src="/assets/Origami-Lobster.jfif" class="animal">
+<img src="/assets/Origami-Lion.jfif" class="animal">
+<img src="/assets/Origami-Koala.jfif" class="animal">
+<img src="/assets/Origami-Khaki-Kangaroo.jfif" class="animal">
+<img src="/assets/Origami-Kangaroo.jfif" class="animal">
+<img src="/assets/Origami-Jellyfish.jfif" class="animal">
+<img src="/assets/Origami-Inu.jfif" class="animal">
+<img src="/assets/Origami-Husky.jfif" class="animal">
+<img src="/assets/Origami-Green-snake.jfif" class="animal">
+<img src="/assets/Origami-Green-dragon.jfif" class="animal">
+<img src="/assets/Origami-Gray-Rabbit.jfif" class="animal">
+<img src="/assets/Origami-Goose.jfif" class="animal">
+<img src="/assets/Origami-Gold-monkey.jfif" class="animal">
+<img src="/assets/Origami-Goat.jfif" class="animal">
+<img src="/assets/Origami-Frog.jfif" class="animal">
+<img src="/assets/Origami-Fox.jfif" class="animal">
+<img src="/assets/Origami-Elephant.jfif" class="animal">
+<img src="/assets/Origami-Egg.jfif" class="animal">
+<img src="/assets/Origami-Eagle.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Yellow-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Red-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Green-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Blue-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Bisque-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Azure-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dotted-Aquamarine-Egg.jfif" class="animal">
+<img src="/assets/Origami-Dolphin.jfif" class="animal">
+<img src="/assets/Origami-Dolphin-3.jfif" class="animal">
+<img src="/assets/Origami-Dolphin-2.jfif" class="animal">
+<img src="/assets/Origami-Deer.jfif" class="animal">
+<img src="/assets/Origami-Deer-3.jfif" class="animal">
+<img src="/assets/Origami-Deer-2.jfif" class="animal">
+<img src="/assets/Origami-Cyan-Crab.jfif" class="animal">
+<img src="/assets/Origami-Cute-Lion.jfif" class="animal">
+<img src="/assets/Origami-Crocodile.jfif" class="animal">
+<img src="/assets/Origami-Crab.jfif" class="animal">
+<img src="/assets/Origami-Crab-2.jfif" class="animal">
+<img src="/assets/Origami-Cow.jfif" class="animal">
+<img src="/assets/Origami-Colorful-Ox.jfif" class="animal">
+<img src="/assets/Origami-Colorful-Crab.jfif" class="animal">
+<img src="/assets/Origami-Colorful-Aries.jfif" class="animal">
+<img src="/assets/Origami-Chicken.jfif" class="animal">
+<img src="/assets/Origami-Chameleon.jfif" class="animal">
+<img src="/assets/Origami-Cat.jfif" class="animal">
+<img src="/assets/Origami-Brown-rabiit.jfif" class="animal">
+<img src="/assets/Origami-Brown-Bear.jfif" class="animal">
+<img src="/assets/Origami-Brown-Bear-2.jfif" class="animal">
+<img src="/assets/Origami-Brontosaurus.jfif" class="animal">
+<img src="/assets/Origami-Black-Red-Horse.jfif" class="animal">
+<img src="/assets/Origami-Black-ox.jfif" class="animal">
+<img src="/assets/Origami-Black-Goose.jfif" class="animal">
+<img src="/assets/Origami-Black-Goat.jfif" class="animal">
+<img src="/assets/Origami-Black-Dog.jfif" class="animal">
+<img src="/assets/Origami-Black-Cat.jfif" class="animal">
+<img src="/assets/Origami-Black-Cat-2.jfif" class="animal">
+<img src="/assets/Origami-Black-Bear.jfif" class="animal">
+<img src="/assets/Origami-Black-Bear-2.jfif" class="animal">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/10/Image-Creator-From-Microsoft-Bing-Origami/" data-id="clnbpuykq00vn9gtse52bd2du" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Art/" rel="tag">Art</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Misc/" rel="tag">Misc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/10/Outsourcing-Common-Information-Security-Requirements/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">應用軟體或系統開發服務 - 採購之共通性資通安全基本要求參考一覽表</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">143</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">226</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">70</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">105</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
