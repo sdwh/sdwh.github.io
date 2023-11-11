@@ -12,18 +12,19 @@
   gtag('config', 'G-GWJGMNS3XR');
 </script>
   
-  <title>Resize Image With Python | The Skeptical Software Engineer</title>
+  <title>Resize &amp; Compression Image With Python (pngquant) | The Skeptical Software Engineer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="筆記使用 Python 以及 Pillow Packages 批次將圖片重新調整比例以及壓縮圖大小，以節省儲存空間。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Resize Image With Python">
+<meta property="og:title" content="Resize &amp; Compression Image With Python (pngquant)">
 <meta property="og:url" content="https://sdwh.dev/posts/2023/08/Resize-Compression-Images-With-Python/index.html">
 <meta property="og:site_name" content="The Skeptical Software Engineer">
 <meta property="og:description" content="筆記使用 Python 以及 Pillow Packages 批次將圖片重新調整比例以及壓縮圖大小，以節省儲存空間。">
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
 <meta property="article:published_time" content="2023-08-02T11:14:13.000Z">
-<meta property="article:modified_time" content="2023-08-17T22:56:49.017Z">
+<meta property="article:modified_time" content="2023-11-11T10:52:15.934Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Examples">
 <meta property="article:tag" content="Python">
@@ -99,7 +100,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Resize Image With Python
+      Resize &amp; Compression Image With Python (pngquant)
     </h1>
   
 
@@ -154,11 +155,96 @@ jpg_files <span class="token operator">=</span> glob<span class="token punctuati
 
 <span class="token keyword">for</span> jpg <span class="token keyword">in</span> jpg_files<span class="token punctuation">:</span>
     convert<span class="token punctuation">(</span>jpg<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>針對 PNG 的綜合處理方式，使用 256 色或 Qunatize Method 2 能夠有效壓縮為 25% 的大小，但顏色上會略為失真。</p>
+<p>Resize 的方式對於減少 Size 有效，但會減少解析度，權衡下使用 256 色或 Qunatize Method 2 讓畫質失真可能較為接受。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> PIL <span class="token keyword">import</span> Image
+<span class="token keyword">import</span> os
+
+<span class="token keyword">def</span> <span class="token function">compress_image</span><span class="token punctuation">(</span>input_path<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">95</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">with</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>input_path<span class="token punctuation">)</span> <span class="token keyword">as</span> img<span class="token punctuation">:</span>
+                width<span class="token punctuation">,</span> height <span class="token operator">=</span> img<span class="token punctuation">.</span>size
+                new_width <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>width <span class="token operator">*</span> <span class="token punctuation">(</span>i <span class="token operator">/</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                new_height <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>height <span class="token operator">*</span> <span class="token punctuation">(</span>i <span class="token operator">/</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                img <span class="token operator">=</span> img<span class="token punctuation">.</span>resize<span class="token punctuation">(</span><span class="token punctuation">(</span>new_width<span class="token punctuation">,</span> new_height<span class="token punctuation">)</span><span class="token punctuation">,</span> Image<span class="token punctuation">.</span>ANTIALIAS<span class="token punctuation">)</span>
+                img<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'resize_</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">.png'</span></span><span class="token punctuation">,</span> <span class="token string">'png'</span><span class="token punctuation">,</span> optimize<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">with</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>input_path<span class="token punctuation">)</span> <span class="token keyword">as</span> img<span class="token punctuation">:</span>
+            img <span class="token operator">=</span> img<span class="token punctuation">.</span>convert<span class="token punctuation">(</span><span class="token string">'P'</span><span class="token punctuation">,</span> palette<span class="token operator">=</span>Image<span class="token punctuation">.</span>ADAPTIVE<span class="token punctuation">)</span>
+            img<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'adaptive.png'</span></span><span class="token punctuation">,</span> <span class="token string">'png'</span><span class="token punctuation">,</span> optimize<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">with</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>input_path<span class="token punctuation">)</span> <span class="token keyword">as</span> img<span class="token punctuation">:</span>
+            img <span class="token operator">=</span> img<span class="token punctuation">.</span>quantize<span class="token punctuation">(</span>method <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">)</span>
+            img<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'quantize_method_2.png'</span></span><span class="token punctuation">,</span> <span class="token string">'png'</span><span class="token punctuation">,</span> optimize<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">for</span> color <span class="token keyword">in</span> <span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> <span class="token number">256</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">with</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>input_path<span class="token punctuation">)</span> <span class="token keyword">as</span> img<span class="token punctuation">:</span>
+                img <span class="token operator">=</span> img<span class="token punctuation">.</span>quantize<span class="token punctuation">(</span>colors <span class="token operator">=</span> color<span class="token punctuation">)</span>
+                img<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'color_</span><span class="token interpolation"><span class="token punctuation">&#123;</span>color<span class="token punctuation">&#125;</span></span><span class="token string">.png'</span></span><span class="token punctuation">,</span> <span class="token string">'png'</span><span class="token punctuation">,</span> optimize<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">with</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>input_path<span class="token punctuation">)</span> <span class="token keyword">as</span> img<span class="token punctuation">:</span>
+            img<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'default.png'</span></span><span class="token punctuation">,</span> <span class="token string">'png'</span><span class="token punctuation">,</span> optimize<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+            
+    <span class="token keyword">except</span> Exception <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Exception：</span><span class="token interpolation"><span class="token punctuation">&#123;</span>e<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    input_image_path <span class="token operator">=</span> <span class="token string">r"D:\ImagesFolder\img.png"</span>
+    compress_image<span class="token punctuation">(</span>input_image_path<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/kornelski/pngquant target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> GitHub
+  </a>
+</div>
+
+<p>雖然 PIL 提供了一定程度的圖片壓縮能力，但如果要有效減少檔案大小，就會犧牲圖片的解析度或者是畫質，而且影響程度幾乎是肉眼明顯可見。</p>
+<p>替代的選擇是使用更好的圖片壓縮演算法，例如 pngquant 這個 cli 工具。</p>
+<p>python 搭配 subprocess 的方式去進行 pngquant 的調度使用，結合達成壓縮圖片且不明顯損失畫質的成果。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> os
+<span class="token keyword">import</span> subprocess
+
+source_folder <span class="token operator">=</span> <span class="token string">r'C:\images'</span>
+output_folder <span class="token operator">=</span> <span class="token string">r'C:\images\minify'</span>
+
+pngquant_path <span class="token operator">=</span> <span class="token string">r'C:\apps\pngquant.exe'</span>
+
+start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> <span class="token keyword">not</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span>output_folder<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    os<span class="token punctuation">.</span>makedirs<span class="token punctuation">(</span>output_folder<span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> filename <span class="token keyword">in</span> os<span class="token punctuation">.</span>listdir<span class="token punctuation">(</span>source_folder<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> filename<span class="token punctuation">.</span>endswith<span class="token punctuation">(</span><span class="token string">'.png'</span><span class="token punctuation">)</span> <span class="token keyword">or</span> filename<span class="token punctuation">.</span>endswith<span class="token punctuation">(</span><span class="token string">'.jpg'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        input_image <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>source_folder<span class="token punctuation">,</span> filename<span class="token punctuation">)</span>
+        output_image <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>output_folder<span class="token punctuation">,</span> filename<span class="token punctuation">)</span>
+
+        subprocess<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">[</span>pngquant_path<span class="token punctuation">,</span> input_image<span class="token punctuation">,</span> <span class="token string">'--output'</span><span class="token punctuation">,</span> output_image<span class="token punctuation">,</span> <span class="token string">'--skip-if-larger'</span><span class="token punctuation">,</span> <span class="token string">'--force'</span><span class="token punctuation">,</span> <span class="token string">'--speed'</span><span class="token punctuation">,</span> <span class="token string">'11'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+end <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'壓縮完成！ </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token builtin">round</span><span class="token punctuation">(</span>end <span class="token operator">-</span> start<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token string">'</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>關於 pngquant 的 parameter</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">options</span>:</span>
+  --force           overwrite existing output files <span class="token punctuation">(</span><span class="token command"><span class="token keyword">synonym</span>: <span class="token parameter attr-name">-f</span></span><span class="token punctuation">)</span>
+  --skip-if-larger  only save converted files if they<span class="token punctuation">'</span>re smaller than original
+  --output file     destination file path to use instead of --ext <span class="token punctuation">(</span><span class="token command"><span class="token keyword">synonym</span>: <span class="token parameter attr-name">-o</span></span><span class="token punctuation">)</span>
+  --ext new.png     set custom suffix/extension for output filenames
+  --quality min-max don<span class="token punctuation">'</span>t save below min, use fewer colors below max <span class="token punctuation">(</span><span class="token command"><span class="token keyword">0</span><span class="token number">-100</span></span><span class="token punctuation">)</span>
+  --speed N         speed/quality trade-off. 1=slow, 4=default, 11=fast <span class="token operator">&amp;</span> <span class="token command"><span class="token keyword">rough</span></span>
+  --nofs            disable Floyd-Steinberg dithering
+  --posterize N     output lower-precision color <span class="token punctuation">(</span><span class="token command"><span class="token keyword">e</span>.g. for ARGB4444 output</span><span class="token punctuation">)</span>
+  --strip           remove optional metadata <span class="token punctuation">(</span><span class="token command"><span class="token keyword">default</span> on Mac</span><span class="token punctuation">)</span>
+  --verbose         print status messages <span class="token punctuation">(</span><span class="token command"><span class="token keyword">synonym</span>: <span class="token parameter attr-name">-v</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/08/Resize-Compression-Images-With-Python/" data-id="clnbpuyno01679gtsap773rom" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/08/Resize-Compression-Images-With-Python/" data-id="clou62wue0162xgtse9enhd3n" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
