@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>國家與貨幣編碼 ISO-3166 &amp; ISO-4217 (OpenData) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="彙整 ISO-3166 與 ISO-4217 的國家與貨幣代碼，用於資料庫的基礎資料表，結合業務資料進行應用設計。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="國家與貨幣編碼 ISO-3166 &amp; ISO-4217 (OpenData)">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/11/Data-With-Country-Codes-And-Currency-Codes/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="彙整 ISO-3166 與 ISO-4217 的國家與貨幣代碼，用於資料庫的基礎資料表，結合業務資料進行應用設計。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ad.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ae.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/af.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ag.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ai.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/al.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/am.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ao.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/aq.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ar.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/as.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/at.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/au.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/aw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ax.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/az.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ba.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bb.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bd.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/be.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bi.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bj.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bq.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/br.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bs.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bv.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/by.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ca.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cd.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ch.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ci.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ck.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/co.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cv.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cx.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cy.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/de.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dj.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/do.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ec.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ee.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/eg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/eh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/er.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/es.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/et.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fi.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fj.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ga.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gb.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gd.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ge.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gi.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gp.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gq.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gs.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gy.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ht.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/id.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ie.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/il.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/im.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/in.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/io.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/iq.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ir.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/is.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/it.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/je.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/jm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/jo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/jp.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ke.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ki.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/km.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kp.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ky.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/la.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lb.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/li.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ls.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lv.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ly.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ma.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/md.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/me.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ml.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mp.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mq.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ms.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mv.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mx.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/my.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ne.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ng.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ni.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/no.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/np.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/om.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pa.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pe.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ph.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ps.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/py.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/qa.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/re.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ro.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/rs.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ru.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/rw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sa.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sb.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sd.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/se.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/si.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sj.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/so.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ss.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/st.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sv.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sx.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sy.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/td.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/th.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tj.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tk.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tl.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/to.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tr.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tv.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ua.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ug.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/um.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/us.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/uy.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/uz.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/va.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ve.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vi.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/wf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ws.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ye.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/yt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/za.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/zm.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/zw.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/na.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/eu.png">
+<meta property="article:published_time" content="2023-11-14T11:13:15.000Z">
+<meta property="article:modified_time" content="2023-11-14T13:05:23.195Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="LifeHack">
+<meta property="article:tag" content="OpenData">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Data-With-Country-Codes-And-Currency-Codes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/11/Data-With-Country-Codes-And-Currency-Codes/" class="article-date">
+  <time datetime="2023-11-14T11:13:15.000Z" itemprop="datePublished">2023-11-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LifeHack/">LifeHack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      國家與貨幣編碼 ISO-3166 &amp; ISO-4217 (OpenData)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%9C%AA%E5%B0%8D%E6%87%89%E8%B2%A8%E5%B9%A3"><span class="toc-text">其他未對應貨幣</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>彙整 ISO-3166 與 ISO-4217 的國家與貨幣代碼，用於資料庫的基礎資料表，結合業務資料進行應用設計。</p>
+<a href="/posts/2023/11/Data-With-Country-Codes-And-Currency-Codes/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><div class="colorbox space">
+    <div class="shadow">
+        <div class="tab-info tab-icon-danger"><i></i></div>
+        <div class="colorbox-body colorbox-body-danger">
+            <p>資料來源是 ISO-3166 與 ISO-4217，本整理不涉略國家或者是地域認知的問題，僅作為資訊的整理與呈現。</p>
+        </div>
+    </div>
+</div>
+
+<p><a href="/assets/Country-Codes-And-Currency-Codes.csv">CSV Files Download</a></p>
+<hr>
+<p>Numeric Code: 20<br>Country Name: ANDORRA<br>Official State Name: The Principality of Andorra<br>Alpha-2 Code: AD<br>Alpha-3 Code: AND<br>Internet ccTLD: .ad<br>Subdivision Code Links: ISO 3166-2:AD<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ad.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 784<br>Country Name: UNITED ARAB EMIRATES (THE)<br>Official State Name: The United Arab Emirates<br>Alpha-2 Code: AE<br>Alpha-3 Code: ARE<br>Internet ccTLD: .ae<br>Subdivision Code Links: ISO 3166-2:AE<br>Currencies: AED (784)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ae.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 4<br>Country Name: AFGHANISTAN<br>Official State Name: The Islamic Republic of Afghanistan<br>Alpha-2 Code: AF<br>Alpha-3 Code: AFG<br>Internet ccTLD: .af<br>Subdivision Code Links: ISO 3166-2:AF<br>Currencies: AFN (971)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/af.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 28<br>Country Name: ANTIGUA AND BARBUDA<br>Official State Name: Antigua and Barbuda<br>Alpha-2 Code: AG<br>Alpha-3 Code: ATG<br>Internet ccTLD: .ag<br>Subdivision Code Links: ISO 3166-2:AG<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ag.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 660<br>Country Name: ANGUILLA<br>Official State Name: Anguilla<br>Alpha-2 Code: AI<br>Alpha-3 Code: AIA<br>Internet ccTLD: .ai<br>Subdivision Code Links: ISO 3166-2:AI<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ai.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 8<br>Country Name: ALBANIA<br>Official State Name: The Republic of Albania<br>Alpha-2 Code: AL<br>Alpha-3 Code: ALB<br>Internet ccTLD: .al<br>Subdivision Code Links: ISO 3166-2:AL<br>Currencies: ALL (8)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/al.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 51<br>Country Name: ARMENIA<br>Official State Name: The Republic of Armenia<br>Alpha-2 Code: AM<br>Alpha-3 Code: ARM<br>Internet ccTLD: .am<br>Subdivision Code Links: ISO 3166-2:AM<br>Currencies: AMD (51)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/am.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 24<br>Country Name: ANGOLA<br>Official State Name: The Republic of Angola<br>Alpha-2 Code: AO<br>Alpha-3 Code: AGO<br>Internet ccTLD: .ao<br>Subdivision Code Links: ISO 3166-2:AO<br>Currencies: AOA (973)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ao.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 10<br>Country Name: ANTARCTICA<br>Official State Name: All land and ice shelves south of the 60th parallel south<br>Alpha-2 Code: AQ<br>Alpha-3 Code: ATA<br>Internet ccTLD: .aq<br>Subdivision Code Links: ISO 3166-2:AQ<br>Currencies: nan (NaN)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/aq.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 32<br>Country Name: ARGENTINA<br>Official State Name: The Argentine Republic<br>Alpha-2 Code: AR<br>Alpha-3 Code: ARG<br>Internet ccTLD: .ar<br>Subdivision Code Links: ISO 3166-2:AR<br>Currencies: ARS (32)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ar.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 16<br>Country Name: AMERICAN SAMOA<br>Official State Name: The Territory of American Samoa<br>Alpha-2 Code: AS<br>Alpha-3 Code: ASM<br>Internet ccTLD: .as<br>Subdivision Code Links: ISO 3166-2:AS<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/as.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 40<br>Country Name: AUSTRIA<br>Official State Name: The Republic of Austria<br>Alpha-2 Code: AT<br>Alpha-3 Code: AUT<br>Internet ccTLD: .at<br>Subdivision Code Links: ISO 3166-2:AT<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/at.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 36<br>Country Name: AUSTRALIA<br>Official State Name: The Commonwealth of Australia<br>Alpha-2 Code: AU<br>Alpha-3 Code: AUS<br>Internet ccTLD: .au<br>Subdivision Code Links: ISO 3166-2:AU<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/au.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 533<br>Country Name: ARUBA<br>Official State Name: Aruba<br>Alpha-2 Code: AW<br>Alpha-3 Code: ABW<br>Internet ccTLD: .aw<br>Subdivision Code Links: ISO 3166-2:AW<br>Currencies: AWG (533)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/aw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 248<br>Country Name: ÅLAND ISLANDS<br>Official State Name: Åland<br>Alpha-2 Code: AX<br>Alpha-3 Code: ALA<br>Internet ccTLD: .ax<br>Subdivision Code Links: ISO 3166-2:AX<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ax.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 31<br>Country Name: AZERBAIJAN<br>Official State Name: The Republic of Azerbaijan<br>Alpha-2 Code: AZ<br>Alpha-3 Code: AZE<br>Internet ccTLD: .az<br>Subdivision Code Links: ISO 3166-2:AZ<br>Currencies: AZN (944)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/az.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 70<br>Country Name: BOSNIA AND HERZEGOVINA<br>Official State Name: Bosnia and Herzegovina<br>Alpha-2 Code: BA<br>Alpha-3 Code: BIH<br>Internet ccTLD: .ba<br>Subdivision Code Links: ISO 3166-2:BA<br>Currencies: BAM (977)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ba.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 52<br>Country Name: BARBADOS<br>Official State Name: Barbados<br>Alpha-2 Code: BB<br>Alpha-3 Code: BRB<br>Internet ccTLD: .bb<br>Subdivision Code Links: ISO 3166-2:BB<br>Currencies: BBD (52)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bb.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 50<br>Country Name: BANGLADESH<br>Official State Name: The People’s Republic of Bangladesh<br>Alpha-2 Code: BD<br>Alpha-3 Code: BGD<br>Internet ccTLD: .bd<br>Subdivision Code Links: ISO 3166-2:BD<br>Currencies: BDT (50)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bd.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 56<br>Country Name: BELGIUM<br>Official State Name: The Kingdom of Belgium<br>Alpha-2 Code: BE<br>Alpha-3 Code: BEL<br>Internet ccTLD: .be<br>Subdivision Code Links: ISO 3166-2:BE<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/be.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 854<br>Country Name: BURKINA FASO<br>Official State Name: Burkina Faso<br>Alpha-2 Code: BF<br>Alpha-3 Code: BFA<br>Internet ccTLD: .bf<br>Subdivision Code Links: ISO 3166-2:BF<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 100<br>Country Name: BULGARIA<br>Official State Name: The Republic of Bulgaria<br>Alpha-2 Code: BG<br>Alpha-3 Code: BGR<br>Internet ccTLD: .bg<br>Subdivision Code Links: ISO 3166-2:BG<br>Currencies: BGN (975)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 48<br>Country Name: BAHRAIN<br>Official State Name: The Kingdom of Bahrain<br>Alpha-2 Code: BH<br>Alpha-3 Code: BHR<br>Internet ccTLD: .bh<br>Subdivision Code Links: ISO 3166-2:BH<br>Currencies: BHD (48)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bh.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 108<br>Country Name: BURUNDI<br>Official State Name: The Republic of Burundi<br>Alpha-2 Code: BI<br>Alpha-3 Code: BDI<br>Internet ccTLD: .bi<br>Subdivision Code Links: ISO 3166-2:BI<br>Currencies: BIF (108)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bi.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 204<br>Country Name: BENIN<br>Official State Name: The Republic of Benin<br>Alpha-2 Code: BJ<br>Alpha-3 Code: BEN<br>Internet ccTLD: .bj<br>Subdivision Code Links: ISO 3166-2:BJ<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bj.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 652<br>Country Name: SAINT BARTHÉLEMY<br>Official State Name: The Collectivity of Saint-Barthélemy<br>Alpha-2 Code: BL<br>Alpha-3 Code: BLM<br>Internet ccTLD: .bl<br>Subdivision Code Links: ISO 3166-2:BL<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 60<br>Country Name: BERMUDA<br>Official State Name: Bermuda<br>Alpha-2 Code: BM<br>Alpha-3 Code: BMU<br>Internet ccTLD: .bm<br>Subdivision Code Links: ISO 3166-2:BM<br>Currencies: BMD (60)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 96<br>Country Name: BRUNEI DARUSSALAM<br>Official State Name: The Nation of Brunei, the Abode of Peace<br>Alpha-2 Code: BN<br>Alpha-3 Code: BRN<br>Internet ccTLD: .bn<br>Subdivision Code Links: ISO 3166-2:BN<br>Currencies: BND (96)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 68<br>Country Name: BOLIVIA (PLURINATIONAL STATE OF)<br>Official State Name: The Plurinational State of Bolivia<br>Alpha-2 Code: BO<br>Alpha-3 Code: BOL<br>Internet ccTLD: .bo<br>Subdivision Code Links: ISO 3166-2:BO<br>Currencies: BOB (68), BOV (984)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bo.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 535<br>Country Name: BONAIRE SINT EUSTATIUS SABA<br>Official State Name: Bonaire, Sint Eustatius and Saba<br>Alpha-2 Code: BQ<br>Alpha-3 Code: BES<br>Internet ccTLD: .bq, .nl<br>Subdivision Code Links: ISO 3166-2:BQ<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bq.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 76<br>Country Name: BRAZIL<br>Official State Name: The Federative Republic of Brazil<br>Alpha-2 Code: BR<br>Alpha-3 Code: BRA<br>Internet ccTLD: .br<br>Subdivision Code Links: ISO 3166-2:BR<br>Currencies: BRL (986)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/br.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 44<br>Country Name: BAHAMAS (THE)<br>Official State Name: The Commonwealth of The Bahamas<br>Alpha-2 Code: BS<br>Alpha-3 Code: BHS<br>Internet ccTLD: .bs<br>Subdivision Code Links: ISO 3166-2:BS<br>Currencies: BSD (44)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bs.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 64<br>Country Name: BHUTAN<br>Official State Name: The Kingdom of Bhutan<br>Alpha-2 Code: BT<br>Alpha-3 Code: BTN<br>Internet ccTLD: .bt<br>Subdivision Code Links: ISO 3166-2:BT<br>Currencies: INR (356), BTN (64)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 74<br>Country Name: BOUVET ISLAND<br>Official State Name: Bouvet Island<br>Alpha-2 Code: BV<br>Alpha-3 Code: BVT<br>Internet ccTLD: nan<br>Subdivision Code Links: ISO 3166-2:BV<br>Currencies: NOK (578)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bv.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 72<br>Country Name: BOTSWANA<br>Official State Name: The Republic of Botswana<br>Alpha-2 Code: BW<br>Alpha-3 Code: BWA<br>Internet ccTLD: .bw<br>Subdivision Code Links: ISO 3166-2:BW<br>Currencies: BWP (72)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 112<br>Country Name: BELARUS<br>Official State Name: The Republic of Belarus<br>Alpha-2 Code: BY<br>Alpha-3 Code: BLR<br>Internet ccTLD: .by<br>Subdivision Code Links: ISO 3166-2:BY<br>Currencies: BYN (933)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/by.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 84<br>Country Name: BELIZE<br>Official State Name: Belize<br>Alpha-2 Code: BZ<br>Alpha-3 Code: BLZ<br>Internet ccTLD: .bz<br>Subdivision Code Links: ISO 3166-2:BZ<br>Currencies: BZD (84)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/bz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 124<br>Country Name: CANADA<br>Official State Name: Canada<br>Alpha-2 Code: CA<br>Alpha-3 Code: CAN<br>Internet ccTLD: .ca<br>Subdivision Code Links: ISO 3166-2:CA<br>Currencies: CAD (124)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ca.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 166<br>Country Name: COCOS (KEELING) ISLANDS (THE)<br>Official State Name: The Territory of Cocos (Keeling) Islands<br>Alpha-2 Code: CC<br>Alpha-3 Code: CCK<br>Internet ccTLD: .cc<br>Subdivision Code Links: ISO 3166-2:CC<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 180<br>Country Name: CONGO (THE DEMOCRATIC REPUBLIC OF THE)<br>Official State Name: The Democratic Republic of the Congo<br>Alpha-2 Code: CD<br>Alpha-3 Code: COD<br>Internet ccTLD: .cd<br>Subdivision Code Links: ISO 3166-2:CD<br>Currencies: CDF (976)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cd.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 140<br>Country Name: CENTRAL AFRICAN REPUBLIC (THE)<br>Official State Name: The Central African Republic<br>Alpha-2 Code: CF<br>Alpha-3 Code: CAF<br>Internet ccTLD: .cf<br>Subdivision Code Links: ISO 3166-2:CF<br>Currencies: XAF (950)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 178<br>Country Name: CONGO (THE)<br>Official State Name: The Republic of the Congo<br>Alpha-2 Code: CG<br>Alpha-3 Code: COG<br>Internet ccTLD: .cg<br>Subdivision Code Links: ISO 3166-2:CG<br>Currencies: XAF (950)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 756<br>Country Name: SWITZERLAND<br>Official State Name: The Swiss Confederation<br>Alpha-2 Code: CH<br>Alpha-3 Code: CHE<br>Internet ccTLD: .ch<br>Subdivision Code Links: ISO 3166-2:CH<br>Currencies: CHF (756), CHE (947), CHW (948)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ch.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 384<br>Country Name: CÔTE D’IVOIRE<br>Official State Name: The Republic of Côte d’Ivoire<br>Alpha-2 Code: CI<br>Alpha-3 Code: CIV<br>Internet ccTLD: .ci<br>Subdivision Code Links: ISO 3166-2:CI<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ci.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 184<br>Country Name: COOK ISLANDS (THE)<br>Official State Name: The Cook Islands<br>Alpha-2 Code: CK<br>Alpha-3 Code: COK<br>Internet ccTLD: .ck<br>Subdivision Code Links: ISO 3166-2:CK<br>Currencies: NZD (554)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ck.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 152<br>Country Name: CHILE<br>Official State Name: The Republic of Chile<br>Alpha-2 Code: CL<br>Alpha-3 Code: CHL<br>Internet ccTLD: .cl<br>Subdivision Code Links: ISO 3166-2:CL<br>Currencies: CLF (990), CLP (152)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 120<br>Country Name: CAMEROON<br>Official State Name: The Republic of Cameroon<br>Alpha-2 Code: CM<br>Alpha-3 Code: CMR<br>Internet ccTLD: .cm<br>Subdivision Code Links: ISO 3166-2:CM<br>Currencies: XAF (950)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 156<br>Country Name: CHINA<br>Official State Name: The People’s Republic of China<br>Alpha-2 Code: CN<br>Alpha-3 Code: CHN<br>Internet ccTLD: .cn<br>Subdivision Code Links: ISO 3166-2:CN<br>Currencies: CNY (156)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 170<br>Country Name: COLOMBIA<br>Official State Name: The Republic of Colombia<br>Alpha-2 Code: CO<br>Alpha-3 Code: COL<br>Internet ccTLD: .co<br>Subdivision Code Links: ISO 3166-2:CO<br>Currencies: COP (170), COU (970)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/co.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 188<br>Country Name: COSTA RICA<br>Official State Name: The Republic of Costa Rica<br>Alpha-2 Code: CR<br>Alpha-3 Code: CRI<br>Internet ccTLD: .cr<br>Subdivision Code Links: ISO 3166-2:CR<br>Currencies: CRC (188)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 192<br>Country Name: CUBA<br>Official State Name: The Republic of Cuba<br>Alpha-2 Code: CU<br>Alpha-3 Code: CUB<br>Internet ccTLD: .cu<br>Subdivision Code Links: ISO 3166-2:CU<br>Currencies: CUP (192), CUC (931)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 132<br>Country Name: CABO VERDE<br>Official State Name: The Republic of Cabo Verde<br>Alpha-2 Code: CV<br>Alpha-3 Code: CPV<br>Internet ccTLD: .cv<br>Subdivision Code Links: ISO 3166-2:CV<br>Currencies: CVE (132)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cv.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 531<br>Country Name: CURAÇAO<br>Official State Name: The Country of Curaçao<br>Alpha-2 Code: CW<br>Alpha-3 Code: CUW<br>Internet ccTLD: .cw<br>Subdivision Code Links: ISO 3166-2:CW<br>Currencies: ANG (532)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 162<br>Country Name: CHRISTMAS ISLAND<br>Official State Name: The Territory of Christmas Island<br>Alpha-2 Code: CX<br>Alpha-3 Code: CXR<br>Internet ccTLD: .cx<br>Subdivision Code Links: ISO 3166-2:CX<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cx.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 196<br>Country Name: CYPRUS<br>Official State Name: The Republic of Cyprus<br>Alpha-2 Code: CY<br>Alpha-3 Code: CYP<br>Internet ccTLD: .cy<br>Subdivision Code Links: ISO 3166-2:CY<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cy.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 203<br>Country Name: CZECHIA<br>Official State Name: The Czech Republic<br>Alpha-2 Code: CZ<br>Alpha-3 Code: CZE<br>Internet ccTLD: .cz<br>Subdivision Code Links: ISO 3166-2:CZ<br>Currencies: CZK (203)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/cz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 276<br>Country Name: GERMANY<br>Official State Name: The Federal Republic of Germany<br>Alpha-2 Code: DE<br>Alpha-3 Code: DEU<br>Internet ccTLD: .de<br>Subdivision Code Links: ISO 3166-2:DE<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/de.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 262<br>Country Name: DJIBOUTI<br>Official State Name: The Republic of Djibouti<br>Alpha-2 Code: DJ<br>Alpha-3 Code: DJI<br>Internet ccTLD: .dj<br>Subdivision Code Links: ISO 3166-2:DJ<br>Currencies: DJF (262)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dj.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 208<br>Country Name: DENMARK<br>Official State Name: The Kingdom of Denmark<br>Alpha-2 Code: DK<br>Alpha-3 Code: DNK<br>Internet ccTLD: .dk<br>Subdivision Code Links: ISO 3166-2:DK<br>Currencies: DKK (208)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 212<br>Country Name: DOMINICA<br>Official State Name: The Commonwealth of Dominica<br>Alpha-2 Code: DM<br>Alpha-3 Code: DMA<br>Internet ccTLD: .dm<br>Subdivision Code Links: ISO 3166-2:DM<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 214<br>Country Name: DOMINICAN REPUBLIC (THE)<br>Official State Name: The Dominican Republic<br>Alpha-2 Code: DO<br>Alpha-3 Code: DOM<br>Internet ccTLD: .do<br>Subdivision Code Links: ISO 3166-2:DO<br>Currencies: DOP (214)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/do.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 12<br>Country Name: ALGERIA<br>Official State Name: The People’s Democratic Republic of Algeria<br>Alpha-2 Code: DZ<br>Alpha-3 Code: DZA<br>Internet ccTLD: .dz<br>Subdivision Code Links: ISO 3166-2:DZ<br>Currencies: DZD (12)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/dz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 218<br>Country Name: ECUADOR<br>Official State Name: The Republic of Ecuador<br>Alpha-2 Code: EC<br>Alpha-3 Code: ECU<br>Internet ccTLD: .ec<br>Subdivision Code Links: ISO 3166-2:EC<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ec.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 233<br>Country Name: ESTONIA<br>Official State Name: The Republic of Estonia<br>Alpha-2 Code: EE<br>Alpha-3 Code: EST<br>Internet ccTLD: .ee<br>Subdivision Code Links: ISO 3166-2:EE<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ee.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 818<br>Country Name: EGYPT<br>Official State Name: The Arab Republic of Egypt<br>Alpha-2 Code: EG<br>Alpha-3 Code: EGY<br>Internet ccTLD: .eg<br>Subdivision Code Links: ISO 3166-2:EG<br>Currencies: EGP (818)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/eg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 732<br>Country Name: WESTERN SAHARA<br>Official State Name: The Sahrawi Arab Democratic Republic<br>Alpha-2 Code: EH<br>Alpha-3 Code: ESH<br>Internet ccTLD: nan<br>Subdivision Code Links: ISO 3166-2:EH<br>Currencies: MAD (504)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/eh.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 232<br>Country Name: ERITREA<br>Official State Name: The State of Eritrea<br>Alpha-2 Code: ER<br>Alpha-3 Code: ERI<br>Internet ccTLD: .er<br>Subdivision Code Links: ISO 3166-2:ER<br>Currencies: ERN (232)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/er.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 724<br>Country Name: SPAIN<br>Official State Name: The Kingdom of Spain<br>Alpha-2 Code: ES<br>Alpha-3 Code: ESP<br>Internet ccTLD: .es<br>Subdivision Code Links: ISO 3166-2:ES<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/es.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 231<br>Country Name: ETHIOPIA<br>Official State Name: The Federal Democratic Republic of Ethiopia<br>Alpha-2 Code: ET<br>Alpha-3 Code: ETH<br>Internet ccTLD: .et<br>Subdivision Code Links: ISO 3166-2:ET<br>Currencies: ETB (230)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/et.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 246<br>Country Name: FINLAND<br>Official State Name: The Republic of Finland<br>Alpha-2 Code: FI<br>Alpha-3 Code: FIN<br>Internet ccTLD: .fi<br>Subdivision Code Links: ISO 3166-2:FI<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fi.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 242<br>Country Name: FIJI<br>Official State Name: The Republic of Fiji<br>Alpha-2 Code: FJ<br>Alpha-3 Code: FJI<br>Internet ccTLD: .fj<br>Subdivision Code Links: ISO 3166-2:FJ<br>Currencies: FJD (242)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fj.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 238<br>Country Name: FALKLAND ISLANDS (THE) [MALVINAS]<br>Official State Name: The Falkland Islands<br>Alpha-2 Code: FK<br>Alpha-3 Code: FLK<br>Internet ccTLD: .fk<br>Subdivision Code Links: ISO 3166-2:FK<br>Currencies: FKP (238)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 583<br>Country Name: MICRONESIA (FEDERATED STATES OF)<br>Official State Name: The Federated States of Micronesia<br>Alpha-2 Code: FM<br>Alpha-3 Code: FSM<br>Internet ccTLD: .fm<br>Subdivision Code Links: ISO 3166-2:FM<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 234<br>Country Name: FAROE ISLANDS (THE)<br>Official State Name: The Faroe Islands<br>Alpha-2 Code: FO<br>Alpha-3 Code: FRO<br>Internet ccTLD: .fo<br>Subdivision Code Links: ISO 3166-2:FO<br>Currencies: DKK (208)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fo.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 250<br>Country Name: FRANCE<br>Official State Name: The French Republic<br>Alpha-2 Code: FR<br>Alpha-3 Code: FRA<br>Internet ccTLD: .fr<br>Subdivision Code Links: ISO 3166-2:FR<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/fr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 266<br>Country Name: GABON<br>Official State Name: The Gabonese Republic<br>Alpha-2 Code: GA<br>Alpha-3 Code: GAB<br>Internet ccTLD: .ga<br>Subdivision Code Links: ISO 3166-2:GA<br>Currencies: XAF (950)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ga.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 826<br>Country Name: UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND (THE)<br>Official State Name: The United Kingdom of Great Britain and Northern Ireland<br>Alpha-2 Code: GB<br>Alpha-3 Code: GBR<br>Internet ccTLD: .gb, .uk<br>Subdivision Code Links: ISO 3166-2:GB<br>Currencies: GBP (826)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gb.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 308<br>Country Name: GRENADA<br>Official State Name: Grenada<br>Alpha-2 Code: GD<br>Alpha-3 Code: GRD<br>Internet ccTLD: .gd<br>Subdivision Code Links: ISO 3166-2:GD<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gd.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 268<br>Country Name: GEORGIA<br>Official State Name: Georgia<br>Alpha-2 Code: GE<br>Alpha-3 Code: GEO<br>Internet ccTLD: .ge<br>Subdivision Code Links: ISO 3166-2:GE<br>Currencies: GEL (981)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ge.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 254<br>Country Name: FRENCH GUIANA<br>Official State Name: Guyane<br>Alpha-2 Code: GF<br>Alpha-3 Code: GUF<br>Internet ccTLD: .gf<br>Subdivision Code Links: ISO 3166-2:GF<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 831<br>Country Name: GUERNSEY<br>Official State Name: The Bailiwick of Guernsey<br>Alpha-2 Code: GG<br>Alpha-3 Code: GGY<br>Internet ccTLD: .gg<br>Subdivision Code Links: ISO 3166-2:GG<br>Currencies: GBP (826)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 288<br>Country Name: GHANA<br>Official State Name: The Republic of Ghana<br>Alpha-2 Code: GH<br>Alpha-3 Code: GHA<br>Internet ccTLD: .gh<br>Subdivision Code Links: ISO 3166-2:GH<br>Currencies: GHS (936)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gh.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 292<br>Country Name: GIBRALTAR<br>Official State Name: Gibraltar<br>Alpha-2 Code: GI<br>Alpha-3 Code: GIB<br>Internet ccTLD: .gi<br>Subdivision Code Links: ISO 3166-2:GI<br>Currencies: GIP (292)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gi.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 304<br>Country Name: GREENLAND<br>Official State Name: Kalaallit Nunaat<br>Alpha-2 Code: GL<br>Alpha-3 Code: GRL<br>Internet ccTLD: .gl<br>Subdivision Code Links: ISO 3166-2:GL<br>Currencies: DKK (208)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 270<br>Country Name: GAMBIA (THE)<br>Official State Name: The Republic of The Gambia<br>Alpha-2 Code: GM<br>Alpha-3 Code: GMB<br>Internet ccTLD: .gm<br>Subdivision Code Links: ISO 3166-2:GM<br>Currencies: GMD (270)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 324<br>Country Name: GUINEA<br>Official State Name: The Republic of Guinea<br>Alpha-2 Code: GN<br>Alpha-3 Code: GIN<br>Internet ccTLD: .gn<br>Subdivision Code Links: ISO 3166-2:GN<br>Currencies: GNF (324)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 312<br>Country Name: GUADELOUPE<br>Official State Name: Guadeloupe<br>Alpha-2 Code: GP<br>Alpha-3 Code: GLP<br>Internet ccTLD: .gp<br>Subdivision Code Links: ISO 3166-2:GP<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gp.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 226<br>Country Name: EQUATORIAL GUINEA<br>Official State Name: The Republic of Equatorial Guinea<br>Alpha-2 Code: GQ<br>Alpha-3 Code: GNQ<br>Internet ccTLD: .gq<br>Subdivision Code Links: ISO 3166-2:GQ<br>Currencies: XAF (950)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gq.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 300<br>Country Name: GREECE<br>Official State Name: The Hellenic Republic<br>Alpha-2 Code: GR<br>Alpha-3 Code: GRC<br>Internet ccTLD: .gr<br>Subdivision Code Links: ISO 3166-2:GR<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 239<br>Country Name: SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS<br>Official State Name: South Georgia and the South Sandwich Islands<br>Alpha-2 Code: GS<br>Alpha-3 Code: SGS<br>Internet ccTLD: .gs<br>Subdivision Code Links: ISO 3166-2:GS<br>Currencies: nan (NaN)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gs.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 320<br>Country Name: GUATEMALA<br>Official State Name: The Republic of Guatemala<br>Alpha-2 Code: GT<br>Alpha-3 Code: GTM<br>Internet ccTLD: .gt<br>Subdivision Code Links: ISO 3166-2:GT<br>Currencies: GTQ (320)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 316<br>Country Name: GUAM<br>Official State Name: The Territory of Guam<br>Alpha-2 Code: GU<br>Alpha-3 Code: GUM<br>Internet ccTLD: .gu<br>Subdivision Code Links: ISO 3166-2:GU<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 624<br>Country Name: GUINEA-BISSAU<br>Official State Name: The Republic of Guinea-Bissau<br>Alpha-2 Code: GW<br>Alpha-3 Code: GNB<br>Internet ccTLD: .gw<br>Subdivision Code Links: ISO 3166-2:GW<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 328<br>Country Name: GUYANA<br>Official State Name: The Co-operative Republic of Guyana<br>Alpha-2 Code: GY<br>Alpha-3 Code: GUY<br>Internet ccTLD: .gy<br>Subdivision Code Links: ISO 3166-2:GY<br>Currencies: GYD (328)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/gy.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 344<br>Country Name: HONG KONG<br>Official State Name: The Hong Kong Special Administrative Region of China<br>Alpha-2 Code: HK<br>Alpha-3 Code: HKG<br>Internet ccTLD: .hk<br>Subdivision Code Links: ISO 3166-2:HK<br>Currencies: HKD (344)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 334<br>Country Name: HEARD ISLAND AND MCDONALD ISLANDS<br>Official State Name: The Territory of Heard Island and McDonald Islands<br>Alpha-2 Code: HM<br>Alpha-3 Code: HMD<br>Internet ccTLD: .hm<br>Subdivision Code Links: ISO 3166-2:HM<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 340<br>Country Name: HONDURAS<br>Official State Name: The Republic of Honduras<br>Alpha-2 Code: HN<br>Alpha-3 Code: HND<br>Internet ccTLD: .hn<br>Subdivision Code Links: ISO 3166-2:HN<br>Currencies: HNL (340)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 191<br>Country Name: CROATIA<br>Official State Name: The Republic of Croatia<br>Alpha-2 Code: HR<br>Alpha-3 Code: HRV<br>Internet ccTLD: .hr<br>Subdivision Code Links: ISO 3166-2:HR<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 332<br>Country Name: HAITI<br>Official State Name: The Republic of Haiti<br>Alpha-2 Code: HT<br>Alpha-3 Code: HTI<br>Internet ccTLD: .ht<br>Subdivision Code Links: ISO 3166-2:HT<br>Currencies: USD (840), HTG (332)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ht.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 348<br>Country Name: HUNGARY<br>Official State Name: Hungary<br>Alpha-2 Code: HU<br>Alpha-3 Code: HUN<br>Internet ccTLD: .hu<br>Subdivision Code Links: ISO 3166-2:HU<br>Currencies: HUF (348)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/hu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 360<br>Country Name: INDONESIA<br>Official State Name: The Republic of Indonesia<br>Alpha-2 Code: ID<br>Alpha-3 Code: IDN<br>Internet ccTLD: .id<br>Subdivision Code Links: ISO 3166-2:ID<br>Currencies: IDR (360)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/id.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 372<br>Country Name: IRELAND<br>Official State Name: Ireland<br>Alpha-2 Code: IE<br>Alpha-3 Code: IRL<br>Internet ccTLD: .ie<br>Subdivision Code Links: ISO 3166-2:IE<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ie.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 376<br>Country Name: ISRAEL<br>Official State Name: The State of Israel<br>Alpha-2 Code: IL<br>Alpha-3 Code: ISR<br>Internet ccTLD: .il<br>Subdivision Code Links: ISO 3166-2:IL<br>Currencies: ILS (376)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/il.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 833<br>Country Name: ISLE OF MAN<br>Official State Name: The Isle of Man<br>Alpha-2 Code: IM<br>Alpha-3 Code: IMN<br>Internet ccTLD: .im<br>Subdivision Code Links: ISO 3166-2:IM<br>Currencies: GBP (826)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/im.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 356<br>Country Name: INDIA<br>Official State Name: The Republic of India<br>Alpha-2 Code: IN<br>Alpha-3 Code: IND<br>Internet ccTLD: .in<br>Subdivision Code Links: ISO 3166-2:IN<br>Currencies: INR (356)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/in.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 86<br>Country Name: BRITISH INDIAN OCEAN TERRITORY (THE)<br>Official State Name: The British Indian Ocean Territory<br>Alpha-2 Code: IO<br>Alpha-3 Code: IOT<br>Internet ccTLD: .io<br>Subdivision Code Links: ISO 3166-2:IO<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/io.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 368<br>Country Name: IRAQ<br>Official State Name: The Republic of Iraq<br>Alpha-2 Code: IQ<br>Alpha-3 Code: IRQ<br>Internet ccTLD: .iq<br>Subdivision Code Links: ISO 3166-2:IQ<br>Currencies: IQD (368)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/iq.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 364<br>Country Name: IRAN (ISLAMIC REPUBLIC OF)<br>Official State Name: The Islamic Republic of Iran<br>Alpha-2 Code: IR<br>Alpha-3 Code: IRN<br>Internet ccTLD: .ir<br>Subdivision Code Links: ISO 3166-2:IR<br>Currencies: IRR (364)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ir.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 352<br>Country Name: ICELAND<br>Official State Name: Iceland<br>Alpha-2 Code: IS<br>Alpha-3 Code: ISL<br>Internet ccTLD: .is<br>Subdivision Code Links: ISO 3166-2:IS<br>Currencies: ISK (352)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/is.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 380<br>Country Name: ITALY<br>Official State Name: The Italian Republic<br>Alpha-2 Code: IT<br>Alpha-3 Code: ITA<br>Internet ccTLD: .it<br>Subdivision Code Links: ISO 3166-2:IT<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/it.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 832<br>Country Name: JERSEY<br>Official State Name: The Bailiwick of Jersey<br>Alpha-2 Code: JE<br>Alpha-3 Code: JEY<br>Internet ccTLD: .je<br>Subdivision Code Links: ISO 3166-2:JE<br>Currencies: GBP (826)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/je.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 388<br>Country Name: JAMAICA<br>Official State Name: Jamaica<br>Alpha-2 Code: JM<br>Alpha-3 Code: JAM<br>Internet ccTLD: .jm<br>Subdivision Code Links: ISO 3166-2:JM<br>Currencies: JMD (388)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/jm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 400<br>Country Name: JORDAN<br>Official State Name: The Hashemite Kingdom of Jordan<br>Alpha-2 Code: JO<br>Alpha-3 Code: JOR<br>Internet ccTLD: .jo<br>Subdivision Code Links: ISO 3166-2:JO<br>Currencies: JOD (400)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/jo.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 392<br>Country Name: JAPAN<br>Official State Name: Japan<br>Alpha-2 Code: JP<br>Alpha-3 Code: JPN<br>Internet ccTLD: .jp<br>Subdivision Code Links: ISO 3166-2:JP<br>Currencies: JPY (392)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/jp.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 404<br>Country Name: KENYA<br>Official State Name: The Republic of Kenya<br>Alpha-2 Code: KE<br>Alpha-3 Code: KEN<br>Internet ccTLD: .ke<br>Subdivision Code Links: ISO 3166-2:KE<br>Currencies: KES (404)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ke.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 417<br>Country Name: KYRGYZSTAN<br>Official State Name: The Kyrgyz Republic<br>Alpha-2 Code: KG<br>Alpha-3 Code: KGZ<br>Internet ccTLD: .kg<br>Subdivision Code Links: ISO 3166-2:KG<br>Currencies: KGS (417)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 116<br>Country Name: CAMBODIA<br>Official State Name: The Kingdom of Cambodia<br>Alpha-2 Code: KH<br>Alpha-3 Code: KHM<br>Internet ccTLD: .kh<br>Subdivision Code Links: ISO 3166-2:KH<br>Currencies: KHR (116)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kh.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 296<br>Country Name: KIRIBATI<br>Official State Name: The Republic of Kiribati<br>Alpha-2 Code: KI<br>Alpha-3 Code: KIR<br>Internet ccTLD: .ki<br>Subdivision Code Links: ISO 3166-2:KI<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ki.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 174<br>Country Name: COMOROS (THE)<br>Official State Name: The Union of the Comoros<br>Alpha-2 Code: KM<br>Alpha-3 Code: COM<br>Internet ccTLD: .km<br>Subdivision Code Links: ISO 3166-2:KM<br>Currencies: KMF (174)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/km.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 659<br>Country Name: SAINT KITTS AND NEVIS<br>Official State Name: Saint Kitts and Nevis<br>Alpha-2 Code: KN<br>Alpha-3 Code: KNA<br>Internet ccTLD: .kn<br>Subdivision Code Links: ISO 3166-2:KN<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 408<br>Country Name: KOREA (THE DEMOCRATIC PEOPLE’S REPUBLIC OF)<br>Official State Name: The Democratic People’s Republic of Korea<br>Alpha-2 Code: KP<br>Alpha-3 Code: PRK<br>Internet ccTLD: .kp<br>Subdivision Code Links: ISO 3166-2:KP<br>Currencies: KPW (408)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kp.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 410<br>Country Name: KOREA (THE REPUBLIC OF)<br>Official State Name: The Republic of Korea<br>Alpha-2 Code: KR<br>Alpha-3 Code: KOR<br>Internet ccTLD: .kr<br>Subdivision Code Links: ISO 3166-2:KR<br>Currencies: KRW (410)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 414<br>Country Name: KUWAIT<br>Official State Name: The State of Kuwait<br>Alpha-2 Code: KW<br>Alpha-3 Code: KWT<br>Internet ccTLD: .kw<br>Subdivision Code Links: ISO 3166-2:KW<br>Currencies: KWD (414)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 136<br>Country Name: CAYMAN ISLANDS (THE)<br>Official State Name: The Cayman Islands<br>Alpha-2 Code: KY<br>Alpha-3 Code: CYM<br>Internet ccTLD: .ky<br>Subdivision Code Links: ISO 3166-2:KY<br>Currencies: KYD (136)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ky.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 398<br>Country Name: KAZAKHSTAN<br>Official State Name: The Republic of Kazakhstan<br>Alpha-2 Code: KZ<br>Alpha-3 Code: KAZ<br>Internet ccTLD: .kz<br>Subdivision Code Links: ISO 3166-2:KZ<br>Currencies: KZT (398)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/kz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 418<br>Country Name: LAO PEOPLE’S DEMOCRATIC REPUBLIC (THE)<br>Official State Name: The Lao People’s Democratic Republic<br>Alpha-2 Code: LA<br>Alpha-3 Code: LAO<br>Internet ccTLD: .la<br>Subdivision Code Links: ISO 3166-2:LA<br>Currencies: LAK (418)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/la.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 422<br>Country Name: LEBANON<br>Official State Name: The Lebanese Republic<br>Alpha-2 Code: LB<br>Alpha-3 Code: LBN<br>Internet ccTLD: .lb<br>Subdivision Code Links: ISO 3166-2:LB<br>Currencies: LBP (422)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lb.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 662<br>Country Name: SAINT LUCIA<br>Official State Name: Saint Lucia<br>Alpha-2 Code: LC<br>Alpha-3 Code: LCA<br>Internet ccTLD: .lc<br>Subdivision Code Links: ISO 3166-2:LC<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 438<br>Country Name: LIECHTENSTEIN<br>Official State Name: The Principality of Liechtenstein<br>Alpha-2 Code: LI<br>Alpha-3 Code: LIE<br>Internet ccTLD: .li<br>Subdivision Code Links: ISO 3166-2:LI<br>Currencies: CHF (756)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/li.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 144<br>Country Name: SRI LANKA<br>Official State Name: The Democratic Socialist Republic of Sri Lanka<br>Alpha-2 Code: LK<br>Alpha-3 Code: LKA<br>Internet ccTLD: .lk<br>Subdivision Code Links: ISO 3166-2:LK<br>Currencies: LKR (144)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 430<br>Country Name: LIBERIA<br>Official State Name: The Republic of Liberia<br>Alpha-2 Code: LR<br>Alpha-3 Code: LBR<br>Internet ccTLD: .lr<br>Subdivision Code Links: ISO 3166-2:LR<br>Currencies: LRD (430)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 426<br>Country Name: LESOTHO<br>Official State Name: The Kingdom of Lesotho<br>Alpha-2 Code: LS<br>Alpha-3 Code: LSO<br>Internet ccTLD: .ls<br>Subdivision Code Links: ISO 3166-2:LS<br>Currencies: LSL (426), ZAR (710)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ls.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 440<br>Country Name: LITHUANIA<br>Official State Name: The Republic of Lithuania<br>Alpha-2 Code: LT<br>Alpha-3 Code: LTU<br>Internet ccTLD: .lt<br>Subdivision Code Links: ISO 3166-2:LT<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 442<br>Country Name: LUXEMBOURG<br>Official State Name: The Grand Duchy of Luxembourg<br>Alpha-2 Code: LU<br>Alpha-3 Code: LUX<br>Internet ccTLD: .lu<br>Subdivision Code Links: ISO 3166-2:LU<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 428<br>Country Name: LATVIA<br>Official State Name: The Republic of Latvia<br>Alpha-2 Code: LV<br>Alpha-3 Code: LVA<br>Internet ccTLD: .lv<br>Subdivision Code Links: ISO 3166-2:LV<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/lv.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 434<br>Country Name: LIBYA<br>Official State Name: The State of Libya<br>Alpha-2 Code: LY<br>Alpha-3 Code: LBY<br>Internet ccTLD: .ly<br>Subdivision Code Links: ISO 3166-2:LY<br>Currencies: LYD (434)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ly.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 504<br>Country Name: MOROCCO<br>Official State Name: The Kingdom of Morocco<br>Alpha-2 Code: MA<br>Alpha-3 Code: MAR<br>Internet ccTLD: .ma<br>Subdivision Code Links: ISO 3166-2:MA<br>Currencies: MAD (504)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ma.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 492<br>Country Name: MONACO<br>Official State Name: The Principality of Monaco<br>Alpha-2 Code: MC<br>Alpha-3 Code: MCO<br>Internet ccTLD: .mc<br>Subdivision Code Links: ISO 3166-2:MC<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 498<br>Country Name: MOLDOVA (THE REPUBLIC OF)<br>Official State Name: The Republic of Moldova<br>Alpha-2 Code: MD<br>Alpha-3 Code: MDA<br>Internet ccTLD: .md<br>Subdivision Code Links: ISO 3166-2:MD<br>Currencies: MDL (498)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/md.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 499<br>Country Name: MONTENEGRO<br>Official State Name: Montenegro<br>Alpha-2 Code: ME<br>Alpha-3 Code: MNE<br>Internet ccTLD: .me<br>Subdivision Code Links: ISO 3166-2:ME<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/me.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 663<br>Country Name: SAINT MARTIN (FRENCH PART)<br>Official State Name: The Collectivity of Saint-Martin<br>Alpha-2 Code: MF<br>Alpha-3 Code: MAF<br>Internet ccTLD: .mf<br>Subdivision Code Links: ISO 3166-2:MF<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 450<br>Country Name: MADAGASCAR<br>Official State Name: The Republic of Madagascar<br>Alpha-2 Code: MG<br>Alpha-3 Code: MDG<br>Internet ccTLD: .mg<br>Subdivision Code Links: ISO 3166-2:MG<br>Currencies: MGA (969)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 584<br>Country Name: MARSHALL ISLANDS (THE)<br>Official State Name: The Republic of the Marshall Islands<br>Alpha-2 Code: MH<br>Alpha-3 Code: MHL<br>Internet ccTLD: .mh<br>Subdivision Code Links: ISO 3166-2:MH<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mh.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 807<br>Country Name: NORTH MACEDONIA<br>Official State Name: The Republic of North Macedonia<br>Alpha-2 Code: MK<br>Alpha-3 Code: MKD<br>Internet ccTLD: .mk<br>Subdivision Code Links: ISO 3166-2:MK<br>Currencies: MKD (807)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 466<br>Country Name: MALI<br>Official State Name: The Republic of Mali<br>Alpha-2 Code: ML<br>Alpha-3 Code: MLI<br>Internet ccTLD: .ml<br>Subdivision Code Links: ISO 3166-2:ML<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ml.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 104<br>Country Name: MYANMAR<br>Official State Name: The Republic of the Union of Myanmar<br>Alpha-2 Code: MM<br>Alpha-3 Code: MMR<br>Internet ccTLD: .mm<br>Subdivision Code Links: ISO 3166-2:MM<br>Currencies: MMK (104)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 496<br>Country Name: MONGOLIA<br>Official State Name: Mongolia<br>Alpha-2 Code: MN<br>Alpha-3 Code: MNG<br>Internet ccTLD: .mn<br>Subdivision Code Links: ISO 3166-2:MN<br>Currencies: MNT (496)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 446<br>Country Name: MACAO<br>Official State Name: The Macao Special Administrative Region of China<br>Alpha-2 Code: MO<br>Alpha-3 Code: MAC<br>Internet ccTLD: .mo<br>Subdivision Code Links: ISO 3166-2:MO<br>Currencies: MOP (446)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mo.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 580<br>Country Name: NORTHERN MARIANA ISLANDS (THE)<br>Official State Name: The Commonwealth of the Northern Mariana Islands<br>Alpha-2 Code: MP<br>Alpha-3 Code: MNP<br>Internet ccTLD: .mp<br>Subdivision Code Links: ISO 3166-2:MP<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mp.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 474<br>Country Name: MARTINIQUE<br>Official State Name: Martinique<br>Alpha-2 Code: MQ<br>Alpha-3 Code: MTQ<br>Internet ccTLD: .mq<br>Subdivision Code Links: ISO 3166-2:MQ<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mq.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 478<br>Country Name: MAURITANIA<br>Official State Name: The Islamic Republic of Mauritania<br>Alpha-2 Code: MR<br>Alpha-3 Code: MRT<br>Internet ccTLD: .mr<br>Subdivision Code Links: ISO 3166-2:MR<br>Currencies: MRU (929)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 500<br>Country Name: MONTSERRAT<br>Official State Name: Montserrat<br>Alpha-2 Code: MS<br>Alpha-3 Code: MSR<br>Internet ccTLD: .ms<br>Subdivision Code Links: ISO 3166-2:MS<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ms.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 470<br>Country Name: MALTA<br>Official State Name: The Republic of Malta<br>Alpha-2 Code: MT<br>Alpha-3 Code: MLT<br>Internet ccTLD: .mt<br>Subdivision Code Links: ISO 3166-2:MT<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 480<br>Country Name: MAURITIUS<br>Official State Name: The Republic of Mauritius<br>Alpha-2 Code: MU<br>Alpha-3 Code: MUS<br>Internet ccTLD: .mu<br>Subdivision Code Links: ISO 3166-2:MU<br>Currencies: MUR (480)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 462<br>Country Name: MALDIVES<br>Official State Name: The Republic of Maldives<br>Alpha-2 Code: MV<br>Alpha-3 Code: MDV<br>Internet ccTLD: .mv<br>Subdivision Code Links: ISO 3166-2:MV<br>Currencies: MVR (462)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mv.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 454<br>Country Name: MALAWI<br>Official State Name: The Republic of Malawi<br>Alpha-2 Code: MW<br>Alpha-3 Code: MWI<br>Internet ccTLD: .mw<br>Subdivision Code Links: ISO 3166-2:MW<br>Currencies: MWK (454)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 484<br>Country Name: MEXICO<br>Official State Name: The United Mexican States<br>Alpha-2 Code: MX<br>Alpha-3 Code: MEX<br>Internet ccTLD: .mx<br>Subdivision Code Links: ISO 3166-2:MX<br>Currencies: MXV (979), MXN (484)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mx.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 458<br>Country Name: MALAYSIA<br>Official State Name: Malaysia<br>Alpha-2 Code: MY<br>Alpha-3 Code: MYS<br>Internet ccTLD: .my<br>Subdivision Code Links: ISO 3166-2:MY<br>Currencies: MYR (458)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/my.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 508<br>Country Name: MOZAMBIQUE<br>Official State Name: The Republic of Mozambique<br>Alpha-2 Code: MZ<br>Alpha-3 Code: MOZ<br>Internet ccTLD: .mz<br>Subdivision Code Links: ISO 3166-2:MZ<br>Currencies: MZN (943)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/mz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 540<br>Country Name: NEW CALEDONIA<br>Official State Name: New Caledonia<br>Alpha-2 Code: NC<br>Alpha-3 Code: NCL<br>Internet ccTLD: .nc<br>Subdivision Code Links: ISO 3166-2:NC<br>Currencies: XPF (953)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 562<br>Country Name: NIGER (THE)<br>Official State Name: The Republic of the Niger<br>Alpha-2 Code: NE<br>Alpha-3 Code: NER<br>Internet ccTLD: .ne<br>Subdivision Code Links: ISO 3166-2:NE<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ne.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 574<br>Country Name: NORFOLK ISLAND<br>Official State Name: The Territory of Norfolk Island<br>Alpha-2 Code: NF<br>Alpha-3 Code: NFK<br>Internet ccTLD: .nf<br>Subdivision Code Links: ISO 3166-2:NF<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 566<br>Country Name: NIGERIA<br>Official State Name: The Federal Republic of Nigeria<br>Alpha-2 Code: NG<br>Alpha-3 Code: NGA<br>Internet ccTLD: .ng<br>Subdivision Code Links: ISO 3166-2:NG<br>Currencies: NGN (566)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ng.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 558<br>Country Name: NICARAGUA<br>Official State Name: The Republic of Nicaragua<br>Alpha-2 Code: NI<br>Alpha-3 Code: NIC<br>Internet ccTLD: .ni<br>Subdivision Code Links: ISO 3166-2:NI<br>Currencies: NIO (558)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ni.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 528<br>Country Name: NETHERLANDS, KINGDOM OF THE<br>Official State Name: The Kingdom of the Netherlands<br>Alpha-2 Code: NL<br>Alpha-3 Code: NLD<br>Internet ccTLD: .nl<br>Subdivision Code Links: ISO 3166-2:NL<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 578<br>Country Name: NORWAY<br>Official State Name: The Kingdom of Norway<br>Alpha-2 Code: NO<br>Alpha-3 Code: NOR<br>Internet ccTLD: .no<br>Subdivision Code Links: ISO 3166-2:NO<br>Currencies: NOK (578)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/no.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 524<br>Country Name: NEPAL<br>Official State Name: The Federal Democratic Republic of Nepal<br>Alpha-2 Code: NP<br>Alpha-3 Code: NPL<br>Internet ccTLD: .np<br>Subdivision Code Links: ISO 3166-2:NP<br>Currencies: NPR (524)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/np.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 520<br>Country Name: NAURU<br>Official State Name: The Republic of Nauru<br>Alpha-2 Code: NR<br>Alpha-3 Code: NRU<br>Internet ccTLD: .nr<br>Subdivision Code Links: ISO 3166-2:NR<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 570<br>Country Name: NIUE<br>Official State Name: Niue<br>Alpha-2 Code: NU<br>Alpha-3 Code: NIU<br>Internet ccTLD: .nu<br>Subdivision Code Links: ISO 3166-2:NU<br>Currencies: NZD (554)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 554<br>Country Name: NEW ZEALAND<br>Official State Name: New Zealand<br>Alpha-2 Code: NZ<br>Alpha-3 Code: NZL<br>Internet ccTLD: .nz<br>Subdivision Code Links: ISO 3166-2:NZ<br>Currencies: NZD (554)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/nz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 512<br>Country Name: OMAN<br>Official State Name: The Sultanate of Oman<br>Alpha-2 Code: OM<br>Alpha-3 Code: OMN<br>Internet ccTLD: .om<br>Subdivision Code Links: ISO 3166-2:OM<br>Currencies: OMR (512)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/om.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 591<br>Country Name: PANAMA<br>Official State Name: The Republic of Panamá<br>Alpha-2 Code: PA<br>Alpha-3 Code: PAN<br>Internet ccTLD: .pa<br>Subdivision Code Links: ISO 3166-2:PA<br>Currencies: PAB (590), USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pa.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 604<br>Country Name: PERU<br>Official State Name: The Republic of Perú<br>Alpha-2 Code: PE<br>Alpha-3 Code: PER<br>Internet ccTLD: .pe<br>Subdivision Code Links: ISO 3166-2:PE<br>Currencies: PEN (604)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pe.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 258<br>Country Name: FRENCH POLYNESIA<br>Official State Name: French Polynesia<br>Alpha-2 Code: PF<br>Alpha-3 Code: PYF<br>Internet ccTLD: .pf<br>Subdivision Code Links: ISO 3166-2:PF<br>Currencies: XPF (953)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 598<br>Country Name: PAPUA NEW GUINEA<br>Official State Name: The Independent State of Papua New Guinea<br>Alpha-2 Code: PG<br>Alpha-3 Code: PNG<br>Internet ccTLD: .pg<br>Subdivision Code Links: ISO 3166-2:PG<br>Currencies: PGK (598)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 608<br>Country Name: PHILIPPINES (THE)<br>Official State Name: The Republic of the Philippines<br>Alpha-2 Code: PH<br>Alpha-3 Code: PHL<br>Internet ccTLD: .ph<br>Subdivision Code Links: ISO 3166-2:PH<br>Currencies: PHP (608)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ph.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 586<br>Country Name: PAKISTAN<br>Official State Name: The Islamic Republic of Pakistan<br>Alpha-2 Code: PK<br>Alpha-3 Code: PAK<br>Internet ccTLD: .pk<br>Subdivision Code Links: ISO 3166-2:PK<br>Currencies: PKR (586)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 616<br>Country Name: POLAND<br>Official State Name: The Republic of Poland<br>Alpha-2 Code: PL<br>Alpha-3 Code: POL<br>Internet ccTLD: .pl<br>Subdivision Code Links: ISO 3166-2:PL<br>Currencies: PLN (985)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 666<br>Country Name: SAINT PIERRE AND MIQUELON<br>Official State Name: The Overseas Collectivity of Saint-Pierre and Miquelon<br>Alpha-2 Code: PM<br>Alpha-3 Code: SPM<br>Internet ccTLD: .pm<br>Subdivision Code Links: ISO 3166-2:PM<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 612<br>Country Name: PITCAIRN<br>Official State Name: The Pitcairn, Henderson, Ducie and Oeno Islands<br>Alpha-2 Code: PN<br>Alpha-3 Code: PCN<br>Internet ccTLD: .pn<br>Subdivision Code Links: ISO 3166-2:PN<br>Currencies: NZD (554)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 630<br>Country Name: PUERTO RICO<br>Official State Name: The Commonwealth of Puerto Rico<br>Alpha-2 Code: PR<br>Alpha-3 Code: PRI<br>Internet ccTLD: .pr<br>Subdivision Code Links: ISO 3166-2:PR<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 275<br>Country Name: PALESTINE, STATE OF<br>Official State Name: The State of Palestine<br>Alpha-2 Code: PS<br>Alpha-3 Code: PSE<br>Internet ccTLD: .ps<br>Subdivision Code Links: ISO 3166-2:PS<br>Currencies: nan (NaN)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ps.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 620<br>Country Name: PORTUGAL<br>Official State Name: The Portuguese Republic<br>Alpha-2 Code: PT<br>Alpha-3 Code: PRT<br>Internet ccTLD: .pt<br>Subdivision Code Links: ISO 3166-2:PT<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 585<br>Country Name: PALAU<br>Official State Name: The Republic of Palau<br>Alpha-2 Code: PW<br>Alpha-3 Code: PLW<br>Internet ccTLD: .pw<br>Subdivision Code Links: ISO 3166-2:PW<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/pw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 600<br>Country Name: PARAGUAY<br>Official State Name: The Republic of Paraguay<br>Alpha-2 Code: PY<br>Alpha-3 Code: PRY<br>Internet ccTLD: .py<br>Subdivision Code Links: ISO 3166-2:PY<br>Currencies: PYG (600)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/py.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 634<br>Country Name: QATAR<br>Official State Name: The State of Qatar<br>Alpha-2 Code: QA<br>Alpha-3 Code: QAT<br>Internet ccTLD: .qa<br>Subdivision Code Links: ISO 3166-2:QA<br>Currencies: QAR (634)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/qa.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 638<br>Country Name: RÉUNION<br>Official State Name: Réunion<br>Alpha-2 Code: RE<br>Alpha-3 Code: REU<br>Internet ccTLD: .re<br>Subdivision Code Links: ISO 3166-2:RE<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/re.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 642<br>Country Name: ROMANIA<br>Official State Name: Romania<br>Alpha-2 Code: RO<br>Alpha-3 Code: ROU<br>Internet ccTLD: .ro<br>Subdivision Code Links: ISO 3166-2:RO<br>Currencies: RON (946)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ro.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 688<br>Country Name: SERBIA<br>Official State Name: The Republic of Serbia<br>Alpha-2 Code: RS<br>Alpha-3 Code: SRB<br>Internet ccTLD: .rs<br>Subdivision Code Links: ISO 3166-2:RS<br>Currencies: RSD (941)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/rs.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 643<br>Country Name: RUSSIAN FEDERATION (THE)<br>Official State Name: The Russian Federation<br>Alpha-2 Code: RU<br>Alpha-3 Code: RUS<br>Internet ccTLD: .ru<br>Subdivision Code Links: ISO 3166-2:RU<br>Currencies: RUB (643)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ru.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 646<br>Country Name: RWANDA<br>Official State Name: The Republic of Rwanda<br>Alpha-2 Code: RW<br>Alpha-3 Code: RWA<br>Internet ccTLD: .rw<br>Subdivision Code Links: ISO 3166-2:RW<br>Currencies: RWF (646)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/rw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 682<br>Country Name: SAUDI ARABIA<br>Official State Name: The Kingdom of Saudi Arabia<br>Alpha-2 Code: SA<br>Alpha-3 Code: SAU<br>Internet ccTLD: .sa<br>Subdivision Code Links: ISO 3166-2:SA<br>Currencies: SAR (682)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sa.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 90<br>Country Name: SOLOMON ISLANDS<br>Official State Name: The Solomon Islands<br>Alpha-2 Code: SB<br>Alpha-3 Code: SLB<br>Internet ccTLD: .sb<br>Subdivision Code Links: ISO 3166-2:SB<br>Currencies: SBD (90)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sb.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 690<br>Country Name: SEYCHELLES<br>Official State Name: The Republic of Seychelles<br>Alpha-2 Code: SC<br>Alpha-3 Code: SYC<br>Internet ccTLD: .sc<br>Subdivision Code Links: ISO 3166-2:SC<br>Currencies: SCR (690)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 729<br>Country Name: SUDAN (THE)<br>Official State Name: The Republic of the Sudan<br>Alpha-2 Code: SD<br>Alpha-3 Code: SDN<br>Internet ccTLD: .sd<br>Subdivision Code Links: ISO 3166-2:SD<br>Currencies: SDG (938)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sd.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 752<br>Country Name: SWEDEN<br>Official State Name: The Kingdom of Sweden<br>Alpha-2 Code: SE<br>Alpha-3 Code: SWE<br>Internet ccTLD: .se<br>Subdivision Code Links: ISO 3166-2:SE<br>Currencies: SEK (752)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/se.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 702<br>Country Name: SINGAPORE<br>Official State Name: The Republic of Singapore<br>Alpha-2 Code: SG<br>Alpha-3 Code: SGP<br>Internet ccTLD: .sg<br>Subdivision Code Links: ISO 3166-2:SG<br>Currencies: SGD (702)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 654<br>Country Name: SAINT HELENA ASCENSION ISLAND TRISTAN DA CUNHA<br>Official State Name: Saint Helena, Ascension and Tristan da Cunha<br>Alpha-2 Code: SH<br>Alpha-3 Code: SHN<br>Internet ccTLD: .sh<br>Subdivision Code Links: ISO 3166-2:SH<br>Currencies: SHP (654)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sh.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 705<br>Country Name: SLOVENIA<br>Official State Name: The Republic of Slovenia<br>Alpha-2 Code: SI<br>Alpha-3 Code: SVN<br>Internet ccTLD: .si<br>Subdivision Code Links: ISO 3166-2:SI<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/si.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 744<br>Country Name: SVALBARD JAN MAYEN<br>Official State Name: Svalbard and Jan Mayen<br>Alpha-2 Code: SJ<br>Alpha-3 Code: SJM<br>Internet ccTLD: nan<br>Subdivision Code Links: ISO 3166-2:SJ<br>Currencies: NOK (578)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sj.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 703<br>Country Name: SLOVAKIA<br>Official State Name: The Slovak Republic<br>Alpha-2 Code: SK<br>Alpha-3 Code: SVK<br>Internet ccTLD: .sk<br>Subdivision Code Links: ISO 3166-2:SK<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 694<br>Country Name: SIERRA LEONE<br>Official State Name: The Republic of Sierra Leone<br>Alpha-2 Code: SL<br>Alpha-3 Code: SLE<br>Internet ccTLD: .sl<br>Subdivision Code Links: ISO 3166-2:SL<br>Currencies: SLL (694), SLE (925)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 674<br>Country Name: SAN MARINO<br>Official State Name: The Republic of San Marino<br>Alpha-2 Code: SM<br>Alpha-3 Code: SMR<br>Internet ccTLD: .sm<br>Subdivision Code Links: ISO 3166-2:SM<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 686<br>Country Name: SENEGAL<br>Official State Name: The Republic of Senegal<br>Alpha-2 Code: SN<br>Alpha-3 Code: SEN<br>Internet ccTLD: .sn<br>Subdivision Code Links: ISO 3166-2:SN<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 706<br>Country Name: SOMALIA<br>Official State Name: The Federal Republic of Somalia<br>Alpha-2 Code: SO<br>Alpha-3 Code: SOM<br>Internet ccTLD: .so<br>Subdivision Code Links: ISO 3166-2:SO<br>Currencies: SOS (706)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/so.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 740<br>Country Name: SURINAME<br>Official State Name: The Republic of Suriname<br>Alpha-2 Code: SR<br>Alpha-3 Code: SUR<br>Internet ccTLD: .sr<br>Subdivision Code Links: ISO 3166-2:SR<br>Currencies: SRD (968)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 728<br>Country Name: SOUTH SUDAN<br>Official State Name: The Republic of South Sudan<br>Alpha-2 Code: SS<br>Alpha-3 Code: SSD<br>Internet ccTLD: .ss<br>Subdivision Code Links: ISO 3166-2:SS<br>Currencies: SSP (728)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ss.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 678<br>Country Name: SAO TOME AND PRINCIPE<br>Official State Name: The Democratic Republic of São Tomé and Príncipe<br>Alpha-2 Code: ST<br>Alpha-3 Code: STP<br>Internet ccTLD: .st<br>Subdivision Code Links: ISO 3166-2:ST<br>Currencies: STN (930)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/st.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 222<br>Country Name: EL SALVADOR<br>Official State Name: The Republic of El Salvador<br>Alpha-2 Code: SV<br>Alpha-3 Code: SLV<br>Internet ccTLD: .sv<br>Subdivision Code Links: ISO 3166-2:SV<br>Currencies: SVC (222), USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sv.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 534<br>Country Name: SINT MAARTEN (DUTCH PART)<br>Official State Name: Sint Maarten<br>Alpha-2 Code: SX<br>Alpha-3 Code: SXM<br>Internet ccTLD: .sx<br>Subdivision Code Links: ISO 3166-2:SX<br>Currencies: ANG (532)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sx.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 760<br>Country Name: SYRIAN ARAB REPUBLIC (THE)<br>Official State Name: The Syrian Arab Republic<br>Alpha-2 Code: SY<br>Alpha-3 Code: SYR<br>Internet ccTLD: .sy<br>Subdivision Code Links: ISO 3166-2:SY<br>Currencies: SYP (760)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sy.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 748<br>Country Name: ESWATINI<br>Official State Name: The Kingdom of Eswatini<br>Alpha-2 Code: SZ<br>Alpha-3 Code: SWZ<br>Internet ccTLD: .sz<br>Subdivision Code Links: ISO 3166-2:SZ<br>Currencies: SZL (748)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/sz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 796<br>Country Name: TURKS AND CAICOS ISLANDS (THE)<br>Official State Name: The Turks and Caicos Islands<br>Alpha-2 Code: TC<br>Alpha-3 Code: TCA<br>Internet ccTLD: .tc<br>Subdivision Code Links: ISO 3166-2:TC<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 148<br>Country Name: CHAD<br>Official State Name: The Republic of Chad<br>Alpha-2 Code: TD<br>Alpha-3 Code: TCD<br>Internet ccTLD: .td<br>Subdivision Code Links: ISO 3166-2:TD<br>Currencies: XAF (950)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/td.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 260<br>Country Name: FRENCH SOUTHERN TERRITORIES (THE)<br>Official State Name: The French Southern and Antarctic Lands<br>Alpha-2 Code: TF<br>Alpha-3 Code: ATF<br>Internet ccTLD: .tf<br>Subdivision Code Links: ISO 3166-2:TF<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 768<br>Country Name: TOGO<br>Official State Name: The Togolese Republic<br>Alpha-2 Code: TG<br>Alpha-3 Code: TGO<br>Internet ccTLD: .tg<br>Subdivision Code Links: ISO 3166-2:TG<br>Currencies: XOF (952)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 764<br>Country Name: THAILAND<br>Official State Name: The Kingdom of Thailand<br>Alpha-2 Code: TH<br>Alpha-3 Code: THA<br>Internet ccTLD: .th<br>Subdivision Code Links: ISO 3166-2:TH<br>Currencies: THB (764)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/th.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 762<br>Country Name: TAJIKISTAN<br>Official State Name: The Republic of Tajikistan<br>Alpha-2 Code: TJ<br>Alpha-3 Code: TJK<br>Internet ccTLD: .tj<br>Subdivision Code Links: ISO 3166-2:TJ<br>Currencies: TJS (972)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tj.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 772<br>Country Name: TOKELAU<br>Official State Name: Tokelau<br>Alpha-2 Code: TK<br>Alpha-3 Code: TKL<br>Internet ccTLD: .tk<br>Subdivision Code Links: ISO 3166-2:TK<br>Currencies: NZD (554)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tk.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 626<br>Country Name: TIMOR-LESTE<br>Official State Name: The Democratic Republic of Timor-Leste<br>Alpha-2 Code: TL<br>Alpha-3 Code: TLS<br>Internet ccTLD: .tl<br>Subdivision Code Links: ISO 3166-2:TL<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tl.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 795<br>Country Name: TURKMENISTAN<br>Official State Name: Turkmenistan<br>Alpha-2 Code: TM<br>Alpha-3 Code: TKM<br>Internet ccTLD: .tm<br>Subdivision Code Links: ISO 3166-2:TM<br>Currencies: TMT (934)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 788<br>Country Name: TUNISIA<br>Official State Name: The Republic of Tunisia<br>Alpha-2 Code: TN<br>Alpha-3 Code: TUN<br>Internet ccTLD: .tn<br>Subdivision Code Links: ISO 3166-2:TN<br>Currencies: TND (788)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 776<br>Country Name: TONGA<br>Official State Name: The Kingdom of Tonga<br>Alpha-2 Code: TO<br>Alpha-3 Code: TON<br>Internet ccTLD: .to<br>Subdivision Code Links: ISO 3166-2:TO<br>Currencies: TOP (776)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/to.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 792<br>Country Name: TÜRKIYE<br>Official State Name: The Republic of Türkiye<br>Alpha-2 Code: TR<br>Alpha-3 Code: TUR<br>Internet ccTLD: .tr<br>Subdivision Code Links: ISO 3166-2:TR<br>Currencies: TRY (949)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tr.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 780<br>Country Name: TRINIDAD AND TOBAGO<br>Official State Name: The Republic of Trinidad and Tobago<br>Alpha-2 Code: TT<br>Alpha-3 Code: TTO<br>Internet ccTLD: .tt<br>Subdivision Code Links: ISO 3166-2:TT<br>Currencies: TTD (780)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 798<br>Country Name: TUVALU<br>Official State Name: Tuvalu<br>Alpha-2 Code: TV<br>Alpha-3 Code: TUV<br>Internet ccTLD: .tv<br>Subdivision Code Links: ISO 3166-2:TV<br>Currencies: AUD (36)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tv.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 158<br>Country Name: TAIWAN (PROVINCE OF CHINA)<br>Official State Name: The Republic of China<br>Alpha-2 Code: TW<br>Alpha-3 Code: TWN<br>Internet ccTLD: .tw<br>Subdivision Code Links: ISO 3166-2:TW<br>Currencies: TWD (901)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 834<br>Country Name: TANZANIA, THE UNITED REPUBLIC OF<br>Official State Name: The United Republic of Tanzania<br>Alpha-2 Code: TZ<br>Alpha-3 Code: TZA<br>Internet ccTLD: .tz<br>Subdivision Code Links: ISO 3166-2:TZ<br>Currencies: TZS (834)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/tz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 804<br>Country Name: UKRAINE<br>Official State Name: Ukraine<br>Alpha-2 Code: UA<br>Alpha-3 Code: UKR<br>Internet ccTLD: .ua<br>Subdivision Code Links: ISO 3166-2:UA<br>Currencies: UAH (980)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ua.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 800<br>Country Name: UGANDA<br>Official State Name: The Republic of Uganda<br>Alpha-2 Code: UG<br>Alpha-3 Code: UGA<br>Internet ccTLD: .ug<br>Subdivision Code Links: ISO 3166-2:UG<br>Currencies: UGX (800)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ug.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 581<br>Country Name: UNITED STATES MINOR OUTLYING ISLANDS (THE)<br>Official State Name: Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island<br>Alpha-2 Code: UM<br>Alpha-3 Code: UMI<br>Internet ccTLD: nan<br>Subdivision Code Links: ISO 3166-2:UM<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/um.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 840<br>Country Name: UNITED STATES OF AMERICA (THE)<br>Official State Name: The United States of America<br>Alpha-2 Code: US<br>Alpha-3 Code: USA<br>Internet ccTLD: .us<br>Subdivision Code Links: ISO 3166-2:US<br>Currencies: USN (997), USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/us.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 858<br>Country Name: URUGUAY<br>Official State Name: The Oriental Republic of Uruguay<br>Alpha-2 Code: UY<br>Alpha-3 Code: URY<br>Internet ccTLD: .uy<br>Subdivision Code Links: ISO 3166-2:UY<br>Currencies: UYW (927), UYI (940), UYU (858)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/uy.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 860<br>Country Name: UZBEKISTAN<br>Official State Name: The Republic of Uzbekistan<br>Alpha-2 Code: UZ<br>Alpha-3 Code: UZB<br>Internet ccTLD: .uz<br>Subdivision Code Links: ISO 3166-2:UZ<br>Currencies: UZS (860)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/uz.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 336<br>Country Name: HOLY SEE (THE)<br>Official State Name: The Holy See<br>Alpha-2 Code: VA<br>Alpha-3 Code: VAT<br>Internet ccTLD: .va<br>Subdivision Code Links: ISO 3166-2:VA<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/va.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 670<br>Country Name: SAINT VINCENT AND THE GRENADINES<br>Official State Name: Saint Vincent and the Grenadines<br>Alpha-2 Code: VC<br>Alpha-3 Code: VCT<br>Internet ccTLD: .vc<br>Subdivision Code Links: ISO 3166-2:VC<br>Currencies: XCD (951)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vc.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 862<br>Country Name: VENEZUELA (BOLIVARIAN REPUBLIC OF)<br>Official State Name: The Bolivarian Republic of Venezuela<br>Alpha-2 Code: VE<br>Alpha-3 Code: VEN<br>Internet ccTLD: .ve<br>Subdivision Code Links: ISO 3166-2:VE<br>Currencies: VES (928), VED (926)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ve.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 92<br>Country Name: VIRGIN ISLANDS (BRITISH)<br>Official State Name: The Virgin Islands<br>Alpha-2 Code: VG<br>Alpha-3 Code: VGB<br>Internet ccTLD: .vg<br>Subdivision Code Links: ISO 3166-2:VG<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vg.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 850<br>Country Name: VIRGIN ISLANDS (U.S.)<br>Official State Name: The Virgin Islands of the United States<br>Alpha-2 Code: VI<br>Alpha-3 Code: VIR<br>Internet ccTLD: .vi<br>Subdivision Code Links: ISO 3166-2:VI<br>Currencies: USD (840)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vi.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 704<br>Country Name: VIET NAM<br>Official State Name: The Socialist Republic of Viet Nam<br>Alpha-2 Code: VN<br>Alpha-3 Code: VNM<br>Internet ccTLD: .vn<br>Subdivision Code Links: ISO 3166-2:VN<br>Currencies: VND (704)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vn.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 548<br>Country Name: VANUATU<br>Official State Name: The Republic of Vanuatu<br>Alpha-2 Code: VU<br>Alpha-3 Code: VUT<br>Internet ccTLD: .vu<br>Subdivision Code Links: ISO 3166-2:VU<br>Currencies: VUV (548)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/vu.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 876<br>Country Name: WALLIS AND FUTUNA<br>Official State Name: The Territory of the Wallis and Futuna Islands<br>Alpha-2 Code: WF<br>Alpha-3 Code: WLF<br>Internet ccTLD: .wf<br>Subdivision Code Links: ISO 3166-2:WF<br>Currencies: XPF (953)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/wf.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 882<br>Country Name: SAMOA<br>Official State Name: The Independent State of Samoa<br>Alpha-2 Code: WS<br>Alpha-3 Code: WSM<br>Internet ccTLD: .ws<br>Subdivision Code Links: ISO 3166-2:WS<br>Currencies: WST (882)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ws.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 887<br>Country Name: YEMEN<br>Official State Name: The Republic of Yemen<br>Alpha-2 Code: YE<br>Alpha-3 Code: YEM<br>Internet ccTLD: .ye<br>Subdivision Code Links: ISO 3166-2:YE<br>Currencies: YER (886)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/ye.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 175<br>Country Name: MAYOTTE<br>Official State Name: The Department of Mayotte<br>Alpha-2 Code: YT<br>Alpha-3 Code: MYT<br>Internet ccTLD: .yt<br>Subdivision Code Links: ISO 3166-2:YT<br>Currencies: EUR (978)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/yt.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 710<br>Country Name: SOUTH AFRICA<br>Official State Name: The Republic of South Africa<br>Alpha-2 Code: ZA<br>Alpha-3 Code: ZAF<br>Internet ccTLD: .za<br>Subdivision Code Links: ISO 3166-2:ZA<br>Currencies: ZAR (710)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/za.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 894<br>Country Name: ZAMBIA<br>Official State Name: The Republic of Zambia<br>Alpha-2 Code: ZM<br>Alpha-3 Code: ZMB<br>Internet ccTLD: .zm<br>Subdivision Code Links: ISO 3166-2:ZM<br>Currencies: ZMW (967)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/zm.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 716<br>Country Name: ZIMBABWE<br>Official State Name: The Republic of Zimbabwe<br>Alpha-2 Code: ZW<br>Alpha-3 Code: ZWE<br>Internet ccTLD: .zw<br>Subdivision Code Links: ISO 3166-2:ZW<br>Currencies: ZWL (932)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/zw.png" style="width: 300px"></p>
+<hr>
+<p>Numeric Code: 516<br>Country Name: NAMIBIA<br>Official State Name: The Republic of Namibia<br>Alpha-2 Code: NA<br>Alpha-3 Code: NAM<br>Internet ccTLD: .na<br>Subdivision Code Links: ISO 3166-2:NA<br>Currencies: NAD (516), ZAR (710)<br><img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/na.png" style="width: 300px"></p>
+<h3 id="其他未對應貨幣"><a href="#其他未對應貨幣" class="headerlink" title="其他未對應貨幣"></a>其他未對應貨幣</h3><p>Country: EUROPEAN UNION<br>Currency: Euro<br>EUR (978)</p>
+<img src="https://raw.githubusercontent.com/hampusborgos/country-flags/main/png1000px/eu.png" style="width: 300px">
+
+<p>Country: INTERNATIONAL MONETARY FUND (IMF)<br>Currency: SDR (Special Drawing Right)<br>XDR (960)</p>
+<p>Country: MEMBER COUNTRIES OF THE AFRICAN DEVELOPMENT BANK GROUP<br>Currency: ADB Unit of Account<br>XUA (965)</p>
+<p>Country: “SISTEMA UNITARIO DE COMPENSACION REGIONAL DE PAGOS “”SUCRE”””<br>Currency: Sucre<br>XSU (994)</p>
+<p>Country: ZZ01_Bond Markets Unit European_EURCO<br>Currency: Bond Markets Unit European Composite Unit (EURCO)<br>XBA (955)</p>
+<p>Country: ZZ02_Bond Markets Unit European_EMU-6<br>Currency: Bond Markets Unit European Monetary Unit (E.M.U.-6)<br>XBB (956)</p>
+<p>Country: ZZ03_Bond Markets Unit European_EUA-9<br>Currency: Bond Markets Unit European Unit of Account 9 (E.U.A.-9)<br>XBC (957)</p>
+<p>Country: ZZ04_Bond Markets Unit European_EUA-17<br>Currency: Bond Markets Unit European Unit of Account 17 (E.U.A.-17)<br>XBD (958)</p>
+<p>Country: ZZ06_Testing_Code<br>Currency: Codes specifically reserved for testing purposes<br>XTS (963)</p>
+<p>Country: ZZ07_No_Currency<br>Currency: The codes assigned for transactions where no currency is involved<br>XXX (999)</p>
+<p>Country: ZZ08_Gold<br>Currency: Gold<br>XAU (959)</p>
+<p>Country: ZZ09_Palladium<br>Currency: Palladium<br>XPD (964)</p>
+<p>Country: ZZ10_Platinum<br>Currency: Platinum<br>XPT (962)</p>
+<p>Country: ZZ11_Silver<br>Currency: Silver<br>XAG (961)</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes">List of ISO 3166 country codes | wikipedia</a></p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217 | wikipedia</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.six-group.com/en/products-services/financial-information/data-standards.html">Financial Data Standards | six-group.com</a></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://github.com/hampusborgos/country-flags">country-flags | GitHub</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/11/Data-With-Country-Codes-And-Currency-Codes/" data-id="cloycjnon00ityctsagfagir0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LifeHack/" rel="tag">LifeHack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenData/" rel="tag">OpenData</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/11/Generative-AI-And-System-Development/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">生成式 AI 與系統開發的應用結合</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">228</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">71</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">112</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
