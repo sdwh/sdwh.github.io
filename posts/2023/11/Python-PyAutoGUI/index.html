@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Python PyAutoGUI | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記自動化與爬蟲工具系列之 PyAutoGUI Library。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python PyAutoGUI">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/11/Python-PyAutoGUI/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記自動化與爬蟲工具系列之 PyAutoGUI Library。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
+<meta property="article:published_time" content="2023-11-15T22:45:34.000Z">
+<meta property="article:modified_time" content="2023-11-15T23:18:27.950Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Examples">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/python-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Python-PyAutoGUI" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/11/Python-PyAutoGUI/" class="article-date">
+  <time datetime="2023-11-15T22:45:34.000Z" itemprop="datePublished">2023-11-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python PyAutoGUI
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%A8%99%E6%93%8D%E4%BD%9C"><span class="toc-text">游標操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BC%B8%E5%85%A5%E5%85%A7%E5%AE%B9"><span class="toc-text">輸入內容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%B5%E6%B8%AC%E7%95%AB%E9%9D%A2"><span class="toc-text">偵測畫面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E9%85%8D%E7%9A%84-Library"><span class="toc-text">搭配的 Library</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記自動化與爬蟲工具系列之 PyAutoGUI Library。</p>
+<a href="/posts/2023/11/Python-PyAutoGUI/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/python-logo.png" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">pip</span> install pyautogui</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="游標操作"><a href="#游標操作" class="headerlink" title="游標操作"></a>游標操作</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>size<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment"># 取得螢幕解析度</span>
+<span class="token comment"># Size(width=2560, height=1440)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>moveTo<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+<span class="token comment"># 游標移動到特定座標</span>
+
+pyautogui<span class="token punctuation">.</span>moveTo<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> duration <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> tween<span class="token operator">=</span>pyautogui<span class="token punctuation">.</span>easeInOutQuad<span class="token punctuation">)</span>
+<span class="token comment"># 加入游標移動的過程</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>click<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment"># 游標點擊</span>
+
+pyautogui<span class="token punctuation">.</span>click<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+<span class="token comment"># 游標點擊特定座標</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>dragTo<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> duration<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token comment"># 從目標的游標拖曳到特定座標</span>
+
+pyautogui<span class="token punctuation">.</span>drag<span class="token punctuation">(</span>x_offset<span class="token punctuation">,</span> y_offset<span class="token punctuation">,</span> duration<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token comment"># 從目標的游標拖曳相對 x 與 y 的移動量</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>displayMousePosition<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment"># 動態取得目前游標所在的座標以及 Pixel RGB</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>scroll<span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span>
+pyautogui<span class="token punctuation">.</span>scroll<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">500</span><span class="token punctuation">)</span>
+<span class="token comment"># 滑鼠滾輪操作</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="輸入內容"><a href="#輸入內容" class="headerlink" title="輸入內容"></a>輸入內容</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>typewrite<span class="token punctuation">(</span><span class="token string">"text"</span><span class="token punctuation">)</span>
+<span class="token comment"># 輸入指定的內容</span>
+
+pyautogui<span class="token punctuation">.</span>hotkey<span class="token punctuation">(</span><span class="token string">"ctrl"</span><span class="token punctuation">,</span> <span class="token string">"v"</span><span class="token punctuation">)</span>
+<span class="token comment"># 貼上記憶體中的內容</span>
+
+pyautogui<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'Hello World!'</span><span class="token punctuation">,</span> interval<span class="token operator">=</span><span class="token number">0.25</span><span class="token punctuation">)</span>
+<span class="token comment"># 輸入內容並控制輸入間隔</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>keyDown<span class="token punctuation">(</span><span class="token string">'shift'</span><span class="token punctuation">)</span>
+pyautogui<span class="token punctuation">.</span>press<span class="token punctuation">(</span><span class="token string">'2'</span><span class="token punctuation">)</span>
+pyautogui<span class="token punctuation">.</span>keyUp<span class="token punctuation">(</span><span class="token string">'shift'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 持續按壓 Shift，模擬輸入 @ 的過程</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="偵測畫面"><a href="#偵測畫面" class="headerlink" title="偵測畫面"></a>偵測畫面</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>screenshot<span class="token punctuation">(</span><span class="token string">"screenshot.png"</span><span class="token punctuation">)</span>
+<span class="token comment"># 截圖並儲存</span>
+
+pyautogui<span class="token punctuation">.</span>locateOnScreen<span class="token punctuation">(</span><span class="token string">"image.png"</span><span class="token punctuation">)</span>
+<span class="token comment"># 尋找特定圖片是否存在於螢幕畫面中，並回傳座標</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">window <span class="token operator">=</span> pyautogui<span class="token punctuation">.</span>getWindowsWithTitle<span class="token punctuation">(</span><span class="token string">'Notepad'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+window<span class="token punctuation">.</span>maximize<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="搭配的-Library"><a href="#搭配的-Library" class="headerlink" title="搭配的 Library"></a>搭配的 Library</h2><p>經常與 PyAutoGUI 搭配的 Library:</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pyperclip
+pyperclip<span class="token punctuation">.</span>copy<span class="token punctuation">(</span><span class="token string">'text keep in clip'</span><span class="token punctuation">)</span>
+<span class="token comment"># 將資料儲存在 clip</span>
+
+pyautogui<span class="token punctuation">.</span>typewrite<span class="token punctuation">(</span>pyperclip<span class="token punctuation">.</span>paste<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment"># 從 clip 輸入到介面</span>
+
+pyautogui<span class="token punctuation">.</span>hotkey<span class="token punctuation">(</span><span class="token string">"ctrl"</span><span class="token punctuation">,</span> <span class="token string">"v"</span><span class="token punctuation">)</span>
+<span class="token comment"># 從 clip 貼上到介面</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> time
+
+threshold <span class="token operator">=</span> <span class="token number">600</span>
+
+start_time <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+end_time <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> end_time <span class="token operator">-</span> start_time <span class="token operator">></span> threshold<span class="token punctuation">:</span>
+  <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'已經執行超過 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>threshold<span class="token punctuation">&#125;</span></span><span class="token string"> 秒'</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/11/Python-PyAutoGUI/" data-id="clp0cxslj0000vktsdvs4dylt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/11/Data-With-Country-Codes-And-Currency-Codes/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">國家與貨幣編碼 ISO-3166 &amp; ISO-4217 (OpenData)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">229</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">71</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">113</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
