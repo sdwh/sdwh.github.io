@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
 <meta property="article:published_time" content="2023-11-15T22:45:34.000Z">
-<meta property="article:modified_time" content="2023-11-15T23:18:27.950Z">
+<meta property="article:modified_time" content="2023-11-16T10:14:36.194Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Examples">
 <meta property="article:tag" content="Python">
@@ -111,7 +111,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%A8%99%E6%93%8D%E4%BD%9C"><span class="toc-text">游標操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BC%B8%E5%85%A5%E5%85%A7%E5%AE%B9"><span class="toc-text">輸入內容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%B5%E6%B8%AC%E7%95%AB%E9%9D%A2"><span class="toc-text">偵測畫面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E9%85%8D%E7%9A%84-Library"><span class="toc-text">搭配的 Library</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%A7%E6%A8%99%E7%AE%A1%E7%90%86"><span class="toc-text">座標管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%A8%99%E6%93%8D%E4%BD%9C"><span class="toc-text">游標操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BC%B8%E5%85%A5%E5%85%A7%E5%AE%B9"><span class="toc-text">輸入內容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%B5%E6%B8%AC%E7%95%AB%E9%9D%A2"><span class="toc-text">偵測畫面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Failsafe"><span class="toc-text">Failsafe</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E9%85%8D%E7%9A%84-Library"><span class="toc-text">搭配的 Library</span></a></li></ol>
     </div>
   
   
@@ -125,6 +125,20 @@
 
 <h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">pip</span> install pyautogui</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
+<h3 id="座標管理"><a href="#座標管理" class="headerlink" title="座標管理"></a>座標管理</h3><p>因為在設計 PyAutoGUI 的過程中會使用到大量的座標點，建議使用以下方式管理與存取。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> collections <span class="token keyword">import</span> namedtuple
+Point <span class="token operator">=</span> namedtuple<span class="token punctuation">(</span><span class="token string">'Point'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'x'</span><span class="token punctuation">,</span> <span class="token string">'y'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+coords <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">'start'</span><span class="token punctuation">:</span> Point<span class="token punctuation">(</span><span class="token number">115</span><span class="token punctuation">,</span> <span class="token number">350</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">'button'</span><span class="token punctuation">:</span> Point<span class="token punctuation">(</span><span class="token number">900</span><span class="token punctuation">,</span> <span class="token number">350</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">'end'</span><span class="token punctuation">:</span> Point<span class="token punctuation">(</span><span class="token number">1702</span><span class="token punctuation">,</span> <span class="token number">337</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+pyautogui<span class="token punctuation">.</span>moveTo<span class="token punctuation">(</span><span class="token operator">*</span>coords<span class="token punctuation">[</span><span class="token string">'start'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <h3 id="游標操作"><a href="#游標操作" class="headerlink" title="游標操作"></a>游標操作</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>size<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token comment"># 取得螢幕解析度</span>
 <span class="token comment"># Size(width=2560, height=1440)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
@@ -133,7 +147,10 @@
 <span class="token comment"># 游標移動到特定座標</span>
 
 pyautogui<span class="token punctuation">.</span>moveTo<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> duration <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> tween<span class="token operator">=</span>pyautogui<span class="token punctuation">.</span>easeInOutQuad<span class="token punctuation">)</span>
-<span class="token comment"># 加入游標移動的過程</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token comment"># 加入游標移動的過程</span>
+
+pyautogui<span class="token punctuation">.</span>move<span class="token punctuation">(</span>x_offset<span class="token punctuation">,</span> y_offset<span class="token punctuation">)</span>
+<span class="token comment"># 將游標向 x 軸與 y軸相對進行移動量</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>click<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token comment"># 游標點擊</span>
@@ -178,6 +195,9 @@ pyautogui<span class="token punctuation">.</span>locateOnScreen<span class="toke
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">window <span class="token operator">=</span> pyautogui<span class="token punctuation">.</span>getWindowsWithTitle<span class="token punctuation">(</span><span class="token string">'Notepad'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
 window<span class="token punctuation">.</span>maximize<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
+<h3 id="Failsafe"><a href="#Failsafe" class="headerlink" title="Failsafe"></a>Failsafe</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">pyautogui<span class="token punctuation">.</span>FAILSAFE <span class="token operator">=</span> <span class="token boolean">True</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>為了在自動化過程有狀況，啟用 <code class="s">FAILSAFE</code> 可以讓使用者將游標移動到 (0, 0) 或者是輸入 <kbd>Ctrl + Alt + Delete</kbd> 時，停止自動化。</p>
 <h2 id="搭配的-Library"><a href="#搭配的-Library" class="headerlink" title="搭配的 Library"></a>搭配的 Library</h2><p>經常與 PyAutoGUI 搭配的 Library:</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pyperclip
 pyperclip<span class="token punctuation">.</span>copy<span class="token punctuation">(</span><span class="token string">'text keep in clip'</span><span class="token punctuation">)</span>
@@ -202,7 +222,7 @@ end_time <span class="token operator">=</span> time<span class="token punctuatio
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/11/Python-PyAutoGUI/" data-id="clp0cxslj0000vktsdvs4dylt" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/11/Python-PyAutoGUI/" data-id="clp18ltq8016450tset82h09c" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -220,6 +240,15 @@ end_time <span class="token operator">=</span> time<span class="token punctuatio
     
     
   
+    <a href="/posts/2023/11/Python-BeautifulSoup/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python BeautifulSoup
+        
+      </div>
+    </a>
+  
 
   
 </nav>
@@ -235,7 +264,7 @@ end_time <span class="token operator">=</span> time<span class="token punctuatio
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">229</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">71</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">230</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">71</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -245,7 +274,7 @@ end_time <span class="token operator">=</span> time<span class="token punctuatio
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">113</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">114</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
