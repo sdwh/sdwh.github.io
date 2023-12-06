@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Generative AI In Enterprise Application | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Generative AI In Enterprise Application">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/12/Generative-AI-In-Enterprise-Application/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2023-12-05T11:08:25.000Z">
+<meta property="article:modified_time" content="2023-12-06T09:59:49.438Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Generative-AI-In-Enterprise-Application" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/12/Generative-AI-In-Enterprise-Application/" class="article-date">
+  <time datetime="2023-12-05T11:08:25.000Z" itemprop="datePublished">2023-12-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Generative AI In Enterprise Application
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RAG-Retrieval-Augmented-Generation"><span class="toc-text">RAG (Retrieval-Augmented Generation)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-LLM-Works"><span class="toc-text">How LLM Works</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <a href="/posts/2023/12/Generative-AI-In-Enterprise-Application/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>生成式 AI 必須要結合企業的內部資料來進行企業應用，而結合的方式有以下數種：</p>
+<dl>
+  <dt>Prompt Engineering</dt>
+  <dd>藉由情境 (content) 讓生成式 AI 回答情境下的問題，聚焦在使用者的問題。</dd>
+  <dt>RAG (Retrieval-Augmented Generation)</dt>
+  <dd>生成文本流程的改善，讓生成式 AI 具備新的知識，在回答問題時，先比對問題的特徵找到參考的資料來源，根據資料來源回答使用者的問題。</dd>
+  <dt>Fine Tuning</dt>
+  <dd>藉由改變類神經網路的參數權重，讓生成式具備專門的新技能，例如摘要、分類與格式化資訊。</dd>
+  <dt>Retrain Model</dt>
+  <dd>將新的資料加入並且重新訓練模型，但模型的訓練每次成本非常昂貴 (百萬美金等級)。</dd>
+</dl>
+
+<h2 id="RAG-Retrieval-Augmented-Generation"><a href="#RAG-Retrieval-Augmented-Generation" class="headerlink" title="RAG (Retrieval-Augmented Generation)"></a>RAG (Retrieval-Augmented Generation)</h2><p>RAG 的具體步驟：</p>
+<ol>
+<li>Data ingestion</li>
+<li>Chunking</li>
+<li>Indexing</li>
+<li>Pormpting</li>
+<li>User interface</li>
+</ol>
+<p>在 Data ingestion 階段，要考量資料儲存的位置 (Database, Storage) 以及儲存的格式，如果是 pdf 或者是圖片，可以搭配 Azure Form Recognizer 來辨識。</p>
+<p>在 Chunking 階段，約 200 至 400 tokens 或 1000 至 1500 tokens 的兩種拆分策略。而在 Chunking 的過程，最適合的有許多切割分界的技巧需要留意 (例如是否會破壞 Html, XML 格式等)。</p>
+<p>在 Indexing 階段，需要考量包含 Keyword Search 以及 Vector Search 的搜尋應用，在向量化的操作，可以藉由 Azure 的 text-embedding-ada-002 來進行資料的像量化。</p>
+<p>此外在 Indexing 上，也可以搭配特別設計的資料來未來進行 filter，避免過大的 Chunking 數量，影響了生成結果。</p>
+<p>最後在 Prompting 上，可以藉由 prompt 指定模型的 profile, capabilities, limitations 以及 output format 的方式來設定。</p>
+<h2 id="How-LLM-Works"><a href="#How-LLM-Works" class="headerlink" title="How LLM Works"></a>How LLM Works</h2><ol>
+<li>數據收集與處理</li>
+</ol>
+<p>資料來源：LLM的訓練首先需要大量的文本數據。這些數據來自於書籍、新聞文章、網站、社交媒體等各種渠道，涵蓋了廣泛的話題和風格。<br>預處理：這些數據在用於訓練前會經過預處理，比如刪除重複內容、校正語法錯誤，以確保質量。</p>
+<ol start="2">
+<li>模型訓練</li>
+</ol>
+<p>學習語言規則：在訓練過程中，LLM會試圖理解和學習語言的規則，例如詞彙的意義、句子結構和文本中的上下文關係。<br>模式識別：透過分析大量文本，LLM學會識別不同的語言模式。例如，它可以學習到「今天天氣如何？」這句話通常是在詢問天氣狀況。<br>演算法和神經網絡：LLM使用複雜的演算法和神經網絡來處理和生成語言。這些網絡模仿人腦的工作方式，可以從大量數據中學習和做出預測。</p>
+<ol start="3">
+<li>生成文本</li>
+</ol>
+<p>應對請求：一旦訓練完成，LLM能夠根據用戶的請求生成文本。例如，當你問LLM「明天的天氣怎麼樣？」時，它會根據學到的知識和模式生成一個合適的回答。<br>創意應用：除了回答問題，LLM還能創作故事、寫詩，甚至編寫程式碼。這是因為它學會了各種語言風格和結構，可以靈活應用。</p>
+<ol start="4">
+<li>持續學習與改進</li>
+</ol>
+<p>反饋學習：LLM不是一成不變的。通過用戶的互動和反饓，它會持續學習和改進，以更準確地理解和回應請求。<br>調整和優化：為了提高性能和準確度，開發者會定期對LLM進行調整和優化。</p>
+<p>Wikipedia about LLM</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/12/Generative-AI-In-Enterprise-Application/" data-id="clptlwe7000mxuotsgcxq5kar" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/12/Python-Regex/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python Regex</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2023/12/Microsoft-Rename-Products/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Renames Products and Their Successors.
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">238</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">125</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
