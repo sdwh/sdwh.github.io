@@ -23,10 +23,11 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
 <meta property="article:published_time" content="2021-02-24T02:47:26.000Z">
-<meta property="article:modified_time" content="2023-12-07T09:32:57.250Z">
+<meta property="article:modified_time" content="2023-12-08T10:13:19.877Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Database">
 <meta property="article:tag" content="SQLServer">
+<meta property="article:tag" content="KingTools">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
   <style>
@@ -123,14 +124,30 @@
 
 <span id="more"></span>
 
-<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>首先於資料庫建立資料表，建立指定如下，其中包括使用<strong>叢集索引</strong>，讓資料的寫入效率大為增加並且節省空間，帥啊！</p>
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>如果 Logs 在伺服器端已經先壓縮處理，可以先透過以下 PowerShell 使用 <code>Expand-Archive</code> 進行解壓縮：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token variable">$folderPath</span> = <span class="token string">"D:\Log_Parse\Zip"</span>
+<span class="token variable">$destinationFolder</span> = <span class="token string">"D:\Log_Parse\UnZip"</span>
+
+<span class="token comment"># 先移除目的端的 log 避免重複名稱問題</span>
+<span class="token function">Remove-Item</span> <span class="token operator">-</span>Path <span class="token string">"D:\Log_Parse\UnZip\*.log"</span>
+
+<span class="token comment"># Get a list of all ZIP files in the folder</span>
+<span class="token variable">$zipFiles</span> = <span class="token function">Get-ChildItem</span> <span class="token operator">-</span>Path <span class="token variable">$folderPath</span> <span class="token operator">-</span><span class="token keyword">Filter</span> <span class="token operator">*</span><span class="token punctuation">.</span>zip
+
+<span class="token comment"># Loop through each ZIP file and extract its contents</span>
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$zipFile</span> in <span class="token variable">$zipFiles</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token variable">$dest</span> = <span class="token function">Join-Path</span> <span class="token operator">-</span>Path <span class="token variable">$destinationFolder</span> <span class="token operator">-</span>ChildPath <span class="token variable">$zipFile</span><span class="token punctuation">.</span>BaseName
+    <span class="token function">Expand-Archive</span> <span class="token operator">-</span>Path <span class="token variable">$zipFile</span><span class="token punctuation">.</span>FullName <span class="token operator">-</span>DestinationPath <span class="token variable">$destinationFolder</span> <span class="token operator">-</span>Force
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>首先於資料庫建立資料表，建立指定如下，其中包括使用<strong>COLUMNSTORE Index</strong>，讓資料的寫入效率大為增加並且節省空間，帥啊！</p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> dbo<span class="token punctuation">.</span>IISLOG
 <span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> dbo<span class="token punctuation">.</span>IISLOG <span class="token punctuation">(</span>
 <span class="token punctuation">[</span><span class="token keyword">DATE</span><span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">DATE</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
 <span class="token punctuation">[</span><span class="token keyword">TIME</span><span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">TIME</span><span class="token punctuation">]</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
 <span class="token punctuation">[</span>s<span class="token operator">-</span>ip<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">48</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
 <span class="token punctuation">[</span>cs<span class="token operator">-</span>method<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
-<span class="token punctuation">[</span>cs<span class="token operator">-</span>uri<span class="token operator">-</span>stem<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+<span class="token punctuation">[</span>cs<span class="token operator">-</span>uri<span class="token operator">-</span>stem<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">2048</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
 <span class="token punctuation">[</span>cs<span class="token operator">-</span>uri<span class="token operator">-</span>query<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">2048</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
 <span class="token punctuation">[</span>s<span class="token operator">-</span>port<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
 <span class="token punctuation">[</span>s<span class="token operator">-</span>username<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">VARCHAR</span><span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
@@ -155,6 +172,47 @@
     <span class="token function">Set-Content</span> <span class="token variable">$cleanLogPath</span> <span class="token operator">-</span>Encoding UTF8
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<p>使用平行處理的方式：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token variable">$logsPath</span> = <span class="token string">"D:\logs"</span>
+<span class="token variable">$logs</span> = <span class="token function">Get-ChildItem</span> <span class="token operator">-</span>Path <span class="token variable">$logsPath</span> <span class="token operator">-</span><span class="token keyword">Filter</span> <span class="token operator">*</span><span class="token punctuation">.</span>log
+
+<span class="token comment"># Using runspaces for parallel processing</span>
+<span class="token variable">$runspacePool</span> = <span class="token namespace">[runspacefactory]</span>::CreateRunspacePool<span class="token punctuation">(</span>1<span class="token punctuation">,</span> <span class="token namespace">[Environment]</span>::ProcessorCount<span class="token punctuation">)</span>
+<span class="token variable">$runspacePool</span><span class="token punctuation">.</span>Open<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token variable">$scriptblock</span> = <span class="token punctuation">&#123;</span>
+    <span class="token keyword">param</span><span class="token punctuation">(</span><span class="token variable">$log</span><span class="token punctuation">)</span>
+    <span class="token variable">$cleanLogPath</span> = <span class="token namespace">[IO.Path]</span>::Combine<span class="token punctuation">(</span><span class="token variable">$log</span><span class="token punctuation">.</span>DirectoryName<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token variable">$log</span><span class="token punctuation">.</span>BaseName <span class="token operator">+</span> <span class="token string">"_clean.log"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token variable">$reader</span> = <span class="token namespace">[System.IO.StreamReader]</span>::new<span class="token punctuation">(</span><span class="token variable">$log</span><span class="token punctuation">.</span>FullName<span class="token punctuation">)</span>
+    <span class="token variable">$writer</span> = <span class="token namespace">[System.IO.StreamWriter]</span>::new<span class="token punctuation">(</span><span class="token variable">$cleanLogPath</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token variable">$line</span> = <span class="token variable">$reader</span><span class="token punctuation">.</span>ReadLine<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$line</span> <span class="token operator">-notmatch</span> <span class="token string">'^#'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$writer</span><span class="token punctuation">.</span>WriteLine<span class="token punctuation">(</span><span class="token variable">$line</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token variable">$reader</span><span class="token punctuation">.</span>Close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token variable">$writer</span><span class="token punctuation">.</span>Close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token variable">$jobs</span> = <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$log</span> in <span class="token variable">$logs</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token variable">$powershell</span> = <span class="token namespace">[powershell]</span>::Create<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>AddScript<span class="token punctuation">(</span><span class="token variable">$scriptblock</span><span class="token punctuation">)</span><span class="token punctuation">.</span>AddArgument<span class="token punctuation">(</span><span class="token variable">$log</span><span class="token punctuation">)</span>
+    <span class="token variable">$powershell</span><span class="token punctuation">.</span>RunspacePool = <span class="token variable">$runspacePool</span>
+    <span class="token namespace">[PSCustomObject]</span>@<span class="token punctuation">&#123;</span>
+        Pipe = <span class="token variable">$powershell</span>
+        Status = <span class="token variable">$powershell</span><span class="token punctuation">.</span>BeginInvoke<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$job</span> in <span class="token variable">$jobs</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token variable">$job</span><span class="token punctuation">.</span>Pipe<span class="token punctuation">.</span>EndInvoke<span class="token punctuation">(</span><span class="token variable">$job</span><span class="token punctuation">.</span>Status<span class="token punctuation">)</span>
+    <span class="token variable">$job</span><span class="token punctuation">.</span>Pipe<span class="token punctuation">.</span>Dispose<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token variable">$runspacePool</span><span class="token punctuation">.</span>Close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token variable">$runspacePool</span><span class="token punctuation">.</span>Dispose<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>接著再將 logs 使用 Bulk Insert 匯入資料表</p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">BULK</span> <span class="token keyword">INSERT</span> dbo<span class="token punctuation">.</span>IISLog
   <span class="token keyword">FROM</span> <span class="token string">'D:\Data\Documents\u_ex161214_clean.log'</span>
@@ -176,6 +234,41 @@
 
 <p>其中 CODEPAGE 的部分要記得設置，否則繁體中文環境的會誤判 IIS Logs 中的資料，造成無法正確匯入。</p>
 <p>⚠️ SQL Server 2016 (13.x) 之前的 version 不支援 CodePage 65001 (UTF-8 encoding)。</p>
+<p>如果有大量的 log 要匯入，可以使用 PowerShell 來協助製作匯入 Script 的批次匯入：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token comment"># Step 1: Specify the folder path</span>
+<span class="token variable">$folderPath</span> = <span class="token string">"D:\Log_Parse\"</span>
+
+<span class="token comment"># Step 2: Define a multiline template for the text</span>
+<span class="token variable">$template</span> = @<span class="token string">"
+BULK INSERT dbo.IISLog
+  FROM '&#123;0&#125;'
+  WITH (
+  CODEPAGE = 65001,
+  FIELDTERMINATOR = ' ',
+  ROWTERMINATOR = '\n'
+)`n`n
+"</span>@
+
+<span class="token comment"># Step 3: Initialize an empty string to store the combined text</span>
+<span class="token variable">$combinedText</span> = <span class="token string">""</span>
+
+<span class="token comment"># Step 4: Loop over files in the folder</span>
+<span class="token function">Get-ChildItem</span> <span class="token operator">*</span>clean<span class="token punctuation">.</span>log <span class="token operator">-</span>Path <span class="token variable">$folderPath</span> <span class="token punctuation">|</span> <span class="token function">ForEach-Object</span> <span class="token punctuation">&#123;</span>
+    <span class="token variable">$file</span> = <span class="token variable">$_</span>
+
+    <span class="token comment"># Check if it's a file (not a folder)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">.</span>PSIsContainer <span class="token operator">-eq</span> <span class="token boolean">$false</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment"># Generate text based on the template and append it to the combinedText</span>
+        <span class="token variable">$text</span> = <span class="token variable">$template</span> <span class="token operator">-</span>f <span class="token variable">$file</span><span class="token punctuation">.</span>Name
+        <span class="token variable">$combinedText</span> <span class="token operator">+=</span> <span class="token variable">$text</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># Step 5: Create a single output .txt file for all combined text</span>
+<span class="token variable">$outputFilePath</span> = <span class="token function">Join-Path</span> <span class="token operator">-</span>Path <span class="token variable">$folderPath</span> <span class="token operator">-</span>ChildPath <span class="token string">"bulk_insert_scripts.txt"</span>
+<span class="token variable">$combinedText</span> <span class="token punctuation">|</span> <span class="token function">Out-File</span> <span class="token operator">-</span>FilePath <span class="token variable">$outputFilePath</span> <span class="token operator">-</span>Encoding UTF8<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
 <p><strong>完成後即可以利用 IIS Logs 檢視</strong></p>
 <h3 id="比較-Logs-Parser-IIS-Logs-Parser-Studio"><a href="#比較-Logs-Parser-IIS-Logs-Parser-Studio" class="headerlink" title="比較 Logs Parser / IIS Logs Parser Studio"></a>比較 Logs Parser / IIS Logs Parser Studio</h3><p>雖然 SQL Server 需要匯入才能做檢視，而 Logs Parser 僅需載入檔案即可使用較為方便，但使用 T-SQL 能夠更大的操作彈性，因此取捨就看使用者的習慣。</p>
 <p><a href="/posts/2022/01/Log-Parser/">Log Parser 工具在手 紀錄我有 | IIS W3C Logs 分析指南</a></p>
@@ -186,10 +279,10 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2021/02/SQL-Server-Import-IISLogs/" data-id="clpv71vnj01e7xkts8pve4big" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2021/02/SQL-Server-Import-IISLogs/" data-id="clpxvlpsl01e1egts1o2pbvk6" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KingTools/" rel="tag">KingTools</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
 
     </footer>
   </div>
@@ -228,7 +321,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">239</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">240</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -238,7 +331,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">126</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">127</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
