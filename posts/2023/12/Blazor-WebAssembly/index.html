@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>初探 Blazor WebAssembly (WASM) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記使用 Blazor WebAssembly 開發的初體驗，想要寫一個純粹前端的簡易應用，但這次不是選擇 Vue.js 或者是 jQuery，而是直接把後端的 C# 拿來前端寫 😆 最後結合 GitHub Action 的另一個初體驗，達成 Commit 自動部署在 gh-pages 分支的功效，完成 Commit 即部署的便利 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初探 Blazor WebAssembly (WASM)">
+<meta property="og:url" content="https://sdwh.dev/posts/2023/12/Blazor-WebAssembly/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記使用 Blazor WebAssembly 開發的初體驗，想要寫一個純粹前端的簡易應用，但這次不是選擇 Vue.js 或者是 jQuery，而是直接把後端的 C# 拿來前端寫 😆 最後結合 GitHub Action 的另一個初體驗，達成 Commit 自動部署在 gh-pages 分支的功效，完成 Commit 即部署的便利 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/Blazor-WASM-Apps.png">
+<meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/Play-Button.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/GitHub-Action-Workflow-Permissions-Read-And-Write.png">
+<meta property="article:published_time" content="2023-12-10T10:49:37.000Z">
+<meta property="article:modified_time" content="2023-12-10T12:34:20.188Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNET">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="Blazor">
+<meta property="article:tag" content="Conversation">
+<meta property="article:tag" content="Generated">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Blazor-WebAssembly" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2023/12/Blazor-WebAssembly/" class="article-date">
+  <time datetime="2023-12-10T10:49:37.000Z" itemprop="datePublished">2023-12-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      初探 Blazor WebAssembly (WASM)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Blazor-WebAssembly"><span class="toc-text">Blazor WebAssembly</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Async-amp-Await"><span class="toc-text">Async &amp; Await</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deploy-to-GitHub-Page-with-GitHub-Action"><span class="toc-text">Deploy to GitHub Page with GitHub Action</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記使用 Blazor WebAssembly 開發的初體驗，想要寫一個純粹前端的簡易應用，但這次不是選擇 Vue.js 或者是 jQuery，而是直接把後端的 C# 拿來前端寫 😆 最後結合 GitHub Action 的另一個初體驗，達成 Commit 自動部署在 gh-pages 分支的功效，完成 Commit 即部署的便利 😎</p>
+<a href="/posts/2023/12/Blazor-WebAssembly/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Blazor-WebAssembly"><a href="#Blazor-WebAssembly" class="headerlink" title="Blazor WebAssembly"></a>Blazor WebAssembly</h2><p><img src="/assets/Blazor-WASM-Apps.png"></p>
+<div style="display: flex; justify-content:center;">
+  <a href="https://github.com/sdwh/LineageEnhance" target="_blank" style="margin-right:2rem">
+    <img src="/assets/openmoji-github.svg" width="50px"> GitHub
+  </a>
+  <a href="https://sdwh.dev/LineageEnhance" target="_blank">
+    <img src="/assets/Play-Button.svg" width="50px"> Demo
+  </a>
+</div>
+
+<p>在 .NET 7，Blazor 分為 Blazor Server 以及 Blazor WebAssembly，本次選擇的是完全部署於 Client 端的 Web Assembly。</p>
+<table>
+<thead>
+<tr>
+<th>Features</th>
+<th>Blazor Server</th>
+<th>Blazor WebAssembly</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>執行速度</td>
+<td>初始執行快，因為大部分 Code 在 Server 執行</td>
+<td>初始執行慢，需要下載整個應用 Dependency</td>
+</tr>
+<tr>
+<td>部署複雜度</td>
+<td>簡單，所有 Code 在 Server 執行</td>
+<td>複雜，需要前端部署</td>
+</tr>
+<tr>
+<td>資源利用</td>
+<td>Server 管理資源</td>
+<td>利用 Client Side 計算能力</td>
+</tr>
+<tr>
+<td>數據保護</td>
+<td>較容易保護敏感數據</td>
+<td>需要 Client Side 安全措施</td>
+</tr>
+<tr>
+<td>網路依賴</td>
+<td>高度依賴網路連線品質</td>
+<td>下載後可以 Offline Running</td>
+</tr>
+<tr>
+<td>伺服器負擔</td>
+<td>隨用戶增加而增加</td>
+<td>主要在 Client Side 處理</td>
+</tr>
+<tr>
+<td>延遲敏感</td>
+<td>對網路延遲敏感</td>
+<td>較少受網路延遲影響</td>
+</tr>
+<tr>
+<td>適用場景</td>
+<td>快速部署、頻繁 Server 交互的應用</td>
+<td>高即時性、需要 Offlline 功能的應用</td>
+</tr>
+</tbody></table>
+<p>專案建立之後，馬上開寫，延續著之前寫 Vue.js 的經驗，一開始就是單檔開發，完全沒考慮 Components 設計的 😁</p>
+<p>而在 Blazor 當中是撰寫 <code>/Pages/Index.razor</code> 因為有 ASP.NET MVC 寫 Razor 的經驗，之前也把玩過 Razor Pages 專案類型，因此寫起來完全沒問題。也因為 Vue.js 的經驗，大概知曉上面 Template 下面 Code 的區隔，只差沒有 Scoped CSS 😅</p>
+<p>以往要透過 JS 的處理，延續著 Vue.js 的經驗，找到如何在 Blazor Razor 使用 Two-Way Binding，一切的工作就輕鬆的寫了起來。</p>
+<p><code class="watch">Pages/Index.razor</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token operator">&lt;</span>td<span class="token operator">></span>@<span class="token punctuation">(</span>item<span class="token punctuation">.</span>Defence <span class="token operator">-</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>IsEnhanceable <span class="token punctuation">?</span> item<span class="token punctuation">.</span>Enhanced <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+<span class="token operator">&lt;</span>td<span class="token operator">></span>
+  @<span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>IsEnhanceable<span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+      <span class="token operator">&lt;</span>button 
+        <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"btn btn-outline-info me-lg-3 btn-sm @((appRuntime.CoolDownState) ? "</span>disabled<span class="token string">" : "</span>" <span class="token punctuation">)</span>"
+        @onclick<span class="token operator">=</span><span class="token string">"() => Enhance(item)"</span><span class="token operator">></span>防卷<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+  <span class="token punctuation">&#125;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>邏輯控制什麼的就是 Razor 習慣的語法，Click 事件 則透過 <code>@onclick</code> 搭配 lambda 的方式來註冊使用。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"col-12 col-lg-4 d-flex align-items-center"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>label<span class="token operator">></span>LV：<span class="token operator">&lt;</span><span class="token operator">/</span>label<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"number"</span> @bind<span class="token operator">=</span><span class="token string">"appRuntime.Level"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> <span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span>
+<span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"col-12 col-lg-4 mt-3 mt-lg-0 d-flex align-items-center"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>span<span class="token operator">></span>AC：<span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"number"</span> <span class="token keyword">value</span><span class="token operator">=</span><span class="token string">"@sumDefence()"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> disabled<span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">sumDefence</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> baseDef <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> defFromLevelDex <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>Math<span class="token punctuation">.</span><span class="token function">Floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>appRuntime<span class="token punctuation">.</span>Level <span class="token operator">/</span> <span class="token number">4.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> equip <span class="token keyword">in</span> appRuntime<span class="token punctuation">.</span>Equipments<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        baseDef <span class="token operator">=</span> baseDef <span class="token operator">+</span> equip<span class="token punctuation">.</span>Defence <span class="token operator">-</span> equip<span class="token punctuation">.</span>Enhanced<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    baseDef <span class="token operator">-=</span> defFromLevelDex<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> baseDef<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Two-Way Binding 根據 Input 的操作，對應的動態計算，只需要在 input 透過 <code>@Bind</code> 就可以輕鬆達成。</p>
+<p>寫著寫著，因為狀態管理的處理多了起來，於是就獨立抽出來，延續 ASP.NET MVC 的習慣，用 Models 來管理資料模型，也因為應用系統不大，沒有再額外做 Service 或者 Business Logic 的分層，直接在 Models 集合起來。</p>
+<p><code class="watch">/Models/AppRuntime.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AppRuntime</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> CoolDownState <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Level <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token number">48</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Dex <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token number">18</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Experience <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">List<span class="token punctuation">&lt;</span>Equipment<span class="token punctuation">></span></span> Equipments <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">AppRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Equipments <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Equipment<span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Equipment</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"艾爾穆的祝福"</span><span class="token punctuation">,</span> Safe <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">,</span> Defence <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">6</span><span class="token punctuation">,</span> Image <span class="token operator">=</span> <span class="token string">"helmet"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Equipment</span> <span class="token punctuation">&#123;</span> Name <span class="token operator">=</span> <span class="token string">"精靈金屬盔甲"</span><span class="token punctuation">,</span> Safe <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">,</span> Defence <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">6</span><span class="token punctuation">,</span> Image <span class="token operator">=</span> <span class="token string">"armor"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">Program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddScoped</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>AppRuntime<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>需要共用的狀態資料，透過 IoC 的方式注入。</p>
+<p><code class="watch">/Pages/Index.razor</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@<span class="token keyword">using</span> LineageEnhance<span class="token punctuation">.</span>Models
+@inject AppRuntime appRuntime<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>對於需要使用的頁面直接 <code>@inject</code> 以及 <code>@using</code> 就可以使用，超級方便 😍</p>
+<h3 id="Async-amp-Await"><a href="#Async-amp-Await" class="headerlink" title="Async &amp; Await"></a>Async &amp; Await</h3><p>而這次實驗的 Apps，想要使用非同步的效果，在工作執行後，先暫停重複觸發工作，但同時又可以進行其他類型工作的方式。</p>
+<p>以往暫停都是透過 <code>Thread.Sleep</code>，但這樣會讓所有的操作都停下來等待，不是非同步的效果。</p>
+<p>運用共用的狀態 <code>CoolState</code>，當 Button 觸發，會觸發非同步的 Method，但不必 Await，而是會任由等待，於是同時就可以做其他的事情。</p>
+<p><code class="watch">/Pages/Index.razor</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">private</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task</span> <span class="token function">Enhance</span><span class="token punctuation">(</span><span class="token class-name">Equipment</span> equipment<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">bool</span></span> blessed <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>equipment<span class="token punctuation">.</span>IsEnhanceable <span class="token operator">||</span> appRuntime<span class="token punctuation">.</span>CoolDownState <span class="token operator">==</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    appRuntime<span class="token punctuation">.</span>CoolDownState <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> enhanceSystem <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">EnhanceSystem</span><span class="token punctuation">(</span>appRuntime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> enhanceSystem<span class="token punctuation">.</span><span class="token function">Enhance</span><span class="token punctuation">(</span>equipment<span class="token punctuation">,</span> blessed<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ConfigureAwait</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>這邊的 Enhance 類似 Controller 的用途，主要先將按鈕的狀態透過 <code>appRuntime.CoolDownState</code> 調整為不可使用，而 Controller 本身也會檢查如果是不允許使用的狀態會直接 return。</p>
+<p>實際的運作則是透過已經抽出來的 <code>EnhanceSystem.Enhance</code> 來進行，其實是不需要使用 <code>await</code> 但 IDE 不喜歡，IDE 認為 Enhace 是 <code>async Task</code> 就應該要有 <code>await</code>，但可以透過 <code>ConfigureAwait(false)</code> 的方式來解除 😅</p>
+<p><code class="watch">/Models/EnhanceSystem.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task</span> <span class="token function">Enhance</span><span class="token punctuation">(</span><span class="token class-name">Equipment</span> equipment<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">bool</span></span> blessed <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">await</span> Task<span class="token punctuation">.</span><span class="token function">Delay</span><span class="token punctuation">(</span><span class="token number">25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    _appRuntime<span class="token punctuation">.</span>CoolDownState <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>而因為 <code>CoolDownState</code> 是實作刻意的，透過 <code>await Task.Delay</code> 來達成，而非使用 <code>Thread.Sleep</code>，最後也在 <code>EnhanceSystem.Enhance</code> 的結尾恢復 <code>CoolDownState</code>。</p>
+<h2 id="Deploy-to-GitHub-Page-with-GitHub-Action"><a href="#Deploy-to-GitHub-Page-with-GitHub-Action" class="headerlink" title="Deploy to GitHub Page with GitHub Action"></a>Deploy to GitHub Page with GitHub Action</h2><ol>
+<li>Settings “Workflow permissions” : “Read and write permissions” : 解決 GitHub Action 執行 發生 <strong>‘/usr/bin/git’ failed with exit code 128</strong> 權限不足的問題</li>
+</ol>
+<p><img src="/assets/GitHub-Action-Workflow-Permissions-Read-And-Write.png"></p>
+<ol start="2">
+<li>新增 <code>.nojekyll</code> : 直接在 <code>/wwwroot</code> 加入空檔案</li>
+<li>新增 404.html : 透過 GitHub Action 去處理</li>
+<li>修正 <code>index.html</code> base href: 透過 GitHub Action</li>
+</ol>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">name</span><span class="token punctuation">:</span> .NET
+
+<span class="token key atrule">on</span><span class="token punctuation">:</span>
+  <span class="token key atrule">push</span><span class="token punctuation">:</span>
+    <span class="token key atrule">branches</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> master <span class="token punctuation">]</span>
+
+<span class="token key atrule">jobs</span><span class="token punctuation">:</span>
+  <span class="token key atrule">deploy-to-github-pages</span><span class="token punctuation">:</span>
+
+    <span class="token key atrule">runs-on</span><span class="token punctuation">:</span> ubuntu<span class="token punctuation">-</span>latest
+
+    <span class="token key atrule">steps</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/checkout@v3
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> Setup .NET
+      <span class="token key atrule">uses</span><span class="token punctuation">:</span> actions/setup<span class="token punctuation">-</span>dotnet@v2
+      <span class="token key atrule">with</span><span class="token punctuation">:</span>
+        <span class="token key atrule">dotnet-version</span><span class="token punctuation">:</span> 7.0.x
+    
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> Publish .NET Core Project
+      <span class="token key atrule">run</span><span class="token punctuation">:</span> dotnet publish LineageEnhance.csproj <span class="token punctuation">-</span>c Release <span class="token punctuation">-</span>o release <span class="token punctuation">-</span><span class="token punctuation">-</span>nologo
+
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> Modify index.html
+      <span class="token key atrule">run</span><span class="token punctuation">:</span> sed <span class="token punctuation">-</span>i 's/\/LineageEnhance"/\/LineageEnhance\/"/' release/wwwroot/index.html
+      
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> copy index.html to 404.html
+      <span class="token key atrule">run</span><span class="token punctuation">:</span> cp release/wwwroot/index.html release/wwwroot/404.html
+      
+    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> Commit wwwroot to GitHub Pages
+      <span class="token key atrule">uses</span><span class="token punctuation">:</span> JamesIves/github<span class="token punctuation">-</span>pages<span class="token punctuation">-</span>deploy<span class="token punctuation">-</span>action@v4.3.3
+      <span class="token key atrule">with</span><span class="token punctuation">:</span>
+          <span class="token key atrule">BRANCH</span><span class="token punctuation">:</span> gh<span class="token punctuation">-</span>pages
+          <span class="token key atrule">FOLDER</span><span class="token punctuation">:</span> release/wwwroot<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>參考 PuTaoNini 所分享的<a target="_blank" rel="noopener" href="https://hackmd.io/@oneheed/HJGE6m5Bq">將 Blazor WebAssembly 部署到 GitHub Pages</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2023/12/Blazor-WebAssembly/" data-id="clpzgxmn000c7n8tshid8dlfu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Blazor/" rel="tag">Blazor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Conversation/" rel="tag">Conversation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Generated/" rel="tag">Generated</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/12/Python-Load-CSV-Files-As-Namedtuple/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python Load CSV Files As Namestuple</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">241</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">128</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2023 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
