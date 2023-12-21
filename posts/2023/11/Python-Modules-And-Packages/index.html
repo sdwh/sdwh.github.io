@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
 <meta property="article:published_time" content="2023-11-28T11:13:36.000Z">
-<meta property="article:modified_time" content="2023-12-04T10:36:08.620Z">
+<meta property="article:modified_time" content="2023-12-16T10:44:38.241Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
@@ -110,7 +110,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Modules"><span class="toc-text">Modules</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Packages"><span class="toc-text">Packages</span></a></li></ol>
     </div>
   
   
@@ -122,7 +122,7 @@
 
 <span id="more"></span>
 
-<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p><code class="watch">/Models/Person.py</code></p>
+<h2 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h2><p><code class="watch">/Models/Person.py</code></p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> collections <span class="token keyword">import</span> namedtuple
 
 Person <span class="token operator">=</span> namedtuple<span class="token punctuation">(</span><span class="token string">'Person'</span><span class="token punctuation">,</span> <span class="token string">'Name, Age, Gender, Pet'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
@@ -149,11 +149,45 @@ Person<span class="token punctuation">(</span><span class="token string">'Webber
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> Models <span class="token keyword">import</span> <span class="token operator">*</span>
 
 Person<span class="token punctuation">(</span><span class="token string">'Webber'</span><span class="token punctuation">,</span> <span class="token number">26</span><span class="token punctuation">,</span> <span class="token string">'Male'</span><span class="token punctuation">,</span> Pet<span class="token punctuation">(</span><span class="token string">'Pika'</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Packages"><a href="#Packages" class="headerlink" title="Packages"></a>Packages</h2><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">my_package</span>/</span>
+    <span class="token command"><span class="token keyword">__init__</span>.py</span>
+    <span class="token command"><span class="token keyword">module1</span>.py</span>
+    <span class="token command"><span class="token keyword">module2</span>.py</span>
+<span class="token command"><span class="token keyword">setup</span>.py</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">setup.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> setuptools <span class="token keyword">import</span> setup<span class="token punctuation">,</span> find_packages
+
+setup<span class="token punctuation">(</span>
+    name<span class="token operator">=</span><span class="token string">'my_local_package'</span><span class="token punctuation">,</span>
+    version<span class="token operator">=</span><span class="token string">'0.1'</span><span class="token punctuation">,</span>
+    packages<span class="token operator">=</span>find_packages<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    install_requires<span class="token operator">=</span><span class="token punctuation">[</span>
+        <span class="token string">'beautifulsoup4'</span><span class="token punctuation">,</span>
+        <span class="token string">'requests'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    author<span class="token operator">=</span><span class="token string">'Author Name'</span><span class="token punctuation">,</span>
+    author_email<span class="token operator">=</span><span class="token string">'email@example.com'</span><span class="token punctuation">,</span>
+    description<span class="token operator">=</span><span class="token string">'A Python local package with dependencies'</span><span class="token punctuation">,</span>
+    long_description<span class="token operator">=</span><span class="token string">'A Python package that provides useful functionality with dependencies on BeautifulSoup and Requests.'</span><span class="token punctuation">,</span>
+    classifiers<span class="token operator">=</span><span class="token punctuation">[</span>
+        <span class="token string">'Development Status :: 3 - Alpha'</span><span class="token punctuation">,</span>
+        <span class="token string">'License :: OSI Approved :: MIT License'</span><span class="token punctuation">,</span>
+        <span class="token string">'Programming Language :: Python :: 3'</span><span class="token punctuation">,</span>
+        <span class="token string">'Programming Language :: Python :: 3.7'</span><span class="token punctuation">,</span>
+        <span class="token string">'Programming Language :: Python :: 3.8'</span><span class="token punctuation">,</span>
+        <span class="token string">'Programming Language :: Python :: 3.9'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://hackmd.io/@seanbbear/HJaAYctkw">如何將寫好的package上傳到pypi供人安裝使用</a></p>
+
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/11/Python-Modules-And-Packages/" data-id="clq54tjlk016ul4ts5dvmezga" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/11/Python-Modules-And-Packages/" data-id="clqf5jkns0173ygtsgcvg3amg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -195,7 +229,7 @@ Person<span class="token punctuation">(</span><span class="token string">'Webber
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">243</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">245</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">48</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -205,7 +239,7 @@ Person<span class="token punctuation">(</span><span class="token string">'Webber
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">132</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">135</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
