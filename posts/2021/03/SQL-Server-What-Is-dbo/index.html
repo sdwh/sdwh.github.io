@@ -25,7 +25,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-dbo-In-Database-Security.png">
 <meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-dbo-schema.png">
 <meta property="article:published_time" content="2021-03-08T11:06:06.000Z">
-<meta property="article:modified_time" content="2023-04-01T12:13:24.971Z">
+<meta property="article:modified_time" content="2023-12-27T11:21:54.670Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Database">
 <meta property="article:tag" content="SQLServer">
@@ -113,7 +113,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dbo-%E6%98%AF%E4%BD%BF%E7%94%A8%E8%80%85-dbo-is-user"><span class="toc-text">dbo 是使用者 (dbo is user)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AA%B0%E6%98%AF%E8%B3%87%E6%96%99%E5%BA%AB%E7%9A%84-dbo-%E4%BD%BF%E7%94%A8%E8%80%85"><span class="toc-text">誰是資料庫的 dbo 使用者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AA%BF%E6%95%B4-dbo-%E5%B0%8D%E6%87%89%E7%9A%84-login"><span class="toc-text">如何調整 dbo 對應的 login</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dbo-%E6%98%AF%E7%B5%90%E6%A7%8B%E6%8F%8F%E8%BF%B0-dbo-is-schema"><span class="toc-text">dbo 是結構描述 (dbo is schema)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B5%90%E6%A7%8B%E6%8F%8F%E8%BF%B0%E7%9A%84%E6%93%81%E6%9C%89%E8%80%85"><span class="toc-text">結構描述的擁有者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AA%BF%E6%95%B4%E7%B5%90%E6%A7%8B%E6%8F%8F%E8%BF%B0%E7%9A%84%E6%93%81%E6%9C%89%E8%80%85"><span class="toc-text">如何調整結構描述的擁有者</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dbo-%E6%98%AF%E4%BD%BF%E7%94%A8%E8%80%85-dbo-is-user"><span class="toc-text">dbo 是使用者 (dbo is user)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AA%B0%E6%98%AF%E8%B3%87%E6%96%99%E5%BA%AB%E7%9A%84-dbo-%E4%BD%BF%E7%94%A8%E8%80%85"><span class="toc-text">誰是資料庫的 dbo 使用者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AA%BF%E6%95%B4-dbo-%E5%B0%8D%E6%87%89%E7%9A%84-login"><span class="toc-text">如何調整 dbo 對應的 login</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%AA%A2%E8%A6%96%E6%89%80%E6%9C%89%E8%B3%87%E6%96%99%E5%BA%AB%E7%9A%84-dbo-%E5%B0%8D%E6%87%89-login"><span class="toc-text">如何檢視所有資料庫的 dbo 對應 login</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dbo-%E6%98%AF%E7%B5%90%E6%A7%8B%E6%8F%8F%E8%BF%B0-dbo-is-schema"><span class="toc-text">dbo 是結構描述 (dbo is schema)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B5%90%E6%A7%8B%E6%8F%8F%E8%BF%B0%E7%9A%84%E6%93%81%E6%9C%89%E8%80%85"><span class="toc-text">結構描述的擁有者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AA%BF%E6%95%B4%E7%B5%90%E6%A7%8B%E6%8F%8F%E8%BF%B0%E7%9A%84%E6%93%81%E6%9C%89%E8%80%85"><span class="toc-text">如何調整結構描述的擁有者</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
     </div>
   
   
@@ -142,6 +142,53 @@
 GO
 <span class="token keyword">ALTER</span> <span class="token keyword">AUTHORIZATION</span> <span class="token keyword">ON</span> <span class="token keyword">DATABASE</span>::<span class="token punctuation">[</span>DatabaseName<span class="token punctuation">]</span> <span class="token keyword">TO</span> <span class="token punctuation">[</span>loginName<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
+<h4 id="如何檢視所有資料庫的-dbo-對應-login"><a href="#如何檢視所有資料庫的-dbo-對應-login" class="headerlink" title="如何檢視所有資料庫的 dbo 對應 login"></a>如何檢視所有資料庫的 dbo 對應 login</h4><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>master<span class="token punctuation">]</span>
+
+<span class="token comment">-- Create a temporary table to store the results</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token comment">#DBO_Mapping (DatabaseName NVARCHAR(100), DboLogin NVARCHAR(100));</span>
+
+<span class="token comment">-- Declare variables for cursor</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@DatabaseName</span> NVARCHAR<span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- Create a cursor to iterate through databases</span>
+<span class="token keyword">DECLARE</span> db_cursor <span class="token keyword">CURSOR</span> <span class="token keyword">FOR</span>
+<span class="token keyword">SELECT</span> name
+<span class="token keyword">FROM</span> sys<span class="token punctuation">.</span><span class="token keyword">databases</span>
+<span class="token keyword">WHERE</span> state_desc <span class="token operator">=</span> <span class="token string">'ONLINE'</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- Initialize the cursor</span>
+<span class="token keyword">OPEN</span> db_cursor<span class="token punctuation">;</span>
+
+<span class="token comment">-- Loop through each database</span>
+<span class="token keyword">FETCH</span> <span class="token keyword">NEXT</span> <span class="token keyword">FROM</span> db_cursor <span class="token keyword">INTO</span> <span class="token variable">@DatabaseName</span><span class="token punctuation">;</span>
+<span class="token keyword">WHILE</span> @<span class="token variable">@FETCH_STATUS</span> <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">BEGIN</span>
+    <span class="token comment">-- Dynamic SQL to get dbo mapping for each database</span>
+    <span class="token keyword">DECLARE</span> <span class="token variable">@sql</span> NVARCHAR<span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">SET</span> <span class="token variable">@sql</span> <span class="token operator">=</span> N<span class="token string">'USE ['</span> <span class="token operator">+</span> <span class="token variable">@DatabaseName</span> <span class="token operator">+</span> <span class="token string">'];
+                 INSERT INTO #DBO_Mapping (DatabaseName, DboLogin)
+                 SELECT '''</span> <span class="token operator">+</span> <span class="token variable">@DatabaseName</span> <span class="token operator">+</span> <span class="token string">''', sp.name AS DboLogin
+                 FROM sys.database_principals dp
+                 INNER JOIN sys.server_principals sp ON dp.sid = sp.sid
+                 WHERE dp.name = ''dbo'';'</span><span class="token punctuation">;</span>
+    
+    <span class="token comment">-- Execute the dynamic SQL</span>
+    <span class="token keyword">EXEC</span> sp_executesql <span class="token variable">@sql</span><span class="token punctuation">;</span>
+    
+    <span class="token comment">-- Fetch the next database</span>
+    <span class="token keyword">FETCH</span> <span class="token keyword">NEXT</span> <span class="token keyword">FROM</span> db_cursor <span class="token keyword">INTO</span> <span class="token variable">@DatabaseName</span><span class="token punctuation">;</span>
+<span class="token keyword">END</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- Close and deallocate the cursor</span>
+<span class="token keyword">CLOSE</span> db_cursor<span class="token punctuation">;</span>
+<span class="token keyword">DEALLOCATE</span> db_cursor<span class="token punctuation">;</span>
+
+<span class="token comment">-- Select the results from the temporary table</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> <span class="token comment">#DBO_Mapping;</span>
+
+<span class="token comment">-- Drop the temporary table</span>
+<span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token comment">#DBO_Mapping;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="dbo-是結構描述-dbo-is-schema"><a href="#dbo-是結構描述-dbo-is-schema" class="headerlink" title="dbo 是結構描述 (dbo is schema)"></a>dbo 是結構描述 (dbo is schema)</h3><p>此外常常也會看見 dbo.各種物件，例如 dbo.table、dbo.view、dbo.function 等等，這是因為資料庫中的預設描述結構(schema)就是 dbo，而資料庫新建立的使用者都會具有 dbo 作為預設的描述結構。</p>
 <p>dbo schema (描述結構) 與 dbo user (使用者) 是不同的概念。</p>
 <h4 id="結構描述的擁有者"><a href="#結構描述的擁有者" class="headerlink" title="結構描述的擁有者"></a>結構描述的擁有者</h4><p>結構描述有其擁有者，可以從 資料庫 → 安全性 → 描述結構 選擇描述結構來確認。</p>
@@ -159,7 +206,7 @@ GO
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2021/03/SQL-Server-What-Is-dbo/" data-id="clqfat46m01lvp4ts04cm1nqu" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2021/03/SQL-Server-What-Is-dbo/" data-id="clqrdynhm01mhrwtsefb6c86p" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
@@ -201,7 +248,7 @@ GO
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">245</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">49</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">247</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -211,7 +258,7 @@ GO
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">136</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">139</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
