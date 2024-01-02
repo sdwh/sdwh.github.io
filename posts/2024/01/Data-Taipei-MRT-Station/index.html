@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Data Taipei MRT Station 臺北捷運開放資料及行政區域編號 (TDX) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介紹如何介接 TDX 所提供的捷運相關資料，包含中英文站名、路線、票價與車次時間與全趟時間等資訊 😎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data Taipei MRT Station 臺北捷運開放資料及行政區域編號 (TDX)">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/01/Data-Taipei-MRT-Station/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="介紹如何介接 TDX 所提供的捷運相關資料，包含中英文站名、路線、票價與車次時間與全趟時間等資訊 😎">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys.svg">
+<meta property="article:published_time" content="2024-01-02T11:15:46.000Z">
+<meta property="article:modified_time" content="2024-01-02T12:14:02.067Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="LifeHack">
+<meta property="article:tag" content="OpenData">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Data-Taipei-MRT-Station" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/01/Data-Taipei-MRT-Station/" class="article-date">
+  <time datetime="2024-01-02T11:15:46.000Z" itemprop="datePublished">2024-01-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LifeHack/">LifeHack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Data Taipei MRT Station 臺北捷運開放資料及行政區域編號 (TDX)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MRT"><span class="toc-text">MRT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%B7%E9%81%8B%E8%B7%AF%E7%B7%9A%E5%9F%BA%E6%9C%AC%E8%B3%87%E6%96%99"><span class="toc-text">捷運路線基本資料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%B7%E9%81%8B%E8%BB%8A%E7%AB%99%E5%9F%BA%E6%9C%AC%E8%B3%87%E6%96%99"><span class="toc-text">捷運車站基本資料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%B7%E9%81%8B%E7%87%9F%E9%81%8B%E8%B7%AF%E7%B7%9A%E5%9F%BA%E6%9C%AC%E8%B3%87%E6%96%99"><span class="toc-text">捷運營運路線基本資料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%B7%E9%81%8B%E5%88%97%E8%BB%8A%E7%AB%99%E9%96%93%E9%81%8B%E8%A1%8C%E6%99%82%E9%96%93%E8%B3%87%E6%96%99"><span class="toc-text">捷運列車站間運行時間資料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%B7%E9%81%8B%E8%B7%AF%E7%B7%9A%E7%AB%99%E9%96%93%E8%BD%89%E4%B9%98%E5%9F%BA%E6%9C%AC%E8%B3%87%E6%96%99"><span class="toc-text">捷運路線站間轉乘基本資料</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%8C%E6%94%BF%E5%8D%80%E5%9F%9F%E5%8F%8A%E6%9D%91%E9%87%8C%E4%BB%A3%E7%A2%BC"><span class="toc-text">行政區域及村里代碼</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B8%A3%E5%B8%82%E4%B9%8BCity%E5%88%97%E8%A1%A8"><span class="toc-text">縣市之City列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E7%B8%A3%E5%B8%82City%E4%B9%8B%E9%84%89%E9%8E%AE%E5%B8%82%E5%8D%80%E5%88%97%E8%A1%A8"><span class="toc-text">指定縣市City之鄉鎮市區列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E7%B8%A3%E5%B8%82City%E4%B9%8B%E6%9D%91%E9%87%8C%E5%88%97%E8%A1%A8"><span class="toc-text">指定縣市City之村里列表</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>介紹如何介接 TDX 所提供的捷運相關資料，包含中英文站名、路線、票價與車次時間與全趟時間等資訊 😎</p>
+<a href="/posts/2024/01/Data-Taipei-MRT-Station/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys.svg" alt="logo" width="80%">
+</a>
+
+<span id="more"></span>
+
+<h2 id="MRT"><a href="#MRT" class="headerlink" title="MRT"></a>MRT</h2><p>台北捷運的開放資料，沿革由政府資料開放平台的<a target="_blank" rel="noopener" href="https://data.gov.tw/dataset/128941">臺北捷運列車到站站名</a>、臺北市資料大平台的<a target="_blank" rel="noopener" href="https://data.taipei/dataset/detail?id=6556e1e8-c908-42d5-b984-b3f7337b139b">臺北捷運列車到站站名</a>、PTX 公共運輸整合資訊流通服務平台，到最新的 TDX 運輸資料流通服務，雖然臺北捷運列車到站站名的開放資料仍有在維護，但整合到 TDX 運輸資料流通服務，看來才是交通資料綜整的趨勢。</p>
+<p>本次筆記介紹如何使 TDX 上各式臺北捷運相關的開放資料。</p>
+<p>首要先知道的是在 TDX 包含多種的捷運軌道系統，詳如下表：</p>
+<table>
+<thead>
+<tr>
+<th>軌道系統</th>
+<th>代碼</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>臺北捷運</td>
+<td>TRTC</td>
+</tr>
+<tr>
+<td>高雄捷運</td>
+<td>KRTC</td>
+</tr>
+<tr>
+<td>桃園捷運</td>
+<td>TYMC</td>
+</tr>
+<tr>
+<td>臺中捷運</td>
+<td>TMRT</td>
+</tr>
+<tr>
+<td>淡海輕軌</td>
+<td>NTDLRT</td>
+</tr>
+<tr>
+<td>新北捷運</td>
+<td>NTMC</td>
+</tr>
+<tr>
+<td>安坑輕軌</td>
+<td>NTALRT</td>
+</tr>
+</tbody></table>
+<p>而在資料的使用上，有分為基礎服務、進階服務以及加值服務，而原則上 TDX 依照使用者付費的精神，讓資料平台的運作能夠長久的經營下去，因此 API 的呼叫會統計使用的資料量。而本篇筆記僅介紹使用基礎服務的資料，用於簡易的資料處理示範使用。</p>
+<blockquote>
+<p>依照 TDX 說明：「若不使用 API 金鑰 呼叫 API，則僅能透過瀏覽器呼叫【基礎】服務 ，且每個呼叫來源端 IP 的上限為每日 50 次。」</p>
+</blockquote>
+<h3 id="捷運路線基本資料"><a href="#捷運路線基本資料" class="headerlink" title="捷運路線基本資料"></a>捷運路線基本資料</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Rail/Metro/Line/TRTC?%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>資料內容抽樣：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"LineNo"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"LineID"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"LineName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"板南線"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Bannan Line"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"LineSectionName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"LineColor"</span><span class="token operator">:</span> <span class="token string">"#0a59ae"</span><span class="token punctuation">,</span>
+    <span class="token property">"IsBranch"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">"SrcUpdateTime"</span><span class="token operator">:</span> <span class="token string">"2020-01-31T14:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"UpdateTime"</span><span class="token operator">:</span> <span class="token string">"2020-05-20T12:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"VersionID"</span><span class="token operator">:</span> <span class="token number">2</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="捷運車站基本資料"><a href="#捷運車站基本資料" class="headerlink" title="捷運車站基本資料"></a>捷運車站基本資料</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Rail/Metro/Station/TRTC?%24%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"StationUID"</span><span class="token operator">:</span> <span class="token string">"TRTC-BL01"</span><span class="token punctuation">,</span>
+    <span class="token property">"StationID"</span><span class="token operator">:</span> <span class="token string">"BL01"</span><span class="token punctuation">,</span>
+    <span class="token property">"StationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"頂埔"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Dingpu"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"StationAddress"</span><span class="token operator">:</span> <span class="token string">"236040新北市土城區中央路4段51之6號B3"</span><span class="token punctuation">,</span>
+    <span class="token property">"BikeAllowOnHoliday"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"SrcUpdateTime"</span><span class="token operator">:</span> <span class="token string">"2023-10-12T00:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"UpdateTime"</span><span class="token operator">:</span> <span class="token string">"2023-10-17T00:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"VersionID"</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
+    <span class="token property">"StationPosition"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"PositionLon"</span><span class="token operator">:</span> <span class="token number">121.418744</span><span class="token punctuation">,</span>
+      <span class="token property">"PositionLat"</span><span class="token operator">:</span> <span class="token number">24.959351</span><span class="token punctuation">,</span>
+      <span class="token property">"GeoHash"</span><span class="token operator">:</span> <span class="token string">"wsqmfzwqv"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="捷運營運路線基本資料"><a href="#捷運營運路線基本資料" class="headerlink" title="捷運營運路線基本資料"></a>捷運營運路線基本資料</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Rail/Metro/Route/TRTC?%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"RouteID"</span><span class="token operator">:</span> <span class="token string">"BL-1"</span><span class="token punctuation">,</span>
+    <span class="token property">"OperatorCode"</span><span class="token operator">:</span> <span class="token string">"TRTC"</span><span class="token punctuation">,</span>
+    <span class="token property">"RouteName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"頂埔－南港展覽館"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Dingpu - Taipei Nangang Exhibition Center"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"RailRouteType"</span><span class="token operator">:</span> <span class="token number">33</span><span class="token punctuation">,</span>
+    <span class="token property">"LineNo"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"LineID"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"StartStationID"</span><span class="token operator">:</span> <span class="token string">"BL01"</span><span class="token punctuation">,</span>
+    <span class="token property">"StartStationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"頂埔"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Dingpu"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"EndStationID"</span><span class="token operator">:</span> <span class="token string">"BL23"</span><span class="token punctuation">,</span>
+    <span class="token property">"EndStationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"南港展覽館"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Taipei Nangang Exhibition Center"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"TravelTime"</span><span class="token operator">:</span> <span class="token number">48</span><span class="token punctuation">,</span>
+    <span class="token property">"RouteLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"SrcUpdateTime"</span><span class="token operator">:</span> <span class="token string">"2022-05-23T00:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"UpdateTime"</span><span class="token operator">:</span> <span class="token string">"2022-05-23T08:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"VersionID"</span><span class="token operator">:</span> <span class="token number">3</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RailRouteType</td>
+<td>軌道路線類別(33:都市捷運;34:機場捷運)</td>
+</tr>
+<tr>
+<td>TravelTime</td>
+<td>營運路線運行時間(分鐘)</td>
+</tr>
+<tr>
+<td>RouteLength</td>
+<td>營運路線長度距離</td>
+</tr>
+</tbody></table>
+<h3 id="捷運列車站間運行時間資料"><a href="#捷運列車站間運行時間資料" class="headerlink" title="捷運列車站間運行時間資料"></a>捷運列車站間運行時間資料</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Rail/Metro/S2STravelTime/TRTC?%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"LineNo"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"LineID"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"RouteID"</span><span class="token operator">:</span> <span class="token string">"BL-1"</span><span class="token punctuation">,</span>
+    <span class="token property">"TrainType"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">"TravelTimes"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span>
+        <span class="token property">"Sequence"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token property">"FromStationID"</span><span class="token operator">:</span> <span class="token string">"BL23"</span><span class="token punctuation">,</span>
+        <span class="token property">"FromStationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+          <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"南港展覽館"</span><span class="token punctuation">,</span>
+          <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Taipei Nangang Exhibition Center"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token property">"ToStationID"</span><span class="token operator">:</span> <span class="token string">"BL22"</span><span class="token punctuation">,</span>
+        <span class="token property">"ToStationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+          <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"南港"</span><span class="token punctuation">,</span>
+          <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Nangang"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token property">"RunTime"</span><span class="token operator">:</span> <span class="token number">112</span><span class="token punctuation">,</span>
+        <span class="token property">"StopTime"</span><span class="token operator">:</span> <span class="token number">0</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      ...
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RouteID</td>
+<td>營運路線代碼</td>
+</tr>
+<tr>
+<td>RunTime</td>
+<td>站間行駛時間(秒)</td>
+</tr>
+<tr>
+<td>StopTime</td>
+<td>起站停靠時間(秒)</td>
+</tr>
+</tbody></table>
+<h3 id="捷運路線站間轉乘基本資料"><a href="#捷運路線站間轉乘基本資料" class="headerlink" title="捷運路線站間轉乘基本資料"></a>捷運路線站間轉乘基本資料</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Rail/Metro/LineTransfer/TRTC?%24top=30</span></span><span class="token operator">&amp;</span>%24format=JSON<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"FromLineNo"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"FromLineID"</span><span class="token operator">:</span> <span class="token string">"BL"</span><span class="token punctuation">,</span>
+    <span class="token property">"FromLineName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"板南線"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Bannan Line"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"FromStationID"</span><span class="token operator">:</span> <span class="token string">"BL07"</span><span class="token punctuation">,</span>
+    <span class="token property">"FromStationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"板橋"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Banqiao"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"ToLineNo"</span><span class="token operator">:</span> <span class="token string">"Y"</span><span class="token punctuation">,</span>
+    <span class="token property">"ToLineID"</span><span class="token operator">:</span> <span class="token string">"Y"</span><span class="token punctuation">,</span>
+    <span class="token property">"ToLineName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"環狀線"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Circular Line"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"ToStationID"</span><span class="token operator">:</span> <span class="token string">"Y16"</span><span class="token punctuation">,</span>
+    <span class="token property">"ToStationName"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Zh_tw"</span><span class="token operator">:</span> <span class="token string">"板橋"</span><span class="token punctuation">,</span>
+      <span class="token property">"En"</span><span class="token operator">:</span> <span class="token string">"Banqiao"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"IsOnSiteTransfer"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"TransferTime"</span><span class="token operator">:</span> <span class="token number">11</span><span class="token punctuation">,</span>
+    <span class="token property">"TransferDescription"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+    <span class="token property">"SrcUpdateTime"</span><span class="token operator">:</span> <span class="token string">"2020-01-31T14:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"UpdateTime"</span><span class="token operator">:</span> <span class="token string">"2020-05-20T12:00:00+08:00"</span><span class="token punctuation">,</span>
+    <span class="token property">"VersionID"</span><span class="token operator">:</span> <span class="token number">2</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TransferTime</td>
+<td>轉乘耗時參考時間(分)</td>
+</tr>
+<tr>
+<td>IsOnSiteTransfer</td>
+<td>0 站外轉車; 1站內轉車</td>
+</tr>
+</tbody></table>
+<p>💡 已經被實現的動態顯示捷運列車想法：<a target="_blank" rel="noopener" href="https://zhung.com.tw/mrt-live/">MRT Liveboard</a></p>
+<h2 id="行政區域及村里代碼"><a href="#行政區域及村里代碼" class="headerlink" title="行政區域及村里代碼"></a>行政區域及村里代碼</h2><h3 id="縣市之City列表"><a href="#縣市之City列表" class="headerlink" title="縣市之City列表"></a>縣市之City列表</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Basic/City?%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"CityID"</span><span class="token operator">:</span> <span class="token string">"A"</span><span class="token punctuation">,</span>
+    <span class="token property">"CityName"</span><span class="token operator">:</span> <span class="token string">"臺北市"</span><span class="token punctuation">,</span>
+    <span class="token property">"CityCode"</span><span class="token operator">:</span> <span class="token string">"TPE"</span><span class="token punctuation">,</span>
+    <span class="token property">"City"</span><span class="token operator">:</span> <span class="token string">"Taipei"</span><span class="token punctuation">,</span>
+    <span class="token property">"CountyID"</span><span class="token operator">:</span> <span class="token string">"A"</span><span class="token punctuation">,</span>
+    <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"23.09.1"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="指定縣市City之鄉鎮市區列表"><a href="#指定縣市City之鄉鎮市區列表" class="headerlink" title="指定縣市City之鄉鎮市區列表"></a>指定縣市City之鄉鎮市區列表</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Basic/City/Taipei/Town?%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"TownName"</span><span class="token operator">:</span> <span class="token string">"中山區"</span><span class="token punctuation">,</span>
+    <span class="token property">"TownCode"</span><span class="token operator">:</span> <span class="token string">"63000040"</span><span class="token punctuation">,</span>
+    <span class="token property">"CityName"</span><span class="token operator">:</span> <span class="token string">"臺北市"</span><span class="token punctuation">,</span>
+    <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"23.09.1"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="指定縣市City之村里列表"><a href="#指定縣市City之村里列表" class="headerlink" title="指定縣市City之村里列表"></a>指定縣市City之村里列表</h3><pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">https</span><span class="token label property">://tdx.transportdata.tw/api/basic/v2/Basic/City/Taipei/Village?%24format=JSON</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"VillageName"</span><span class="token operator">:</span> <span class="token string">"莊敬里"</span><span class="token punctuation">,</span>
+    <span class="token property">"VillageID"</span><span class="token operator">:</span> <span class="token string">"63000010002"</span><span class="token punctuation">,</span>
+    <span class="token property">"TownName"</span><span class="token operator">:</span> <span class="token string">"松山區"</span><span class="token punctuation">,</span>
+    <span class="token property">"TownCode"</span><span class="token operator">:</span> <span class="token string">"63000010"</span><span class="token punctuation">,</span>
+    <span class="token property">"CityName"</span><span class="token operator">:</span> <span class="token string">"臺北市"</span><span class="token punctuation">,</span>
+    <span class="token property">"Version"</span><span class="token operator">:</span> <span class="token string">"23.09.1"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/01/Data-Taipei-MRT-Station/" data-id="clqwbco2s00j4j0ts12qg6kk5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LifeHack/" rel="tag">LifeHack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenData/" rel="tag">OpenData</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2023/12/Pokemon-Type-And-Weakness-Chart/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Pokemon Type And Weakness Chart (寶可夢屬性相剋與弱點屬性表)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">247</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">72</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
