@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Python Selenium (爬蟲工具系列) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記自動化與爬蟲工具系列之 Selenium Library，如何利用自動化與爬蟲技術提高工作效率。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Selenium (爬蟲工具系列)">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/01/Python-Selenium/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記自動化與爬蟲工具系列之 Selenium Library，如何利用自動化與爬蟲技術提高工作效率。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
+<meta property="article:published_time" content="2024-01-09T13:04:25.000Z">
+<meta property="article:modified_time" content="2024-01-09T13:14:55.043Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Scrape">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/python-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Python-Selenium" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/01/Python-Selenium/" class="article-date">
+  <time datetime="2024-01-09T13:04:25.000Z" itemprop="datePublished">2024-01-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python Selenium (爬蟲工具系列)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E7%AF%84%E4%BE%8B"><span class="toc-text">專案範例</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記自動化與爬蟲工具系列之 Selenium Library，如何利用自動化與爬蟲技術提高工作效率。</p>
+<a href="/posts/2024/01/Python-Selenium/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/python-logo.png" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>一直以來碰到 ChromeDriver 以及 ChromeVersion 所苦，前置作業確認有安裝 Chrome 並且全域安裝以下 library:</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">pip</span> install webdriver-manager</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>將 Selenium 初始化獨立封裝在單一程式，提供其他程式使用。</p>
+<p><code class="watch">SeleniumDriver.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> selenium <span class="token keyword">import</span> webdriver
+<span class="token keyword">from</span> selenium<span class="token punctuation">.</span>webdriver<span class="token punctuation">.</span>common<span class="token punctuation">.</span>keys <span class="token keyword">import</span> Keys
+<span class="token keyword">from</span> selenium<span class="token punctuation">.</span>webdriver<span class="token punctuation">.</span>common<span class="token punctuation">.</span>by <span class="token keyword">import</span> By
+<span class="token keyword">from</span> selenium<span class="token punctuation">.</span>webdriver<span class="token punctuation">.</span>chrome<span class="token punctuation">.</span>service <span class="token keyword">import</span> Service
+<span class="token keyword">from</span> webdriver_manager<span class="token punctuation">.</span>chrome <span class="token keyword">import</span> ChromeDriverManager
+
+<span class="token comment"># pip install webdriver-manager</span>
+
+chrome_options <span class="token operator">=</span> webdriver<span class="token punctuation">.</span>ChromeOptions<span class="token punctuation">(</span><span class="token punctuation">)</span>
+chrome_options<span class="token punctuation">.</span>add_argument<span class="token punctuation">(</span><span class="token string">"--start-maximized"</span><span class="token punctuation">)</span>
+chrome_options<span class="token punctuation">.</span>add_argument<span class="token punctuation">(</span><span class="token string">"--headless"</span><span class="token punctuation">)</span>
+chrome_options<span class="token punctuation">.</span>add_argument<span class="token punctuation">(</span><span class="token string">"--window-size=1920,1080"</span><span class="token punctuation">)</span>
+chrome_options<span class="token punctuation">.</span>add_argument<span class="token punctuation">(</span><span class="token string">"--log-level=3"</span><span class="token punctuation">)</span>
+custom_user_agent <span class="token operator">=</span> <span class="token string">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1234.56 Safari/537.36"</span>
+chrome_options<span class="token punctuation">.</span>add_argument<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"user-agent=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>custom_user_agent<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+driver <span class="token operator">=</span> webdriver<span class="token punctuation">.</span>Chrome<span class="token punctuation">(</span>ChromeDriverManager<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>install<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> options<span class="token operator">=</span>chrome_options<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其中 <code>--headless</code> 讓 Selenium 在背景作業，對於自動化來說非常方便，也可以取消監督作業的畫面，確認無誤後再放手交給背景作業。</p>
+<p><code class="watch">app.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> threading
+<span class="token keyword">from</span> seleniumDriver <span class="token keyword">import</span> driver<span class="token punctuation">,</span> custom_user_agent<span class="token punctuation">,</span> By
+
+driver<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'https://imgs.sdwh.dev'</span><span class="token punctuation">)</span>
+
+elements <span class="token operator">=</span> driver<span class="token punctuation">.</span>find_elements<span class="token punctuation">(</span>By<span class="token punctuation">.</span>CLASS_NAME<span class="token punctuation">,</span> <span class="token string">'className'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">download_image</span><span class="token punctuation">(</span>png_url<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    response <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>png_url<span class="token punctuation">,</span> headers<span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token string">'User-Agent'</span><span class="token punctuation">:</span> custom_user_agent<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> response<span class="token punctuation">.</span>status_code <span class="token operator">==</span> <span class="token number">200</span><span class="token punctuation">:</span>
+        file_name <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>basename<span class="token punctuation">(</span>png_url<span class="token punctuation">)</span>
+        <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>file_name<span class="token punctuation">,</span> <span class="token string">'wb'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">file</span><span class="token punctuation">:</span>
+            <span class="token builtin">file</span><span class="token punctuation">.</span>write<span class="token punctuation">(</span>response<span class="token punctuation">.</span>content<span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> element <span class="token keyword">in</span> elements<span class="token punctuation">:</span>
+    element<span class="token punctuation">.</span>click<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    png_elements <span class="token operator">=</span> driver<span class="token punctuation">.</span>find_elements<span class="token punctuation">(</span>By<span class="token punctuation">.</span>TAG_NAME<span class="token punctuation">,</span> <span class="token string">'img'</span><span class="token punctuation">)</span>
+    
+    threads <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">for</span> png_element <span class="token keyword">in</span> png_elements<span class="token punctuation">:</span>
+        png_url <span class="token operator">=</span> png_element<span class="token punctuation">.</span>get_attribute<span class="token punctuation">(</span><span class="token string">'src'</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> png_url <span class="token keyword">and</span> png_url<span class="token punctuation">.</span>endswith<span class="token punctuation">(</span><span class="token string">'.png'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            thread <span class="token operator">=</span> threading<span class="token punctuation">.</span>Thread<span class="token punctuation">(</span>target<span class="token operator">=</span>download_image<span class="token punctuation">,</span> args<span class="token operator">=</span><span class="token punctuation">(</span>png_url<span class="token punctuation">,</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            threads<span class="token punctuation">.</span>append<span class="token punctuation">(</span>thread<span class="token punctuation">)</span>
+            thread<span class="token punctuation">.</span>start<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> thread <span class="token keyword">in</span> threads<span class="token punctuation">:</span>
+        thread<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以上作業會模擬依序 click 網站當中的 <code>className</code> 元素，該元素會顯示出許多圖片，藉由 <code>driver.find_elements</code> 的方式找到 img 後，利用 multiple threading 的方式批次下載。</p>
+<h3 id="專案範例"><a href="#專案範例" class="headerlink" title="專案範例"></a>專案範例</h3><p><a href="/posts/2023/10/Python-Auto-Get-Image-For-Keywords/">如何使用 Selenium 擷取瀏覽器畫面</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/01/Python-Selenium/" data-id="clr6dx0j8018pe0ts7rkhbzs0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scrape/" rel="tag">Scrape</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/01/CSharp-Python-Data-Structures-Bilingual/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">C# Python Bilingual - Data-Structures</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">253</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">73</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
