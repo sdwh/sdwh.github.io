@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
 <meta property="article:published_time" content="2024-01-09T13:04:25.000Z">
-<meta property="article:modified_time" content="2024-01-09T13:14:55.043Z">
+<meta property="article:modified_time" content="2024-01-10T11:17:41.307Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Scrape">
@@ -111,7 +111,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E7%AF%84%E4%BE%8B"><span class="toc-text">專案範例</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91-docsify-%E9%A1%9E%E5%9E%8B%E7%B6%B2%E7%AB%99%E5%8F%96%E5%BE%97%E5%8B%95%E6%85%8B%E6%B8%B2%E6%9F%93%E7%9A%84-html-%E4%B8%A6%E4%B8%94%E5%84%B2%E5%AD%98"><span class="toc-text">向 docsify 類型網站取得動態渲染的 html 並且儲存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%88%E6%A1%88%E7%AF%84%E4%BE%8B"><span class="toc-text">專案範例</span></a></li></ol></li></ol>
     </div>
   
   
@@ -179,13 +179,37 @@ elements <span class="token operator">=</span> driver<span class="token punctuat
         thread<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>以上作業會模擬依序 click 網站當中的 <code>className</code> 元素，該元素會顯示出許多圖片，藉由 <code>driver.find_elements</code> 的方式找到 img 後，利用 multiple threading 的方式批次下載。</p>
+<ul>
+<li>By.ID</li>
+<li>By.NAME</li>
+<li>By.CLASS_NAME</li>
+<li>By.TAG_NAME</li>
+<li>By.LINK_TEXT</li>
+<li>By.PARTIAL_LINK_TEXT</li>
+<li>By.XPATH</li>
+<li>By.CSS_SELECTOR</li>
+</ul>
+<h3 id="向-docsify-類型網站取得動態渲染的-html-並且儲存"><a href="#向-docsify-類型網站取得動態渲染的-html-並且儲存" class="headerlink" title="向 docsify 類型網站取得動態渲染的 html 並且儲存"></a>向 docsify 類型網站取得動態渲染的 html 並且儲存</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> driver <span class="token keyword">import</span> driver<span class="token punctuation">,</span> By
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+
+driver<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'https://docsify.js.org/#/configuration'</span><span class="token punctuation">)</span>
+time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+content_element <span class="token operator">=</span> driver<span class="token punctuation">.</span>find_element<span class="token punctuation">(</span>By<span class="token punctuation">.</span>CLASS_NAME<span class="token punctuation">,</span> <span class="token string">"markdown-section"</span><span class="token punctuation">)</span>
+
+content <span class="token operator">=</span> content_element<span class="token punctuation">.</span>get_attribute<span class="token punctuation">(</span><span class="token string">'outerHTML'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"configuration.html"</span><span class="token punctuation">,</span> <span class="token string">"w"</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">file</span><span class="token punctuation">:</span>
+    <span class="token builtin">file</span><span class="token punctuation">.</span>write<span class="token punctuation">(</span>content<span class="token punctuation">)</span>
+
+driver<span class="token punctuation">.</span>quit<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="專案範例"><a href="#專案範例" class="headerlink" title="專案範例"></a>專案範例</h3><p><a href="/posts/2023/10/Python-Auto-Get-Image-For-Keywords/">如何使用 Selenium 擷取瀏覽器畫面</a></p>
 
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2024/01/Python-Selenium/" data-id="clr6dx0j8018pe0ts7rkhbzs0" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2024/01/Python-Selenium/" data-id="clr7otmgr018tqgts4x70b6zh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Scrape/" rel="tag">Scrape</a></li></ul>
@@ -203,6 +227,15 @@ elements <span class="token operator">=</span> driver<span class="token punctuat
     
     
   
+    <a href="/posts/2024/01/IIS-Alaways-Running-Setting-With-AppCmd/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IIS Alaways Running Setting With AppCmd (IIS Folder)
+        
+      </div>
+    </a>
+  
 
   
 </nav>
@@ -218,7 +251,7 @@ elements <span class="token operator">=</span> driver<span class="token punctuat
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">253</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">73</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">145</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">253</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">73</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -228,7 +261,7 @@ elements <span class="token operator">=</span> driver<span class="token punctuat
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
