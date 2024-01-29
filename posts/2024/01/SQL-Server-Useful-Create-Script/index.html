@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Useful Create Script (萬用新增資料表語法參考) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 萬用的新增資料表語法參考 (Default, Foreign Key, Reference, Relationship)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Useful Create Script (萬用新增資料表語法參考)">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/01/SQL-Server-Useful-Create-Script/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 萬用的新增資料表語法參考 (Default, Foreign Key, Reference, Relationship)">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2024-01-29T11:11:44.000Z">
+<meta property="article:modified_time" content="2024-01-29T12:25:22.548Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Useful-Create-Script" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/01/SQL-Server-Useful-Create-Script/" class="article-date">
+  <time datetime="2024-01-29T11:11:44.000Z" itemprop="datePublished">2024-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Useful Create Script (萬用新增資料表語法參考)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Common-Columns"><span class="toc-text">Common Columns</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#One-to-Many"><span class="toc-text">One to Many</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Multiple-Column-As-Primary-Key"><span class="toc-text">Multiple Column As Primary Key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#One-to-One"><span class="toc-text">One to One</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Primary-Key-Clustered-With-Options-%E8%AA%AA%E6%98%8E"><span class="toc-text">Primary Key Clustered With Options 說明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 萬用的新增資料表語法參考 (Default, Foreign Key, Reference, Relationship)</p>
+<a href="/posts/2024/01/SQL-Server-Useful-Create-Script/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="Common-Columns"><a href="#Common-Columns" class="headerlink" title="Common Columns"></a>Common Columns</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A<span class="token punctuation">]</span><span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>InsertDateTime<span class="token punctuation">]</span> datetime2 <span class="token keyword">DEFAULT</span><span class="token punctuation">(</span>getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>UpdateDateTime<span class="token punctuation">]</span> datetime2 <span class="token keyword">DEFAULT</span><span class="token punctuation">(</span>getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>CategoryId<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>CreatedBy<span class="token punctuation">]</span> nvarchar<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>UpdatedBy<span class="token punctuation">]</span> nvarchar<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>IsActive<span class="token punctuation">]</span> <span class="token keyword">bit</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>IsDeleted<span class="token punctuation">]</span> <span class="token keyword">bit</span> <span class="token boolean">NULL</span>
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_A<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span> 
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果要用資料表來記錄 HTML Element 以下是常用到的欄位：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>HTMLElements<span class="token punctuation">]</span><span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>ElementName<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>ElementValue<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>Style<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>Href<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>ClassName<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>DataType<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>IsRequired<span class="token punctuation">]</span> <span class="token keyword">bit</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>MaxLength<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>Placeholder<span class="token punctuation">]</span> nvarchar<span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span>
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_B<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span> 
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="One-to-Many"><a href="#One-to-Many" class="headerlink" title="One to Many"></a>One to Many</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A<span class="token punctuation">]</span><span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span><span class="token keyword">Text</span><span class="token punctuation">]</span> nvarchar<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span>
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_A<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>B<span class="token punctuation">]</span><span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>AId<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span><span class="token keyword">TimeStamp</span><span class="token punctuation">]</span> datetime2 <span class="token keyword">DEFAULT</span><span class="token punctuation">(</span>getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_B<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span> 
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>FK_A_Id<span class="token punctuation">]</span> <span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span><span class="token punctuation">(</span><span class="token punctuation">[</span>AId<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以上 script 說明如何建立 A 資料表對 B 資料表一對多的關係，實現的方式是透過 B 資料表加入 A 資料表的 ID 欄位，並且透過設定 <code>Constraint, Foreign Key, References</code> 來達成 <strong>外鍵與關連設定</strong>。</p>
+<p>基本的 Primary Key 設定由要扮演主鍵的欄位加入 <code>IDENTITY(1,1)</code> 以及 <code>NOT NULL</code> 並且再設定 <code>Constraint, Primary Key Clustered</code> 來達成 <strong>主鍵設定</strong>。</p>
+<p>此外因為主鍵會建立索引 (Index) 可以再搭配 <code>With</code> 來設定索引細節：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>B<span class="token punctuation">]</span><span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>AId<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span><span class="token keyword">TimeStamp</span><span class="token punctuation">]</span> datetime2 <span class="token keyword">DEFAULT</span><span class="token punctuation">(</span>getdate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_B<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span>
+    <span class="token keyword">WITH</span> <span class="token punctuation">(</span>
+      PAD_INDEX <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">,</span> 
+      STATISTICS_NORECOMPUTE <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">,</span> 
+      IGNORE_DUP_KEY <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">,</span> 
+      ALLOW_ROW_LOCKS <span class="token operator">=</span> <span class="token keyword">ON</span><span class="token punctuation">,</span> 
+      ALLOW_PAGE_LOCKS <span class="token operator">=</span> <span class="token keyword">ON</span><span class="token punctuation">,</span> 
+      OPTIMIZE_FOR_SEQUENTIAL_KEY <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">)</span>
+  <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>FK_A_Id<span class="token punctuation">]</span> <span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span><span class="token punctuation">(</span><span class="token punctuation">[</span>AId<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Multiple-Column-As-Primary-Key"><a href="#Multiple-Column-As-Primary-Key" class="headerlink" title="Multiple Column As Primary Key"></a>Multiple Column As Primary Key</h3><p>而如果想要使用多個欄位構成主鍵，可以使用以下方式：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Products<span class="token punctuation">]</span> <span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>ProductID<span class="token punctuation">]</span> <span class="token keyword">INT</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>StoreID<span class="token punctuation">]</span> <span class="token keyword">INT</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>ProductName<span class="token punctuation">]</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>Price<span class="token punctuation">]</span> <span class="token keyword">DECIMAL</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">CONSTRAINT</span> PK_Products <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span>ProductID<span class="token punctuation">,</span> StoreID<span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="One-to-One"><a href="#One-to-One" class="headerlink" title="One to One"></a>One to One</h3><p>有兩種方式可以達成一對一的資料表關係，第一種方式使用 <code>Constraint, Foreign key, References</code> 的方式，兩張 Table 必須要有相同的 Primary Key。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A<span class="token punctuation">]</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span><span class="token keyword">Text</span><span class="token punctuation">]</span> nvarchar<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_A<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>B<span class="token punctuation">]</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>Col1<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>Col2<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_B<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>FK_B_Id<span class="token punctuation">]</span> <span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>第二種方式使用 <code>Constraint, Unique</code> 的方式，兩張 Table 可以有不同的 Primary Key。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>A2<span class="token punctuation">]</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span><span class="token keyword">Text</span><span class="token punctuation">]</span> nvarchar<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_A2<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>B2<span class="token punctuation">]</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token keyword">IDENTITY</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>AId<span class="token punctuation">]</span> <span class="token keyword">int</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>Col1<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>Col2<span class="token punctuation">]</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_B2<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>UQ_B_AId<span class="token punctuation">]</span> <span class="token keyword">UNIQUE</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>AId<span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>🧪 兩種方式在 EntityFramework Database First 的支援方式驗證。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><h3 id="Primary-Key-Clustered-With-Options-說明"><a href="#Primary-Key-Clustered-With-Options-說明" class="headerlink" title="Primary Key Clustered With Options 說明"></a>Primary Key Clustered With Options 說明</h3><p><strong>PAD_INDEX = OFF</strong>: This option controls the padding of the index pages. When set to OFF, SQL Server does not add extra space to index pages. Padding an index can improve performance when inserting data into a table by reducing the need for page splits, but it uses more storage. When set to ON, SQL Server leaves free space on the index pages to accommodate future growth, which is useful for indexes on columns that are frequently updated or inserted into.</p>
+<blockquote>
+<p>PAD_INDEX = OFF：此選項控制索引頁面的填充。設為 OFF 時，SQL Server 不會在索引頁面中添加額外的空間。索引填充可以在向表中插入數據時提高性能，因為它減少了頁面分裂的需要，但會使用更多的存儲空間。設為 ON 時，SQL Server 會在索引頁面留下空閒空間以適應未來的增長，這對於頻繁更新或插入的列上的索引很有用。</p>
+</blockquote>
+<p><strong>STATISTICS_NORECOMPUTE = OFF</strong>: This setting controls the automatic updating of index statistics. When set to OFF, SQL Server automatically updates the statistics as data changes. Statistics are crucial for the query optimizer to make informed decisions about the best query plan. When set to ON, it prevents automatic updates, which might be useful in very specific scenarios where the data distribution does not change often, and manual updates are preferred for performance reasons.</p>
+<blockquote>
+<p>STATISTICS_NORECOMPUTE = OFF：此設置控制索引統計信息的自動更新。設為 OFF 時，SQL Server 會隨著數據變化自動更新統計信息。統計信息對於查詢優化器來說是至關重要的，它可以做出最佳查詢計劃的決定。設為 ON 時，會阻止自動更新，這在數據分佈不經常改變且優先考慮性能的特定場景中很有用。</p>
+</blockquote>
+<p><strong>IGNORE_DUP_KEY = OFF</strong>: This setting applies to unique indexes or primary keys. When OFF, an error is raised if a new row insertion or an update of a key column would result in a duplicate key. When set to ON, instead of an error, a warning message is issued, and the duplicate row is not added, but the transaction continues. This can be useful for operations where duplicates are expected but not critical.</p>
+<blockquote>
+<p>IGNORE_DUP_KEY = OFF：此設置適用於唯一索引或主鍵。當設為 OFF 時，如果新行插入或鍵列的更新將導致重複的鍵，則會引發錯誤。設為 ON 時，不會出現錯誤，而是發出警告消息，且不添加重複行，但事務繼續。這對於預期但不關鍵的重複是有用的。</p>
+</blockquote>
+<p><strong>ALLOW_ROW_LOCKS = ON</strong>: This option enables row-level locking for the index. Row-level locks can increase concurrency by allowing multiple transactions to access different rows of the table simultaneously, even within the same page.</p>
+<blockquote>
+<p>ALLOW_ROW_LOCKS = ON：此選項啟用索引的行級鎖定。行級鎖可以通過允許多個事務同時訪問表的不同行（即使在同一頁面內）來提高併發性。</p>
+</blockquote>
+<p><strong>ALLOW_PAGE_LOCKS = ON</strong>: This setting allows page-level locking for the index. Page locks are more efficient than row locks when large numbers of rows are affected by a single transaction, as fewer locks are needed. However, it can reduce concurrency since a single lock can block access to hundreds of rows at once.</p>
+<blockquote>
+<p>ALLOW_PAGE_LOCKS = ON：此設置允許索引的頁面級鎖定。當單個事務影響大量行時，頁面鎖比行鎖更有效，因為需要的鎖更少。然而，它可以減少並發性，因為單個鎖可以一次性阻塞對成百上千行的訪問。</p>
+</blockquote>
+<p><strong>OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF</strong>: This option is designed to improve the performance of workloads that use sequential keys, such as those found in identity columns or other monotonically increasing sequences. When set to ON, it helps mitigate the performance impact of last-page insert contention, which can occur with these types of keys. This is especially beneficial for high-concurrency environments. When OFF, this optimization is not applied.</p>
+<blockquote>
+<p>OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF：此選項旨在提高使用順序鍵（如身份列或其他單調遞增序列中的鍵）的工作負載的性能。設為 ON 時，它有助於緩解最後頁面插入爭用的性能影響，這種爭用可能發生在這類鍵上。這對於高併發環境特別有益。當設為 OFF 時，不會應用此優化。</p>
+</blockquote>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://github.com/ktaranov/sqlserver-kit/blob/master/SQL%20Server%20Name%20Convention%20and%20T-SQL%20Programming%20Style.md">SQL Server Name Convention and T-SQL Programming Style</a></p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/01/SQL-Server-Useful-Create-Script/" data-id="clrywlpbd01nl0sts9p2a2khc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/01/SQL-Server-Change-Database-Collate/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Change Database Collate, Collation 優雅的方式調整資料庫的定序</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/01/SQL-Server-Availability-Group-Add-New-Replica/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL Server Always On Availability Group 如何加入新的複本 (Add New Replica)
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">148</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">254</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">73</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

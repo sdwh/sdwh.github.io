@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>SQL Server Always On Availability Group 如何加入新的複本 (Add New Replica) | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 如何設定 Always On Availability Group (可用性群組) 如何加入新的複本，來增加更多次要複本，強化容錯移轉的韌性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server Always On Availability Group 如何加入新的複本 (Add New Replica)">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/01/SQL-Server-Availability-Group-Add-New-Replica/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 如何設定 Always On Availability Group (可用性群組) 如何加入新的複本，來增加更多次要複本，強化容錯移轉的韌性。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-AG-Add-Replica-7.png">
+<meta property="article:published_time" content="2024-01-29T11:13:32.000Z">
+<meta property="article:modified_time" content="2024-01-29T12:25:22.546Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Availability-Group-Add-New-Replica" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/01/SQL-Server-Availability-Group-Add-New-Replica/" class="article-date">
+  <time datetime="2024-01-29T11:13:32.000Z" itemprop="datePublished">2024-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL Server Always On Availability Group 如何加入新的複本 (Add New Replica)
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 如何設定 Always On Availability Group (可用性群組) 如何加入新的複本，來增加更多次要複本，強化容錯移轉的韌性。</p>
+<a href="/posts/2024/01/SQL-Server-Availability-Group-Add-New-Replica/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>已經依據 <a target="_blank" rel="noopener" href="http://localhost:4000/posts/2021/07/SQL-Server-Availability-Group-Deploy-Guide/">SQL Server Always On Availability Group 可用性群組安裝筆記</a> 完成 AG 的設定，設定的當下也有兩個複本在服務，保持高可用的狀態。</p>
+<p>一段時間後想要加入新的複本該如何進行？一個方式是拆掉原本的可用性群組 (Availabilit Group) 重新建立並且包含三個節點，但這樣會因為 Listener 的移除，造成服務暫時中斷。</p>
+<p>本文要介紹的是第二個方式，使用 GUI 的方式加入新的複本，同時也說明實務處理上碰到的問題以及對應的處理方式。</p>
+<hr>
+<p>第一步先前往 AG 的主要複本，從 GUI 介面找到「加入複本」。</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-1.png"></p>
+<p>接著要連結可用性群組上其他的複本。</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-2.png"></p>
+<p>再來就可以加入新的複本，可用性模式請選「同步認可」，經實測不會影響作用中的主要複本的寫入。</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-3.png"></p>
+<p>在 Listener 的設定上，選擇不要建立 (因為本來就已經有 Listner 😅)</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-4.png"></p>
+<p>接下來如同加入可用性資料庫的方式，依序等待從主要複本將資料庫備份與還原到新的次要複本。</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-5.png"></p>
+<p>而從次要複本的資料庫伺服器去檢視，會發現所有的資料庫都停留在「正在還原」的狀態。</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-6.png"></p>
+<p>而從可用性群組的 Dashboard 去檢視，會觀察到資料庫都處於「未進行同步處理」的狀態，理想應該是要再完成新複本的加入後都變成「已同步處理」。</p>
+<p><img src="/assets/SQL-Server-AG-Add-Replica-7.png"></p>
+<hr>
+<p>作業到這邊，已經為新的次要複本還原好所有可用性群組資料庫，但因為資料庫都處在「未進行同步處理」的狀態，必須設法解決。</p>
+<p>按照常理推想，應該只要在新的複本的可用性資料庫，使用進行資料庫移動就可以，但無論怎麼嘗試都會發生以下錯誤訊息：</p>
+<p>「資料庫 “DatabaseName” 的遠端副本並未向前復原至包含在資料庫記錄本機副本中的時間點。 (Microsoft SQL Server, 錯誤: 1412)」</p>
+<p>而經過一番努力 💦 發現只要手動將主要複本的資料庫備份並且再次還原到新的次要複本上，就可以加入可用性資料庫成功。</p>
+<p>作業順序如下：</p>
+<ol>
+<li>Backup Database From Primary Replica</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DECLARE</span> <span class="token variable">@dbname</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">'DatabaseName'</span><span class="token punctuation">;</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@BackupPath</span> NVARCHAR<span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span> <span class="token operator">=</span> N<span class="token string">'\\Backupfile\Sharefolder\' + @dbname + '</span><span class="token punctuation">.</span>bak<span class="token string">';
+
+DECLARE @SQL NVARCHAR(MAX);
+SET @SQL = 
+    '</span><span class="token keyword">BACKUP</span> <span class="token keyword">DATABASE</span> <span class="token string">' + QUOTENAME(@dbname) + 
+    '</span> <span class="token keyword">TO</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token string">''' + @BackupPath + '''</span> <span class="token string">' +
+    '</span> <span class="token keyword">WITH</span> COPY_ONLY<span class="token punctuation">,</span> NOFORMAT<span class="token punctuation">,</span> INIT<span class="token punctuation">,</span> NAME <span class="token operator">=</span> N<span class="token string">''</span>Fullbackup<span class="token string">''</span><span class="token punctuation">,</span> SKIP<span class="token punctuation">,</span> NOREWIND<span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span> STATS <span class="token operator">=</span> <span class="token number">10</span>'<span class="token punctuation">;</span>
+
+<span class="token keyword">EXEC</span> sp_executesql <span class="token variable">@SQL</span><span class="token punctuation">;</span>
+
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li>Restore Database to New Replica</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">DECLARE</span> <span class="token variable">@DBNAME</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">'DatabaseName'</span><span class="token punctuation">;</span>
+<span class="token keyword">DECLARE</span> <span class="token variable">@BackupPath</span> NVARCHAR<span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span> <span class="token operator">=</span> N<span class="token string">'\\Backupfile\Sharefolder\' + @DBNAME + '</span><span class="token punctuation">.</span>bak<span class="token string">';
+
+USE [master]
+
+-- Set the database to SINGLE_USER mode
+DECLARE @SqlCmd NVARCHAR(MAX);
+SET @SqlCmd = N'</span><span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token string">' + QUOTENAME(@DBNAME) + '</span> <span class="token keyword">SET</span> SINGLE_USER <span class="token keyword">WITH</span> <span class="token keyword">ROLLBACK</span> IMMEDIATE<span class="token string">';
+-- EXEC(@SqlCmd);
+
+-- Restore the database
+SET @SqlCmd = N'</span><span class="token keyword">RESTORE</span> <span class="token keyword">DATABASE</span> <span class="token string">' + QUOTENAME(@DBNAME) + '</span> <span class="token keyword">FROM</span> <span class="token keyword">DISK</span> <span class="token operator">=</span> <span class="token variable">@BackupPath</span> <span class="token keyword">WITH</span> <span class="token keyword">FILE</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> NOUNLOAD<span class="token punctuation">,</span> <span class="token keyword">REPLACE</span><span class="token punctuation">,</span> STATS <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span> NORECOVERY<span class="token string">';
+EXEC sp_executesql @SqlCmd, N'</span><span class="token variable">@BackupPath</span> NVARCHAR<span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span><span class="token string">', @BackupPath;
+
+-- Set the database back to MULTI_USER mode
+SET @SqlCmd = N'</span><span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> <span class="token string">' + QUOTENAME(@DBNAME) + '</span> <span class="token keyword">SET</span> MULTI_USER'<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>Setting Database join to AG In New Replica</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">GO
+<span class="token keyword">declare</span> <span class="token variable">@dbname</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">'DatabaseName'</span><span class="token punctuation">;</span>
+<span class="token keyword">declare</span> <span class="token variable">@agname</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">'AvailabilityGroupName'</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> master
+<span class="token comment">-- Wait for the replica to start communicating</span>
+<span class="token keyword">begin</span> try
+<span class="token keyword">declare</span> <span class="token variable">@conn</span> <span class="token keyword">bit</span>
+<span class="token keyword">declare</span> <span class="token variable">@count</span> <span class="token keyword">int</span>
+<span class="token keyword">declare</span> <span class="token variable">@replica_id</span> uniqueidentifier 
+<span class="token keyword">declare</span> <span class="token variable">@group_id</span> uniqueidentifier
+<span class="token keyword">set</span> <span class="token variable">@conn</span> <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">set</span> <span class="token variable">@count</span> <span class="token operator">=</span> <span class="token number">30</span> <span class="token comment">-- wait for 5 minutes </span>
+
+<span class="token keyword">if</span> <span class="token punctuation">(</span>serverproperty<span class="token punctuation">(</span><span class="token string">'IsHadrEnabled'</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+	<span class="token operator">and</span> <span class="token punctuation">(</span>isnull<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">select</span> member_state <span class="token keyword">from</span> master<span class="token punctuation">.</span>sys<span class="token punctuation">.</span>dm_hadr_cluster_members <span class="token keyword">where</span> upper<span class="token punctuation">(</span>member_name <span class="token keyword">COLLATE</span> Latin1_General_CI_AS<span class="token punctuation">)</span> <span class="token operator">=</span> upper<span class="token punctuation">(</span>cast<span class="token punctuation">(</span>serverproperty<span class="token punctuation">(</span><span class="token string">'ComputerNamePhysicalNetBIOS'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> nvarchar<span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">COLLATE</span> Latin1_General_CI_AS<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&lt;></span> <span class="token number">0</span><span class="token punctuation">)</span>
+	<span class="token operator">and</span> <span class="token punctuation">(</span>isnull<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">select</span> state <span class="token keyword">from</span> master<span class="token punctuation">.</span>sys<span class="token punctuation">.</span>database_mirroring_endpoints<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token keyword">select</span> <span class="token variable">@group_id</span> <span class="token operator">=</span> ags<span class="token punctuation">.</span>group_id <span class="token keyword">from</span> master<span class="token punctuation">.</span>sys<span class="token punctuation">.</span>availability_groups <span class="token keyword">as</span> ags <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token variable">@agname</span>
+	<span class="token keyword">select</span> <span class="token variable">@replica_id</span> <span class="token operator">=</span> replicas<span class="token punctuation">.</span>replica_id <span class="token keyword">from</span> master<span class="token punctuation">.</span>sys<span class="token punctuation">.</span>availability_replicas <span class="token keyword">as</span> replicas <span class="token keyword">where</span> upper<span class="token punctuation">(</span>replicas<span class="token punctuation">.</span>replica_server_name <span class="token keyword">COLLATE</span> Latin1_General_CI_AS<span class="token punctuation">)</span> <span class="token operator">=</span> upper<span class="token punctuation">(</span>@<span class="token variable">@SERVERNAME</span> <span class="token keyword">COLLATE</span> Latin1_General_CI_AS<span class="token punctuation">)</span> <span class="token operator">and</span> group_id <span class="token operator">=</span> <span class="token variable">@group_id</span>
+	<span class="token keyword">while</span> <span class="token variable">@conn</span> <span class="token operator">&lt;></span> <span class="token number">1</span> <span class="token operator">and</span> <span class="token variable">@count</span> <span class="token operator">></span> <span class="token number">0</span>
+	<span class="token keyword">begin</span>
+		<span class="token keyword">set</span> <span class="token variable">@conn</span> <span class="token operator">=</span> isnull<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">select</span> connected_state <span class="token keyword">from</span> master<span class="token punctuation">.</span>sys<span class="token punctuation">.</span>dm_hadr_availability_replica_states <span class="token keyword">as</span> states <span class="token keyword">where</span> states<span class="token punctuation">.</span>replica_id <span class="token operator">=</span> <span class="token variable">@replica_id</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+		<span class="token keyword">if</span> <span class="token variable">@conn</span> <span class="token operator">=</span> <span class="token number">1</span>
+		<span class="token keyword">begin</span>
+			<span class="token comment">-- exit loop when the replica is connected, or if the query cannot find the replica status</span>
+			<span class="token keyword">break</span>
+		<span class="token keyword">end</span>
+		<span class="token keyword">waitfor</span> delay <span class="token string">'00:00:10'</span>
+		<span class="token keyword">set</span> <span class="token variable">@count</span> <span class="token operator">=</span> <span class="token variable">@count</span> <span class="token operator">-</span> <span class="token number">1</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">end</span> try
+<span class="token keyword">begin</span> catch
+	<span class="token comment">-- If the wait loop fails, do not stop execution of the alter database statement</span>
+<span class="token keyword">end</span> catch
+
+<span class="token keyword">DECLARE</span> <span class="token variable">@SQL</span> NVARCHAR<span class="token punctuation">(</span>MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">SET</span> <span class="token variable">@SQL</span> <span class="token operator">=</span> N<span class="token string">'ALTER DATABASE '</span> <span class="token operator">+</span> <span class="token variable">@dbname</span> <span class="token operator">+</span> <span class="token string">' SET HADR AVAILABILITY GROUP = '</span> <span class="token operator">+</span> <span class="token variable">@agname</span><span class="token punctuation">;</span>
+
+<span class="token keyword">EXEC</span> sp_executesql <span class="token variable">@SQL</span><span class="token punctuation">;</span>
+
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>當然要為每一個可用性群組中的資料庫都做這樣的動作太繁瑣，在 <a target="_blank" rel="noopener" href="https://data.sdwh.dev/">資料處理愛好者俱樂部</a> 以及直接撰寫 Python Script 的協助，最後將所有的備份以及還原動作構成數支 tsql.script 檔案，搭配 <code>sqlcmd</code> 的方式批次執行解決加入新複本的需求。</p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">sqlcmd</span> <span class="token parameter attr-name">-S</span> primaryReplicaserver.sdwh.dev <span class="token parameter attr-name">-d</span> master <span class="token parameter attr-name">-E</span> <span class="token parameter attr-name">-i</span> database1_backup.sql</span>
+<span class="token command"><span class="token keyword">sqlcmd</span> <span class="token parameter attr-name">-S</span> newReplicaserver.sdwh.dev <span class="token parameter attr-name">-d</span> master <span class="token parameter attr-name">-E</span> <span class="token parameter attr-name">-i</span> database1_restore.sql</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<p>以上就是處理 Availability Group 加入新複本的方式，流程當中應該還有許多可以精進的地方，例如明明已經透過精靈引導還原一次，但為什麼最後還需要手動批次的再次還原，才能夠解決資料庫 「未進行同步處理」的狀態的問題，就留待後續持續精進，改善本筆記的作法 😀</p>
+<h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/04/SQL-Server-SSIS-Glimpse/">SQL Server Integrated Service 初探</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Query-Professionally/">SQL Server 閃電般快速查詢指南⚡</a></p>
+<p><a href="/posts/2020/12/SQL-Server-Tools/">SQL Server 周邊工具彙整筆記</a></p>
+<p><a href="/posts/2020/11/SQL-Server-Instructor-Led-Course/">SQL Server 學習資源筆記</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/01/SQL-Server-Availability-Group-Add-New-Replica/" data-id="clrywlp7g01b40stscy6de9aj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/01/SQL-Server-Useful-Create-Script/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Useful Create Script (萬用新增資料表語法參考)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">148</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">254</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">50</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">73</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
