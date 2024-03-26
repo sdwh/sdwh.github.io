@@ -24,7 +24,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/HeadFirst-DesignPattern.jpg">
 <meta property="og:image" content="https://sdwh.dev/assets/UML-Adapter.svg">
 <meta property="article:published_time" content="2020-07-03T01:25:00.000Z">
-<meta property="article:modified_time" content="2023-04-01T12:13:24.846Z">
+<meta property="article:modified_time" content="2024-03-26T11:35:54.359Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="DesignPattern">
 <meta property="article:tag" content="Example">
@@ -214,24 +214,24 @@
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>DuckTestDrive.cs<br>TurkeyTestDrive.cs</p>
-<pre><code class="csharp">public static void Main(string[] args)
-&#123;
-    MallardDuck duck = new MallardDuck();
-    ITurkey duckAdapter = new DuckAdapter(duck);
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> args<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">MallardDuck</span> duck <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MallardDuck</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">ITurkey</span> duckAdapter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DuckAdapter</span><span class="token punctuation">(</span>duck<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    Console.WriteLine(&quot;A Duck is doing Turkey things : &quot;);
-    duckAdapter.Gobble();
-    duckAdapter.Fly();
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"A Duck is doing Turkey things : "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    duckAdapter<span class="token punctuation">.</span><span class="token function">Gobble</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    duckAdapter<span class="token punctuation">.</span><span class="token function">Fly</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    Console.WriteLine(&quot;\n-------------------------------------------------\n&quot;);
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"\n-------------------------------------------------\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    WildTurkey turkey = new WildTurkey();
-    IDuck turkeyAdapter = new TurkeyAdapter(turkey);
-    Console.WriteLine(&quot;A Turkey is doing Duck things : &quot;);
-    turkeyAdapter.Quack();
-    turkeyAdapter.Fly();
-&#125;
-</code></pre>
+    <span class="token class-name">WildTurkey</span> turkey <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WildTurkey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">IDuck</span> turkeyAdapter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TurkeyAdapter</span><span class="token punctuation">(</span>turkey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token string">"A Turkey is doing Duck things : "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    turkeyAdapter<span class="token punctuation">.</span><span class="token function">Quack</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    turkeyAdapter<span class="token punctuation">.</span><span class="token function">Fly</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>✔️將變動的部分封裝起來<br>✔️類別應該對需求保持開放；應該對既有的程式碼修改保持關閉<br>被轉接的類別 (Adaptee) 可能會有變動，但透過 Adapter 使用的 Client 不會受影響</p>
 <p>✔️多用合成，少用繼承<br>Adapter 使用合成的方式將 Adaptee 包裝在其中</p>
 <p>✔️讓需要互動的物件之間的關係鬆綁<br>Client 與 Adaptee 低耦合</p>
@@ -241,7 +241,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2020/07/Design-Pattern-Adapter/" data-id="cltpt69l100k9jgtsbbvu18dy" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2020/07/Design-Pattern-Adapter/" data-id="clu8d0d9g00k1ysts82zl413q" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Example/" rel="tag">Example</a></li></ul>
