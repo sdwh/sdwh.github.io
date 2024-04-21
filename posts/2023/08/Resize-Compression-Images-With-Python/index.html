@@ -12,11 +12,11 @@
   gtag('config', 'G-GWJGMNS3XR');
 </script>
   
-  <title>Resize &amp; Compression Image With Python (pngquant) | The Skeptical Software Engineer</title>
+  <title>圖片壓縮 Resize &amp; Compression Image With Python (pngquant, ImageMagick) | The Skeptical Software Engineer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="筆記使用 Python 以及 Pillow Packages 批次將圖片重新調整比例以及壓縮圖大小，以節省儲存空間。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Resize &amp; Compression Image With Python (pngquant)">
+<meta property="og:title" content="圖片壓縮 Resize &amp; Compression Image With Python (pngquant, ImageMagick)">
 <meta property="og:url" content="https://sdwh.dev/posts/2023/08/Resize-Compression-Images-With-Python/index.html">
 <meta property="og:site_name" content="The Skeptical Software Engineer">
 <meta property="og:description" content="筆記使用 Python 以及 Pillow Packages 批次將圖片重新調整比例以及壓縮圖大小，以節省儲存空間。">
@@ -24,7 +24,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
 <meta property="og:image" content="https://sdwh.dev/assets/openmoji-github.svg">
 <meta property="article:published_time" content="2023-08-02T11:14:13.000Z">
-<meta property="article:modified_time" content="2023-12-12T12:00:58.628Z">
+<meta property="article:modified_time" content="2024-04-20T11:07:20.222Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Examples">
 <meta property="article:tag" content="Python">
@@ -100,7 +100,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Resize &amp; Compression Image With Python (pngquant)
+      圖片壓縮 Resize &amp; Compression Image With Python (pngquant, ImageMagick)
     </h1>
   
 
@@ -112,7 +112,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ImageMagick-jpg-files"><span class="toc-text">ImageMagick (jpg files)</span></a></li></ol>
     </div>
   
   
@@ -240,11 +240,60 @@ end <span class="token operator">=</span> time<span class="token punctuation">.<
   --posterize N     output lower-precision color <span class="token punctuation">(</span><span class="token command"><span class="token keyword">e</span>.g. for ARGB4444 output</span><span class="token punctuation">)</span>
   --strip           remove optional metadata <span class="token punctuation">(</span><span class="token command"><span class="token keyword">default</span> on Mac</span><span class="token punctuation">)</span>
   --verbose         print status messages <span class="token punctuation">(</span><span class="token command"><span class="token keyword">synonym</span>: <span class="token parameter attr-name">-v</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="ImageMagick-jpg-files"><a href="#ImageMagick-jpg-files" class="headerlink" title="ImageMagick (jpg files)"></a>ImageMagick (jpg files)</h2><p>ImageMagick 可以用來處理 jpg files，同樣是 exe 的方式執行，可以結合 python 先進行圖片 resize 接著再 compression。</p>
+<p><a target="_blank" rel="noopener" href="https://imagemagick.org/script/download.php#windows">ImageMagick Download Page</a></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> PIL <span class="token keyword">import</span> Image
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> glob
+<span class="token keyword">import</span> config <span class="token keyword">as</span> c
+<span class="token keyword">import</span> subprocess
+<span class="token keyword">from</span> concurrent<span class="token punctuation">.</span>futures <span class="token keyword">import</span> ThreadPoolExecutor
+
+<span class="token keyword">def</span> <span class="token function">convert</span><span class="token punctuation">(</span><span class="token builtin">file</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    input_image_path <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>c<span class="token punctuation">.</span>source<span class="token punctuation">,</span> <span class="token builtin">file</span><span class="token punctuation">)</span>
+    file_name<span class="token punctuation">,</span> extension <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>splitext<span class="token punctuation">(</span><span class="token builtin">file</span><span class="token punctuation">)</span>
+
+    original_image <span class="token operator">=</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>input_image_path<span class="token punctuation">)</span>
+
+    minimun_width <span class="token operator">=</span> <span class="token number">470</span>
+    scale <span class="token operator">=</span> original_image<span class="token punctuation">.</span>size<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">//</span> minimun_width
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Scaling factor for </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token builtin">file</span><span class="token punctuation">&#125;</span></span><span class="token string">: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>scale<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+
+    <span class="token comment"># Resize</span>
+    new_width <span class="token operator">=</span> original_image<span class="token punctuation">.</span>size<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">//</span> scale
+    new_height <span class="token operator">=</span> original_image<span class="token punctuation">.</span>size<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">//</span> scale
+
+    resized_image <span class="token operator">=</span> original_image<span class="token punctuation">.</span>resize<span class="token punctuation">(</span><span class="token punctuation">(</span>new_width<span class="token punctuation">,</span> new_height<span class="token punctuation">)</span><span class="token punctuation">,</span> Image<span class="token punctuation">.</span>ANTIALIAS<span class="token punctuation">)</span>
+
+    output_path <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>c<span class="token punctuation">.</span>output<span class="token punctuation">,</span> <span class="token builtin">file</span><span class="token punctuation">)</span>
+    resized_image<span class="token punctuation">.</span>save<span class="token punctuation">(</span>output_path<span class="token punctuation">)</span>
+    
+    <span class="token comment"># Post-processing with ImageMagick</span>
+    command <span class="token operator">=</span> <span class="token punctuation">[</span>c<span class="token punctuation">.</span>imconvert<span class="token punctuation">,</span> output_path<span class="token punctuation">,</span> output_path<span class="token punctuation">]</span>
+    subprocess<span class="token punctuation">.</span>run<span class="token punctuation">(</span>command<span class="token punctuation">,</span> text<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> capture_output<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Processed </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token builtin">file</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> output_path
+
+<span class="token keyword">def</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    os<span class="token punctuation">.</span>chdir<span class="token punctuation">(</span>c<span class="token punctuation">.</span>source<span class="token punctuation">)</span>
+    jpg_files <span class="token operator">=</span> glob<span class="token punctuation">.</span>glob<span class="token punctuation">(</span><span class="token string">"*.jpg"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">with</span> ThreadPoolExecutor<span class="token punctuation">(</span>max_workers<span class="token operator">=</span>os<span class="token punctuation">.</span>cpu_count<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> executor<span class="token punctuation">:</span>
+        results <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>executor<span class="token punctuation">.</span><span class="token builtin">map</span><span class="token punctuation">(</span>convert<span class="token punctuation">,</span> jpg_files<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    main<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="s">imconvert.bat</code></p>
+<pre class="line-numbers language-batch" data-language="batch"><code class="language-batch"><span class="token command"><span class="token keyword">C</span><span class="token label property">:\Apps\ImageMagick-7.1.1-30-portable-Q16-HDRI-x64\convert.exe</span> <span class="token variable">%1</span> -quality <span class="token number">20</span> <span class="token variable">%2</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2023/08/Resize-Compression-Images-With-Python/" data-id="cluwog6jd01cpv0ts8dymcy4w" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2023/08/Resize-Compression-Images-With-Python/" data-id="clv8syxo301cu9sts12i5adqd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
