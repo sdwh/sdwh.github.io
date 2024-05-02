@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/IIS-maxAllowedContentLength-Setup-2.png">
 <meta property="og:image" content="https://sdwh.dev/assets/IIS-UploadAheadSize-Setup.png">
 <meta property="article:published_time" content="2021-06-30T12:30:00.000Z">
-<meta property="article:modified_time" content="2024-04-30T12:36:12.692Z">
+<meta property="article:modified_time" content="2024-05-02T10:14:28.900Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Microsoft">
 <meta property="article:tag" content="IIS">
@@ -157,6 +157,21 @@
 <td>104857600</td>
 <td>1024000</td>
 </tr>
+<tr>
+<td>200MB</td>
+<td>209715200</td>
+<td>2048000</td>
+</tr>
+<tr>
+<td>500MB</td>
+<td>524288000</td>
+<td>5120000</td>
+</tr>
+<tr>
+<td>1GB</td>
+<td>1048576000</td>
+<td>10240000</td>
+</tr>
 </tbody></table>
 <h3 id="IIS-部分"><a href="#IIS-部分" class="headerlink" title="IIS 部分"></a>IIS 部分</h3><p>藉由調整 <strong>maxAllowedContentLength</strong>來設定 IIS 所允許的檔案上傳大小，預設值為 30000000 相當於 28.6 MB，調整為 104857600 相當於 100 MB。</p>
 <pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>system.webServer</span><span class="token punctuation">></span></span>
@@ -167,7 +182,7 @@
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>security</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>system.webServer</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>另外也可以使用 GUI 來設定：</p>
+<p>另外也可以使用 GUI 來在要求篩選 (Filter Request) 設定：</p>
 <p><img src="/assets/IIS-maxAllowedContentLength-Setup-1.png"></p>
 <p><img src="/assets/IIS-maxAllowedContentLength-Setup-2.png"></p>
 <h3 id="ASP-NET-部分"><a href="#ASP-NET-部分" class="headerlink" title="ASP.NET 部分"></a>ASP.NET 部分</h3><div class="article-blockquote">
@@ -198,7 +213,7 @@ You can use this limit to prevent denial of service attacks that are caused, for
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2021/06/IIS-File-Upload-Limit-MaxRequestLength-MaxAllowedContentLength/" data-id="clvnswoko00xyt0tsge526h1x" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2021/06/IIS-File-Upload-Limit-MaxRequestLength-MaxAllowedContentLength/" data-id="clvp5qqz700y7y4tsgbv17zvv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li></ul>
