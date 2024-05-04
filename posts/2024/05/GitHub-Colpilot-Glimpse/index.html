@@ -22,8 +22,13 @@
 <meta property="og:description" content="實戰訂閱 GitHub Copilit，搭配 Visual Studio Code 以及 Visual Studio，使用 GitHub Copilot Chat 以及 Completion 來簡化開發流程重複性質的操作，並且在開發卡觀的時候不用離開 IDE 與 Editor 就能夠得到問題解決，並且能夠自動生成註解與單元測試，讓軟體的品質進一步提升。">
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="og:image" content="https://sdwh.dev/assets/GitHub-Copilot-0.png">
+<meta property="og:image" content="https://sdwh.dev/assets/GitHub-Copilot-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/GitHub-Copilot-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/GitHub-Copilot-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/GitHub-Copilot-4.png">
 <meta property="article:published_time" content="2024-05-03T11:56:56.000Z">
-<meta property="article:modified_time" content="2024-05-03T12:23:22.156Z">
+<meta property="article:modified_time" content="2024-05-04T01:09:29.544Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Dev">
 <meta name="twitter:card" content="summary">
@@ -110,7 +115,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-GitHub-Copilot"><span class="toc-text">使用 GitHub Copilot</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Visual-Studio-Code"><span class="toc-text">Visual Studio Code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Visual-Studio"><span class="toc-text">Visual Studio</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E6%88%B0-GitHub-Copilot"><span class="toc-text">實戰 GitHub Copilot</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-GitHub-Copilot"><span class="toc-text">使用 GitHub Copilot</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Visual-Studio-Code"><span class="toc-text">Visual Studio Code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Visual-Studio"><span class="toc-text">Visual Studio</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%A6%E6%88%B0-GitHub-Copilot"><span class="toc-text">實戰 GitHub Copilot</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li></ol>
     </div>
   
   
@@ -166,14 +171,81 @@
 
 <p>具有 GitHub Copilot 訂閱之後，接著就是為開發工具安裝插件 (Extensions)，本文以筆者常用的 Visual Studio Code 以及 Visual Studio 為例，說明安裝 GitHub Copilot 的方式。</p>
 <h3 id="Visual-Studio-Code"><a href="#Visual-Studio-Code" class="headerlink" title="Visual Studio Code"></a>Visual Studio Code</h3><p>首先在延伸模組 (Extensions) 中搜尋 <code>GitHub Copilot</code>，接著點選安裝，會自動安裝包含 <code>GitHub Copilot</code> 以及 <code>GitHub Copilot Chat</code> 的插件。</p>
+<p><img src="/assets/GitHub-Copilot-0.png"></p>
 <p>安裝完成後重新啟動開發工具，接著進行登入至 GitHub 來完成驗證，這樣就可以開始使用 GitHub Copilot 了 😁</p>
+<p><img src="/assets/GitHub-Copilot-2.png"></p>
+<p>點入成功後，可以透過介面右下角的 GitHub Copilot 圖示，確認目前的狀態是 Ready 👨‍💻</p>
+<p><img src="/assets/GitHub-Copilot-1.png"></p>
+<p><img src="/assets/GitHub-Copilot-3.png"></p>
 <h3 id="Visual-Studio"><a href="#Visual-Studio" class="headerlink" title="Visual Studio"></a>Visual Studio</h3><p>同樣的在延伸模組當中搜尋 <code>GitHub Copilot</code>，分別選擇 <code>GitHub Copilot</code> 以及 <code>GitHub Copilot Chat</code> 進行安裝，安裝時必須先關閉 Visual Studio，安裝完成後接著開啟 Visual Studio 接著同樣是進行登入至 GitHub 來完成驗證。</p>
-<h2 id="實戰-GitHub-Copilot"><a href="#實戰-GitHub-Copilot" class="headerlink" title="實戰 GitHub Copilot"></a>實戰 GitHub Copilot</h2>
+<h2 id="實戰-GitHub-Copilot"><a href="#實戰-GitHub-Copilot" class="headerlink" title="實戰 GitHub Copilot"></a>實戰 GitHub Copilot</h2><p>GitHub Copilot 的使用方式主要有兩種，一種是透過 Completion，另一種是透過 Chat 來進行問答來進行程式碼的自動生成。</p>
+<p>Completion 的使用方式，就是直接整合在 IDE 與 Editor 中，當開發者輸入程式碼時，GitHub Copilot 會自動提示程式碼，開發者可以選擇是否採用，這樣可以大幅提升開發速度。</p>
+<p>而這個功能與 Visual Studio 以及 Visual Studio Code 的 IntelliSense, IntelliCode 有異曲同工之妙，開發人員在單檔編輯的過程，提示會跳出詢問開發人員是否採用，可以使用 Tab 來採用或者 ESC 取消以及列出下一個建議或者列出至多 10 個建議在選單挑選。</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Work</th>
+<th>Keyboard</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VSCode</td>
+<td>Accept Suggestion</td>
+<td><code>Tab</code></td>
+</tr>
+<tr>
+<td>VSCode</td>
+<td>Dismiss Suggestion</td>
+<td><code>ESC</code></td>
+</tr>
+<tr>
+<td>VSCode</td>
+<td>Next Suggestion</td>
+<td><code>Alt</code> + <code>]</code></td>
+</tr>
+<tr>
+<td>VSCode</td>
+<td>Completions Panel</td>
+<td><code>Ctrl</code> + <code>Enter</code></td>
+</tr>
+<tr>
+<td>VSCode</td>
+<td>Inline Chat</td>
+<td><code>Ctrl</code> + <code>I</code></td>
+</tr>
+<tr>
+<td>VSCode</td>
+<td>Inline Suggestions</td>
+<td><code>Alt</code> + <code>\</code></td>
+</tr>
+<tr>
+<td>VSCode</td>
+<td>Chat</td>
+<td><code>Ctrl</code> + <code>Alt</code> + <code>I</code></td>
+</tr>
+</tbody></table>
+<p>而 Completion 可以協助的工作內容，包含：</p>
+<ol>
+<li>程式碼的生成 (Code Generation)</li>
+<li>註解的生成 (Comment Generation)</li>
+<li>程式碼的修正 (Code Fixing)</li>
+<li>單元測試的生成 (Unit Test Generation)</li>
+<li>程式碼的重構 (Code Refactoring)</li>
+<li>程式碼的解釋 (Code Explanation)</li>
+</ol>
+<p>而常用的工作，例如 <code class="s">/explain</code>,  <code class="s">/fix</code>, <code class="s">/doc</code>, <code class="s">/tests</code> 都已經被整理為指令，不需要加入 prompt 只需要觸發 Inline Chat 就可以使用。</p>
+<p><img src="/assets/GitHub-Copilot-4.png"></p>
+<hr>
+<p>另外最新的 GitHub Copilot CLI </p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><p><a target="_blank" rel="noopener" href="https://docs.github.com/en/copilot">GitHub Copilot documentation | GitHub Docs</a></p>
+<p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/prompt-crafting">Best practices for using GitHub Copilot in VS Code | Visual Studio Code Docs</a></p>
+
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2024/05/GitHub-Colpilot-Glimpse/" data-id="clvqncfvh00rzz4ts835h7db5" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2024/05/GitHub-Colpilot-Glimpse/" data-id="clvrepdoc00s3tgts4josel8f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li></ul>
