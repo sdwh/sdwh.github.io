@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>實作 SQL Server 安全性設定以符合資安研究院「資料庫技術檢測」 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 SQL Server 的各項安全性設定對應 資安研究院「資料庫技術檢測」的檢測項目。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="實作 SQL Server 安全性設定以符合資安研究院「資料庫技術檢測」">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/05/SQL-Server-Compliance-with-NICS-Database-Security-Checks/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 SQL Server 的各項安全性設定對應 資安研究院「資料庫技術檢測」的檢測項目。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+<meta property="article:published_time" content="2024-05-29T11:11:44.000Z">
+<meta property="article:modified_time" content="2024-05-29T12:54:53.725Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="SQLServer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/SQL-Server-Logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL-Server-Compliance-with-NICS-Database-Security-Checks" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/05/SQL-Server-Compliance-with-NICS-Database-Security-Checks/" class="article-date">
+  <time datetime="2024-05-29T11:11:44.000Z" itemprop="datePublished">2024-05-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      實作 SQL Server 安全性設定以符合資安研究院「資料庫技術檢測」
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%AC%8A%E5%B8%B3%E6%88%B6%E7%AE%A1%E7%90%86"><span class="toc-text">特權帳戶管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E5%8A%A0%E5%AF%86"><span class="toc-text">資料加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%8F%96%E6%8E%88%E6%AC%8A"><span class="toc-text">存取授權</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%BD%E6%A0%B8%E7%B4%80%E9%8C%84"><span class="toc-text">稽核紀錄</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A7%94%E5%A4%96%E7%AE%A1%E7%90%86"><span class="toc-text">委外管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%82%99%E4%BB%BD%E4%BF%9D%E8%AD%B7"><span class="toc-text">備份保護</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%B1%E9%BB%9E%E7%AE%A1%E7%90%86"><span class="toc-text">弱點管理</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 SQL Server 的各項安全性設定對應 <a target="_blank" rel="noopener" href="https://www.nics.nat.gov.tw/cybersecurity_resources/reference_guide/Information_Security_Service_Reference_Documents/">資安研究院「資料庫技術檢測」</a>的檢測項目。</p>
+<a href="/posts/2024/05/SQL-Server-Compliance-with-NICS-Database-Security-Checks/" title="SQL Server Logo" class="fancybox" rel="article0">
+  <img src="/assets/SQL-Server-Logo.svg" alt="SQL Server Logo" width="120px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>目前設定的對照版本為 v1.0。</p>
+<h2 id="特權帳戶管理"><a href="#特權帳戶管理" class="headerlink" title="特權帳戶管理"></a>特權帳戶管理</h2><blockquote>
+<p>變更資料庫預設管理帳戶</p>
+</blockquote>
+<p>SQL Server 預設的管理帳戶是 <code>sa</code>，必須停用這個帳號，另外將其他帳號設定為 <code>sys_admin</code></p>
+<blockquote>
+<p>啟用帳戶鎖定次數、啟用帳戶鎖定時間、啟用通行碼複雜度原則、啟用通行碼長度原則、</p>
+</blockquote>
+<p>對所有的 SQL Server Login 設定 <code>CHECK_POLICY=ON</code></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>master<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> LOGIN <span class="token punctuation">[</span>A13DomainPlanerUser<span class="token punctuation">]</span> <span class="token keyword">WITH</span> CHECK_POLICY<span class="token operator">=</span><span class="token keyword">ON</span><span class="token punctuation">,</span> CHECK_EXPIRATION<span class="token operator">=</span><span class="token keyword">OFF</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>搭配本機原則 (<code>secpol.msc</code>) 進行以下設定：</p>
+<ul>
+<li>鎖定次數 5、鎖定時間 15 分鐘</li>
+<li>最小長度 12 字元</li>
+<li>複雜度包含下列四種字元中的三種:<ul>
+<li>英文大寫字元 (A 到 Z)</li>
+<li>英文小寫字元 (a 到 z)</li>
+<li>10 進位數字 (0 到 9)</li>
+<li>非英文字母字元 (例如: !、$、#、%)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>啟用通行碼最長有效期限原則</p>
+</blockquote>
+<p>如果要符合，必須要將 <code>CHECK_EXPIRATION</code> 設定為 ON，但這樣連線帳號就必須要經常變更密碼，如果銜接不上，反而會造成應用系統的可用性受到影響，這點需要採用單位審慎評估。或使用<strong>資安防護補償措施​</strong>。</p>
+<p>或是區別應用系統連線帳號與管理者帳號，為了系統穩定可用性考量，僅對於管理者帳號要求啟用<strong>啟用通行碼最長有效期限原則</strong>。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">USE</span> <span class="token punctuation">[</span>master<span class="token punctuation">]</span>
+<span class="token keyword">ALTER</span> LOGIN <span class="token punctuation">[</span>A13DomainPlanerUser<span class="token punctuation">]</span> <span class="token keyword">WITH</span> CHECK_EXPIRATION<span class="token operator">=</span><span class="token keyword">ON</span>
+GO<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>限制管理者帳戶透過遠端存取</p>
+</blockquote>
+<p>依照項目說明「資料庫應限制管理者帳戶無法從非管理者網段進行遠端連線」，可以實作為只允許特定的 IP 位置可以對資料庫伺服器進行遠端連線。</p>
+<p>這裡的遠端連線指的是使用 <code>mstsc</code> 的方式<strong>遠端桌面</strong>進入資料庫伺服器，不包含使用 SSMS 的特定 IP 限制。</p>
+<p>如果要包含 SSMS 的連線設定，可以搭配 <code>wf.msc</code> 去設定對 SQL Server Port 連線的白名單。</p>
+<h2 id="資料加密"><a href="#資料加密" class="headerlink" title="資料加密"></a>資料加密</h2><blockquote>
+<p>資料庫資料具有適當保護機制(加密)</p>
+</blockquote>
+<p>依照項目說明「避免機敏資料以明文方式儲存」，加密機制的採用包含：</p>
+<table>
+<thead>
+<tr>
+<th>加密需求</th>
+<th>對應技術</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>資料庫加密</td>
+<td><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/transparent-data-encryption?view=sql-server-ver16">TDE</a></td>
+</tr>
+<tr>
+<td>資料欄位內容加密</td>
+<td><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-ver16">Column Data Encryption</a></td>
+</tr>
+<tr>
+<td>資料表欄位內容加密</td>
+<td><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/configure-always-encrypted-using-powershell?view=sql-server-ver16">Always Encrypted</a></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>資料庫傳輸具有安全機制</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/sql/database-engine/configure-windows/configure-sql-server-encryption?view=sql-server-ver16">對應設定</a></p>
+<p>🌶️<a target="_blank" rel="noopener" href="https://download.nics.nat.gov.tw/UploadFile/attachfilespmo/%e8%b3%87%e6%96%99%e5%ba%ab%e6%8a%80%e8%a1%93%e6%aa%a2%e6%b8%ac%e5%9f%b7%e8%a1%8c%e6%96%b9%e6%b3%95v1.0_1100518.pdf">編輯進度</a></p>
+<blockquote>
+<p>資料庫加密金鑰具有適當保護機制</p>
+</blockquote>
+<p>TDE 的金鑰的保護方式，如密件文件保存等。</p>
+<h2 id="存取授權"><a href="#存取授權" class="headerlink" title="存取授權"></a>存取授權</h2><blockquote>
+<p>限制資料庫主機服務埠</p>
+</blockquote>
+<p>使用 nmap 或者是 powershell 的 <code>test-netconnection</code> 測試 SQL Server 是否有開啟資料庫服務 (預設 TCP 1433) 以外的 Port。</p>
+<blockquote>
+<p>限制遠端存取來源</p>
+</blockquote>
+<blockquote>
+<p>限制遠端存取帳戶</p>
+</blockquote>
+<blockquote>
+<p>限制遠端存取操作</p>
+</blockquote>
+<blockquote>
+<p>資料庫帳戶權限最小原則</p>
+</blockquote>
+<h2 id="稽核紀錄"><a href="#稽核紀錄" class="headerlink" title="稽核紀錄"></a>稽核紀錄</h2><blockquote>
+<p>啟用資料庫帳戶變更稽核</p>
+</blockquote>
+<blockquote>
+<p>啟用資料庫帳戶登出/登入稽核</p>
+</blockquote>
+<blockquote>
+<p>啟用資料庫結構變更稽核</p>
+</blockquote>
+<blockquote>
+<p>稽核紀錄管理方式</p>
+</blockquote>
+<blockquote>
+<p>資料庫主機時間校時</p>
+</blockquote>
+<blockquote>
+<p>稽核紀錄分析</p>
+</blockquote>
+<h2 id="委外管理"><a href="#委外管理" class="headerlink" title="委外管理"></a>委外管理</h2><blockquote>
+<p>委外廠商外部連線方式<br>委外廠商資料存取方式<br>委外廠商帳戶授權方式</p>
+</blockquote>
+<h2 id="備份保護"><a href="#備份保護" class="headerlink" title="備份保護"></a>備份保護</h2><blockquote>
+<p>資料庫定期執行備份<br>資料庫備份具有適當保護機制<br>資料庫備份回復測試</p>
+</blockquote>
+<h2 id="弱點管理"><a href="#弱點管理" class="headerlink" title="弱點管理"></a>弱點管理</h2><blockquote>
+<p>執行資料庫主機弱點掃描</p>
+</blockquote>
+<blockquote>
+<p>修補資料庫主機弱點項目</p>
+</blockquote>
+<blockquote>
+<p>修補資料庫主機安全性更新項目</p>
+</blockquote>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/05/SQL-Server-Compliance-with-NICS-Database-Security-Checks/" data-id="clwru0xhu01hnx8tsds8q4fs4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQLServer/" rel="tag">SQLServer</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/05/Convert-Docx-To-Pdf-With-Soffice-Cli/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Convert Docx To Pdf With Soffice &amp; Office.Interop (指令化方式將 word docx 轉換為 pdf)</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/05/ASPNET-Core-Logging-With-Serilog/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET Core Logging With Serilog
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">150</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">269</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">37</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">70</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
