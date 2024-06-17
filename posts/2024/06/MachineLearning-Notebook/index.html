@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Machine Learning 機器學習筆記 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="紀錄關於機器學習相關知識點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine Learning 機器學習筆記">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/06/MachineLearning-Notebook/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="紀錄關於機器學習相關知識點。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2024-06-14T11:13:13.027Z">
+<meta property="article:modified_time" content="2024-06-16T12:43:50.335Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-MachineLearning-Notebook" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/06/MachineLearning-Notebook/" class="article-date">
+  <time datetime="2024-06-14T11:13:13.027Z" itemprop="datePublished">2024-06-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/AI/">AI</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Machine Learning 機器學習筆記
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%B8%E7%BF%92%E7%9A%84%E7%AF%84%E7%96%87"><span class="toc-text">學習的範疇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%B4%E6%AD%B8-Regression"><span class="toc-text">迴歸, Regression</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E9%A1%9E-Classification"><span class="toc-text">分類, Classification</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%8D%E7%B6%AD-Dimensionality-Reduction"><span class="toc-text">降維, Dimensionality Reduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%BE%A4-Clustering"><span class="toc-text">分群, Clustering</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B1%E6%B7%BA%E5%85%A5%E6%B7%B1"><span class="toc-text">由淺入深</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>紀錄關於機器學習相關知識點。</p>
+<a href="/posts/2024/06/MachineLearning-Notebook/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>機器學習與統計關係密不可分，統計學提供了機器學習所需的理論基礎和數學工具，達到理解資料、建立模型與預測的目標。</p>
+<ul>
+<li>藉由主成分分析, PCA、因子分析和特徵工程等進行資料預處理和特徵選擇</li>
+<li>抽樣資料來建構模型</li>
+<li>藉由機率、交叉驗證、假設檢驗和信賴區間來進行模型評估、評估模型效能與結果解釋</li>
+</ul>
+<h2 id="學習的範疇"><a href="#學習的範疇" class="headerlink" title="學習的範疇"></a>學習的範疇</h2><h3 id="迴歸-Regression"><a href="#迴歸-Regression" class="headerlink" title="迴歸, Regression"></a>迴歸, Regression</h3><p>目標：預測連續數值輸出。<br>常見應用：房價預測、股票價格預測、銷售量預測等。</p>
+<ul>
+<li>線性迴歸, Linear Regression</li>
+<li>單變量線性迴歸</li>
+<li>多變量線性迴歸</li>
+<li>最小平方法, Least Squares Method</li>
+</ul>
+<p><strong>正則化技術, Regularization Techniques</strong></p>
+<p>防止過擬合、提高模型泛化能力和處理多重共線性等重要用途。這些技術通過在回歸目標中加入懲罰項來有效縮小回歸係數。</p>
+<blockquote>
+<p>過擬合（Overfitting）：指模型在訓練數據上表現非常好，但在測試數據或新數據上表現不佳。這通常是因為型過於複雜，具有過多的參數、訓練數據量不足、訓練數據包含大量噪聲以至於捕捉到了訓練數據中的噪聲和細節，從而失去了對新數據的泛化能力。原因：模。</p>
+</blockquote>
+<blockquote>
+<p>多重共線性（Multicollinearity）：指回歸分析中，解釋變數（自變量）之間存在高度相關性，這會導致迴歸係數的不穩定和解釋性差。</p>
+</blockquote>
+<ul>
+<li>嶺迴歸, Ridge Regression</li>
+<li>Lasso Regression</li>
+<li>Elastic Net</li>
+<li>Support Vector Regression, SVR</li>
+<li>Gaussian Process Regression</li>
+</ul>
+<p>評估指標：<br>平均絕對誤差, MAE, 預測值與實際值之間絕對誤差的平均值, 數值越小越好<br>均方誤差, MSE, 預測值與實際值之間誤差平方和的平均值, 數值越小越好<br>均方根誤差, RMSE, RMSE 是 MSE 的平方根, 數值越小越好<br>決定係數, R²: R² 值介於 0 和 1 之間，越接近 1 表示模型對數據的擬合度越好。</p>
+<p>在大多數情況下，RMSE 是一個良好的選擇，因為它兼顧了對大誤差的敏感性和便於解釋的特點。然而在特定應用中，MAE 適合需要均衡考慮所有誤差且對異常值影響較小的情況，適用於需要簡單且易於解釋的場景；MSE 適合在訓練模型時用來最小化大誤差，特別是在模型對大誤差特別敏感的情況下使用。</p>
+<h3 id="分類-Classification"><a href="#分類-Classification" class="headerlink" title="分類, Classification"></a>分類, Classification</h3><p>目標：預測類別資料, 離散。<br>常見應用：垃圾郵件檢測、圖像分類、疾病診斷等。</p>
+<p>模型：<br>K-Nearest Neighbors, KNN<br>決策樹, Decision Trees<br>支持向量機, Support Vector Machines, SVM<br>邏輯迴歸, Logistic Regression<br>樸素貝葉斯分類, Naive Bayes Classification</p>
+<p>集成學習, Ensemble Learning, 組合多種學習算法來獲得比單獨使用任何一種算法更好的預測性能：</p>
+<ul>
+<li>隨機森林, Random Forest</li>
+<li>梯度提升機, Gradient Boosting Machine, GBM</li>
+<li>極限梯度提升, XGBoost</li>
+</ul>
+<p>神經網絡, Neural Networks：</p>
+<ul>
+<li>多層感知器, Multilayer Perceptron, MLP</li>
+<li>卷積神經網絡, Convolutional Neural Networks, CNN</li>
+</ul>
+<p>評估指標：<br>準確率, Accuracy<br>精確率, Precision<br>召回率, Recall<br>F1分數, F1 Score<br>ROC曲線和AUC, ROC Curve and AUC</p>
+<h3 id="降維-Dimensionality-Reduction"><a href="#降維-Dimensionality-Reduction" class="headerlink" title="降維, Dimensionality Reduction"></a>降維, Dimensionality Reduction</h3><p>目標：減少特徵數量，同時保留數據的重要信息。<br>常見應用：資料視覺化、特徵選擇、噪聲過濾等。</p>
+<p><strong>線性降維</strong></p>
+<p>主成分分析, Principal Component Analysis, PCA：</p>
+<ul>
+<li>理解協方差矩陣</li>
+<li>特徵值和特徵向量</li>
+<li>解釋方差</li>
+</ul>
+<p>線性判別分析, Linear Discriminant Analysis, LDA：</p>
+<ul>
+<li>區別於PCA的目標, 最大化類別間的區分</li>
+<li>理解類內和類間散佈矩陣</li>
+<li>其他技術：</li>
+</ul>
+<p>隨機投影 (Random Projection)<br>奇異值分解 (Singular Value Decomposition, SVD)</p>
+<p><strong>非線性降維</strong><br>t-分佈隨機鄰嵌, t-Distributed Stochastic Neighbor Embedding, t-SNE<br>自編碼器, Autoencoders</p>
+<h3 id="分群-Clustering"><a href="#分群-Clustering" class="headerlink" title="分群, Clustering"></a>分群, Clustering</h3><p>基本概念：</p>
+<p>目標：將數據點分組為數個類別，每個類別的數據點在某種意義上是相似的。<br>常見應用：顧客分群、市場細分、圖像分割等。</p>
+<ul>
+<li>K均值分群, K-Means Clustering</li>
+<li>層次分群, Hierarchical Clustering</li>
+<li>均值漂移, Mean Shift</li>
+<li>DBSCAN, Density-Based Spatial Clustering of Applications with Noise</li>
+</ul>
+<p>模型評估：<br>簇內距離和簇間距離<br>評估指標如輪廓係數, Silhouette Coefficient、鄰近誤差, Dunn Index<br>分群算法的選擇：<br>根據數據特性選擇合適的算法，如數據的形狀、密度、尺寸等</p>
+<h2 id="由淺入深"><a href="#由淺入深" class="headerlink" title="由淺入深"></a>由淺入深</h2><p>機器學習是第一步，深度學習是機器學習的子領域，Transformer 又是深度學習的子領域，LLM 則建構在 Transformer 上。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/06/MachineLearning-Notebook/" data-id="clxj0rbcv014lqots65f88ab6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/06/SQL-Server-Check-License-Key/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Check License Key</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/06/EngDiary-0039/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          EngDiary 0039 - Departments and College
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">153</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">270</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">79</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
