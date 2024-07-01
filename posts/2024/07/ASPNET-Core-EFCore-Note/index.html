@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Core EFCore Note | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記使用 EF Core 的基本要點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Core EFCore Note">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/07/ASPNET-Core-EFCore-Note/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記使用 EF Core 的基本要點。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Web-API-With-EFCore-EFCore-Power-Tool.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-EFCore-Note-9.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-EFCore-Note-10.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-EFCore-Note-12.png">
+<meta property="article:published_time" content="2024-07-01T11:09:26.000Z">
+<meta property="article:modified_time" content="2024-07-01T11:47:27.913Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNETCore">
+<meta property="article:tag" content="WebAPI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Core-EFCore-Note" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/07/ASPNET-Core-EFCore-Note/" class="article-date">
+  <time datetime="2024-07-01T11:09:26.000Z" itemprop="datePublished">2024-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Core EFCore Note
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PreSet"><span class="toc-text">PreSet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Eager-Loading"><span class="toc-text">Eager Loading</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lazy-Loading"><span class="toc-text">Lazy Loading</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Join-Loading"><span class="toc-text">Join Loading</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Create-Modify-and-Delete-with-DBContext"><span class="toc-text">Create, Modify and Delete with DBContext</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create"><span class="toc-text">Create</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Modify"><span class="toc-text">Modify</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete"><span class="toc-text">Delete</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RawQuery"><span class="toc-text">RawQuery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stored-Procedure"><span class="toc-text">Stored Procedure</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ASP-NET-Web-API-Rock-with-EF-Core"><span class="toc-text">ASP.NET Web API Rock with EF Core</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NuGet-Install"><span class="toc-text">NuGet Install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DBContext"><span class="toc-text">DBContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Register-DbContext-And-Migrations-Database"><span class="toc-text">Register DbContext And Migrations Database</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SeedData"><span class="toc-text">SeedData</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記使用 EF Core 的基本要點。</p>
+<a href="/posts/2024/07/ASPNET-Core-EFCore-Note/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="PreSet"><a href="#PreSet" class="headerlink" title="PreSet"></a>PreSet</h2><p>安裝 <code>EF Core Power Tool</code> to reverse engineer the database to generate the model classes (or using Scaffold-DbContext).</p>
+<p><img src="/assets/ASPNET-Core-Web-API-With-EFCore-EFCore-Power-Tool.png"></p>
+<p>在 DBContext 加入 <code>LogTo</code> 設定，可以顯示 EF Core 產生的 SQL 語句在 Console 中，方便除錯 😊</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnConfiguring</span><span class="token punctuation">(</span><span class="token class-name">DbContextOptionsBuilder</span> optionsBuilder<span class="token punctuation">)</span><span class="token operator">=></span> optionsBuilder
+    <span class="token punctuation">.</span><span class="token function">LogTo</span><span class="token punctuation">(</span>Console<span class="token punctuation">.</span>WriteLine<span class="token punctuation">,</span> Microsoft<span class="token punctuation">.</span>Extensions<span class="token punctuation">.</span>Logging<span class="token punctuation">.</span>LogLevel<span class="token punctuation">.</span>Information<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">UseSqlServer</span><span class="token punctuation">(</span><span class="token string">"Data Source=.\\sqlexpress;Initial Catalog=Northwind;Integrated Security=True;TrustServerCertificate=True"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h2 id="Eager-Loading"><a href="#Eager-Loading" class="headerlink" title="Eager Loading"></a>Eager Loading</h2><p>It will not show the related data (Orders) in the navigation properties in default.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token class-name"><span class="token keyword">var</span></span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NorthwindContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> <span class="token keyword">from</span> c <span class="token keyword">in</span> context<span class="token punctuation">.</span>Customers
+            <span class="token keyword">where</span> <span class="token class-name">c</span><span class="token punctuation">.</span>CustomerId <span class="token operator">==</span> <span class="token string">"ALFKI"</span>
+            <span class="token keyword">select</span> c<span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> query<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>CustomerId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> order <span class="token keyword">in</span> item<span class="token punctuation">.</span>Orders<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"\t</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">order<span class="token punctuation">.</span>OrderId</span><span class="token punctuation">&#125;</span></span><span class="token string"> - </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">order<span class="token punctuation">.</span>OrderDate</span><span class="token format-string"><span class="token punctuation">:</span>d</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>⚡ We can using <code>include</code> to eager loading the related data (Orders).</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> <span class="token keyword">from</span> c <span class="token keyword">in</span> context<span class="token punctuation">.</span>Customers<span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c<span class="token punctuation">.</span>Orders<span class="token punctuation">)</span>
+            <span class="token keyword">where</span> <span class="token class-name">c</span><span class="token punctuation">.</span>CustomerId <span class="token operator">==</span> <span class="token string">"ALFKI"</span>
+            <span class="token keyword">select</span> c<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>⚡ Or We can using annoymous type to eager loading the related data (Orders).</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> <span class="token keyword">from</span> c <span class="token keyword">in</span> context<span class="token punctuation">.</span>Customers<span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c<span class="token punctuation">.</span>Orders<span class="token punctuation">)</span>
+            <span class="token keyword">where</span> <span class="token class-name">c</span><span class="token punctuation">.</span>CustomerId <span class="token operator">==</span> <span class="token string">"ALFKI"</span>
+            <span class="token keyword">select</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span>c<span class="token punctuation">.</span>CustomerId<span class="token punctuation">,</span> c<span class="token punctuation">.</span>Orders<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>We can using <code>ThenInclude</code> to eager loading another related data (OrderDetails).</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> <span class="token keyword">from</span> c <span class="token keyword">in</span> context<span class="token punctuation">.</span>Customers
+            <span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c<span class="token punctuation">.</span>Orders<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">ThenInclude</span><span class="token punctuation">(</span>o <span class="token operator">=></span> o<span class="token punctuation">.</span>OrderDetails<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">AsSplitQuery</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">where</span> <span class="token class-name">c</span><span class="token punctuation">.</span>CustomerId <span class="token operator">==</span> <span class="token string">"ALFKI"</span>
+            <span class="token keyword">select</span> c<span class="token punctuation">;</span>
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> query<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>CustomerId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> order <span class="token keyword">in</span> item<span class="token punctuation">.</span>Orders<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"\t</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">order<span class="token punctuation">.</span>OrderId</span><span class="token punctuation">&#125;</span></span><span class="token string"> - </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">order<span class="token punctuation">.</span>OrderDate</span><span class="token format-string"><span class="token punctuation">:</span>d</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> detail <span class="token keyword">in</span> order<span class="token punctuation">.</span>OrderDetails<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"\t\t</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">detail<span class="token punctuation">.</span>ProductId</span><span class="token punctuation">&#125;</span></span><span class="token string"> - </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">detail<span class="token punctuation">.</span>UnitPrice</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And we can using <code>AsSplitQuery</code> to split the query (is there any performance issue 🤔).</p>
+<p>⚡ Using AsSplitQuery in Entity Framework Core offers these benefits:</p>
+<ul>
+<li>Reduced Memory Usage: Splits large result sets to avoid high memory consumption.</li>
+<li>Improved Performance: Executes smaller queries faster.</li>
+<li>Better Server Handling: Lessens the load on the database server.</li>
+<li>Avoids SQL Limitations: Prevents hitting size and parameter limits of SQL Server.</li>
+<li>Optimized Query Plans: Generates more efficient execution plans.</li>
+</ul>
+<h2 id="Lazy-Loading"><a href="#Lazy-Loading" class="headerlink" title="Lazy Loading"></a>Lazy Loading</h2><p>Lazy loading is not enabled by default. We need to install <code>Microsoft.EntityFrameworkCore.Proxies</code> package and enable it in the <code>OnConfiguring</code> method.</p>
+<p>🚨 We have to check <code>MultipleActiveResultSets=True</code> in the connection string and add <code>UseLazyLoadingProxies()</code> in the <code>OnConfiguring</code> method.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnConfiguring</span><span class="token punctuation">(</span><span class="token class-name">DbContextOptionsBuilder</span> optionsBuilder<span class="token punctuation">)</span>
+    <span class="token operator">=></span> optionsBuilder
+        <span class="token punctuation">.</span><span class="token function">LogTo</span><span class="token punctuation">(</span>Console<span class="token punctuation">.</span>WriteLine<span class="token punctuation">,</span> Microsoft<span class="token punctuation">.</span>Extensions<span class="token punctuation">.</span>Logging<span class="token punctuation">.</span>LogLevel<span class="token punctuation">.</span>Information<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">UseLazyLoadingProxies</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">UseSqlServer</span><span class="token punctuation">(</span><span class="token string">"Data Source=.\\sqlexpress;...;MultipleActiveResultSets=True;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And make sure <code>Virtual</code> keyword in the navigation properties.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">InverseProperty</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Customer"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">virtual</span> <span class="token return-type class-name">ICollection<span class="token punctuation">&lt;</span>Order<span class="token punctuation">></span></span> Orders <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Order<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>🚨 Don’t use <code>Lazy Loading</code>, it will cause performance issue, the N+1 problem.</p>
+<h3 id="Join-Loading"><a href="#Join-Loading" class="headerlink" title="Join Loading"></a>Join Loading</h3><p>Specific using inner join in the query.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Query Syntax</span>
+<span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> <span class="token keyword">from</span> o <span class="token keyword">in</span> context<span class="token punctuation">.</span>Orders
+            <span class="token keyword">join</span> c <span class="token keyword">in</span> context<span class="token punctuation">.</span>Customers <span class="token keyword">on</span> o<span class="token punctuation">.</span>CustomerId equals c<span class="token punctuation">.</span>CustomerId
+            <span class="token keyword">where</span> <span class="token class-name">o</span><span class="token punctuation">.</span>CustomerId <span class="token operator">==</span> <span class="token string">"ALFKI"</span>
+            <span class="token keyword">select</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> c<span class="token punctuation">.</span>CompanyName<span class="token punctuation">,</span> o<span class="token punctuation">.</span>OrderId<span class="token punctuation">,</span> o<span class="token punctuation">.</span>OrderDate<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Method Syntax</span>
+<span class="token class-name"><span class="token keyword">var</span></span> query2 <span class="token operator">=</span> context<span class="token punctuation">.</span>Orders
+    <span class="token punctuation">.</span><span class="token function">Join</span><span class="token punctuation">(</span>
+        context<span class="token punctuation">.</span>Customers<span class="token punctuation">,</span> 
+        o <span class="token operator">=></span> o<span class="token punctuation">.</span>CustomerId<span class="token punctuation">,</span> 
+        c <span class="token operator">=></span> c<span class="token punctuation">.</span>CustomerId<span class="token punctuation">,</span> 
+        <span class="token punctuation">(</span>o<span class="token punctuation">,</span> c<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> c<span class="token punctuation">.</span>CompanyName<span class="token punctuation">,</span> o<span class="token punctuation">.</span>OrderId<span class="token punctuation">,</span> o<span class="token punctuation">.</span>OrderDate<span class="token punctuation">,</span> c<span class="token punctuation">.</span>CustomerId <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c<span class="token punctuation">.</span>CustomerId <span class="token operator">==</span> <span class="token string">"ALFKI"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> query<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>CompanyName</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>OrderId</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>OrderDate</span><span class="token format-string"><span class="token punctuation">:</span>d</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> query2<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>CompanyName</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>OrderId</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>OrderDate</span><span class="token format-string"><span class="token punctuation">:</span>d</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>Use Lazy Loading When: <strong>Uncertain Data Usage</strong>, <strong>Reduce Initial Load Time</strong>, and <strong>Simple Object Structures</strong>.</p>
+<p>Use Eager Loading When: <strong>You Need Related Data Immediately</strong>, <strong>Performance Considerations</strong>, and <strong>Complex Data Retrieval</strong>.</p>
+<p>Use Join: <strong>Complex Join Conditions</strong>, <strong>Performance Optimization</strong>, and <strong>Ad-Hoc Queries</strong>.</p>
+<h2 id="Create-Modify-and-Delete-with-DBContext"><a href="#Create-Modify-and-Delete-with-DBContext" class="headerlink" title="Create, Modify and Delete with DBContext"></a>Create, Modify and Delete with DBContext</h2><p><code>EntityState</code> is used to track the state of an entity.</p>
+<ul>
+<li><code>Added</code>: The entity is being tracked by the context but does not yet exist in the database.</li>
+<li><code>Unchanged</code>: The entity is being tracked by the context and exists in the database, and its property values have not changed from the values in the database.</li>
+<li><code>Modified</code>: The entity is being tracked by the context and exists in the database, and some or all of its property values have been modified.</li>
+<li><code>Deleted</code>: The entity is being tracked by the context and exists in the database, but has been marked for deletion from the database the next time <code>SaveChanges</code> is called.</li>
+</ul>
+<h3 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> id <span class="token operator">=</span> context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">Max</span><span class="token punctuation">(</span>r <span class="token operator">=></span> r<span class="token punctuation">.</span>RegionId<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> region <span class="token operator">=</span> context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">Find</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">(</span>region <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Region</span> <span class="token punctuation">&#123;</span> RegionId <span class="token operator">=</span> id<span class="token punctuation">,</span> RegionDescription <span class="token operator">=</span> <span class="token string">"Cetral"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">AsNoTracking</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>RegionId<span class="token punctuation">,</span> item<span class="token punctuation">.</span>RegionDescription<span class="token punctuation">.</span><span class="token function">Trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Modify"><a href="#Modify" class="headerlink" title="Modify"></a>Modify</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> id <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> region <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Find</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Region<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// check if region is not null and then update its data</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>region <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    region<span class="token punctuation">.</span>RegionDescription <span class="token operator">=</span> <span class="token string">"New Region"</span><span class="token punctuation">;</span>
+    context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>⚡ Another way to update the data.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">context<span class="token punctuation">.</span><span class="token function">Update</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Region</span> <span class="token punctuation">&#123;</span> RegionId <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span> RegionDescription <span class="token operator">=</span> <span class="token string">"Brand New Region"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> region <span class="token operator">=</span> context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">Find</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">(</span>region <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>region<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>⚡ Another way to delete the data.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">context<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Region</span> <span class="token punctuation">&#123;</span> RegionId <span class="token operator">=</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>⚡⚡ If you want to delete all the data in the table.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">context<span class="token punctuation">.</span>Regions<span class="token punctuation">.</span><span class="token function">ExecuteDelete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>Why <code>AsNoTracking</code> is used in the <code>foreach</code> loop?</p>
+<p>if without <code>AsNoTracking</code>:</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> context<span class="token punctuation">.</span>Regions<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>RegionId<span class="token punctuation">,</span> item<span class="token punctuation">.</span>RegionDescription<span class="token punctuation">.</span><span class="token function">Trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+context<span class="token punctuation">.</span><span class="token function">Update</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Region</span> <span class="token punctuation">&#123;</span> RegionId <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span> RegionDescription <span class="token operator">=</span> <span class="token string">"Brand New Region"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>🚨 Warning will happend: <em>“The instance of entity type ‘Region’ cannot be tracked because another instance with the same key value for {‘RegionId’} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using <code>DbContextOptionsBuilder.EnableSensitiveDataLogging</code> to see the conflicting key values.”</em></p>
+<p>To fix this issue, we can use <code>AsNoTracking</code> or using <code>context.ChageTracker.Clear()</code>.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">context<span class="token punctuation">.</span>ChangeTracker<span class="token punctuation">.</span><span class="token function">Clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="RawQuery"><a href="#RawQuery" class="headerlink" title="RawQuery"></a>RawQuery</h3><p>We can use <code>FromSqlRaw</code> to execute raw SQL query, but it is not recommended, because it have to select all the columns 👎</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> context<span class="token punctuation">.</span>Employees<span class="token punctuation">.</span><span class="token function">FromSqlRaw</span><span class="token punctuation">(</span><span class="token string">"select * from employees"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>Instead of using <code>FromSqlRaw</code>, we can use <code>SqlQuery</code> to execute raw SQL query.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> context<span class="token punctuation">.</span>Database<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">SqlQuery</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>EmployeeView<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"Select employeeid, firstname from employees"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">record</span> <span class="token class-name">EmployeeView</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> EmployeeId<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> FirstName<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> OrderId<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Stored-Procedure"><a href="#Stored-Procedure" class="headerlink" title="Stored Procedure"></a>Stored Procedure</h3><p>We can using <code>SqlQuery</code> to execute stored procedure if result will be mapped to a class.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">string</span></span> id <span class="token operator">=</span> <span class="token string">"ALFKI"</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> query <span class="token operator">=</span> context<span class="token punctuation">.</span>Database<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">SqlQuery</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>CustOrderHistResult<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>
+    <span class="token interpolation-string"><span class="token string">$"exec CustOrderHist </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">id</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> query<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>ProductName</span><span class="token punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>Total</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">record</span> <span class="token class-name">CustOrderHistResult</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> ProductName<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> Total<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>If not mapped to a class, we can use <code>ExecuteSqlInterpolated</code> to execute stored procedure.</p>
+<p>Add a cusomt stored procedure in the database.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">PROCEDURE</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span>AddRegion	
+	<span class="token variable">@regionID</span> <span class="token keyword">int</span><span class="token punctuation">,</span>
+	<span class="token variable">@regionDescription</span> nvarchar<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span>
+<span class="token keyword">AS</span>
+	<span class="token keyword">insert</span> <span class="token keyword">into</span> Region <span class="token punctuation">(</span>RegionID<span class="token punctuation">,</span> RegionDescription<span class="token punctuation">)</span> <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token variable">@regionID</span><span class="token punctuation">,</span> <span class="token variable">@regionDescription</span><span class="token punctuation">)</span>
+<span class="token keyword">RETURN</span> <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">context<span class="token punctuation">.</span>Database<span class="token punctuation">.</span><span class="token function">ExecuteSqlInterpolated</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"exec AddRegion @regionid=</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">id</span><span class="token punctuation">&#125;</span></span><span class="token string">, @regiondescription=</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">description</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="ASP-NET-Web-API-Rock-with-EF-Core"><a href="#ASP-NET-Web-API-Rock-with-EF-Core" class="headerlink" title="ASP.NET Web API Rock with EF Core"></a>ASP.NET Web API Rock with EF Core</h2><h3 id="NuGet-Install"><a href="#NuGet-Install" class="headerlink" title="NuGet Install"></a>NuGet Install</h3><p>We can use EF Core to connect to database, and we can use <code>Microsoft.EntityFrameworkCore.SqlServer</code> to connect to SQL Server.</p>
+<p>And we install <code>Microsoft.EntityFrameworkCore.Tools</code> to use <code>add-migration</code> and <code>update-database</code> commands.</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ItemGroup</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.EntityFrameworkCore<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>8.0.6<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.EntityFrameworkCore.SqlServer<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>8.0.6<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.EntityFrameworkCore.Tools<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>8.0.6<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PrivateAssets</span><span class="token punctuation">></span></span>all<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>PrivateAssets</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>IncludeAssets</span><span class="token punctuation">></span></span>runtime; build; native; contentfiles; analyzers; buildtransitive<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>IncludeAssets</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>PackageReference</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ItemGroup</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="DBContext"><a href="#DBContext" class="headerlink" title="DBContext"></a>DBContext</h3><p>And then we add a Data folder and add a DbContext file to connect to database.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>EntityFrameworkCore</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Mod06<span class="token punctuation">.</span>Models</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">Mod06<span class="token punctuation">.</span>Data</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TodoContext</span><span class="token punctuation">(</span><span class="token class-name">DbContextOptions<span class="token punctuation">&lt;</span>TodoContext<span class="token punctuation">></span></span> options<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token function">DbContext</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span></span> TodoItems <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And then we add ConnectionStrings in <code>appsettings.json</code>.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"ConnectionStrings"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"DefaultConnection"</span><span class="token operator">:</span> <span class="token string">"Data Source=.\\sqlexpress;Database=MyDatabase;Integrated Security=True;Encrypt=True;Trust Server Certificate=True;"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Register-DbContext-And-Migrations-Database"><a href="#Register-DbContext-And-Migrations-Database" class="headerlink" title="Register DbContext And Migrations Database"></a>Register DbContext And Migrations Database</h3><p>After that we add srvices in <code>program.cs</code>.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddDbContext</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>TodoContext<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>options <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    options<span class="token punctuation">.</span><span class="token function">UseSqlServer</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span>Configuration<span class="token punctuation">.</span><span class="token function">GetConnectionString</span><span class="token punctuation">(</span><span class="token string">"DefaultConnection"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Finally open Package Manager Console and run <code>add-migration InitialCreate</code> and <code>update-database</code> commands.</p>
+<p><img src="/assets/ASPNET-Core-EFCore-Note-9.png"></p>
+<p>Olala, we can use EF Core to connect to database 😁</p>
+<blockquote>
+<p>By the way, if something wrong, we can use <code>Remove-Migration</code> to remove migration. But why <code>Remove-Migration</code> instead of manually delete migration file?</p>
+</blockquote>
+<p>Because <strong>manually delete</strong> <strong>doesn’t update the model snapshot</strong>, which can lead to inconsistencies between your code and the database schema and it <strong>doesn’t clean up any other related files</strong> or code. The <strong>database state is not checked</strong>, so you might end up with mismatches between your code and the database 😲</p>
+<h3 id="SeedData"><a href="#SeedData" class="headerlink" title="SeedData"></a>SeedData</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TodoContext</span><span class="token punctuation">(</span><span class="token class-name">DbContextOptions<span class="token punctuation">&lt;</span>TodoContext<span class="token punctuation">></span></span> options<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token function">DbContext</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span></span> TodoItems <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnModelCreating</span><span class="token punctuation">(</span><span class="token class-name">ModelBuilder</span> modelBuilder<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">base</span><span class="token punctuation">.</span><span class="token function">OnModelCreating</span><span class="token punctuation">(</span>modelBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// seed TodoItem releated to cook</span>
+        modelBuilder<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Entity</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">HasData</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span>
+            <span class="token punctuation">&#123;</span>
+                Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+                Name <span class="token operator">=</span> <span class="token string">"Buy milk"</span><span class="token punctuation">,</span>
+                IsComplete <span class="token operator">=</span> <span class="token boolean">false</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span>
+            <span class="token punctuation">&#123;</span>
+                Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span>
+                Name <span class="token operator">=</span> <span class="token string">"Buy eggs"</span><span class="token punctuation">,</span>
+                IsComplete <span class="token operator">=</span> <span class="token boolean">false</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span>
+            <span class="token punctuation">&#123;</span>
+                Id <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span>
+                Name <span class="token operator">=</span> <span class="token string">"Cut onions"</span><span class="token punctuation">,</span>
+                IsComplete <span class="token operator">=</span> <span class="token boolean">false</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>We add a controller to get TodoItems.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"api/[controller]"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ApiController</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TodoItemsController</span><span class="token punctuation">(</span><span class="token class-name">TodoContext</span> _context<span class="token punctuation">)</span> <span class="token punctuation">:</span> ControllerBase
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// GET: api/&lt;TodoItemsController></span>
+    <span class="token punctuation">[</span>HttpGet<span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>IEnumerable<span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">Get</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">await</span> _context<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">ToListAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And how to get only one TodoItem.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpGet</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"&#123;id&#125;"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>ActionResult<span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">Get</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> todoItem <span class="token operator">=</span> <span class="token keyword">await</span> _context<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">FindAsync</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>todoItem <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> todoItem<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>the difference between IActionResult, ActionResult<T></p>
+</blockquote>
+<ul>
+<li>IActionResult: It can return any type of result with help of <code>Ok()</code>, <code>NotFound()</code>, <code>BadRequest()</code>, etc, but it is not strongly typed.</li>
+<li>ActionResult<T>: It is strongly typed and can return only one type of result without the help of <code>Ok()</code>, <code>NotFound()</code>, <code>BadRequest()</code>, etc.</li>
+</ul>
+<p><strong>tl;dr</strong>: Use <code>ActionResult&lt;T&gt;</code> when you want to return a specific type of result.</p>
+<hr>
+<p>And how to add, update, delete TodoItem.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// POST api/&lt;TodoItemsController></span>
+<span class="token punctuation">[</span>HttpPost<span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>ActionResult<span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">Post</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">FromBody</span></span><span class="token punctuation">]</span> <span class="token class-name">TodoItem</span> todoItem<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    _context<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>todoItem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> _context<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token function">CreatedAtAction</span><span class="token punctuation">(</span><span class="token keyword">nameof</span><span class="token punctuation">(</span>Get<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token punctuation">&#123;</span> id <span class="token operator">=</span> todoItem<span class="token punctuation">.</span>Id <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> todoItem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// PUT api/&lt;TodoItemsController>/5</span>
+<span class="token punctuation">[</span><span class="token function">HttpPut</span><span class="token punctuation">(</span><span class="token string">"&#123;id&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>IActionResult<span class="token punctuation">></span></span> <span class="token function">Put</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">FromBody</span></span><span class="token punctuation">]</span> <span class="token class-name">TodoItem</span> todoItem<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">!=</span> todoItem<span class="token punctuation">.</span>Id<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    _context<span class="token punctuation">.</span><span class="token function">Update</span><span class="token punctuation">(</span>todoItem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> _context<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">NoContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// DELETE api/&lt;TodoItemsController>/5</span>
+<span class="token punctuation">[</span><span class="token function">HttpDelete</span><span class="token punctuation">(</span><span class="token string">"&#123;id&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>IActionResult<span class="token punctuation">></span></span> <span class="token function">Delete</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> todoItem <span class="token operator">=</span> <span class="token keyword">await</span> _context<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">FindAsync</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>todoItem <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    _context<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>todoItem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> _context<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token function">NoContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Finally we can use <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/aspnet/core/test/http-files?view=aspnetcore-8.0">.http files</a> or REST Client to test our API.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json">@url=https<span class="token operator">:</span><span class="token comment">//localhost:7127</span>
+###
+GET <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>url<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>/api/todoitems
+
+###
+GET <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>url<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>/api/todoitems/<span class="token number">1</span>
+
+###
+POST <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>url<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>/api/todoitems
+Content-Type<span class="token operator">:</span> application/json
+
+<span class="token punctuation">&#123;</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"New Item"</span><span class="token punctuation">,</span>
+  <span class="token property">"isComplete"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">&#125;</span>
+
+###
+PUT <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>url<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>/api/todoitems/<span class="token number">6</span>
+Content-Type<span class="token operator">:</span> application/json
+
+<span class="token punctuation">&#123;</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Updated Item"</span><span class="token punctuation">,</span>
+  <span class="token property">"isComplete"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+<span class="token punctuation">&#125;</span>
+
+###
+DELETE <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>url<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>/api/todoitems/<span class="token number">6</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>If Success Http StatusCode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>200 OK</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>201 Created</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>204 No Content</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>204 No Content</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>What is HATEOAS in RESTful API?</p>
+</blockquote>
+<p>HATEOAS stands for Hypermedia As The Engine Of Application State. It is a constraint of the REST application architecture. <strong>A hypermedia-driven site provides information to navigate the site’s REST interfaces</strong> dynamically by including hypermedia links with the responses.</p>
+<p><img src="/assets/ASPNET-Core-EFCore-Note-10.png"></p>
+<p>After post new data, like location to navigate to the new data.</p>
+<p>⚡ To save time, we can generate <code>.http</code> file by endpoint explorer.</p>
+<p><img src="/assets/ASPNET-Core-EFCore-Note-12.png"></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/07/ASPNET-Core-EFCore-Note/" data-id="cly2x1k7b001o64ts49flfqbq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNETCore/" rel="tag">ASPNETCore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebAPI/" rel="tag">WebAPI</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/07/LINQ/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LINQ Note</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/07/ASPNET-Core-Configuration/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET Core Configuration
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">153</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">278</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">89</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

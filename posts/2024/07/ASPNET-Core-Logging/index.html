@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Core Logging | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET Core Logging 的基本要點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Core Logging">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/07/ASPNET-Core-Logging/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET Core Logging 的基本要點。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Logging-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Logging-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Logging-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Logging-4.png">
+<meta property="article:published_time" content="2024-07-01T11:09:55.000Z">
+<meta property="article:modified_time" content="2024-07-01T11:47:27.914Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNETCore">
+<meta property="article:tag" content="WebAPI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Core-Logging" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/07/ASPNET-Core-Logging/" class="article-date">
+  <time datetime="2024-07-01T11:09:55.000Z" itemprop="datePublished">2024-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Core Logging
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Logging"><span class="toc-text">Logging</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Log-Level"><span class="toc-text">Log Level</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Log-Category"><span class="toc-text">Log Category</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Log-to-File"><span class="toc-text">Log to File</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Factory-Pattern-Multiple-Logger"><span class="toc-text">Factory Pattern (Multiple Logger)</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET Core Logging 的基本要點。</p>
+<a href="/posts/2024/07/ASPNET-Core-Logging/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="Logging"><a href="#Logging" class="headerlink" title="Logging"></a>Logging</h2><p>We can use primary constructor to inject ILogger<T> into our controller, and use it to log messages.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Route</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"api/[controller]"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LogController</span><span class="token punctuation">(</span><span class="token class-name">ILogger<span class="token punctuation">&lt;</span>LogController<span class="token punctuation">></span></span> _logger<span class="token punctuation">)</span> <span class="token punctuation">:</span> ControllerBase
+<span class="token punctuation">&#123;</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpGet</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">IActionResult</span> <span class="token function">Get</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> message <span class="token operator">=</span> <span class="token string">"Get Method Invoked"</span><span class="token punctuation">;</span>
+        _logger<span class="token punctuation">.</span><span class="token function">LogInformation</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">Ok</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Kestrel Log will be console window.</p>
+<p><img src="/assets/ASPNET-Core-Logging-1.png"></p>
+<p>info is Level, Controllers.LogController is Category, Get Method Invoked is Message, [0] is EventId.</p>
+<p>IIS Express will log will be output window.</p>
+<p><img src="/assets/ASPNET-Core-Logging-2.png"></p>
+<p>Debug Model will log will be Debug output window.</p>
+<p><img src="/assets/ASPNET-Core-Logging-3.png"></p>
+<h2 id="Log-Level"><a href="#Log-Level" class="headerlink" title="Log Level"></a>Log Level</h2><table>
+<thead>
+<tr>
+<th>Log Level</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Error</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Warning</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Information</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Debug</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Trace</td>
+</tr>
+</tbody></table>
+<p>The default log level is Information, if we want to change it, we can do it in <code>appsettings.json</code> (in development environment, we should cahnge <code>appsettings.Development.json</code>).</p>
+<p><img src="/assets/ASPNET-Core-Logging-4.png"></p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"Logging"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"LogLevel"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Default"</span><span class="token operator">:</span> <span class="token string">"Trace"</span><span class="token punctuation">,</span>
+      <span class="token property">"Microsoft.AspNetCore"</span><span class="token operator">:</span> <span class="token string">"Warning"</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpGet</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"level"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">IActionResult</span> <span class="token function">Level</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> message <span class="token operator">=</span> <span class="token string">"GetLogLevel Method Invoked"</span><span class="token punctuation">;</span>
+    _logger<span class="token punctuation">.</span><span class="token function">LogCritical</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    _logger<span class="token punctuation">.</span><span class="token function">LogError</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    _logger<span class="token punctuation">.</span><span class="token function">LogWarning</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    _logger<span class="token punctuation">.</span><span class="token function">LogInformation</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    _logger<span class="token punctuation">.</span><span class="token function">LogDebug</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    _logger<span class="token punctuation">.</span><span class="token function">LogTrace</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">Ok</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>We can custom message with multiple parameters.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> message <span class="token operator">=</span> <span class="token string">"GetLogLevel Method Invoked &#123;&#125;"</span><span class="token punctuation">;</span>
+_logger<span class="token punctuation">.</span><span class="token function">LogCritical</span><span class="token punctuation">(</span>message<span class="token punctuation">,</span> Request<span class="token punctuation">.</span>Path<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="Log-Category"><a href="#Log-Category" class="headerlink" title="Log Category"></a>Log Category</h2><p>Instead of ILogger<LogController>, we ca use logfactory, the benefit is we can use the same category for multiple controllers.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LogController</span><span class="token punctuation">(</span><span class="token class-name">ILoggerFactory</span> factory<span class="token punctuation">)</span> <span class="token punctuation">:</span> ControllerBase
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">readonly</span> <span class="token class-name">ILogger</span> _logger <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">CreateLogger</span><span class="token punctuation">(</span><span class="token string">"MyLog"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>With LogFactory to create logger, then we can use log filter to filter log messages in <code>program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Logging<span class="token punctuation">.</span><span class="token function">AddFilter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>category<span class="token punctuation">,</span> level<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> category <span class="token operator">==</span> <span class="token string">"MyLog"</span> <span class="token operator">&amp;&amp;</span> level <span class="token operator">>=</span> LogLevel<span class="token punctuation">.</span>Warning<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>💡 However the best practice is to set log level in <code>appsettings.json</code> or <code>appsettings.Development.json</code>, by the logger name.</p>
+<p>We disable Default log level, and set MyLog log level to Warning.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"Logging"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"LogLevel"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"MyLog"</span><span class="token operator">:</span> <span class="token string">"Warning"</span><span class="token punctuation">,</span>
+      <span class="token property">"Default"</span><span class="token operator">:</span> <span class="token string">"None"</span><span class="token punctuation">,</span>
+      <span class="token property">"Microsoft.AspNetCore"</span><span class="token operator">:</span> <span class="token string">"Warning"</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>We even can use namespace as category to filter log messages 😉</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">readonly</span> <span class="token class-name">ILogger</span> _logger <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">CreateLogger</span><span class="token punctuation">(</span><span class="token string">"MyNamespace.MyClass"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"Logging"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"LogLevel"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"MyNamespace.MyClass"</span><span class="token operator">:</span> <span class="token string">"Warning"</span><span class="token punctuation">,</span>
+      <span class="token property">"Default"</span><span class="token operator">:</span> <span class="token string">"None"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Log-to-File"><a href="#Log-to-File" class="headerlink" title="Log to File"></a>Log to File</h2><p>We can not log to file directly, but we can log to file by using <code>NLog</code> library.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/NLog/NLog/wiki/Getting-started-with-ASP.NET-Core-6">Getting started with ASP.NET Core 6</a></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token operator">&lt;</span>ItemGroup<span class="token operator">></span>
+  <span class="token operator">&lt;</span><span class="token class-name">PackageReference</span> Include<span class="token operator">=</span><span class="token string">"NLog.Web.AspNetCore"</span> Version<span class="token operator">=</span><span class="token string">"5.*"</span> <span class="token operator">/</span><span class="token operator">></span>
+  <span class="token operator">&lt;</span><span class="token class-name">PackageReference</span> Include<span class="token operator">=</span><span class="token string">"NLog"</span> Version<span class="token operator">=</span><span class="token string">"5.*"</span> <span class="token operator">/</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>ItemGroup<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And then add a <code>nlog.config</code> file to the root of the project.</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="utf-8" ?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nlog</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.nlog-project.org/schemas/NLog.xsd<span class="token punctuation">"</span></span>
+      <span class="token attr-name"><span class="token namespace">xmlns:</span>xsi</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="token punctuation">"</span></span>
+      <span class="token attr-name">autoReload</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+      <span class="token attr-name">internalLogLevel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Info<span class="token punctuation">"</span></span>
+      <span class="token attr-name">internalLogFile</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>c:\temp\internal-nlog-AspNetCore.txt<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+	<span class="token comment">&lt;!-- enable asp.net core layout renderers --></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>extensions</span><span class="token punctuation">></span></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">assembly</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>NLog.Web.AspNetCore<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>extensions</span><span class="token punctuation">></span></span>
+
+	<span class="token comment">&lt;!-- the targets to write to --></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>targets</span><span class="token punctuation">></span></span>
+		<span class="token comment">&lt;!-- File Target for all log messages with basic details --></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>target</span> <span class="token attr-name"><span class="token namespace">xsi:</span>type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>File<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>allfile<span class="token punctuation">"</span></span> <span class="token attr-name">fileName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>c:\temp\nlog-AspNetCore-all-$&#123;shortdate&#125;.log<span class="token punctuation">"</span></span>
+				<span class="token attr-name">layout</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>$&#123;longdate&#125;|$&#123;event-properties:item=EventId:whenEmpty=0&#125;|$&#123;level:uppercase=true&#125;|$&#123;logger&#125;|$&#123;message&#125; $&#123;exception:format=tostring&#125;<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+		<span class="token comment">&lt;!-- File Target for own log messages with extra web details using some ASP.NET core renderers --></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>target</span> <span class="token attr-name"><span class="token namespace">xsi:</span>type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>File<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ownFile-web<span class="token punctuation">"</span></span> <span class="token attr-name">fileName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>c:\temp\nlog-AspNetCore-own-$&#123;shortdate&#125;.log<span class="token punctuation">"</span></span>
+				<span class="token attr-name">layout</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>$&#123;longdate&#125;|$&#123;event-properties:item=EventId:whenEmpty=0&#125;|$&#123;level:uppercase=true&#125;|$&#123;logger&#125;|$&#123;message&#125; $&#123;exception:format=tostring&#125;|url: $&#123;aspnet-request-url&#125;|action: $&#123;aspnet-mvc-action&#125;<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+		<span class="token comment">&lt;!--Console Target for hosting lifetime messages to improve Docker / Visual Studio startup detection --></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>target</span> <span class="token attr-name"><span class="token namespace">xsi:</span>type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Console<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>lifetimeConsole<span class="token punctuation">"</span></span> <span class="token attr-name">layout</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>$&#123;MicrosoftConsoleLayout&#125;<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>targets</span><span class="token punctuation">></span></span>
+
+	<span class="token comment">&lt;!-- rules to map from logger name to target --></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rules</span><span class="token punctuation">></span></span>
+		<span class="token comment">&lt;!--All logs, including from Microsoft--></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>logger</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">minlevel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Trace<span class="token punctuation">"</span></span> <span class="token attr-name">writeTo</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>allfile<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+		<span class="token comment">&lt;!--Output hosting lifetime messages to console target for faster startup detection --></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>logger</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.Hosting.Lifetime<span class="token punctuation">"</span></span> <span class="token attr-name">minlevel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Info<span class="token punctuation">"</span></span> <span class="token attr-name">writeTo</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>lifetimeConsole, ownFile-web<span class="token punctuation">"</span></span> <span class="token attr-name">final</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+		<span class="token comment">&lt;!--Skip non-critical Microsoft logs and so log only own logs (BlackHole) --></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>logger</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.*<span class="token punctuation">"</span></span> <span class="token attr-name">maxlevel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Info<span class="token punctuation">"</span></span> <span class="token attr-name">final</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>logger</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>System.Net.Http.*<span class="token punctuation">"</span></span> <span class="token attr-name">maxlevel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Info<span class="token punctuation">"</span></span> <span class="token attr-name">final</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>logger</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>*<span class="token punctuation">"</span></span> <span class="token attr-name">minlevel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Trace<span class="token punctuation">"</span></span> <span class="token attr-name">writeTo</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ownFile-web<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rules</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nlog</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The default log path will be “c:\temp”.</p>
+<p><code>program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Host<span class="token punctuation">.</span><span class="token function">UseNLog</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">NLogAspNetCoreOptions</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> RemoveLoggerFactoryFilter <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="Factory-Pattern-Multiple-Logger"><a href="#Factory-Pattern-Multiple-Logger" class="headerlink" title="Factory Pattern (Multiple Logger)"></a>Factory Pattern (Multiple Logger)</h2><p>We can use factory pattern to create multiple loggers.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LoggerFactory</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">IServiceProvider</span> _serviceProvider<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">LoggerFactory</span><span class="token punctuation">(</span><span class="token class-name">IServiceProvider</span> serviceProvider<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        _serviceProvider <span class="token operator">=</span> serviceProvider<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name">ICustomLogger</span> <span class="token function">CreateLogger</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> loggerType<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>loggerType<span class="token punctuation">.</span><span class="token function">ToLower</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">case</span> <span class="token string">"console"</span><span class="token punctuation">:</span>
+                <span class="token keyword">return</span> _serviceProvider<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">GetRequiredService</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ConsoleCustomLogger<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">"debug"</span><span class="token punctuation">:</span>
+                <span class="token keyword">return</span> _serviceProvider<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">GetRequiredService</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>DebugCustomLogger<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token punctuation">:</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentException</span><span class="token punctuation">(</span><span class="token string">"Invalid logger type"</span><span class="token punctuation">,</span> <span class="token keyword">nameof</span><span class="token punctuation">(</span>loggerType<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p><code>program.cs</code></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddTransient</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ConsoleCustomLogger<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddTransient</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>DebugCustomLogger<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddTransient</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>LoggerFactory<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/07/ASPNET-Core-Logging/" data-id="cly2x1k7d001x64ts30wqcxjl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNETCore/" rel="tag">ASPNETCore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebAPI/" rel="tag">WebAPI</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/07/ASPNET-Core-Configuration/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET Core Configuration</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/07/ASPNET-Core-OpenAPI-And-Swagger/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ASP.NET Core OpenAPI And Swagger
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">153</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">278</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">89</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>

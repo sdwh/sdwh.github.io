@@ -14,20 +14,20 @@
   
   <title>Dependency Injection 初探筆記 (DI &amp; IOC) | The Skeptical Software Engineer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。 持續編輯中 🧙‍♂️">
+  <meta name="description" content="初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dependency Injection 初探筆記 (DI &amp; IOC)">
 <meta property="og:url" content="https://sdwh.dev/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/index.html">
 <meta property="og:site_name" content="The Skeptical Software Engineer">
-<meta property="og:description" content="初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。 持續編輯中 🧙‍♂️">
+<meta property="og:description" content="初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。">
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Dependency-Injection-Glimpse-Not-Register-Service-Error.png">
 <meta property="article:published_time" content="2021-06-16T11:30:00.000Z">
-<meta property="article:modified_time" content="2023-04-01T12:13:24.784Z">
+<meta property="article:modified_time" content="2024-07-01T11:47:27.917Z">
 <meta property="article:author" content="Webber">
-<meta property="article:tag" content="MVC">
-<meta property="article:tag" content="ASPNET">
 <meta property="article:tag" content="Examples">
+<meta property="article:tag" content="ASPNETCore">
 <meta property="article:tag" content="DesignPattern">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
@@ -113,20 +113,19 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5-Denpendency-Injection-Pattern-DI"><span class="toc-text">依賴注入 Denpendency Injection Pattern, DI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E6%A7%8B%E5%BC%8F%E6%B3%A8%E5%85%A5-Constructor-Injection"><span class="toc-text">建構式注入, Constructor Injection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%AC%E6%80%A7%E6%B3%A8%E5%85%A5-Property-Injection"><span class="toc-text">屬性注入, Property Injection</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-Container"><span class="toc-text">DI Container</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-In-ASP-NET-Core"><span class="toc-text">DI In ASP.NET Core</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#More"><span class="toc-text">More</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E6%A7%8B%E5%BC%8F%E6%B3%A8%E5%85%A5-Constructor-Injection"><span class="toc-text">建構式注入, Constructor Injection</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-Container"><span class="toc-text">DI Container</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
     </div>
   
   
         <hr/>
         <p>初探依賴注入 Denpendency Injection Pattern(DI) 與控制反轉 Inversioin of Control (IOC) 設計模式。</p>
-<p>持續編輯中 🧙‍♂️</p>
 <a href="/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" title="logo" class="fancybox" rel="article0">
   <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
 </a>
 
 <span id="more"></span>
 
-<h2 id="依賴注入-Denpendency-Injection-Pattern-DI"><a href="#依賴注入-Denpendency-Injection-Pattern-DI" class="headerlink" title="依賴注入 Denpendency Injection Pattern, DI"></a>依賴注入 Denpendency Injection Pattern, DI</h2><h3 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h3><div class="colorbox space">
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><div class="colorbox space">
     <div class="shadow">
         <div class="tab-info tab-icon"><i></i></div>
         <div class="colorbox-body">
@@ -151,7 +150,84 @@
     </div>
 </div>
 
-<h4 id="建構式注入-Constructor-Injection"><a href="#建構式注入-Constructor-Injection" class="headerlink" title="建構式注入, Constructor Injection"></a>建構式注入, Constructor Injection</h4><p>在寫 ASP.NET MVC 5 的時候，就會思考在 Service Layer 或者 Business Layer 也仿照 HomeController 去起始一個 DBContext 會不會造成資源的負擔，此外該 DBContext 在使用完畢後是否會自動釋放？</p>
+<h3 id="DI-In-ASP-NET-Core"><a href="#DI-In-ASP-NET-Core" class="headerlink" title="DI In ASP.NET Core"></a>DI In ASP.NET Core</h3><p>We make mvc support first, then we can use dependency injection in controller.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddControllersWithViews</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+app<span class="token punctuation">.</span><span class="token function">MapDefaultControllerRoute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>We add a services folder and then add a service class.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IMyservice</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token return-type class-name">Guid</span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyService</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IMyservice</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">Guid</span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> Guid<span class="token punctuation">.</span><span class="token function">NewGuid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// ⚠️ This will generate a new Guid every time</span>
+    <span class="token comment">// public Guid Id => Guid.NewGuid();</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>We using a controller to inject the service.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HomeController</span><span class="token punctuation">(</span><span class="token class-name">IMyservice</span> _service<span class="token punctuation">)</span> <span class="token punctuation">:</span> Controller
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">IActionResult</span> <span class="token function">Index</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        ViewData<span class="token punctuation">[</span><span class="token string">"Id"</span><span class="token punctuation">]</span> <span class="token operator">=</span> _service<span class="token punctuation">.</span>Id<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And also inject the service into the view.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@inject Mod05<span class="token punctuation">.</span>Services<span class="token punctuation">.</span>IMyservice Service
+
+<span class="token operator">&lt;</span>div<span class="token operator">></span>Controller<span class="token punctuation">:</span> @ViewData<span class="token punctuation">[</span><span class="token string">"Id"</span><span class="token punctuation">]</span><span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span>
+<span class="token operator">&lt;</span>div<span class="token operator">></span>View<span class="token punctuation">:</span> @Service<span class="token punctuation">.</span>Id<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>By the way, if we don’t register the service, we will get an error like this picture.</p>
+<p><img src="/assets/ASPNET-Dependency-Injection-Glimpse-Not-Register-Service-Error.png"></p>
+<p>We do register service in <code>program.cs</code>, and we can use <code>AddTransient</code>, <code>AddScoped</code>, <code>AddSingleton</code> to register service.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddTransient</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IMyservice<span class="token punctuation">,</span> MyService<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddScoped</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IMyservice<span class="token punctuation">,</span> MyService<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddSingleton</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IMyservice<span class="token punctuation">,</span> MyService<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Service Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transient</td>
+<td>A new instance is created every time it is requested (Id always different)</td>
+</tr>
+<tr>
+<td>Scoped</td>
+<td>A new instance is created once per request (Id same in same requests)</td>
+</tr>
+<tr>
+<td>Singleton</td>
+<td>A single instance is created for the lifetime of the application (Id always same)</td>
+</tr>
+</tbody></table>
+<p>If you are curious about when then service is disposed, you can use <code>IDisposable</code> interface.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyService</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IMyservice</span><span class="token punctuation">,</span> <span class="token class-name">IDisposable</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name">Guid</span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> Guid<span class="token punctuation">.</span><span class="token function">NewGuid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Dispose</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">Id</span><span class="token punctuation">&#125;</span></span><span class="token string"> disposed"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>At <code>Transient</code> and <code>Scoped</code>, the service will be disposed when the request is finished. And remebmer that <code>Transient</code> are created every time, so it will be disposed every time. And at <code>Singleton</code>, the service will be disposed when the application is stopped.</p>
+<h3 id="More"><a href="#More" class="headerlink" title="More"></a>More</h3><h4 id="建構式注入-Constructor-Injection"><a href="#建構式注入-Constructor-Injection" class="headerlink" title="建構式注入, Constructor Injection"></a>建構式注入, Constructor Injection</h4><p>在寫 ASP.NET MVC 5 的時候，就會思考在 Service Layer 或者 Business Layer 也仿照 HomeController 去起始一個 DBContext 會不會造成資源的負擔，此外該 DBContext 在使用完畢後是否會自動釋放？</p>
 <p>後來雖然研究的結果是 EntityFramework 具備處理的機制，不需要特別去覆寫 Dispose 也不會造成資料庫連線數的負擔，同時實際觀察 Database 的 Session 確實沒有多個 Session 來自 ASP.NET MVC 因此後來也沒有特別費心在此。</p>
 <p>只是當時有思考過可以藉由 Controller 在 DBContext 傳送給 Business Layer 來使用，隱約也是有建構式注入的精神。</p>
 <pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IReadable</span>
@@ -198,7 +274,6 @@
     reader<span class="token punctuation">.</span><span class="token function">Read</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="屬性注入-Property-Injection"><a href="#屬性注入-Property-Injection" class="headerlink" title="屬性注入, Property Injection"></a>屬性注入, Property Injection</h4><p>持續編輯中 🧙‍♂️</p>
 <h3 id="DI-Container"><a href="#DI-Container" class="headerlink" title="DI Container"></a>DI Container</h3><p>使用 DI Container 可以帶來下列好處：</p>
 <ol>
 <li>自動註冊模型</li>
@@ -214,10 +289,10 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" data-id="clxq6mcj900282ctscl28a11w" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2021/06/ASPNET-Dependency-Injection-Glimpse/" data-id="cly2x1k7l002u64ts6y6k36hf" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNETCore/" rel="tag">ASPNETCore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPattern/" rel="tag">DesignPattern</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Examples/" rel="tag">Examples</a></li></ul>
 
     </footer>
   </div>
@@ -256,7 +331,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">153</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">271</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">153</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">278</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -266,7 +341,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">82</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">89</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 

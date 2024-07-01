@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET Core Minimal API 初探 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET Core Minimal WebAPI 的基本要點。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Core Minimal API 初探">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/07/ASPNET-Core-Minimal-API-Glimpse/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET Core Minimal WebAPI 的基本要點。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-1.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-3.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-4.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-5.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-6.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-7.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-8.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-FrontEnd-2.png">
+<meta property="og:image" content="https://sdwh.dev/assets/ASPNET-Core-Minimal-API-Glimpse-FrontEnd-1.png">
+<meta property="article:published_time" content="2024-07-01T11:10:17.000Z">
+<meta property="article:modified_time" content="2024-07-01T11:47:27.914Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="ASPNETCore">
+<meta property="article:tag" content="WebAPI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-Core-Minimal-API-Glimpse" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/07/ASPNET-Core-Minimal-API-Glimpse/" class="article-date">
+  <time datetime="2024-07-01T11:10:17.000Z" itemprop="datePublished">2024-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET Core Minimal API 初探
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Scenarios"><span class="toc-text">Scenarios</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Web-API-Backend"><span class="toc-text">Web API Backend</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Frontend-Client-Side"><span class="toc-text">Frontend Client Side</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web-API-Security"><span class="toc-text">Web API Security</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Validate-Data-Example"><span class="toc-text">Validate Data Example</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET Core Minimal WebAPI 的基本要點。</p>
+<a href="/posts/2024/07/ASPNET-Core-Minimal-API-Glimpse/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<p>Minimal API is a new way to build APIs in ASP.NET Core. It is a lightweight and simplified way to create APIs that are easy to understand and maintain.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> WebApplication<span class="token punctuation">.</span><span class="token function">CreateBuilder</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/hello"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">"Hello World!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/product"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Product</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"Cup"</span><span class="token punctuation">,</span> <span class="token number">500</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/badrequest"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> Results<span class="token punctuation">.</span><span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token string">"Hello World!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">record</span> <span class="token class-name">Product</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> Id<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> Name<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">decimal</span></span> Price<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Minimal APIs do not use Controllers by default; instead, they use parameters to inject services.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddTransient</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IMyService<span class="token punctuation">,</span> MyService<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/endpoint"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token class-name">IMyService</span> myService<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// Use the service</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> result <span class="token operator">=</span> myService<span class="token punctuation">.</span><span class="token function">DoSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Ok</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>There two return types in Minimal API, IResult Type and Common Type.</p>
+<p>IResult Type includes:</p>
+<ul>
+<li>Results.Ok</li>
+<li>Results.Created</li>
+<li>Results.NoContent</li>
+<li>Results.BadRequest</li>
+<li>Results.NotFound</li>
+</ul>
+<h2 id="Scenarios"><a href="#Scenarios" class="headerlink" title="Scenarios"></a>Scenarios</h2><h3 id="Web-API-Backend"><a href="#Web-API-Backend" class="headerlink" title="Web API Backend"></a>Web API Backend</h3><p>First, Install <code>Microsoft.EntityFrameworkCore.Sqlite</code> and <code>Microsoft.EntityFrameworkCore.Tools</code> NuGet packages.</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ItemGroup</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.EntityFrameworkCore.Sqlite<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>8.0.6<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Microsoft.EntityFrameworkCore.Tools<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>8.0.6<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PrivateAssets</span><span class="token punctuation">></span></span>all<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>PrivateAssets</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>IncludeAssets</span><span class="token punctuation">></span></span>runtime; build; native; contentfiles; analyzers; buildtransitive<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>IncludeAssets</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>PackageReference</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ItemGroup</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And then Reverse Engineer the database schema to a DbContext by EF Power Tools.</p>
+<p><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-1.png"><br><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-2.png"><br><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-3.png"><br><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-4.png"><br><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-5.png"><br><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-6.png"></p>
+<p>And setting connection string in <code>appsettings.json</code>.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"ConnectionStrings"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"Default"</span><span class="token operator">:</span> <span class="token string">"Data Source=app.db"</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token property">"Logging"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"LogLevel"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">"Default"</span><span class="token operator">:</span> <span class="token string">"Information"</span><span class="token punctuation">,</span>
+      <span class="token property">"Microsoft.AspNetCore"</span><span class="token operator">:</span> <span class="token string">"Warning"</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token property">"AllowedHosts"</span><span class="token operator">:</span> <span class="token string">"*"</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>After that, we can use the DbContext in the Minimal API.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddDbContext</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>MyDatabaseContext<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>options <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    options<span class="token punctuation">.</span><span class="token function">UseSqlite</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span>Configuration<span class="token punctuation">.</span><span class="token function">GetConnectionString</span><span class="token punctuation">(</span><span class="token string">"Default"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>And then, we can seed the database with some data.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">partial</span> <span class="token keyword">class</span> <span class="token class-name">MyDatabaseContext</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">DbContext</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">MyDatabaseContext</span><span class="token punctuation">(</span><span class="token class-name">DbContextOptions<span class="token punctuation">&lt;</span>MyDatabaseContext<span class="token punctuation">></span></span> options<span class="token punctuation">)</span>
+        <span class="token punctuation">:</span> <span class="token keyword">base</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">virtual</span> <span class="token return-type class-name">DbSet<span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span></span> TodoItems <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnModelCreating</span><span class="token punctuation">(</span><span class="token class-name">ModelBuilder</span> modelBuilder<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token function">OnModelCreatingPartial</span><span class="token punctuation">(</span>modelBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        modelBuilder<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Entity</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>TodoItem<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">HasData</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Buy ingredients"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Prepare ingredients"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Cook"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Serve"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Eat"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Clean up"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">7</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Store leftovers"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Wash dishes"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">9</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Put away dishes"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TodoItem</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Clean kitchen"</span><span class="token punctuation">,</span> IsComplete <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">partial</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">OnModelCreatingPartial</span><span class="token punctuation">(</span><span class="token class-name">ModelBuilder</span> modelBuilder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Finally, we can add migration and update the database with <code>Add-Migration</code> and <code>Update-Database</code> commands.</p>
+<p>And we can view db data with vscode sqlite extension.</p>
+<p><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-7.png"></p>
+<p>Add a new endpoint to get all TodoItems.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/todoitems"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> items <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">ToListAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Ok</span><span class="token punctuation">(</span>items<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Use endpoint explorer to test the endpoint.</p>
+<p><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-8.png"></p>
+<p>And we finish all CRUD operations in Minimal API.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/todoitems/&#123;id&#125;"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> item <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">FindAsync</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Ok</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapPost</span><span class="token punctuation">(</span><span class="token string">"/todoitems"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name">TodoItem</span> item<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Created</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"/todoitems/</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>Id</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapPut</span><span class="token punctuation">(</span><span class="token string">"/todoitems/&#123;id&#125;"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">,</span> <span class="token class-name">TodoItem</span> item<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">!=</span> item<span class="token punctuation">.</span>Id<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token string">"Id mismatch"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// this operation will  update the context, ef will think new entity is existed</span>
+    db<span class="token punctuation">.</span><span class="token function">Entry</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">.</span>State <span class="token operator">=</span> EntityState<span class="token punctuation">.</span>Modified<span class="token punctuation">;</span>
+
+    <span class="token keyword">try</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">DbUpdateConcurrencyException</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// must not use FindAsync or it will check from context</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">AnyAsync</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>Id <span class="token operator">==</span> id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NoContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapDelete</span><span class="token punctuation">(</span><span class="token string">"/todoitems/&#123;id&#125;"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> item <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">FindAsync</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NoContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>👀 Watch out for <code>Results.Created($&quot;/todoitems/&#123;item.Id&#125;&quot;, item);</code> the first parameter is the location of the created resource, and the second parameter is the resource itself.</p>
+<hr>
+<p>⚠️Warning: why using <code>await db.TodoItems.AnyAsync(e =&gt; e.Id == id)</code> instead of <code>await db.TodoItems.FindAsync(id)</code> in Put method catch block ?</p>
+<p>Because <code>db.Entry(item).State = EntityState.Modified;</code> will update the context, and ef will think the new entity is existed. If we use <code>FindAsync</code>, it will check from the context, and it will return the entity that we just updated. So we should use <code>AnyAsync</code> to check if the entity is existed in the database.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dotnet/efcore/blob/664ecf5562d30053c1ff6f2eb5cab5f3211cb37f/src/EFCore/DbSet.cs#L120">Source Code of Find in EF Core</a></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">/// &lt;summary></span>
+<span class="token comment">///     Finds an entity with the given primary key values. If an entity with the given primary key values</span>
+<span class="token comment">///     is being tracked by the context, then it is returned immediately without making a request to the</span>
+<span class="token comment">///     database. Otherwise, a query is made to the database for an entity with the given primary key values</span>
+<span class="token comment">///     and this entity, if found, is attached to the context and returned. If no entity is found, then</span>
+<span class="token comment">///     null is returned.</span>
+<span class="token comment">/// &lt;/summary></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>After that, we can install swagger <code>Swashbuckle.AspNetCore</code> nuget packages.</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ItemGroup</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PackageReference</span> <span class="token attr-name">Include</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Swashbuckle.AspNetCore<span class="token punctuation">"</span></span> <span class="token attr-name">Version</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>6.6.2<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ItemGroup</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// swagger</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddEndpointsApiExplorer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddSwaggerGen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// if dev use swagger</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>app<span class="token punctuation">.</span>Environment<span class="token punctuation">.</span><span class="token function">IsDevelopment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    app<span class="token punctuation">.</span><span class="token function">UseSwagger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    app<span class="token punctuation">.</span><span class="token function">UseSwaggerUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>💡 The reason Minimal APIs in ASP.NET Core use AddEndpointsApiExplorer() for Swagger integration, but traditional MVC controllers do not explicitly require it.</p>
+<ul>
+<li>Minimal APIs: Require explicit call to AddEndpointsApiExplorer() to provide Swagger with the necessary information for documentation because endpoints are defined in a more manual and direct way.</li>
+<li>MVC Controllers: Do not require AddEndpointsApiExplorer() because the MVC framework automatically provides Swagger with the necessary metadata for documentation through its convention-based approach to routing and controllers.</li>
+</ul>
+<hr>
+<p>And we add CORS to the Minimal API.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// add cors</span>
+builder<span class="token punctuation">.</span>Services<span class="token punctuation">.</span><span class="token function">AddCors</span><span class="token punctuation">(</span>options <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    options<span class="token punctuation">.</span><span class="token function">AddPolicy</span><span class="token punctuation">(</span><span class="token string">"AllowAll"</span><span class="token punctuation">,</span> builder <span class="token operator">=></span>
+    <span class="token punctuation">&#123;</span>
+        builder<span class="token punctuation">.</span><span class="token function">AllowAnyOrigin</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">AllowAnyHeader</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">AllowAnyMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> app <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">UseCors</span><span class="token punctuation">(</span><span class="token string">"AllowAll"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+app<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Frontend-Client-Side"><a href="#Frontend-Client-Side" class="headerlink" title="Frontend Client Side"></a>Frontend Client Side</h3><p>Add a new MVC project to the solution, and add a new controller action in <code>HomeController.cs</code>.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name">IActionResult</span> <span class="token function">WebApiClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Add a new view in <code>Views/Home/WebApiClient.cshtml</code>.</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>WebApiClient<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>row g-3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>col-md-6<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Id<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-label<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Id<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-control<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Id<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Id<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Name<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-label<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Name<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-control<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Name<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Name<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-input<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>IsComplete<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>IsComplete<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form-check-label<span class="token punctuation">"</span></span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>IsComplete<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>IsComplete<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btnGetAll<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>GetAll<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btnGet<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Get<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btnInsert<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Insert<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btnUpdate<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Update<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btnDelete<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Delete<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hr</span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>table</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>table table-striped<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>thead</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>table-dark<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tr</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span><span class="token punctuation">></span></span>Id<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span><span class="token punctuation">></span></span>Name<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>th</span><span class="token punctuation">></span></span>IsComplete<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>th</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tr</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>thead</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tbody</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tbody</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>table</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-FrontEnd-2.png"></p>
+<p>And setting multiple startup projects, let the WebAPI and WebApp run at the same time.</p>
+<p><img src="/assets/ASPNET-Core-Minimal-API-Glimpse-FrontEnd-1.png"></p>
+<hr>
+<p>Now it is time to write the JavaScript code to call the Web API.</p>
+<p>When it comes to calling the Web API from the client-side, we can use the <code>fetch</code> API or <code>XMLHttpRequest</code> to make HTTP requests.</p>
+<blockquote>
+<p>What is the difference between <code>fetch</code> and <code>XMLHttpRequest</code>?</p>
+</blockquote>
+<p><code>fetch</code> is a modern API for making network requests in the browser. It is more powerful and flexible than <code>XMLHttpRequest</code> and provides a more modern interface for working with network requests.</p>
+<p><code>fetch</code> supports promises and async/await, making it easier to work with asynchronous code. It also provides a more consistent and intuitive API for working with JSON data.</p>
+<p>The JavaScript code will be cshtml file:</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token return-type class-name">@section</span> Scripts<span class="token punctuation">&#123;</span>
+  <span class="token operator">&lt;</span>script<span class="token operator">></span>
+    <span class="token range operator">..</span><span class="token punctuation">.</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The core JavaScript code about calling the Web API:</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token comment">// GET Data</span>
+<span class="token function">fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">response</span> <span class="token operator">=></span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+     <span class="token operator">...</span> 
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// POST Data</span>
+<span class="token function">fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">"POST"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token string-property property">"Content-Type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> name<span class="token punctuation">,</span> isComplete <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+<span class="token comment">// PUT Data</span>
+<span class="token function">fetch</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>url<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>id<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">"PUT"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token string-property property">"Content-Type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> id<span class="token punctuation">,</span> name<span class="token punctuation">,</span> isComplete <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+<span class="token comment">// Delete Data</span>
+<span class="token function">fetch</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>url<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>id<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">"DELETE"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Web-API-Security"><a href="#Web-API-Security" class="headerlink" title="Web API Security"></a>Web API Security</h2><blockquote>
+<p>Check if my code follows the OWASP Top 10 web API standards, or suggest any cybersecurity improvements:</p>
+</blockquote>
+<p><strong>Input Validation</strong>: Validate the id parameter and other inputs to ensure they meet expected formats.</p>
+<p><strong>Authentication and Authorization</strong>: Add authentication and authorization checks to your endpoints to ensure only authorized users can access them.</p>
+<p><strong>Error Handling</strong>: Improve error handling to avoid exposing internal server details. Return generic error messages to the client.</p>
+<p><strong>Rate Limiting</strong>: Implement rate limiting to protect your API from abuse.</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Authorize</span></span><span class="token punctuation">]</span> <span class="token comment">// Requires authentication</span>
+app<span class="token punctuation">.</span><span class="token function">MapGet</span><span class="token punctuation">(</span><span class="token string">"/todoitems/&#123;id&#125;"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token string">"Invalid ID"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> item <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">FindAsync</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Ok</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapPost</span><span class="token punctuation">(</span><span class="token string">"/todoitems"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Authorize</span></span><span class="token punctuation">]</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name">TodoItem</span> item<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// Validate item here</span>
+    db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Created</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"/todoitems/</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>Id</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapPut</span><span class="token punctuation">(</span><span class="token string">"/todoitems/&#123;id&#125;"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Authorize</span></span><span class="token punctuation">]</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">,</span> <span class="token class-name">TodoItem</span> item<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> id <span class="token operator">!=</span> item<span class="token punctuation">.</span>Id<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token string">"Invalid ID or Id mismatch"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    db<span class="token punctuation">.</span><span class="token function">Entry</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">.</span>State <span class="token operator">=</span> EntityState<span class="token punctuation">.</span>Modified<span class="token punctuation">;</span>
+
+    <span class="token keyword">try</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">DbUpdateConcurrencyException</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">AnyAsync</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>Id <span class="token operator">==</span> id<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NoContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">MapDelete</span><span class="token punctuation">(</span><span class="token string">"/todoitems/&#123;id&#125;"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Authorize</span></span><span class="token punctuation">]</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token string">"Invalid ID"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> item <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">FindAsync</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NotFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">NoContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Validate-Data-Example"><a href="#Validate-Data-Example" class="headerlink" title="Validate Data Example"></a>Validate Data Example</h3><pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">
+<span class="token comment">// Add Validation Attributes</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TodoItem</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Required</span><span class="token attribute-arguments"><span class="token punctuation">(</span>ErrorMessage <span class="token operator">=</span> <span class="token string">"Title is required."</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">StringLength</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span> MinimumLength <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> ErrorMessage <span class="token operator">=</span> <span class="token string">"Title must be between 3 and 100 characters."</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Title <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> IsComplete <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">//  Implement the ValidateTodoItem Method</span>
+<span class="token keyword">private</span> <span class="token return-type class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> <span class="token function">ValidateTodoItem</span><span class="token punctuation">(</span><span class="token class-name">TodoItem</span> item<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> validationResults <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>ValidationResult<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> validationContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ValidationContext</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> <span class="token named-parameter punctuation">serviceProvider</span><span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token named-parameter punctuation">items</span><span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">bool</span></span> isValid <span class="token operator">=</span> Validator<span class="token punctuation">.</span><span class="token function">TryValidateObject</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> validationContext<span class="token punctuation">,</span> validationResults<span class="token punctuation">,</span> <span class="token named-parameter punctuation">validateAllProperties</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> errors <span class="token operator">=</span> validationResults<span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>result <span class="token operator">=></span> result<span class="token punctuation">.</span>ErrorMessage<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> errors<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// Use the ValidateTodoItem Method in Endpoints</span>
+app<span class="token punctuation">.</span><span class="token function">MapPost</span><span class="token punctuation">(</span><span class="token string">"/todoitems"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token class-name">MyDatabaseContext</span> db<span class="token punctuation">,</span> <span class="token class-name">TodoItem</span> item<span class="token punctuation">)</span> <span class="token operator">=></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> errors <span class="token operator">=</span> <span class="token function">ValidateTodoItem</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>errors<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">BadRequest</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span> Errors <span class="token operator">=</span> errors <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    db<span class="token punctuation">.</span>TodoItems<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">SaveChangesAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> Results<span class="token punctuation">.</span><span class="token function">Created</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"/todoitems/</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">item<span class="token punctuation">.</span>Id</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span> item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/07/ASPNET-Core-Minimal-API-Glimpse/" data-id="cly2x1k7e002064tsf9s1exsz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNETCore/" rel="tag">ASPNETCore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebAPI/" rel="tag">WebAPI</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/07/ASPNET-Core-OpenAPI-And-Swagger/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ASP.NET Core OpenAPI And Swagger</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">153</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">278</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">89</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
