@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Python 處理複雜關聯的 JSON 資料 | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何使用 Python 處理複雜類型的 JSON 資料與作業流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 處理複雜關聯的 JSON 資料">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/08/Python-Data-Process-With-Complex-Json/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何使用 Python 處理複雜類型的 JSON 資料與作業流程。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/python-logo.png">
+<meta property="article:published_time" content="2024-08-04T10:55:05.000Z">
+<meta property="article:modified_time" content="2024-08-04T12:29:39.227Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/python-logo.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Python-Data-Process-With-Complex-Json" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/08/Python-Data-Process-With-Complex-Json/" class="article-date">
+  <time datetime="2024-08-04T10:55:05.000Z" itemprop="datePublished">2024-08-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python 處理複雜關聯的 JSON 資料
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E8%AE%80%E5%8F%96%E8%88%87%E7%89%A9%E4%BB%B6%E8%BD%89%E6%8F%9B"><span class="toc-text">資料讀取與物件轉換</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E7%B4%A2%E5%BC%95"><span class="toc-text">資料索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E9%97%9C%E8%81%AF"><span class="toc-text">資料關聯</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B3%87%E6%96%99%E8%BC%B8%E5%87%BA"><span class="toc-text">資料輸出</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何使用 Python 處理複雜類型的 JSON 資料與作業流程。</p>
+<a href="/posts/2024/08/Python-Data-Process-With-Complex-Json/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/python-logo.png" alt="logo" width="150px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>在資料處理的時候，有時候會有多個 JSON 檔案，而這些檔案之間有關聯，筆記常見的資料處理方式。</p>
+<p><strong>第零步是先整理好要使用的 JSON 檔案以及 KEY, VALUE 的對照</strong>，可以直接儲存在專案的 README.md 檔案中。</p>
+<table>
+<thead>
+<tr>
+<th>KEY</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>uid</td>
+<td>編號</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>物品名稱</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>English</td>
+<td>英文描述</td>
+</tr>
+</tbody></table>
+<h3 id="資料讀取與物件轉換"><a href="#資料讀取與物件轉換" class="headerlink" title="資料讀取與物件轉換"></a>資料讀取與物件轉換</h3><p><strong>第一步是讀取 JSON 檔案並且轉換為物件</strong>，使用內建的 <code>json</code> 模組即可。</p>
+<p><code class="watch">getData.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> json
+<span class="token keyword">from</span> types <span class="token keyword">import</span> SimpleNamespace
+
+file_path <span class="token operator">=</span> <span class="token string">r'D:\datasource\data.json'</span>
+
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>file_path<span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">'utf-8-sig'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> json_file<span class="token punctuation">:</span>
+    item_data <span class="token operator">=</span> json<span class="token punctuation">.</span>load<span class="token punctuation">(</span>json_file<span class="token punctuation">,</span> object_hook<span class="token operator">=</span><span class="token keyword">lambda</span> d<span class="token punctuation">:</span> SimpleNamespace<span class="token punctuation">(</span><span class="token operator">**</span>d<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>CharacterPoolData<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>首先透過 <code>open</code> 搭配指定 encoding 的方式來讀取 JSON 檔案，接著使用 <code>json.load</code> 來將檔案內容轉換成 Python dict。</p>
+<p>而這邊的處理上搭配使用 <code>SimpleNamespace</code> 來將 JSON 轉換成 SimpleNamespace 物件，這樣可以使用 <code>.</code> 來存取 JSON 的內容。</p>
+<p>優點是非常簡便的處理資料，不需要額外定義類別與 namedtuple，缺點是這樣的方式沒有辦法利用 IDE 的 intellisense 功能，</p>
+<h3 id="資料索引"><a href="#資料索引" class="headerlink" title="資料索引"></a>資料索引</h3><p><strong>第二步是建立資料的主鍵索引</strong>，因為有時候 JSON 檔案室 List 集合，Primary Key 是其中一項 Property，要進行資料查詢的時候並不方便。</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token property">"uid"</span><span class="token operator">:</span> <span class="token string">"1001"</span><span class="token punctuation">,</span>
+    <span class="token property">"Name"</span><span class="token operator">:</span> <span class="token string">"Bronze Sword"</span><span class="token punctuation">,</span>
+    <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"一把普通的銅劍"</span><span class="token punctuation">,</span>
+    <span class="token property">"English"</span><span class="token operator">:</span> <span class="token string">"a normal bronze sword"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">getData.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">item_dict <span class="token operator">=</span> <span class="token punctuation">&#123;</span>item<span class="token punctuation">.</span>uid<span class="token punctuation">:</span> item <span class="token keyword">for</span> item <span class="token keyword">in</span> item_data<span class="token punctuation">&#125;</span>
+
+item_dict<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'1001'</span><span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>替代方式使用 <code>pandas</code> 套件，透過 <code>DataFrame</code> 處理資料或是透過 <code>SQLAlchemy</code> 模擬成資料庫的方式來處理。</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> SQLALchemy
+<span class="token keyword">from</span> sqlalchemy <span class="token keyword">import</span> create_engine
+<span class="token keyword">from</span> sqlalchemy<span class="token punctuation">.</span>orm <span class="token keyword">import</span> sessionmaker
+
+engine <span class="token operator">=</span> create_engine<span class="token punctuation">(</span><span class="token string">'sqlite:///:memory:'</span><span class="token punctuation">,</span> echo<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+Session <span class="token operator">=</span> sessionmaker<span class="token punctuation">(</span>bind<span class="token operator">=</span>engine<span class="token punctuation">)</span>
+session <span class="token operator">=</span> Session<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Item</span><span class="token punctuation">(</span>Base<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    __tablename__ <span class="token operator">=</span> <span class="token string">'item'</span>
+    uid <span class="token operator">=</span> Column<span class="token punctuation">(</span>Integer<span class="token punctuation">,</span> primary_key<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    Name <span class="token operator">=</span> Column<span class="token punctuation">(</span>String<span class="token punctuation">)</span>
+    Description <span class="token operator">=</span> Column<span class="token punctuation">(</span>String<span class="token punctuation">)</span>
+    English <span class="token operator">=</span> Column<span class="token punctuation">(</span>String<span class="token punctuation">)</span>
+
+Base<span class="token punctuation">.</span>metadata<span class="token punctuation">.</span>create_all<span class="token punctuation">(</span>engine<span class="token punctuation">)</span>
+
+<span class="token comment"># insert data from json</span>
+<span class="token keyword">for</span> data <span class="token keyword">in</span> item_dict<span class="token punctuation">:</span>
+    session<span class="token punctuation">.</span>add<span class="token punctuation">(</span>Item<span class="token punctuation">(</span><span class="token operator">**</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+session<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># get data by uid</span>
+item <span class="token operator">=</span> session<span class="token punctuation">.</span>query<span class="token punctuation">(</span>Item<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">filter</span><span class="token punctuation">(</span>Item<span class="token punctuation">.</span>uid <span class="token operator">==</span> <span class="token number">1001</span><span class="token punctuation">)</span><span class="token punctuation">.</span>first<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="資料關聯"><a href="#資料關聯" class="headerlink" title="資料關聯"></a>資料關聯</h3><p><strong>第三步是處理資料之間的關聯。</strong></p>
+<p>關聯的處理定義在 <code>utilities</code> 當中，函式命名可以使用 <code>get_xxx_by_yyy</code> 的方式來命名，例如 <code>get_weapon_by_uid</code>。</p>
+<p>在工作責任上包含：</p>
+<ol>
+<li>處理參數的檢查</li>
+<li>查詢不同來源的資料</li>
+<li>回傳關聯組合後的資料</li>
+</ol>
+<p><code class="watch">utilities.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> viewmodel <span class="token keyword">import</span> <span class="token operator">*</span>
+
+<span class="token keyword">def</span> <span class="token function">get_weapon_by_uid</span><span class="token punctuation">(</span>uid<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># check uid</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> uid<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span>
+
+    <span class="token comment"># get weapon data</span>
+    weapon <span class="token operator">=</span> item_dict<span class="token punctuation">.</span>get<span class="token punctuation">(</span>uid<span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span>
+    weapon_description <span class="token operator">=</span> item_description_dict<span class="token punctuation">.</span>get<span class="token punctuation">(</span>uid<span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span>
+
+    weapon_abilities <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token comment"># check diff prefix and uid</span>
+    weapon_abilities<span class="token punctuation">.</span>add<span class="token punctuation">(</span>item_abilities_dict<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'w_'</span> <span class="token operator">+</span> uid<span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    weapon_abilities<span class="token punctuation">.</span>add<span class="token punctuation">(</span>item_abilities_dict<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'weapon_'</span> <span class="token operator">+</span> uid<span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    weapon_abilities<span class="token punctuation">.</span>add<span class="token punctuation">(</span>item_abilities_dict<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'@_'</span> <span class="token operator">+</span> uid<span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    weapon_abilities <span class="token operator">=</span> <span class="token punctuation">[</span>ability <span class="token keyword">for</span> ability <span class="token keyword">in</span> weapon_abilities <span class="token keyword">if</span> ability <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token boolean">None</span><span class="token punctuation">]</span>
+
+    <span class="token comment"># using view model to combine data</span>
+    <span class="token keyword">return</span> WeaponViewModel<span class="token punctuation">(</span>weapon<span class="token punctuation">,</span> weapon_abilities<span class="token punctuation">,</span> weapon_description<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>回傳資料的處理，可以透過定義 <code>namedtuple</code> 或是 <code>dataclass</code> 來處理，用以享受 IDE 的 intellisense 功能。</p>
+<p><code class="watch">viewmodel.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> collections <span class="token keyword">import</span> namedtuple
+
+WeaponViewModel <span class="token operator">=</span> namedtuple<span class="token punctuation">(</span><span class="token string">'WeaponViewModel'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'weapon'</span><span class="token punctuation">,</span> <span class="token string">'abilities'</span><span class="token punctuation">,</span> <span class="token string">'description'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="資料輸出"><a href="#資料輸出" class="headerlink" title="資料輸出"></a>資料輸出</h3><p><strong>第四步是處理資料的輸出</strong>，端看 Python 要處理的範圍可能的形式有多種。</p>
+<p>可以是輸出成 sqlite 或者是寫入 SQL Server 當中，再接棒給其他網頁框架來處理資料。</p>
+<p>又或者是輸出成 Markdown 檔案，搭配 MKDocs 或者是 docsify 來建立文件。</p>
+<p>本次筆記說明輸出成 Markdown 檔案的方式，同時為了優化編輯體驗，使用 <code>jinjia2</code> 模板引擎來處理 teamplate。</p>
+<p><code class="watch">template.md</code></p>
+<pre class="line-numbers language-jinja2" data-language="jinja2"><code class="language-jinja2">## 物品名稱 - &#123;&#123; item.name &#125;&#125;
+
+&#123;&#123; description &#125;&#125;
+
+&#123;% for ability in abilities %&#125;
+- &#123;&#123; ability.Name.replace(&#39;@&#39;, &#39;&#39;) &#125;&#125;: &#123;&#123; ability.Value &#125;&#125;
+&#123;% endfor %&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code class="watch">app.py</code></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> jinja2 <span class="token keyword">import</span> Template
+<span class="token keyword">import</span> getData
+<span class="token keyword">from</span> utilities <span class="token keyword">import</span> <span class="token operator">*</span>
+
+template <span class="token operator">=</span> Template<span class="token punctuation">(</span><span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'./template.md'</span><span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> item <span class="token keyword">in</span> getData<span class="token punctuation">.</span>item_data<span class="token punctuation">:</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'./docs/</span><span class="token interpolation"><span class="token punctuation">&#123;</span>item<span class="token punctuation">.</span>uid<span class="token punctuation">&#125;</span></span><span class="token string">.md'</span></span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">file</span><span class="token punctuation">:</span>
+        content <span class="token operator">=</span> template<span class="token punctuation">.</span>render<span class="token punctuation">(</span>
+          item<span class="token operator">=</span>item<span class="token punctuation">,</span>
+          description<span class="token operator">=</span>get_weapon_by_uid<span class="token punctuation">(</span>item<span class="token punctuation">.</span>uid<span class="token punctuation">)</span><span class="token punctuation">.</span>description<span class="token punctuation">,</span>
+          abilities<span class="token operator">=</span>get_weapon_by_uid<span class="token punctuation">(</span>item<span class="token punctuation">.</span>uid<span class="token punctuation">)</span><span class="token punctuation">.</span>abilities<span class="token punctuation">)</span>
+
+        <span class="token builtin">file</span><span class="token punctuation">.</span>write<span class="token punctuation">(</span>content<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/08/Python-Data-Process-With-Complex-Json/" data-id="clzfjihv401e4w4tscztc7q84" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/07/SQL-Server-Memory-Pressure/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL Server Memory Pressure</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">33</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">154</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">286</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">52</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">103</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
