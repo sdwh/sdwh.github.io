@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-10-min.png">
 <meta property="og:image" content="https://sdwh.dev/assets/Install-IIS-11-min.png">
 <meta property="article:published_time" content="2020-07-29T12:04:33.000Z">
-<meta property="article:modified_time" content="2023-04-01T12:13:24.878Z">
+<meta property="article:modified_time" content="2024-08-05T11:39:45.486Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="Microsoft">
 <meta property="article:tag" content="IIS">
@@ -216,6 +216,47 @@
 <li>WebDAV 重新導向器 WebDAV-Redirector</li>
 <li>可裝載 IIS 的網頁核心 Web-WHC</li>
 </ul>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">install-windowsfeature</span> Web-Common-Http
+<span class="token function">install-windowsfeature</span> Web-Http-Errors
+<span class="token function">install-windowsfeature</span> Web-Default-Doc
+<span class="token function">install-windowsfeature</span> Web-Static-Content
+<span class="token function">install-windowsfeature</span> Web-<span class="token function">Dir</span><span class="token operator">-</span>Browsing
+<span class="token function">install-windowsfeature</span> Web-Http-Redirect
+<span class="token function">install-windowsfeature</span> Web-DAV-Publishing
+<span class="token function">install-windowsfeature</span> Web-Security
+<span class="token function">install-windowsfeature</span> Web-Filtering
+<span class="token function">install-windowsfeature</span> Web-Cert-Auth
+<span class="token function">install-windowsfeature</span> Web-IP-Security
+<span class="token function">install-windowsfeature</span> Web-Url-Auth
+<span class="token function">install-windowsfeature</span> Web-Windows-Auth
+<span class="token function">install-windowsfeature</span> Web-Client-Auth
+<span class="token function">install-windowsfeature</span> Web-Basic-Auth
+<span class="token function">install-windowsfeature</span> Web-CertProvider
+<span class="token function">install-windowsfeature</span> Web-Digest-Auth
+<span class="token function">install-windowsfeature</span> Web-Health
+<span class="token function">install-windowsfeature</span> Web-Http-Logging
+<span class="token function">install-windowsfeature</span> Web-ODBC-Logging
+<span class="token function">install-windowsfeature</span> Web-Custom-Logging
+<span class="token function">install-windowsfeature</span> Web-<span class="token function">Request-Monitor</span>
+<span class="token function">install-windowsfeature</span> Web-Log-Libraries
+<span class="token function">install-windowsfeature</span> Web-Http-Tracing
+<span class="token function">install-windowsfeature</span> Web-Performance
+<span class="token function">install-windowsfeature</span> Web-Stat-Compression
+<span class="token function">install-windowsfeature</span> Web-Dyn-Compression
+<span class="token function">install-windowsfeature</span> Web-App-Dev
+<span class="token function">install-windowsfeature</span> Web-Net-Ext45
+<span class="token function">install-windowsfeature</span> Web-ASP
+<span class="token function">install-windowsfeature</span> Web-Asp-Net45
+<span class="token function">install-windowsfeature</span> Web-CGI
+<span class="token function">install-windowsfeature</span> Web-ISAPI-<span class="token keyword">Filter</span>
+<span class="token function">install-windowsfeature</span> Web-ISAPI-Ext
+<span class="token function">install-windowsfeature</span> Web-Includes
+<span class="token function">install-windowsfeature</span> Web-AppInit
+
+
+<span class="token function">install-windowsfeature</span> Web-Net-Ext <span class="token operator">-</span>Source D:\sxs2022 
+<span class="token function">install-windowsfeature</span> Web-Asp-Net <span class="token operator">-</span>Source D:\sxs2022<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="使用-GUI-安裝"><a href="#使用-GUI-安裝" class="headerlink" title="使用 GUI 安裝"></a>使用 GUI 安裝</h3><p>由 <strong>伺服器管理員</strong> 選單點選 <strong>新增角色及功能</strong> 來開始安裝步驟。</p>
 <p><img src="/assets/Install-IIS-01-min.png" alt="新增角色及功能"></p>
 <p><img src="/assets/Install-IIS-02-min.png" alt="安裝類型，直接下一步"><br><img src="/assets/Install-IIS-03-min.png" alt="目的地伺服器，直接下一步"><br><img src="/assets/Install-IIS-04-min.png" alt="伺服器角色，選取網頁伺服器 IIS"></p>
@@ -278,7 +319,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2020/07/How-To-Install-IIS/" data-id="clzfjihq90100w4ts7qhqb9sh" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2020/07/How-To-Install-IIS/" data-id="clzgy6u8m0102lotsap9ec2y8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IIS/" rel="tag">IIS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microsoft/" rel="tag">Microsoft</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebServer/" rel="tag">WebServer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
@@ -320,7 +361,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-category-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">33</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">154</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">286</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">52</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">33</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">154</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">287</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">52</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">74</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
     </div>
   </div>
 
@@ -330,7 +371,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title widget-archive-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">103</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">105</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
     </div>
   </div>
 
