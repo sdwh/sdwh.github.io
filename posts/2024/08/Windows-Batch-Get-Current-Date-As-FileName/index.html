@@ -23,7 +23,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://sdwh.dev/assets/WindowsServerLogo.svg">
 <meta property="article:published_time" content="2024-08-15T11:09:35.000Z">
-<meta property="article:modified_time" content="2024-08-15T11:40:14.378Z">
+<meta property="article:modified_time" content="2024-08-15T13:12:19.223Z">
 <meta property="article:author" content="Webber">
 <meta property="article:tag" content="PowerShell">
 <meta property="article:tag" content="Windows">
@@ -112,7 +112,7 @@
       
         
     <div id="toc" class="toc-article">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%BE%97%E6%AA%94%E6%A1%88%E8%B3%87%E8%A8%8A"><span class="toc-text">取得檔案資訊</span></a></li></ol></li></ol>
     </div>
   
   
@@ -128,12 +128,110 @@
 <span class="token command"><span class="token keyword">set</span> <span class="token variable">destination</span><span class="token operator">=</span>d:\home\<span class="token variable">%today%</span></span>
 <span class="token command"><span class="token keyword">mkdir</span> <span class="token variable">%destination%</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
+<h3 id="取得檔案資訊"><a href="#取得檔案資訊" class="headerlink" title="取得檔案資訊"></a>取得檔案資訊</h3><p>🐌 Slow on Get-FileHash</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token function">Get-ChildItem</span> <span class="token operator">-</span>Path <span class="token string">"D:\source"</span> <span class="token operator">-</span>Recurse <span class="token punctuation">|</span> 
+    <span class="token function">Select-Object</span> FullName<span class="token punctuation">,</span> 
+                  @<span class="token punctuation">&#123;</span>Name=<span class="token string">"Size"</span><span class="token punctuation">;</span>Expression=<span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>Length<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> 
+                  @<span class="token punctuation">&#123;</span>Name=<span class="token string">"LastModifiedDate"</span><span class="token punctuation">;</span>Expression=<span class="token punctuation">&#123;</span><span class="token variable">$_</span><span class="token punctuation">.</span>LastWriteTime<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                  @<span class="token punctuation">&#123;</span>Name=<span class="token string">"Hash"</span><span class="token punctuation">;</span>Expression=<span class="token punctuation">&#123;</span> <span class="token punctuation">(</span><span class="token function">Get-FileHash</span> <span class="token operator">-</span>Path <span class="token variable">$_</span><span class="token punctuation">.</span>FullName<span class="token punctuation">)</span><span class="token punctuation">.</span>Hash <span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">|</span>
+    <span class="token function">Format-Table</span> <span class="token operator">-</span>AutoSize <span class="token punctuation">|</span> 
+    <span class="token function">Out-File</span> <span class="token operator">-</span>FilePath <span class="token string">"C:\users\ps.txt"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<p>⚡ Quick with multi-threading to get file hash</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Diagnostics</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>IO</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Security<span class="token punctuation">.</span>Cryptography</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Threading</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Threading<span class="token punctuation">.</span>Tasks</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">GetFileMetaConsole</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">Program</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            ThreadPool<span class="token punctuation">.</span><span class="token function">SetMinThreads</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            ThreadPool<span class="token punctuation">.</span><span class="token function">SetMaxThreads</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// Example list of file paths</span>
+            <span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> filePaths <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// Read txt file line by line to filePaths</span>
+            <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">StreamReader</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StreamReader</span><span class="token punctuation">(</span><span class="token string">"filePaths.txt"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name"><span class="token keyword">string</span></span> line<span class="token punctuation">;</span>
+                <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>line <span class="token operator">=</span> reader<span class="token punctuation">.</span><span class="token function">ReadLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    filePaths<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token comment">// Start measuring time</span>
+            <span class="token class-name">Stopwatch</span> stopwatch <span class="token operator">=</span> Stopwatch<span class="token punctuation">.</span><span class="token function">StartNew</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">StreamWriter</span> writer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StreamWriter</span><span class="token punctuation">(</span><span class="token string">"result.txt"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token comment">// Create tasks for each file path</span>
+                <span class="token class-name">List<span class="token punctuation">&lt;</span>Task<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span><span class="token punctuation">></span></span> tasks <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Task<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> filePath <span class="token keyword">in</span> filePaths<span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    tasks<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>Task<span class="token punctuation">.</span><span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">GetFileDetails</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+
+                <span class="token comment">// Wait for all tasks to complete</span>
+                Task<span class="token punctuation">.</span><span class="token function">WaitAll</span><span class="token punctuation">(</span>tasks<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// Write the file details to the result file</span>
+                <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> task <span class="token keyword">in</span> tasks<span class="token punctuation">)</span>
+                <span class="token punctuation">&#123;</span>
+                    writer<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span>task<span class="token punctuation">.</span>Result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token comment">// Stop measuring time</span>
+            stopwatch<span class="token punctuation">.</span><span class="token function">Stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// Print the total time taken</span>
+            Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"Total time used: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">stopwatch<span class="token punctuation">.</span>Elapsed<span class="token punctuation">.</span>TotalSeconds</span><span class="token punctuation">&#125;</span></span><span class="token string"> seconds"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">GetFileDetails</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> filePath<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>File<span class="token punctuation">.</span><span class="token function">Exists</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span> <span class="token interpolation-string"><span class="token string">$"File not found: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">filePath</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token class-name">FileInfo</span> fileInfo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FileInfo</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// Get file size</span>
+            <span class="token class-name"><span class="token keyword">long</span></span> fileSize <span class="token operator">=</span> fileInfo<span class="token punctuation">.</span>Length<span class="token punctuation">;</span>
+
+            <span class="token comment">// Get last modified date</span>
+            <span class="token class-name">DateTime</span> lastModified <span class="token operator">=</span> fileInfo<span class="token punctuation">.</span>LastWriteTime<span class="token punctuation">;</span>
+
+            <span class="token comment">// Get SHA256 hash</span>
+            <span class="token class-name"><span class="token keyword">string</span></span> hash<span class="token punctuation">;</span>
+            <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">FileStream</span> stream <span class="token operator">=</span> File<span class="token punctuation">.</span><span class="token function">OpenRead</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name">SHA256</span> sha <span class="token operator">=</span> SHA256<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name"><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> hashBytes <span class="token operator">=</span> sha<span class="token punctuation">.</span><span class="token function">ComputeHash</span><span class="token punctuation">(</span>stream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                hash <span class="token operator">=</span> BitConverter<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span>hashBytes<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Replace</span><span class="token punctuation">(</span><span class="token string">"-"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token comment">// Return details</span>
+            <span class="token keyword">return</span> <span class="token interpolation-string"><span class="token string">$"File: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">filePath</span><span class="token punctuation">&#125;</span></span><span class="token string">\nSize: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">fileSize</span><span class="token punctuation">&#125;</span></span><span class="token string"> bytes\nLast Modified: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">lastModified<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token string">"yyyy/MM/dd hh:MM:ss"</span><span class="token punctuation">)</span></span><span class="token punctuation">&#125;</span></span><span class="token string">\nSHA256: </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">hash</span><span class="token punctuation">&#125;</span></span><span class="token string">\n"</span></span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
       
 
     </div>
     <footer class="article-footer">
-      <a data-url="https://sdwh.dev/posts/2024/08/Windows-Batch-Get-Current-Date-As-FileName/" data-id="clzv7mss7023wxotsfspe58tc" class="article-share-link">Share</a>
+      <a data-url="https://sdwh.dev/posts/2024/08/Windows-Batch-Get-Current-Date-As-FileName/" data-id="clzvavn0d0245kkts7xz362ta" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CLI/" rel="tag">CLI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PowerShell/" rel="tag">PowerShell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
