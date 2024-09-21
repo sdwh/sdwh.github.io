@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>LLM-Course-Notebook | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記關於生成式人工智慧課導論的學習筆記。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM-Course-Notebook">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/09/LLM-Course-Notebook/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記關於生成式人工智慧課導論的學習筆記。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2024-09-05T11:17:56.000Z">
+<meta property="article:modified_time" content="2024-09-21T10:55:54.282Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-LLM-Course-Notebook" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/09/LLM-Course-Notebook/" class="article-date">
+  <time datetime="2024-09-05T11:17:56.000Z" itemprop="datePublished">2024-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      LLM-Course-Notebook
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%B2%E7%A8%8B%E8%AA%AA%E6%98%8E"><span class="toc-text">課程說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%BC%8FAI%E6%98%AF%E4%BB%80%E9%BA%BC"><span class="toc-text">生成式AI是什麼</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8A%E6%97%A5%E7%9A%84%E7%94%9F%E6%88%90%E5%BC%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%E5%8E%B2%E5%AE%B3%E5%9C%A8%E5%93%AA%E8%A3%A1%EF%BC%9F%E5%BE%9E%E3%80%8C%E5%B7%A5%E5%85%B7%E3%80%8D%E8%AE%8A%E7%82%BA%E3%80%8C%E5%B7%A5%E5%85%B7%E4%BA%BA%E3%80%8D"><span class="toc-text">今日的生成式人工智慧厲害在哪裡？從「工具」變為「工具人」</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A8%93%E7%B7%B4%E4%B8%8D%E4%BA%86%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%EF%BC%9F%E4%BD%A0%E5%8F%AF%E4%BB%A5%E8%A8%93%E7%B7%B4%E4%BD%A0%E8%87%AA%E5%B7%B1-%E4%B8%8A-%E2%80%94-%E7%A5%9E%E5%A5%87%E5%92%92%E8%AA%9E%E8%88%87%E6%8F%90%E4%BE%9B%E6%9B%B4%E5%A4%9A%E8%B3%87%E8%A8%8A"><span class="toc-text">訓練不了人工智慧？你可以訓練你自己 (上) — 神奇咒語與提供更多資訊</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A8%93%E7%B7%B4%E4%B8%8D%E4%BA%86%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%EF%BC%9F%E4%BD%A0%E5%8F%AF%E4%BB%A5%E8%A8%93%E7%B7%B4%E4%BD%A0%E8%87%AA%E5%B7%B1-%E4%B8%AD-%E2%80%94-%E6%8B%86%E8%A7%A3%E5%95%8F%E9%A1%8C%E8%88%87%E4%BD%BF%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="toc-text">訓練不了人工智慧？你可以訓練你自己 (中) — 拆解問題與使用工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A8%93%E7%B7%B4%E4%B8%8D%E4%BA%86%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%EF%BC%9F%E4%BD%A0%E5%8F%AF%E4%BB%A5%E8%A8%93%E7%B7%B4%E4%BD%A0%E8%87%AA%E5%B7%B1-%E4%B8%8B-%E2%80%94-%E8%AE%93%E8%AA%9E%E8%A8%80%E5%BD%BC%E6%AD%A4%E5%90%88%E4%BD%9C%EF%BC%8C%E6%8A%8A%E4%B8%80%E5%80%8B%E4%BA%BA%E6%B4%BB%E6%88%90%E4%B8%80%E5%80%8B%E5%9C%98%E9%9A%8A"><span class="toc-text">訓練不了人工智慧？你可以訓練你自己 (下) — 讓語言彼此合作，把一個人活成一個團隊</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%BF%AE%E7%B7%B4%E5%8F%B2-%E2%80%94-%E7%AC%AC%E4%B8%80%E9%9A%8E%E6%AE%B5-%E8%87%AA%E6%88%91%E5%AD%B8%E7%BF%92%EF%BC%8C%E7%B4%AF%E7%A9%8D%E5%AF%A6%E5%8A%9B"><span class="toc-text">大型語言模型修練史 — 第一階段: 自我學習，累積實力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%BF%AE%E7%B7%B4%E5%8F%B2-%E2%80%94-%E7%AC%AC%E4%BA%8C%E9%9A%8E%E6%AE%B5-%E5%90%8D%E5%B8%AB%E6%8C%87%E9%BB%9E%EF%BC%8C%E7%99%BC%E6%8F%AE%E6%BD%9B%E5%8A%9B"><span class="toc-text">大型語言模型修練史 — 第二階段: 名師指點，發揮潛力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%BF%AE%E7%B7%B4%E5%8F%B2-%E2%80%94-%E7%AC%AC%E4%B8%89%E9%9A%8E%E6%AE%B5-%E5%8F%83%E8%88%87%E5%AF%A6%E6%88%B0%EF%BC%8C%E6%89%93%E7%A3%A8%E6%8A%80%E5%B7%A7-Reinforcement-Learning-from-Human-Feedback-RLHF"><span class="toc-text">大型語言模型修練史 — 第三階段: 參與實戰，打磨技巧 (Reinforcement Learning from Human Feedback, RLHF)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%89%93%E9%80%A0%E7%9A%84-AI-Agent"><span class="toc-text">以大型語言模型打造的 AI Agent</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8A%E6%97%A5%E7%9A%84%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E6%96%87%E5%AD%97%E6%8E%A5%E9%BE%8D%E7%9A%84-%E2%80%94-%E6%B7%BA%E8%AB%87Transformer"><span class="toc-text">今日的語言模型是如何做文字接龍的 — 淺談Transformer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Transformer"><span class="toc-text">Transformer</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%9C%A8%E3%80%8C%E6%83%B3%E3%80%8D%E4%BB%80%E9%BA%BC%E5%91%A2%EF%BC%9F-%E2%80%94-%E6%B7%BA%E8%AB%87%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%8F%AF%E8%A7%A3%E9%87%8B%E6%80%A7"><span class="toc-text">大型語言模型在「想」什麼呢？ — 淺談大型語言模型的可解釋性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BA%E8%AB%87%E6%AA%A2%E5%AE%9A%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E8%83%BD%E5%8A%9B%E7%9A%84%E5%90%84%E7%A8%AE%E6%96%B9%E5%BC%8F"><span class="toc-text">淺談檢定大型語言模型能力的各種方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BA%E8%AB%87%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9B%B8%E9%97%9C%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E8%AD%B0%E9%A1%8C-%E4%B8%8A-%E2%80%94-%E4%BA%A1%E7%BE%8A%E8%A3%9C%E7%89%A2%E3%80%81%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%81%8F%E8%A6%8B%E3%80%81%E6%9C%89%E5%A4%9A%E5%B0%91%E4%BA%BA%E7%94%A8-ChatGPT-%E5%AF%AB%E8%AB%96%E6%96%87%E5%AF%A9%E6%9F%A5%E6%84%8F%E8%A6%8B"><span class="toc-text">淺談大型語言模型相關的安全性議題 (上) — 亡羊補牢、語言模型的偏見、有多少人用 ChatGPT 寫論文審查意見</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BA%E8%AB%87%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9B%B8%E9%97%9C%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E8%AD%B0%E9%A1%8C-%E4%B8%8B-%E2%80%94-%E6%AC%BA%E9%A8%99%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="toc-text">淺談大型語言模型相關的安全性議題 (下) — 欺騙大型語言模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%94%A8%E6%96%87%E5%AD%97%E6%8E%A5%E9%BE%8D%EF%BC%8C%E5%9C%96%E7%89%87%E7%94%9F%E6%88%90%E4%B8%8D%E7%94%A8%E5%83%8F%E7%B4%A0%E6%8E%A5%E9%BE%8D%E5%91%A2%EF%BC%9F%E2%80%94-%E6%B7%BA%E8%AB%87%E7%94%9F%E6%88%90%E5%BC%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7%E7%9A%84%E7%94%9F%E6%88%90%E7%AD%96%E7%95%A5"><span class="toc-text">為什麼語言模型用文字接龍，圖片生成不用像素接龍呢？— 淺談生成式人工智慧的生成策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E4%BB%A5%E5%8A%A0%E9%80%9F%E6%89%80%E6%9C%89%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%94%9F%E6%88%90%E9%80%9F%E5%BA%A6%E7%9A%84%E7%A5%9E%E5%A5%87%E5%A4%96%E6%8E%9B-%E2%80%94-Speculative-Decoding"><span class="toc-text">可以加速所有語言模型生成速度的神奇外掛 — Speculative Decoding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E9%97%9C%E5%BD%B1%E5%83%8F%E7%9A%84%E7%94%9F%E6%88%90%E5%BC%8FAI-%E4%B8%8A-%E2%80%94-AI-%E5%A6%82%E4%BD%95%E7%94%A2%E7%94%9F%E5%9C%96%E7%89%87%E5%92%8C%E5%BD%B1%E7%89%87"><span class="toc-text">有關影像的生成式AI (上) — AI 如何產生圖片和影片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E9%97%9C%E5%BD%B1%E5%83%8F%E7%9A%84%E7%94%9F%E6%88%90%E5%BC%8FAI-%E4%B8%8B-%E2%80%94-%E5%BF%AB%E9%80%9F%E5%B0%8E%E8%AE%80%E7%B6%93%E5%85%B8%E5%BD%B1%E5%83%8F%E7%94%9F%E6%88%90%E6%96%B9%E6%B3%95-VAE-Flow-Diffusion-GAN-%E4%BB%A5%E5%8F%8A%E8%88%87%E7%94%9F%E6%88%90%E7%9A%84%E5%BD%B1%E7%89%87%E4%BA%92%E5%8B%95"><span class="toc-text">有關影像的生成式AI (下) — 快速導讀經典影像生成方法 (VAE, Flow, Diffusion, GAN) 以及與生成的影片互動</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GPT-4o-%E8%83%8C%E5%BE%8C%E5%8F%AF%E8%83%BD%E7%9A%84%E8%AA%9E%E9%9F%B3%E6%8A%80%E8%A1%93%E7%8C%9C%E6%B8%AC"><span class="toc-text">GPT-4o 背後可能的語音技術猜測</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記關於生成式人工智慧課導論的學習筆記。</p>
+<a href="/posts/2024/09/LLM-Course-Notebook/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="課程說明"><a href="#課程說明" class="headerlink" title="課程說明"></a>課程說明</h2><p>本課程的目標是讓學生理解生成式AI的全貌，而不是僅僅學會使用某一個工具如ChatGPT。課程會深入探討生成式AI的技術原理，讓學生了解這些技術是如何誕生、發展及應用。同時，課程不需要任何人工智慧的預備知識，適合初學者作為入門學習。</p>
+<p>生成式AI的技術日新月異，因此單靠某一時期的技術學習可能很快過時。李宏毅老師強調，課程會教授的內容是希望能讓學生在未來數年甚至一生中受用。他也提到「了解AI技術的背後原理，能讓人對技術有更清晰的理解，避免過度依賴或誤解其能力。」</p>
+<h2 id="生成式AI是什麼"><a href="#生成式AI是什麼" class="headerlink" title="生成式AI是什麼"></a>生成式AI是什麼</h2><blockquote>
+<p>什麼是人工智慧 (AI) &amp; 什麼是生成式人工智慧</p>
+</blockquote>
+<ul>
+<li>人工智慧代表機器所展現的智慧，但「智慧」的定義因人而異。它是一個模糊的目標，並無單一技術可稱為人工智慧。</li>
+<li>生成式人工智慧要求機器創造出複雜且有結構的物件，從無數可能性中找出合適的結果，像是寫文章、生成影像等。</li>
+</ul>
+<blockquote>
+<p>分類與生成式AI的區別</p>
+</blockquote>
+<p>分類問題屬於從有限選項中做選擇，而生成式人工智慧解決的問題則是從無數選項中生成新物件。</p>
+<blockquote>
+<p>機器學習 (Machine Learning)</p>
+</blockquote>
+<p>「機器學習的學習指的是找出大量參數的過程」: 機器學習讓機器從資料中找出函式，透過學習過程自動計算大量參數，達成自動化的推論與解答。</p>
+<blockquote>
+<p>深度學習 (Deep Learning) 與類神經網路</p>
+</blockquote>
+<p>深度學習是機器學習的一種，使用類神經網路來解決複雜問題，並幫助生成式人工智慧達成目標。</p>
+<h2 id="今日的生成式人工智慧厲害在哪裡？從「工具」變為「工具人」"><a href="#今日的生成式人工智慧厲害在哪裡？從「工具」變為「工具人」" class="headerlink" title="今日的生成式人工智慧厲害在哪裡？從「工具」變為「工具人」"></a>今日的生成式人工智慧厲害在哪裡？從「工具」變為「工具人」</h2><p>生成式人工智慧並非全新技術，Google 翻譯是其早期應用之一，然而，近年來技術進步使其能力顯著提升。</p>
+<p>「今日的生成式人工智慧不像過去僅具備單一功能。」而是一種可以依據指令進行多種操作的系統，功能比過去的 Google 翻譯更靈活。</p>
+<p>「除了 ChatGPT，還有許多生成式人工智慧在發展。」雖然 ChatGPT 是最知名且具代表性的生成式人工智慧，但像 Google Gemini、Microsoft Copilot 等也具備多元功能，展示出生成式人工智慧的廣泛應用。</p>
+<p>ChatGPT 具備強大的應用潛力，從技術解答到生活建議，提供多種服務，展示了生成式人工智慧的廣泛實用性。</p>
+<h2 id="訓練不了人工智慧？你可以訓練你自己-上-—-神奇咒語與提供更多資訊"><a href="#訓練不了人工智慧？你可以訓練你自己-上-—-神奇咒語與提供更多資訊" class="headerlink" title="訓練不了人工智慧？你可以訓練你自己 (上) — 神奇咒語與提供更多資訊"></a>訓練不了人工智慧？你可以訓練你自己 (上) — 神奇咒語與提供更多資訊</h2><p>本節課強調如何藉由提升使用者自身的能力來強化AI應用，而這個能力就是如何提出更好的問題，以引導AI模型給出更準確的答案。</p>
+<ul>
+<li>增強語言模型的方法「讓模型解釋自己的答案能提升其批改文章的正確性。」，模型解釋其判斷過程後，與人類的評估結果更為接近。</li>
+<li>「透過情緒勒索模型，表現會顯著提升。」，研究顯示對模型施加情緒壓力（如強調任務重要性），可增加其任務正確率。</li>
+<li>「某些咒語能激發模型超越一般的能力，如 ‘Take a deep breath’。」，科學驗證各種都市傳說，並透過增強式學習發現更強大的咒語來操控模型。</li>
+</ul>
+<h2 id="訓練不了人工智慧？你可以訓練你自己-中-—-拆解問題與使用工具"><a href="#訓練不了人工智慧？你可以訓練你自己-中-—-拆解問題與使用工具" class="headerlink" title="訓練不了人工智慧？你可以訓練你自己 (中) — 拆解問題與使用工具"></a>訓練不了人工智慧？你可以訓練你自己 (中) — 拆解問題與使用工具</h2><p>延續先前的討論。</p>
+<p>拆解任務，將複雜任務拆解為簡單步驟可以提升模型解決問題的能力，例如將生成長篇報告拆解成列大綱和逐步撰寫。</p>
+<p>Chain of Thought 是將複雜問題分步處理，增加解答的精確性，對模型來說，先列出解題過程再得出答案，提升解決數學問題的正確率。</p>
+<p>藉由「’Let’s think step by step’ 可大幅提升模型的解題正確率。」</p>
+<blockquote>
+<p>語言模型的自我檢查</p>
+</blockquote>
+<p>具體來說，自我檢查是語言模型生成答案後，對已輸出的結果進行反思和分析，尋找可能的錯誤並進行修正。例如，模型可能最初給出了一個錯誤的答案，但在自我檢查過程中，可以發現這個錯誤並加以改正。</p>
+<blockquote>
+<p>自我反省與 Constitutional AI</p>
+</blockquote>
+<p>模型可通過自我反省來改善回應，如不直接提供不道德的建議。</p>
+<h2 id="訓練不了人工智慧？你可以訓練你自己-下-—-讓語言彼此合作，把一個人活成一個團隊"><a href="#訓練不了人工智慧？你可以訓練你自己-下-—-讓語言彼此合作，把一個人活成一個團隊" class="headerlink" title="訓練不了人工智慧？你可以訓練你自己 (下) — 讓語言彼此合作，把一個人活成一個團隊"></a>訓練不了人工智慧？你可以訓練你自己 (下) — 讓語言彼此合作，把一個人活成一個團隊</h2><blockquote>
+<p>透過不同模型的合作可以達到「1+1大於2」的效果。</p>
+</blockquote>
+<p>語言模型如 GPT-4 可以透過彼此合作提升效能，例如簡單任務可由較便宜的模型處理，進而減少成本。</p>
+<blockquote>
+<p>多個語言模型討論次數越多，得到正確答案的機率越高。</p>
+</blockquote>
+<p>語言模型之間可進行反覆討論，通過不斷挑戰對方的答案來提升整體正確率，進而達成共識。</p>
+<blockquote>
+<p>語言模型的討論方式尚未有最佳方案，不同任務適合不同的方式。</p>
+</blockquote>
+<p>模型討論的方式有很多種，從簡單的答案交換到更複雜的層次交流，效果取決於任務的性質。</p>
+<blockquote>
+<p>裁判模型能精確判斷模型輸出是否一致，並宣佈達成共識或繼續討論。</p>
+</blockquote>
+<p>裁判模型負責判斷不同模型的討論是否達成共識，並在必要時推動進一步的討論。</p>
+<h2 id="大型語言模型修練史-—-第一階段-自我學習，累積實力"><a href="#大型語言模型修練史-—-第一階段-自我學習，累積實力" class="headerlink" title="大型語言模型修練史 — 第一階段: 自我學習，累積實力"></a>大型語言模型修練史 — 第一階段: 自我學習，累積實力</h2><p>介紹了語言模型的背景，並強調其主要功能是文字接龍「語言模型的輸入是一個未完成的句子，輸出則是後續可以接的符號 (Token)」。</p>
+<p>語言模型經由訓練來產生，「訓練是找出參數的過程，測試是驗證這些參數是否有效」，使用大量訓練資料進行模型的最佳化。</p>
+<p>模型的訓練包含超參數的設定，設定直接影響模型的訓練成效，並且需要反覆調整。</p>
+<p>訓練可能成功但測試失敗的過擬合問題 (Overfitting)，並以貓狗分類器為例說明，「訓練資料可能讓機器過度依賴某些特徵，如顏色，導致測試失敗。」</p>
+<p>解釋如何從零開始訓練模型，及如何使用初始參數來提高訓練效率，「找到好的初始參數可以讓模型更快達到合理的結果。」</p>
+<p>語言模型訓練的第一階段，強調訓練讓模型需要足夠的文字和語言知識，「語言模型必須具備對語法的正確理解，才能預測出合理的Token。」</p>
+<p>Summary</p>
+<p>The first stage of LLM training involves a process called <strong>self-supervised learning</strong>. This means that the model learns to predict the next word in a sequence based on the preceding words, using massive amounts of text data scraped from the internet. Key points include:</p>
+<ul>
+<li>Data collection: LLMs are trained on enormous datasets obtained from the web.</li>
+<li>Tokenization: Text is broken down into smaller units called tokens (often words or subwords) for the model to process.</li>
+<li>Parameter optimization: The model’s parameters are adjusted through an optimization process to minimize the difference between its predicted tokens and the actual tokens in the training data.</li>
+<li>Challenges: Overfitting, where the model becomes too specialized to the training data and performs poorly on new data, is a common issue.</li>
+<li>Limitations of first-stage models: While these models can generate human-quality text, they often lack a deep understanding of the world and can produce nonsensical or irrelevant output.</li>
+</ul>
+<p>Key Takeaways</p>
+<ul>
+<li>Self-supervised learning is a powerful technique for training LLMs, but it has limitations.</li>
+<li>The quality and quantity of training data significantly impact the model’s performance.</li>
+<li>Overcoming overfitting is a crucial challenge in LLM training.</li>
+<li>While these models can generate impressive text, they may not always understand the meaning behind the words.</li>
+</ul>
+<h2 id="大型語言模型修練史-—-第二階段-名師指點，發揮潛力"><a href="#大型語言模型修練史-—-第二階段-名師指點，發揮潛力" class="headerlink" title="大型語言模型修練史 — 第二階段: 名師指點，發揮潛力"></a>大型語言模型修練史 — 第二階段: 名師指點，發揮潛力</h2><p>第一階段：語言模型的自我學習<br>精選句： 語言模型在第一階段透過自我學習累積實力，但缺乏有效的使用方法。 摘要： 第一階段中，語言模型通過自我學習積累了很多實力，但缺乏具體的應用方法，需要進一步學習。</p>
+<p>第二階段：人類老師的指導與微調<br>精選句： 人類老師的指導稱為「instruction fine-tuning」，語言模型透過這些指令進行微調。 摘要： 在第二階段，人類老師提供問題和答案資料，進行「指令微調」（instruction fine-tuning），使語言模型學會依照人類指令給出正確回應。</p>
+<p>標記資料的重要性<br>精選句： 標記哪個部分是使用者的話，哪個部分是AI的話，能讓AI更準確地作出回應。 摘要： 人類老師標記資料的部分，有助於語言模型分辨輸入和回應，避免自問自答的錯誤。</p>
+<p>資料標註與有限性<br>精選句： 只依靠人類標註資料訓練語言模型，會導致模型無法舉一反三，容易答非所問。 摘要： 人類標註的資料雖然精確，但數量有限，導致語言模型難以有效應對多樣的問題，需要大規模的數據進行預訓練。</p>
+<p>預訓練與微調的結合<br>精選句： 預訓練的參數提供了初始的複雜規則，這些參數能讓語言模型更有舉一反三的能力。 摘要： 第一階段的預訓練提供了良好的初始參數，在第二階段的微調過程中，這些參數讓語言模型能夠舉一反三，解決類似問題。</p>
+<p>Adapter與參數優化<br>精選句： Adapter技術允許我們在不改變初始參數的前提下，進行少量未知數的優化。 摘要： Adapter技術是一種減少計算負擔的方式，允許只優化少量參數，從而保持模型與初始參數的相似性，常見例子為LoRA。</p>
+<p>舉一反三的能力<br>精選句： 預訓練模型可以通過學習一個語言的任務，推廣到其他語言的同樣任務。 摘要： 預訓練模型的舉一反三能力顯著，例如只需學會英文的閱讀能力測驗，就能無需訓練下完成中文的閱讀測驗。</p>
+<p>Fine-tuning的應用與專才培養<br>精選句： 每一個專才模型可以專注於一個特定任務，例如翻譯或編修。 摘要： Fine-tuning可應用於不同任務，模型可以成為專門解決特定問題的專才，透過專用數據進行訓練。</p>
+<hr>
+<p>Summary of the Article</p>
+<p>Key Stages in LLM Training</p>
+<p>Pre-training:</p>
+<ul>
+<li>The model is trained on massive amounts of text data from the internet.</li>
+<li>This stage equips the model with a strong foundation in language understanding and generation.</li>
+</ul>
+<p>Instruction Fine-tuning:</p>
+<ul>
+<li>Human-created instructions and examples are used to guide the model’s behavior.</li>
+<li>The model learns to follow specific instructions and generate appropriate responses.</li>
+<li>This stage requires a significant amount of high-quality data.</li>
+</ul>
+<p>Importance of Pre-training</p>
+<ul>
+<li>Provides a strong foundation: The pre-trained model serves as a solid starting point for fine-tuning.</li>
+<li>Enables transfer learning: The model can learn new tasks more efficiently by leveraging its pre-trained knowledge.</li>
+</ul>
+<p>Challenges and Solutions</p>
+<ul>
+<li>Data quality: High-quality instruction data is crucial for effective fine-tuning.</li>
+<li>Computational resources: Training large language models requires significant computational power.</li>
+<li>Alignment: Ensuring that the model’s responses align with human values and avoid harmful biases is a challenging task.</li>
+</ul>
+<p>Recent Developments and Trends</p>
+<ul>
+<li>Open-source models: The release of open-source models like Llama has democratized LLM development.</li>
+<li>Instruction fine-tuning as a standard practice: Many researchers and companies are adopting instruction fine-tuning as a standard approach for improving LLM performance.</li>
+<li>Focus on quality over quantity: There is a growing consensus that the quality of training data is more important than the quantity.</li>
+</ul>
+<p>Key Concepts</p>
+<ul>
+<li>Instruction fine-tuning: A method of training a language model to follow specific instructions.</li>
+<li>Pre-trained model: A model that has been trained on a massive amount of data and can be used as a starting point for other tasks.</li>
+<li>Transfer learning: The ability to apply knowledge gained from one task to a new task.</li>
+<li>Alignment: Ensuring that a model’s outputs are safe and aligned with human values.</li>
+</ul>
+<h2 id="大型語言模型修練史-—-第三階段-參與實戰，打磨技巧-Reinforcement-Learning-from-Human-Feedback-RLHF"><a href="#大型語言模型修練史-—-第三階段-參與實戰，打磨技巧-Reinforcement-Learning-from-Human-Feedback-RLHF" class="headerlink" title="大型語言模型修練史 — 第三階段: 參與實戰，打磨技巧 (Reinforcement Learning from Human Feedback, RLHF)"></a>大型語言模型修練史 — 第三階段: 參與實戰，打磨技巧 (Reinforcement Learning from Human Feedback, RLHF)</h2><blockquote>
+<p>Google Gemeni Summary</p>
+</blockquote>
+<p>大模型訓練第三階段：RLHF</p>
+<p>RLHF（Reinforcement Learning from Human Feedback）的概念，即通過人類反饋來強化模型學習，通過人類對模型生成答案的評價，來調整模型參數</p>
+<p>RLHF與前兩個階段（Pretrain、Instruction Fine Tuning）在訓練數據和學習目標上的不同，相較於其他階段，更能讓模型考慮生成結果的整體質量，而非僅關注局部細節。</p>
+<p>RLHF與Instruction Fine Tuning的學習目標差異，前者關注過程，後者關注結果。</p>
+<p>相比於Instruction Fine Tuning，人類在 RLHF 中工作量更少。</p>
+<blockquote>
+<p>回饋模型（reward model）</p>
+</blockquote>
+<p>即通過訓練一個模型來模擬人類的喜好，討論 RLHF 中回饋機制的設計，以及為什麼讓模型生成多個答案，再由人類進行排序是一種常見的做法。</p>
+<p>過度依賴回饋模型可能導致模型產生一些奇怪或不符合預期的行為。</p>
+<blockquote>
+<p>RLHF 的挑戰 🤔</p>
+</blockquote>
+<ul>
+<li>回饋標註的困難，如何定義「好」答案這個問題的複雜性。</li>
+<li>人類提供的回饋可能包含個人偏見，這可能會影響模型的學習方向。</li>
+<li>當模型面對人類自己都無法判斷好壞的問題時，如何繼續學習？</li>
+<li>未來是否可以讓AI自己來評價其他AI生成的答案，從而減少對人類的依賴</li>
+</ul>
+<h2 id="以大型語言模型打造的-AI-Agent"><a href="#以大型語言模型打造的-AI-Agent" class="headerlink" title="以大型語言模型打造的 AI Agent"></a>以大型語言模型打造的 AI Agent</h2><p>傳統 AI 與 AI Agent 的區別，AI Agent 能執行多步驟、複雜任務的能力。</p>
+<p>AI Agent 的運作機制，包括目標設定、環境感知、計畫制定、行動執行、記憶更新等。</p>
+<p>大型語言模型在 AI Agent 中的角色，強調其在自然語言處理、計畫制定、學習能力等方面的優勢。</p>
+<p>本文深入淺出地介紹了AI Agent的概念、運作原理以及未來發展趨勢。通過結合大型語言模型與AI Agent，未來AI將能夠執行更加複雜的任務，並在各個領域發揮更大的作用。</p>
+<h2 id="今日的語言模型是如何做文字接龍的-—-淺談Transformer"><a href="#今日的語言模型是如何做文字接龍的-—-淺談Transformer" class="headerlink" title="今日的語言模型是如何做文字接龍的 — 淺談Transformer"></a>今日的語言模型是如何做文字接龍的 — 淺談Transformer</h2><blockquote>
+<p>「Transformer的誕生，標誌著語言模型進入了一個全新的時代」</p>
+</blockquote>
+<p>回顧了語言模型從傳統的 N-Gram 模型到深度學習模型，如RNN、Transformer的演進過程。重點強調了Transformer在現代語言模型中的重要性，並簡要介紹了Transformer的誕生背景。</p>
+<p>介紹 Transformer 的運作過程，從Tokenization、Embedding 到 Attention 和 Feed Forward Network，逐層剖析了Transformer如何處理文本並生成輸出。</p>
+<blockquote>
+<p>Attention機制</p>
+</blockquote>
+<p>「Transformer 通過 Attention機制，讓模型能夠理解上下文，從而生成更準確、更有意義的文本。」</p>
+<p>Attention 如何計算 Token 之間的相關性，並結合上下文資訊生成 Contextualized Embedding。同時，也介紹了 Multi-Head Attention 的概念，以及為何只考慮左半邊 Token 的 Attention。</p>
+<p>如何加速Attention計算、無限長度Attention以及訓練短文本處理長文本，都是未來 Transformer 發展的重要方向。</p>
+<p>其他潛在的語言模型架構，如Memba和JAMBAR。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>定義</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tokenization</td>
+<td>將文本分割成最小單位（Token）的過程。</td>
+</tr>
+<tr>
+<td>Embedding</td>
+<td>將Token映射為稠密向量表示，以便模型處理。</td>
+</tr>
+<tr>
+<td>Attention</td>
+<td>一種機制，用於計算Token之間的相關性，並根據相關性加權求和生成新的表示。</td>
+</tr>
+<tr>
+<td>Transformer Block</td>
+<td>Transformer的基本組成單位，由Multi-Head Attention和Feed Forward Network組成。</td>
+</tr>
+<tr>
+<td>Contextualized Embedding</td>
+<td>考慮了上下文資訊的Embedding表示。</td>
+</tr>
+</tbody></table>
+<h3 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h3><p>進行順序</p>
+<ol>
+<li>Tokenization</li>
+<li>Input Layer</li>
+<li>Attention Layer</li>
+<li>Feed Forward Layer</li>
+<li>Output Layer</li>
+</ol>
+<p>Embdding 進行順序</p>
+<ol>
+<li>Words to tokens</li>
+<li>Positional tokens</li>
+<li>Attention (Context)</li>
+</ol>
+<p>輸入一排向量，得到一排一樣長的向量<br>計算與其他向量的相關性，取得後再加權計算出向量值<br>實務上只會考慮前文的 Token 稱為 Causal Attention</p>
+<p>詞語之間的關聯性可能有多種面向，稱為 Multi-head Attention<br>現在的 LLM 都是使用 Multi-head (16組實務)</p>
+<h2 id="大型語言模型在「想」什麼呢？-—-淺談大型語言模型的可解釋性"><a href="#大型語言模型在「想」什麼呢？-—-淺談大型語言模型的可解釋性" class="headerlink" title="大型語言模型在「想」什麼呢？ — 淺談大型語言模型的可解釋性"></a>大型語言模型在「想」什麼呢？ — 淺談大型語言模型的可解釋性</h2><p>Interprable: 人類可以說明模型得到結果的原因<br>Explainable: 模型可以解釋模型得到結果的原因</p>
+<p>黑盒子與可解釋性</p>
+<p>黑盒子的概念： 大型語言模型的運作機制對人類來說如同黑盒子，我們難以窺見其內部運作。<br>可解釋性的多重含義： 可解釋性不僅指模型是否透明，還包括模型決策過程是否能被解釋。</p>
+<p>探究方法：</p>
+<p>分析模型參數： 透過分析模型的參數和訓練過程，了解模型的內部運作。<br>探測模型： 利用各種探測方法（如probing）來檢測模型的知識和能力。<br>分析注意力機制： 分析模型的注意力機制，了解模型在處理資訊時的關注點。<br>直接詢問模型： 直接向模型提出問題，讓模型自己解釋其決策過程。</p>
+<blockquote>
+<p>語言模型的「心智」</p>
+</blockquote>
+<p>語言模型的學習能力： 語言模型能夠通過學習大量的文本資料，掌握人類語言的規律和知識。<br>語言模型的思維方式： 語言模型的思維方式可能與人類不同，但它們能夠模擬人類的思維過程。<br>語言模型的局限性： 語言模型的回答可能受到訓練資料和模型設計的影響，並不總是準確可靠。</p>
+<p>未來展望</p>
+<p>多種解釋方法的結合： 未來對語言模型的可解釋性研究將結合多種方法，從不同角度來理解模型的行為。<br>語言模型的自我解釋： 語言模型將能夠更精確地解釋自己的決策過程。<br>人機互動的新模式： 人類與語言模型的互動將更加自然和深入。</p>
+<h2 id="淺談檢定大型語言模型能力的各種方式"><a href="#淺談檢定大型語言模型能力的各種方式" class="headerlink" title="淺談檢定大型語言模型能力的各種方式"></a>淺談檢定大型語言模型能力的各種方式</h2><p>第一章：語言模型能力評估的挑戰</p>
+<p>摘要： 評估大型語言模型的能力並不容易，因為語言模型的輸出是多樣化的，且沒有單一的標準答案。即使是看似簡單的選擇題，在評估時也存在許多挑戰，例如：<br>不同評估方法的差異： 同一個模型在不同評估方法下，得到的結果可能不同。<br>選項的影響： 選項的排列順序、表示方式都會影響模型的表現。<br>主觀性： 對於開放式問題，沒有絕對的標準答案，評估結果往往帶有主觀性。<br>第二章：常見的語言模型評估基準</p>
+<p>摘要： 為了全面評估語言模型的能力，研究者們開發了許多包含多種任務的基準 (baseline)。這些基準 (baseline)涵蓋了從簡單的問答到複雜的推理等各種任務。<br>基準 (baseline)的多樣性： 不同基準 (baseline)包含的任務數量和類型各不相同，從最初的幾十個任務發展到現在的數千個任務。</p>
+<p>任務的挑戰性： 一些基準 (baseline)包含了非常具有挑戰性的任務，例如：<br>Emoji Movie： 根據表情符號猜測電影名稱。<br>西洋棋： 根據棋譜判斷下一步棋。<br>大海撈針： 在長文本中找到特定的資訊。<br>第三章：語言模型的局限性與偏見</p>
+<p>摘要： 儘管大型語言模型在許多任務上表現出色，但它們仍然存在一些局限性和偏見。<br>對長文本的處理： 大型語言模型在處理長文本時，可能會遺漏部分資訊。<br>對指令的敏感性： 不同的指令會導致模型產生不同的結果。<br>對訓練資料的依賴： 模型的表現受到訓練資料的影響，如果訓練資料中存在偏見，模型也會表現出相似的偏見。<br>對任務的適應性： 針對特定任務進行微調，可以提升模型在該任務上的表現。<br>第四章：語言模型評估的未來方向</p>
+<p>摘要： 未來語言模型的評估將更加注重以下幾個方面：<br>安全性： 評估模型是否會產生有害或歧視性的內容。<br>可解釋性： 了解模型做出決策的理由。<br>公平性： 確保模型對不同群體的用戶是公平的。<br>效率： 評估模型的計算成本和推理速度。<br>總結： 評估大型語言模型的能力是一項複雜且具有挑戰性的任務。隨著模型的不断發展，評估方法也在不斷完善。我們需要綜合考慮多種因素，才能全面地評估一個語言模型的能力。</p>
+<p>建議：</p>
+<p>多角度評估： 不要僅僅依靠單一的評估基準，而應該綜合考慮多個基準的結果。<br>關注模型的局限性： 了解模型的局限性，避免過度依賴模型。<br>持續跟蹤研究進展： 隨著研究的進展，語言模型的評估方法也會不斷更新。<br>（這是一個簡化的摘要，詳細內容請參考原始文章。）</p>
+<p>請注意： 這是一個基於對文章內容的理解所做的摘要，可能存在某些細節上的差異。建議您對照原文進行更深入的了解。</p>
+<p>如果您對文章中的某個部分感興趣，可以提出更具體的問題，我將盡力為您解答。</p>
+<p>想進一步探討哪些方面呢？例如：</p>
+<p>不同語言模型的比較<br>評估基準的設計原則<br>語言模型在特定領域的應用<br>語言模型的未來發展趨勢</p>
+<h2 id="淺談大型語言模型相關的安全性議題-上-—-亡羊補牢、語言模型的偏見、有多少人用-ChatGPT-寫論文審查意見"><a href="#淺談大型語言模型相關的安全性議題-上-—-亡羊補牢、語言模型的偏見、有多少人用-ChatGPT-寫論文審查意見" class="headerlink" title="淺談大型語言模型相關的安全性議題 (上) — 亡羊補牢、語言模型的偏見、有多少人用 ChatGPT 寫論文審查意見"></a>淺談大型語言模型相關的安全性議題 (上) — 亡羊補牢、語言模型的偏見、有多少人用 ChatGPT 寫論文審查意見</h2><p>第一章：大型語言模型的幻覺問題與安全層<br>摘要： 大型語言模型，即使是GPT-4，仍存在幻覺問題，可能生成虛假資訊。為了確保輸出可靠，可以在語言模型與使用者之間設置安全層，進行事實查核、有害詞彙檢測等。<br>關鍵點：<br>大型語言模型的幻覺問題無法根治。<br>安全層可透過事實查核等方式提升輸出可靠性。<br>現有平台如Gemini已具備事實查核功能。<br>第二章：大型語言模型的偏見問題與檢測方法<br>摘要： 大型語言模型可能存在偏見，影響輸出結果。常見的檢測方法是透過替換詞彙並比較輸出結果，或利用情感分析模型進行評估。<br>關鍵點：<br>大型語言模型可能對性別、種族、職業等有刻板印象。<br>檢測偏見的方法包括詞彙替換、情感分析等。<br>減輕偏見的方法包括資料前處理、調整訓練過程等。<br>第三章：如何偵測人工智慧生成的文本<br>摘要： 偵測AI生成文本的方法包括分析文本風格、訓練分類器等。然而，隨著模型的不斷發展，準確度仍有待提升。<br>關鍵點：<br>AI生成文本與人類文本在風格上存在差異。<br>訓練分類器可有效區分AI與人類生成的文本。<br>AI生成文本的檢測在學術界已引起廣泛關注。<br>第四章：AI生成文本在學術界的影響<br>摘要： AI生成文本可能被用於撰寫學術論文，這對學術界的誠信提出了挑戰。研究顯示，AI生成的審查意見在某些領域的比例有所上升。<br>關鍵點：<br>AI生成文本可能被用於撰寫學術論文。<br>研究顯示，AI生成的審查意見在某些學術領域有所增加。<br>學術界需要建立更有效的機制來防範AI生成文本的濫用。<br>第五章：為AI生成文本添加水印<br>摘要： 為防止AI生成文本的濫用，研究人員正在探索為AI生成文本添加水印的方法。這種方法可以在不影響文本可讀性的情況下，讓系統識別出該文本是由AI生成的。<br>關鍵點：<br>為AI生成文本添加水印可以提高其可追溯性。<br>水印的設計需要兼顧隱蔽性和魯棒性。<br>水印技術仍處於發展階段。<br>總結：</p>
+<p>本文深入探討了大型語言模型在安全性、偏見和檢測方面的問題。隨著AI技術的快速發展，這些問題也變得越來越複雜。研究人員正在積極探索各種解決方案，以確保AI技術的健康發展。</p>
+<p>建議：</p>
+<p>深入閱讀相關文獻： 本文僅為摘要，建議讀者深入閱讀原始文獻，以獲取更詳細的資訊。<br>關注最新研究進展： AI技術發展迅速，建議持續關注相關研究動態。<br>加強對AI的倫理規範： 隨著AI技術的廣泛應用，建立完善的倫理規範迫在眉睫。</p>
+<h2 id="淺談大型語言模型相關的安全性議題-下-—-欺騙大型語言模型"><a href="#淺談大型語言模型相關的安全性議題-下-—-欺騙大型語言模型" class="headerlink" title="淺談大型語言模型相關的安全性議題 (下) — 欺騙大型語言模型"></a>淺談大型語言模型相關的安全性議題 (下) — 欺騙大型語言模型</h2><p>第一章：Prompt Hacking概述</p>
+<p>Prompt Hacking 是透過精心設計的提示，讓大型語言模型執行超出預期或不當的行為。<br>Jailbreaking 和 Prompt Injection 是兩種常見的 Prompt Hacking 技術。<br>Jailbreaking 目標是讓語言模型產生有害或不當的內容，而 Prompt Injection 則旨在讓模型在特定應用中執行不恰當的任務。<br>第二章：Jailbreaking深入</p>
+<p>DAN 是常見的 Jailbreaking 提示，但對較新模型效果有限。<br>語言障礙、衝突指令、故事誘導 等方法可以欺騙模型，使其產生有害內容。<br>Jailbreaking 的其他目的包括竊取模型訓練資料。<br>第三章：Prompt Injection深入</p>
+<p>Prompt Injection 在課程作業中被廣泛嘗試，目標是操縱 AI 助教給出特定分數。<br>ASCII碼 等技巧曾被用於成功執行 Prompt Injection。<br>Prompt Injection 競賽 收集了大量示例，並對其進行分類。<br>課程作業 的 Prompt 已被修改，以增加 Prompt Injection 的難度。<br>各章節精選一句話<br>第一章： Prompt Hacking 是一種利用語言模型漏洞，使其執行不當行為的技術。<br>第二章： Jailbreaking 的目標是讓語言模型產生有害或不當的內容，例如教你如何砍倒停車標誌。<br>第三章： Prompt Injection 的目標是操縱 AI 助教，使其給出特定的分數。<br>總結<br>本文詳細介紹了 Prompt Hacking 的概念、常見技術以及在實際應用中的案例。Jailbreaking 和 Prompt Injection 是兩種主要的 Prompt Hacking 手法，分別針對模型本身和模型應用。雖然這些技術在某些情況下可以成功，但隨著模型的發展，防禦措施也在不斷加強。</p>
+<p>關鍵詞： Prompt Hacking，Jailbreaking，Prompt Injection，大型語言模型，AI安全</p>
+<p>建議： 隨著 AI 技術的快速發展，了解 Prompt Hacking 的原理和防禦方法變得越來越重要。這不僅有助於保護 AI 系統的安全，也能夠更好地利用 AI 技術。</p>
+<h2 id="為什麼語言模型用文字接龍，圖片生成不用像素接龍呢？—-淺談生成式人工智慧的生成策略"><a href="#為什麼語言模型用文字接龍，圖片生成不用像素接龍呢？—-淺談生成式人工智慧的生成策略" class="headerlink" title="為什麼語言模型用文字接龍，圖片生成不用像素接龍呢？— 淺談生成式人工智慧的生成策略"></a>為什麼語言模型用文字接龍，圖片生成不用像素接龍呢？— 淺談生成式人工智慧的生成策略</h2><p>章節一：生成式AI的基礎與概念<br>生成式AI的本質： 生成式AI的目標是讓機器產生複雜且有結構的物件，如文字、影像、聲音等。<br>基本單位： 這些複雜物件是由有限的基本單位構成，如文字的Token、影像的像素、聲音的取樣點。<br>生成過程： 生成式AI的過程就是將這些基本單位以正確的順序組合起來，生成所需的物件。<br>章節二：生成策略：Auto-Regressive vs. Non-Auto-Regressive<br>Auto-Regressive Generation：<br>優點： 生成品質較高。<br>缺點： 生成速度較慢，尤其在處理大規模資料時。<br>原理： 每次生成一個基本單位，並將其作為下一次生成的輸入，逐漸生成完整的序列。<br>Non-Auto-Regressive Generation：<br>優點： 生成速度快。<br>缺點： 生成品質可能較差，容易出現多模態問題（即模型在不同位置產生不同的解）。<br>原理： 一次性生成所有基本單位，但可能導致各部分之間不一致。<br>章節三：結合兩種生成策略<br>優點： 結合兩者的優點，既能保證生成品質，又能提高生成速度。<br>方法：<br>分階段生成： 先用Auto-Regressive生成一個粗略的版本，再用Non-Auto-Regressive填充細節。<br>壓縮表示： 將高維資料壓縮成低維表示，再用Auto-Regressive生成低維表示，最後解碼成高維資料。<br>迭代優化： 反覆迭代Non-Auto-Regressive生成過程，逐步改善生成結果。<br>章節四：影像生成模型的實例<br>Diffusion Model： 一種常見的影像生成模型，通過逐漸去除雜訊的方式生成高品質影像。<br>其他模型： GAN、VAE等模型也常被用於影像生成。<br>生成過程： 通常涉及將高維影像壓縮成低維表示，然後使用Non-Auto-Regressive模型生成低維表示，最後解碼成高維影像。<br>總結<br>生成式AI的生成策略是研究的重點。Auto-Regressive和Non-Auto-Regressive各有優缺點，通過將兩者結合，可以實現更高品質、更快速的生成。影像生成模型是生成式AI的一個重要應用，目前已經取得了很大的進展。</p>
+<p>關鍵詞： 生成式AI，Auto-Regressive，Non-Auto-Regressive，影像生成，Diffusion Model，生成策略</p>
+<p>核心思想： 生成式AI的生成過程可以看作是一個序列決策過程。Auto-Regressive模型是一種序列決策模型，而Non-Auto-Regressive模型是一種並行決策模型。通過結合這兩種模型，可以實現更靈活、更有效的生成。</p>
+<p>未來方向： 研究更有效的生成策略，提高生成模型的品質和效率；探索生成模型在更多領域的應用，如文本生成、音樂生成等。</p>
+<p>建議： 對於想要深入了解生成式AI的讀者，建議閱讀相關論文和研究報告，並嘗試實踐一些簡單的生成模型。</p>
+<h2 id="可以加速所有語言模型生成速度的神奇外掛-—-Speculative-Decoding"><a href="#可以加速所有語言模型生成速度的神奇外掛-—-Speculative-Decoding" class="headerlink" title="可以加速所有語言模型生成速度的神奇外掛 — Speculative Decoding"></a>可以加速所有語言模型生成速度的神奇外掛 — Speculative Decoding</h2><p>第一章：Speculative Decoding的介紹</p>
+<p>摘要： 介紹了一種能大幅提升語言模型生成速度的新技術：Speculative Decoding。這項技術不需要對模型進行額外訓練，而是透過一個「預言家」來預測模型接下來的輸出，進而加快生成過程。<br>第二章：Speculative Decoding的工作原理</p>
+<p>摘要： 詳細解釋了Speculative Decoding的工作機制。透過預言家預測下一個Token，將多個可能的輸入同時送入模型，達到並行生成的效果。即使預言家犯錯，模型仍能根據實際輸出進行調整，保證生成結果的正確性。<br>第三章：預言家的角色與選擇</p>
+<p>摘要： 探討了預言家的角色和選擇。預言家需要快速且能準確預測模型的輸出。文章提出了一些可能的預言家選項，包括non-autoregressive模型、壓縮後的模型，甚至搜尋引擎。<br>第四章：Speculative Decoding的優勢與應用</p>
+<p>摘要： 总结了Speculative Decoding的優勢，包括大幅提升生成速度、適用於各種語言模型、不需要額外訓練等。同時，也探讨了多個預言家協同工作的情況，以提高預測準確性。<br>每節精選一句話<br>第一章： Speculative Decoding是一種能大幅提升語言模型生成速度的新技術。<br>第二章： 透過預言家預測下一個Token，Speculative Decoding實現了並行生成。<br>第三章： non-autoregressive模型、壓縮模型和搜尋引擎都可以作為預言家。<br>第四章： Speculative Decoding是一個外掛，能快速提升任何語言模型的生成速度。</p>
+<h2 id="有關影像的生成式AI-上-—-AI-如何產生圖片和影片"><a href="#有關影像的生成式AI-上-—-AI-如何產生圖片和影片" class="headerlink" title="有關影像的生成式AI (上) — AI 如何產生圖片和影片"></a>有關影像的生成式AI (上) — AI 如何產生圖片和影片</h2><ol>
+<li>生成式 AI 與影像：概述<br>生成式 AI 的本質： 生成式 AI 能根據給定的條件（如文字、圖片、影片）生成新的內容。<br>影像生成 AI 的兩大方向： 一是根據影像生成文字，如 GPT-4 能夠根據圖片描述人物的職業和外貌；二是根據文字或其他條件生成影像，這是本課程的重點。</li>
+<li>影像生成模型：原理與應用<br>影像的數位表示： 影像被分解為像素或 Patch，並通過編碼器轉換為模型可處理的數位表示。<br>影片的數位表示： 影片被視為一系列的圖片，每個圖片被分解為 Patch。<br>影像生成模型的應用： 包括文字轉影像、影片風格轉換、影像修復、超解析度等。</li>
+<li>文字轉影像：技術細節與挑戰<br>訓練資料： 大規模的圖像-文字配對資料集是訓練模型的基礎。<br>模型架構： Transformer 是常見的模型架構，通過 Attention 機制建模 Patch 之間的關係。<br>生成策略： 非自回歸生成方式在影像生成中更為常見，能同時生成多個 Patch。<br>挑戰： 文字描述的模糊性、高維度資料的處理、計算資源消耗大等。</li>
+<li>影像生成模型的評估<br>CLIP 模型： 利用 CLIP 模型對生成的影像進行評分，評估生成的影像與文字描述的一致性。<br>主觀評價： 人類評估者對生成的影像進行質量評估。</li>
+<li>個人化影像生成與未來展望</li>
+</ol>
+<p>個人化影像生成： 通過少量樣本訓練模型，生成與特定對象相關的影像。<br>未來展望： 影像生成模型在各行業的廣泛應用，如藝術創作、遊戲開發、虛擬現實等。<br>每節精選一句話<br>生成式 AI 的本質： 生成式 AI 能夠根據給定的條件生成新的內容，實現從文字到影像、從影像到文字的轉換。<br>影像生成模型的原理： 影像被分解為 Patch，通過 Transformer 等模型生成新的 Patch，最終組成完整的影像。<br>文字轉影像的挑戰： 文字描述的模糊性以及高維度資料的處理是文字轉影像技術面臨的主要挑戰。<br>影像生成模型的評估： CLIP 模型作為一種客觀的評估方法，能有效地評估生成影像的質量。<br>個人化影像生成的未來： 個人化影像生成將推動影像生成技術在更多領域的應用，為用戶提供更個性化的體驗。</p>
+<h2 id="有關影像的生成式AI-下-—-快速導讀經典影像生成方法-VAE-Flow-Diffusion-GAN-以及與生成的影片互動"><a href="#有關影像的生成式AI-下-—-快速導讀經典影像生成方法-VAE-Flow-Diffusion-GAN-以及與生成的影片互動" class="headerlink" title="有關影像的生成式AI (下) — 快速導讀經典影像生成方法 (VAE, Flow, Diffusion, GAN) 以及與生成的影片互動"></a>有關影像的生成式AI (下) — 快速導讀經典影像生成方法 (VAE, Flow, Diffusion, GAN) 以及與生成的影片互動</h2><p>第一章：影像生成模型概述</p>
+<p>摘要： 本章介紹了幾種經典的影像生成模型，包括VAE、Flow-Based Model、Diffusion Model和GAN。其中，Diffusion Model因其在自然影像生成上的優異表現而備受關注。<br>第二章：Transformer在影像生成中的應用</p>
+<p>摘要： 本章深入探討了Transformer在影像生成中的重要角色。Transformer能夠通過處理文字序列生成對應的影像Patch，但面臨著多樣性不足的問題。<br>第三章：VAE模型的原理與優勢</p>
+<p>摘要： VAE模型通過引入潛在變量，解決了Transformer在影像生成中面臨的多樣性問題。VAE的Encoder負責抽取影像的潛在特徵，Decoder則根據潛在特徵和文字描述生成影像。<br>第四章：Flow-Based Model的原理</p>
+<p>摘要： Flow-Based Model與VAE相似，但它只訓練一個可逆的Decoder，即Flow。Flow能夠將影像映射到潛在空間，並通過逆映射生成影像。<br>第五章：Diffusion Model的原理與優勢</p>
+<p>摘要： Diffusion Model通過逐步向影像添加噪聲，然後再逐步去除噪聲來生成影像。這種逐漸去噪的過程使得Diffusion Model能夠生成高品質的影像。<br>第六章：GAN模型的原理與優勢</p>
+<p>摘要： GAN由生成器和判別器組成。生成器負責生成影像，判別器負責判斷生成影像的真實性。生成器和判別器相互競爭，共同提升生成影像的質量。<br>第七章：Diffusion Transformer</p>
+<p>摘要： Diffusion Transformer結合了Transformer和Diffusion Model的優點，通過多次迭代的去噪過程，生成高品質的影像。<br>第八章：Genie模型</p>
+<p>摘要： Genie模型能夠根據用戶的輸入生成連續的影像序列，實現了人機互動。Genie通過學習大量的遊戲數據，掌握了生成遊戲畫面的規律。<br>整體總結<br>本文深入淺出地介紹了當前主流的影像生成模型，並詳細闡述了這些模型的原理和優勢。此外，文章還介紹了Transformer在影像生成中的應用，以及如何利用Diffusion Model和Transformer構建更強大的影像生成模型。最後，文章展望了影像生成技術在遊戲等領域的潛在應用。</p>
+<p>核心觀點：</p>
+<p>Transformer是目前影像生成領域的核心技術。<br>Diffusion Model在生成高品質影像方面表現出色。<br>GAN可以作為一種強化學習的方法，提升影像生成模型的性能。<br>Genie模型展示了影像生成技術在人機互動方面的潛力。<br>未來展望：</p>
+<p>影像生成模型將在遊戲、虛擬現實等領域得到更廣泛的應用。<br>研究者將繼續探索如何提高影像生成模型的效率和質量。<br>人機互動將成為影像生成領域的一個重要研究方向。</p>
+<h2 id="GPT-4o-背後可能的語音技術猜測"><a href="#GPT-4o-背後可能的語音技術猜測" class="headerlink" title="GPT-4o 背後可能的語音技術猜測"></a>GPT-4o 背後可能的語音技術猜測</h2><p>章節一：GPT-4o語音模式的背景與期望<br>摘要： 本章介紹了GPT-4o語音模式的背景，以及大家對它的期待。作者說明了目前大廠對語音互動技術的重視，並比較了GPT-4o與其他模型的差異，如豐富的語音風格、對非語言資訊的理解等。<br>章節二：GPT-4o語音模式的誤解與澄清<br>摘要： 作者澄清了大家對GPT-4o語音模式的一些誤解，例如目前的語音互動功能並非完整的GPT-4o語音模式。作者詳細解釋了目前市面上普遍使用的語音互動方式，以及它與GPT-4o語音模式的差異。<br>章節三：GPT-4o語音模式背後的技術猜想<br>摘要： 本章是本文的重點，作者基於現有技術和GPT-4o的演示，對其背後的技術進行了深入的猜想。作者從語音模型的訓練、運作原理、以及如何實現豐富的語音風格等方面進行了詳細的分析。<br>章節四：GPT-4o語音模式的未來發展<br>摘要： 作者對GPT-4o語音模式的未來發展提出了自己的看法。他認為，未來語音模型可能會更加注重聽、說、看等多模態的互動，並且能夠更自然地與人類進行對話。<br>整體內容總結<br>本文深入探討了GPT-4o語音模式背後的技術細節，作者從語音模型的訓練、運作原理到多模態互動等方面進行了詳細的分析。雖然作者的觀點多是基於現有技術的推測，但為我們提供了對GPT-4o語音模式的更深入理解。</p>
+<p>關鍵詞： GPT-4o, 語音模型, 語音合成, 語音辨識, 多模態, 自然語言處理</p>
+<p>核心觀點：</p>
+<p>GPT-4o語音模式具有豐富的語音風格和對非語言資訊的理解能力。<br>GPT-4o語音模式的背後可能是一個端到端的模型，能夠直接將語音訊號轉換為文本或語音。<br>語音模型的訓練需要大量的語音數據和文字數據。<br>未來語音模型可能會實現更自然、更多模態的人機互動。<br>可能的進一步研究方向：</p>
+<p>GPT-4o語音模式的具體實現細節。<br>語音模型在不同語言和文化下的表現。<br>語音模型在情感計算和心理健康方面的應用。<br>建議：</p>
+<p>對於對語音技術和自然語言處理感興趣的讀者，本文提供了一個很好的入門。<br>對於從事相關研究的學者，本文提供了一些新的研究思路。</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/09/LLM-Course-Notebook/" data-id="cm1c2jvkt015hf4ts6ug8a3eo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dev/" rel="tag">Dev</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/08/Python-For-Games/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python-For-Games</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/09/If-I-were-a-graduate-student-again/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          如果讓我重做一次研究生
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">33</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">156</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">289</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">52</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">75</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">110</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
