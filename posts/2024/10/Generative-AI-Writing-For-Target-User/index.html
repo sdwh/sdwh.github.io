@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>Generative AI Writing For Target User | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記如何針對不同教育程度的讀者，進行不同的提示設定，引導生成式 AI 產生適合的文章內容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generative AI Writing For Target User">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/10/Generative-AI-Writing-For-Target-User/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記如何針對不同教育程度的讀者，進行不同的提示設定，引導生成式 AI 產生適合的文章內容。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+<meta property="article:published_time" content="2024-10-04T11:14:58.000Z">
+<meta property="article:modified_time" content="2024-10-04T11:26:15.492Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Prompt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/toys-for-dev.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Generative-AI-Writing-For-Target-User" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/10/Generative-AI-Writing-For-Target-User/" class="article-date">
+  <time datetime="2024-10-04T11:14:58.000Z" itemprop="datePublished">2024-10-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/AI/">AI</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Generative AI Writing For Target User
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%BC%E7%A8%9A%E5%9C%92%EF%BC%88Kindergarten%EF%BC%89"><span class="toc-text">幼稚園（Kindergarten）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E5%AD%B8%EF%BC%88Elementary-School%EF%BC%89"><span class="toc-text">小學（Elementary School）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E4%B8%AD%EF%BC%88Junior-High%EF%BC%89"><span class="toc-text">初中（Junior High）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E4%B8%AD%EF%BC%88High-School%EF%BC%89"><span class="toc-text">高中（High School）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E5%AD%B8%EF%BC%88Undergraduate%EF%BC%89"><span class="toc-text">大學（Undergraduate）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A0%94%E7%A9%B6%E6%89%80%EF%BC%88Graduate%EF%BC%89"><span class="toc-text">研究所（Graduate）</span></a></li></ol></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記如何針對不同教育程度的讀者，進行不同的提示設定，引導生成式 AI 產生適合的文章內容。</p>
+<a href="/posts/2024/10/Generative-AI-Writing-For-Target-User/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/toys-for-dev.svg" alt="logo" width="300px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><h3 id="幼稚園（Kindergarten）"><a href="#幼稚園（Kindergarten）" class="headerlink" title="幼稚園（Kindergarten）"></a>幼稚園（Kindergarten）</h3><p>詞彙：簡單、常用的單字，如顏色、數字和動物名。<br>修辭法：使用韻律和重複，吸引注意力。<br>文法：簡單句，主語和謂語清晰。<br>文章重點：基本情節和角色，重點在於視覺化和感知。<br>文章互動性：鼓勵提問和角色扮演，增強參與感。<br>內容：富含圖片和插圖，故事簡單易懂。</p>
+<p>Vocabulary: Simple, commonly used words like colors, numbers, and animal names.<br>Rhetorical Devices: Use of rhyme and repetition to capture attention.<br>Grammar: Simple sentences with clear subjects and verbs.<br>Article Focus: Basic plots and characters, emphasizing visualization and sensory experiences.<br>Interactivity: Encouragement of questions and role-playing to enhance engagement.<br>Content: Rich in pictures and illustrations, with straightforward and easily understandable stories.</p>
+<h3 id="小學（Elementary-School）"><a href="#小學（Elementary-School）" class="headerlink" title="小學（Elementary School）"></a>小學（Elementary School）</h3><p>詞彙：基本的名詞、動詞和形容詞，開始引入一些新詞。<br>修辭法：簡單的隱喻和擬人法。<br>文法：完整的簡單句和基本的複合句。<br>文章重點：理解故事的開端、發展和結尾。<br>文章互動性：提問、討論和小組活動，鼓勵分享觀點。<br>內容：增加角色的情感和動機介紹，故事情節更具吸引力。</p>
+<p>Vocabulary: Basic nouns, verbs, and adjectives; introduction of some new words.<br>Rhetorical Devices: Simple metaphors and personification.<br>Grammar: Complete simple sentences and basic compound sentences.<br>Article Focus: Understanding the beginning, middle, and end of a story.<br>Interactivity: Encouragement of questions, discussions, and group activities to share thoughts.<br>Content: Introduces character emotions and motivations, with more engaging plotlines.</p>
+<h3 id="初中（Junior-High）"><a href="#初中（Junior-High）" class="headerlink" title="初中（Junior High）"></a>初中（Junior High）</h3><p>詞彙：更廣泛的詞彙，包括學科專用詞和抽象概念。<br>修辭法：使用隱喻、比喻和其他文學技巧來增強情感。<br>文法：複合句的使用和基本的語法結構。<br>文章重點：分析角色、主題和故事的背景。<br>文章互動性：進行討論、寫反思日記，鼓勵批判性思考。<br>內容：介紹主題的社會和文化背景，促進更深層次的理解。</p>
+<p>Vocabulary: Broader vocabulary, including subject-specific terms and abstract concepts.<br>Rhetorical Devices: Use of metaphor, simile, and other literary techniques to enhance emotion.<br>Grammar: Use of compound sentences and basic grammatical structures.<br>Article Focus: Analysis of characters, themes, and story backgrounds.<br>Interactivity: Discussion, reflective journaling, and encouragement of critical thinking.<br>Content: Introduces social and cultural contexts of themes, promoting deeper understanding.</p>
+<h3 id="高中（High-School）"><a href="#高中（High-School）" class="headerlink" title="高中（High School）"></a>高中（High School）</h3><p>詞彙：學術性和專業性詞彙，語言更加成熟。<br>修辭法：使用各種修辭手法，如象徵和諷刺。<br>文法：複雜的句子結構和多樣的語法形式。<br>文章重點：深入探討主題、情感和社會意義。<br>文章互動性：小組辯論、演講，寫作批評性文章。<br>內容：涉及不同的文學作品和非虛構作品，強調主題的多元性。</p>
+<p>Vocabulary: Academic and specialized vocabulary, with more mature language.<br>Rhetorical Devices: Various rhetorical techniques, such as symbolism and irony.<br>Grammar: Complex sentence structures and diverse grammatical forms.<br>Article Focus: In-depth exploration of themes, emotions, and societal significance.<br>Interactivity: Group debates, presentations, and writing critical essays.<br>Content: Covers a range of literary and non-fiction texts, emphasizing thematic diversity.</p>
+<h3 id="大學（Undergraduate）"><a href="#大學（Undergraduate）" class="headerlink" title="大學（Undergraduate）"></a>大學（Undergraduate）</h3><p>詞彙：高級詞彙和專業術語，涵蓋特定學科的語言。<br>修辭法：使用論證性和說服性語言，運用批判性思維。<br>文法：多樣化的句子結構和學術語法。<br>文章重點：理論背景、實證數據及其對主題的貢獻。<br>文章互動性：討論、協作項目和報告展示，增強交流能力。<br>內容：強調文獻回顧和原創研究，鼓勵獨立思考。</p>
+<p>Vocabulary: Advanced vocabulary and specialized terminology relevant to specific fields.<br>Rhetorical Devices: Use of argumentative and persuasive language, applying critical thinking.<br>Grammar: Varied sentence structures and academic grammar.<br>Article Focus: Theoretical background, empirical data, and contributions to the topic.<br>Interactivity: Discussions, collaborative projects, and report presentations to enhance communication skills.<br>Content: Emphasizes literature reviews and original research, encouraging independent thought.</p>
+<h3 id="研究所（Graduate）"><a href="#研究所（Graduate）" class="headerlink" title="研究所（Graduate）"></a>研究所（Graduate）</h3><p>詞彙：專業術語和高級學術詞彙，涉及特定領域的深度。<br>修辭法：精確的論述和批評性分析，常用專業術語。<br>文法：高度結構化的句子，使用專業語言和學術格式。<br>文章重點：原創研究、數據分析和理論探討。<br>文章互動性：同行評審、研討會報告和研究發表，重視學術交流。<br>內容：聚焦於前沿研究，探討未解決的問題和挑戰，強調研究的意義和貢獻。<br>這種變化有助於不同教育程度的閱讀者根據自身的理解能力和需求，獲得適合的閱讀內容。</p>
+<p>Vocabulary: Specialized terms and advanced academic vocabulary, focusing on depth in specific fields.<br>Rhetorical Devices: Precise arguments and critical analyses, often employing specialized language.<br>Grammar: Highly structured sentences using professional language and academic formatting.<br>Article Focus: Original research, data analysis, and theoretical exploration.<br>Interactivity: Peer review, seminar presentations, and research dissemination, emphasizing scholarly communication.<br>Content: Focuses on cutting-edge research, addressing unresolved issues and challenges, highlighting the significance and contributions of the research.</p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/10/Generative-AI-Writing-For-Target-User/" data-id="cm1un46qg00v1tgtsgn4x8tx8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Prompt/" rel="tag">Prompt</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/10/Generative-AI-Dailylife/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">在日常生活中使用各式 AI 應用 (Generative AI Tools in Daily Life)</div>
+    </a>
+    
+    
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">33</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">155</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">282</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">19</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">51</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">75</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">113</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
