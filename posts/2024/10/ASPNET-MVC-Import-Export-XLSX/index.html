@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJGMNS3XR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJGMNS3XR');
+</script>
+  
+  <title>ASP.NET MVC Import Export XLSX Using ClosedXML | The Skeptical Software Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="筆記 ASP.NET 透過 ClosedXML 匯入與匯出 Excel 檔案的資料處理方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET MVC Import Export XLSX Using ClosedXML">
+<meta property="og:url" content="https://sdwh.dev/posts/2024/10/ASPNET-MVC-Import-Export-XLSX/index.html">
+<meta property="og:site_name" content="The Skeptical Software Engineer">
+<meta property="og:description" content="筆記 ASP.NET 透過 ClosedXML 匯入與匯出 Excel 檔案的資料處理方式。">
+<meta property="og:locale">
+<meta property="og:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+<meta property="article:published_time" content="2024-10-24T11:12:49.000Z">
+<meta property="article:modified_time" content="2024-10-24T11:09:27.721Z">
+<meta property="article:author" content="Webber">
+<meta property="article:tag" content="MVC">
+<meta property="article:tag" content="ASPNET">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sdwh.dev/assets/DotNetIcon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+  </style>
+  
+    
+      <link rel="icon" href="/assets/favicon.ico">
+      
+      
+        
+<link rel="stylesheet" href="/css/style.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism-okaidia.min.css"/>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="The Skeptical Software Engineer" type="application/atom+xml">
+</head>
+      
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Skeptical Software Engineer</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/apps">Apps</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" href="/search/" style="margin-right: 15px;"></a>
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ASPNET-MVC-Import-Export-XLSX" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/posts/2024/10/ASPNET-MVC-Import-Export-XLSX/" class="article-date">
+  <time datetime="2024-10-24T11:12:49.000Z" itemprop="datePublished">2024-10-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Dev/">Dev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ASP.NET MVC Import Export XLSX Using ClosedXML
+    </h1>
+  
+
+      </header>
+    
+    <hr />
+    <div class="article-entry" itemprop="articleBody">
+
+      
+        
+    <div id="toc" class="toc-article">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AA%AA%E6%98%8E"><span class="toc-text">說明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="toc-text">參考資料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E9%97%9C%E9%80%A3%E7%B5%90"><span class="toc-text">相關連結</span></a></li></ol>
+    </div>
+  
+  
+        <hr/>
+        <p>筆記 ASP.NET 透過 ClosedXML 匯入與匯出 Excel 檔案的資料處理方式。</p>
+<a href="/posts/2024/10/ASPNET-MVC-Import-Export-XLSX/" title="logo" class="fancybox" rel="article0">
+  <img src="/assets/DotNetIcon.png" alt="logo" width="200px">
+</a>
+
+<span id="more"></span>
+
+<h2 id="說明"><a href="#說明" class="headerlink" title="說明"></a>說明</h2><p>安裝 ClosedXML 原則上只需要在 Nuget 上搜尋 ClosedXML 並安裝即可。</p>
+<p>但要注意的是有時候安裝 ClosedXML 會出現相依元件的錯誤問題，例如 <code>System.Numerics.Vectors</code>，這個時候可以先安裝 <code>System.Numerics.Vectors</code> 再安裝 ClosedXML，有時就能順利解決問題。</p>
+<p>實際要匯出 XLSX 相當直覺，步驟上基本是建立一個 Workbook，再建立一個 Worksheet，然後將資料填入 Worksheet 中，</p>
+<p>從 Row 的層級建立標題，再依序建立資料，最後將 Workbook 存成 Stream 即可，視情況回傳 FileResult。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">ClosedXML<span class="token punctuation">.</span>Excel</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">ExportToExcel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> employees <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Employee<span class="token punctuation">></span></span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Employee</span> <span class="token punctuation">&#123;</span> 
+          Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> 
+          Name <span class="token operator">=</span> <span class="token string">"John Doe"</span><span class="token punctuation">,</span> 
+          Position <span class="token operator">=</span> <span class="token string">"Software Engineer"</span><span class="token punctuation">,</span> 
+          Department <span class="token operator">=</span> <span class="token string">"Development"</span><span class="token punctuation">,</span> 
+          Salary <span class="token operator">=</span> <span class="token number">60000</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Employee</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> 
+          Name <span class="token operator">=</span> <span class="token string">"Jane Smith"</span><span class="token punctuation">,</span> 
+          Position <span class="token operator">=</span> <span class="token string">"Project Manager"</span><span class="token punctuation">,</span> 
+          Department <span class="token operator">=</span> <span class="token string">"Management"</span><span class="token punctuation">,</span> 
+          Salary <span class="token operator">=</span> <span class="token number">80000</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Employee</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> 
+          Name <span class="token operator">=</span> <span class="token string">"Samuel Lee"</span><span class="token punctuation">,</span> 
+          Position <span class="token operator">=</span> <span class="token string">"QA Engineer"</span><span class="token punctuation">,</span> 
+          Department <span class="token operator">=</span> <span class="token string">"Testing"</span><span class="token punctuation">,</span> 
+          Salary <span class="token operator">=</span> <span class="token number">55000</span> <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">XLWorkbook</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> worksheet <span class="token operator">=</span> workbook<span class="token punctuation">.</span>Worksheets<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token string">"Employees"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token string">"ID"</span><span class="token punctuation">;</span>
+        worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token string">"Name"</span><span class="token punctuation">;</span>
+        worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token string">"Position"</span><span class="token punctuation">;</span>
+        worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token string">"Department"</span><span class="token punctuation">;</span>
+        worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> <span class="token string">"Salary"</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> employees<span class="token punctuation">.</span>Count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> employees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Id<span class="token punctuation">;</span>
+            worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> employees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Name<span class="token punctuation">;</span>
+            worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> employees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Position<span class="token punctuation">;</span>
+            worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> employees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Department<span class="token punctuation">;</span>
+            worksheet<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">.</span>Value <span class="token operator">=</span> employees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Salary<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> stream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MemoryStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            workbook<span class="token punctuation">.</span><span class="token function">SaveAs</span><span class="token punctuation">(</span>stream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            stream<span class="token punctuation">.</span>Position <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token function">File</span><span class="token punctuation">(</span>
+              stream<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+              <span class="token string">"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"</span><span class="token punctuation">,</span> 
+              <span class="token string">"Employees.xlsx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>匯入 XLSX 透過使用者上傳檔案，接著使用 InputStream 讀取檔案，再透過 Workbook 及 Worksheet 讀取檔案資料。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">Upload</span><span class="token punctuation">(</span><span class="token class-name">HttpPostedFileBase</span> file<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>file <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> file<span class="token punctuation">.</span>ContentLength <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>file<span class="token punctuation">.</span>FileName<span class="token punctuation">.</span><span class="token function">EndsWith</span><span class="token punctuation">(</span><span class="token string">".xlsx"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token class-name"><span class="token keyword">var</span></span> eventCases <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span>Case<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> stream <span class="token operator">=</span> file<span class="token punctuation">.</span>InputStream<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> workbook <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">XLWorkbook</span><span class="token punctuation">(</span>stream<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> worksheet <span class="token operator">=</span> workbook<span class="token punctuation">.</span><span class="token function">Worksheet</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name"><span class="token keyword">var</span></span> rows <span class="token operator">=</span> worksheet<span class="token punctuation">.</span><span class="token function">RowsUsed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// 🦐 處理資料 🐠</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">return</span> <span class="token function">View</span><span class="token punctuation">(</span>eventCases<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Exception</span><span class="token punctuation">(</span><span class="token string">"Invalid file format"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>實際的資料處理就是逐行的資料型別，透過 Cell 取得資料，再透過 GetString 取得字串，</p>
+<p>需要注意的是日期時間的處理，因為 Excel 的日期時間格式可能不同，所以需要透過 TryParseExact 來解析 😃</p>
+<p>在渲染的 View 上，會將使用者上傳的 Excel 轉換為多筆的資料 Input</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> row <span class="token keyword">in</span> rows<span class="token punctuation">.</span><span class="token function">Skip</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// Skip header row</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Join</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">,</span> row<span class="token punctuation">.</span><span class="token function">Cells</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>c <span class="token operator">=></span> c<span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">var</span></span> eventCase <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Case</span>
+    <span class="token punctuation">&#123;</span>
+        Topic <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        Cause <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        Improvement <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        Result <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 日期資料處理 📅</span>
+    <span class="token class-name"><span class="token keyword">string</span></span> dateString <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">DateTime</span> parsedDate<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>DateTime<span class="token punctuation">.</span><span class="token function">TryParseExact</span><span class="token punctuation">(</span>
+        dateString<span class="token punctuation">,</span> <span class="token string">"yyyy/M/d tt hh:mm:ss"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CultureInfo</span><span class="token punctuation">(</span><span class="token string">"zh-TW"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> DateTimeStyles<span class="token punctuation">.</span>None<span class="token punctuation">,</span> <span class="token keyword">out</span> parsedDate<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        parsedDate <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>MinValue<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    eventCase<span class="token punctuation">.</span>Date <span class="token operator">=</span> parsedDate<span class="token punctuation">.</span>Date<span class="token punctuation">;</span>
+
+    <span class="token comment">// 時間資料處理 🕘</span>
+    <span class="token class-name"><span class="token keyword">string</span></span> timeString <span class="token operator">=</span> row<span class="token punctuation">.</span><span class="token function">Cell</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">DateTime</span> parsedTime<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>DateTime<span class="token punctuation">.</span><span class="token function">TryParseExact</span><span class="token punctuation">(</span>
+        timeString<span class="token punctuation">,</span> <span class="token string">"yyyy/MM/dd tt hh:mm:ss"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CultureInfo</span><span class="token punctuation">(</span><span class="token string">"zh-TW"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> DateTimeStyles<span class="token punctuation">.</span>None<span class="token punctuation">,</span> <span class="token keyword">out</span> parsedTime<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        parsedTime <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>MinValue<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token class-name">TimeSpan</span> timeSpan <span class="token operator">=</span> parsedTime<span class="token punctuation">.</span>TimeOfDay<span class="token punctuation">;</span>
+    eventCase<span class="token punctuation">.</span>Time <span class="token operator">=</span> timeSpan<span class="token punctuation">;</span>
+
+    eventCases<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>eventCase<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>另外一支 Action 則是將使用者確認上傳的資料送回後端進行批次的新增。</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpPost</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name">ActionResult</span> <span class="token function">BulkInsert</span><span class="token punctuation">(</span><span class="token class-name">IEnumerable<span class="token punctuation">&lt;</span>Case<span class="token punctuation">></span></span> model<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">int</span></span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> item <span class="token keyword">in</span> model<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        item<span class="token punctuation">.</span>EditDateTime <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+
+        <span class="token keyword">try</span>
+        <span class="token punctuation">&#123;</span>
+            db<span class="token punctuation">.</span>Cases<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            count<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token comment">// write to log insert exception</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    db<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    TempData<span class="token punctuation">[</span><span class="token string">"toast"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token interpolation-string"><span class="token string">$"批次新增 </span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token expression language-csharp">count</span><span class="token punctuation">&#125;</span></span><span class="token string"> 筆資料完成 😃"</span></span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">RedirectToAction</span><span class="token punctuation">(</span><span class="token string">"Index"</span><span class="token punctuation">,</span> <span class="token string">"Case"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>View 要呈現使用者上傳的資料，提供 Edit 的功能對使用者更友善：</p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">@<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> Model<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> item <span class="token operator">=</span> Model<span class="token punctuation">.</span><span class="token function">ElementAt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&lt;</span>tr<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:7%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"date"</span> name<span class="token operator">=</span><span class="token string">"[@i].Date"</span> <span class="token keyword">value</span><span class="token operator">=</span><span class="token string">"@item.Date.Value.ToString("</span>yyyy<span class="token operator">-</span>MM<span class="token operator">-</span>dd<span class="token string">")"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:8%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"time"</span> name<span class="token operator">=</span><span class="token string">"[@i].Time"</span> <span class="token keyword">value</span><span class="token operator">=</span><span class="token string">"@item.Time"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:15%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">textarea</span> name<span class="token operator">=</span><span class="token string">"[@i].Topic"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> cols<span class="token operator">=</span><span class="token number">10</span> rows<span class="token operator">=</span><span class="token string">"5"</span><span class="token operator">></span>@item<span class="token punctuation">.</span>Topic<span class="token operator">&lt;</span><span class="token operator">/</span>textarea<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:15%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">textarea</span> name<span class="token operator">=</span><span class="token string">"[@i].Cause"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> cols<span class="token operator">=</span><span class="token number">10</span> rows<span class="token operator">=</span><span class="token string">"5"</span><span class="token operator">></span>@item<span class="token punctuation">.</span>Cause<span class="token operator">&lt;</span><span class="token operator">/</span>textarea<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:15%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">textarea</span> name<span class="token operator">=</span><span class="token string">"[@i].Improvement"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> cols<span class="token operator">=</span><span class="token number">10</span> rows<span class="token operator">=</span><span class="token string">"5"</span><span class="token operator">></span>@item<span class="token punctuation">.</span>Improvement<span class="token operator">&lt;</span><span class="token operator">/</span>textarea<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:15%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">textarea</span> name<span class="token operator">=</span><span class="token string">"[@i].Result"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> cols<span class="token operator">=</span><span class="token number">10</span> rows<span class="token operator">=</span><span class="token string">"5"</span><span class="token operator">></span>@item<span class="token punctuation">.</span>Result<span class="token operator">&lt;</span><span class="token operator">/</span>textarea<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:15%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">textarea</span> name<span class="token operator">=</span><span class="token string">"[@i].Report"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> cols<span class="token operator">=</span><span class="token number">10</span> rows<span class="token operator">=</span><span class="token string">"5"</span><span class="token operator">></span>@item<span class="token punctuation">.</span>Report<span class="token operator">&lt;</span><span class="token operator">/</span>textarea<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token class-name">td</span> style<span class="token operator">=</span><span class="token string">"width:10%"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span><span class="token class-name">input</span> type<span class="token operator">=</span><span class="token string">"text"</span> <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form-control"</span> name<span class="token operator">=</span><span class="token string">"[@i].Dep1"</span> <span class="token keyword">value</span><span class="token operator">=</span><span class="token string">"@item.Dep1"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>td<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>tr<span class="token operator">></span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><h2 id="相關連結"><a href="#相關連結" class="headerlink" title="相關連結"></a>相關連結</h2><p><a href="/posts/2021/03/ASPNET-MVC-Start-From-Scratch/">ASP.NET MVC 從無到有打造一個應用系統</a></p>
+<p><a href="/posts/2021/05/Visual-Studio-Glimpse/">Visual Studio 入門教學</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://sdwh.dev/posts/2024/10/ASPNET-MVC-Import-Export-XLSX/" data-id="cm31klwij0071ectseslygrzr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASPNET/" rel="tag">ASPNET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/" rel="tag">MVC</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/posts/2024/10/Thailand-History/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Thailand History</div>
+    </a>
+    
+    
+  
+    <a href="/posts/2024/10/Python-Replace-If/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python Replace If
+        
+      </div>
+    </a>
+  
+
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-category-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AI/">AI</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud/">Cloud</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CyberSecurity/">CyberSecurity</a><span class="category-list-count">33</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">155</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Design/">Design</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dev/">Dev</a><span class="category-list-count">285</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/EngDiary/">EngDiary</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/IIS/">IIS</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LearningNote/">LearningNote</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/LifeHack/">LifeHack</a><span class="category-list-count">19</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Microsoft/">Microsoft</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Misc/">Misc</a><span class="category-list-count">52</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Network/">Network</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/News/">News</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OS/">OS</a><span class="category-list-count">75</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Office/">Office</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PowerBI/">PowerBI</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Resource/">Resource</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Toys/">Toys</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TroubleShooting/">TroubleShooting</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue/">Vue</a><span class="category-list-count">14</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title widget-archive-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">119</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023</a><span class="archive-list-count">140</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022</a><span class="archive-list-count">218</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">241</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">128</span></li></ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <!-- 2024 -->
+      The Skeptical Software Engineer &copy; 2020 - <span class="margin-right"></span>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/apps" class="mobile-nav-link">Apps</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script> -->
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script src="/js/script.js"></script>
+
+
+<script src="/js/custom-script.js"></script>
+
+
+
+
+
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
+  </div>
+</body>
+</html>
